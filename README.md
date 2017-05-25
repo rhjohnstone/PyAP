@@ -36,3 +36,7 @@ with, for example (this script is already included)
 ```bash
 python projects/PyAP/python/pyap_example.py
 ```
+
+## MCMC-like stuff
+
+I'll add a specific example (probably after Eights...), but in the above example we've got the AP trace out of Chaste, which is all we need to start defining likelihood functions in Python with which to do MCMC etc.
