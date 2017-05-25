@@ -21,6 +21,7 @@
 #include "ohara_rudy_2011_endoCvode.hpp"
 #include "davies_isap_2012Cvode.hpp"
 #include "paci_hyttinen_aaltosetala_severi_ventricularVersionCvode.hpp"
+#include "gokhale_ex293_2017Cvode.hpp"
 
 APSimulator::APSimulator()
     : mModelNumber(1),
