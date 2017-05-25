@@ -4,16 +4,14 @@ This is a Chaste project, originally based on James Grogran's [PyChaste](https:/
 
 The PyAP project code needs to be included in the `projects` folder of the main Chaste source. This can be done with a symbolic link:
 
-```
-bash
+```bash
 cd $CHASTE_SOURCE_DIR/projects
 ln -s $PYAP_PROJECT_SOURCE_DIR
 ```
 
 or just by copying the project in. To build, create a build directory outside the source tree and proceed as:
 
-```
-bash
+```bash
 cd $BUILD_DIR
 cmake $CHASTE_SOURCE_DIR
 make [-jN] project_PyAP
@@ -25,16 +23,16 @@ where N is the number of processors to do the build with.
 ## Usage
 
 Keep Python scripts in
-```
+```bash
 $PYAP_PROJECT_SOURCE_DIR/src/python
 ```
 
 and run them from inside
-```
+```bash
 $BUILD_DIR
 ```
 
 with, for example (this script is already included)
-```
+```bash
 python projects/PyAP/python/pyap_example.py
 ```
