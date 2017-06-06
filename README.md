@@ -16,7 +16,7 @@ or just by copying the project in. To build, create a build directory outside th
 ```bash
 cd $BUILD_DIR
 cmake $CHASTE_SOURCE_DIR
-make [-jN] project_PyAP
+make [-jN] chaste_project_PyAP
 make [-jN] project_PyAP_Python
 ```
 
