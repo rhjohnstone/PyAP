@@ -1,10 +1,20 @@
 # PyAP
 
-Going to give instructions for using this on arcus-b.
-
 This is a Chaste project, originally based on James Grogran's [PyChaste](https://github.com/jmsgrogan/PyChaste) project. The idea is to wrap solving of action potential models (done by Chaste) in Python to make MCMC easier by passing vectors of parameter values all over the place.
 
-Assuming Chaste and CMake and all that have been installed as normal...
+Going to give instructions for using this on arcus-b.
+
+Copy the included `.bash_profile` to `~/.bash_profile`. I've had weird things happen when I do
+
+```bash
+source ~/.bash_profile
+```
+
+Although this should work... Anyway, I just log out and log back in to arcus-b.
+
+It's recommended to work in the `${DATA}` directory, so I would make `${DATA}/chaste-build`, and I also make `${DATA}/workspace`, probably not necessary, but just a habit from the old Chaste days.
+
+I clone the Chaste repo as normal into `${DATA}/workspace/Chaste`, and this project into `${DATA}/workspace/PyAP`.
 
 The PyAP project code needs to be included in the `projects` folder of the main Chaste source. This can be done with a symbolic link:
 
