@@ -33,6 +33,7 @@ else
     echo ARCUS-B
     echo
     # this section contains all the commands to be run on arcusb
+    module load git/1.9.0  # so we can do "git -C $PATH_TO_PROJECT pull" from chaste-build
     module load cmake/3.8.0
     module load python/2.7
     module load vtk/5.10.1
