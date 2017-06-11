@@ -59,6 +59,7 @@ def get_original_params(model):
         original_gs = [90.34, 6.609, 0.6976, 0.1332, 0.9, 0.75]
         g_parameters = ['G_{Na}', 'G_{K1}', 'G_{Na,wt}', 'G_{K1,wt}'
                         'd', 'f']
+    original_gs = np.array(original_gs)
     return original_gs, g_parameters
     
 def get_protocol_details(protocol): # pre-defined protocols
