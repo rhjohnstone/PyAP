@@ -4,14 +4,10 @@ import matplotlib.pyplot as plt
 import time
 import pyap_setup as ps
 import sys
-
-
-def example_likelihood_function(trace):
-    return np.sum(trace**2)
     
     
 def dog_trace_path(trace_number):
-    return "projects/PyAP/input/dog_teun_csv/dog_AP_trace_{}.csv".format(trace_number)
+    return "projects/PyAP/python/input/dog_teun_csv/dog_AP_trace_{}.csv".format(trace_number)
 
 
 # 1. Hodgkin Huxley
@@ -31,9 +27,9 @@ expt_traces = []
 for i, t in enumerate(trace_numbers):
     trace_path = dog_trace_path(t)
     if i==0:
-        times, trace = np.loadtxt(trace_path,delimiter=',').T
+        expt_times, trace = 1000*np.loadtxt(trace_path,delimiter=',').T
     else:
-        trace = np.loadtxt(trace_path,delimiter=',',usecols=[1])
+        trace = 1000*np.loadtxt(trace_path,delimiter=',',usecols=[1])
     expt_traces.append(np.copy(trace))
 aps = []
 model_traces = []
@@ -59,7 +55,7 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.grid()
 for i, t in enumerate(trace_numbers):
-    ax.plot(times,expt_traces[i], label="Trace {}".format(t))
+    ax.plot(expt_times,expt_traces[i], label="Trace {}".format(t))
 ax.set_xlabel("Time (ms)")
 ax.set_ylabel("Membrane voltage (mV)")
 ax.set_title("Model {}".format(model_number))
