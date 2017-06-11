@@ -36,9 +36,10 @@ model_traces = []
 
 solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time = ps.get_protocol_details(protocol)
 
-original_gs, g_parameters = ps.get_original_params(model_number)
+solve_start, solve_end = expt_times[[0,-1]]
+solve_timestep = expt_times[1] - expt_times[0]
 
-times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
+original_gs, g_parameters = ps.get_original_params(model_number)
 
 for i, t in enumerate(trace_numbers):
     aps.append(ap_simulator.APSimulator())
