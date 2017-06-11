@@ -38,7 +38,7 @@ for i, t in enumerate(trace_numbers):
     aps[i].DefineSolveTimes(solve_start,solve_end,solve_timestep)
     aps[i].DefineModel(model_number)
     try:
-        model_traces.append(aps[i].SolveForVoltageTraceWithParams(original_gs))
+        model_traces.append(aps[i].SolveForVoltageTraceWithParams(original_gs*(1.+0.01*i))
     except ap_simulator.CPPException as e:
         print e.GetMessage
         sys.exit()
