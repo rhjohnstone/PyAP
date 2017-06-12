@@ -29,7 +29,7 @@ def run_cmaes(ap_index):
     es = cma.CMAEvolutionStrategy(x0, sigma0, opts)
     while not es.stop():
         X = es.ask()
-        es.tell(X, [obj(x, ap_model, expt_trace) for x in X])
+        es.tell(X, [obj(x, ap_index) for x in X])
         es.disp()
     res = es.result()
     best_params = res[0]
