@@ -23,6 +23,7 @@ model_number = 6
 protocol = 1
 extra_K_conc = 5.4
 trace_numbers = [100, 101]
+num_solves = 5
 
 expt_traces = []
 for i, t in enumerate(trace_numbers):
@@ -48,6 +49,7 @@ for i, t in enumerate(trace_numbers):
     aps[i].DefineSolveTimes(solve_start,solve_end,solve_timestep)
     aps[i].DefineModel(model_number)
     aps[i].SetExtracellularPotassiumConc(extra_K_conc)
+    aps[i].SetNumberOfSolves(num_solves)
     try:
         model_traces.append(aps[i].SolveForVoltageTraceWithParams(original_gs*(1.+0.1*i)))
     except ap_simulator.CPPException as e:
