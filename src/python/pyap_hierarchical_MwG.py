@@ -4,11 +4,6 @@ import matplotlib.pyplot as plt
 import time
 import pyap_setup as ps
 import sys
-    
-    
-def dog_trace_path(trace_number):
-    return "projects/PyAP/python/input/dog_teun_csv/dog_AP_trace_{}.csv".format(trace_number)
-
 
 # 1. Hodgkin Huxley
 # 2. Beeler Reuter
@@ -27,7 +22,7 @@ num_solves = 5
 
 expt_traces = []
 for i, t in enumerate(trace_numbers):
-    trace_path = dog_trace_path(t)
+    trace_path = ps.dog_trace_path(t)
     if i==0:
         expt_times, trace = 1000*np.loadtxt(trace_path,delimiter=',').T
     else:
@@ -40,6 +35,7 @@ solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimul
 
 solve_start, solve_end = expt_times[[0,-1]]
 solve_timestep = expt_times[1] - expt_times[0]
+stimulus_start_time = 9.625
 
 original_gs, g_parameters = ps.get_original_params(model_number)
 
