@@ -38,7 +38,6 @@ solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimul
 
 solve_start, solve_end = expt_times[[0,-1]]
 solve_timestep = expt_times[1] - expt_times[0]
-extra_K_conc = 5.4
 
 original_gs, g_parameters = ps.get_original_params(model_number)
 
@@ -47,7 +46,7 @@ for i, t in enumerate(trace_numbers):
     aps[i].DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
     aps[i].DefineSolveTimes(solve_start,solve_end,solve_timestep)
     aps[i].DefineModel(model_number)
-    aps[i].SetExtracellularPotassiumConc(extra_K_conc)
+    aps[i].SetExtracellularPotassiumConc()
     try:
         model_traces.append(aps[i].SolveForVoltageTraceWithParams(original_gs*(1.+0.1*i)))
     except ap_simulator.CPPException as e:
