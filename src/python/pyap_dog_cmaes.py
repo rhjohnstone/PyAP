@@ -11,32 +11,42 @@ import cma
 import multiprocessing as mp
 
 
-def solve_for_voltage_trace(temp_g_params):
+def solve_for_voltage_trace(temp_g_params, ap_model):
     ap_model.SetToModelInitialConditions()
     return ap_model.SolveForVoltageTraceWithParams(temp_g_params)
     
     
-def obj(temp_test_params):
+def obj(temp_test_params, ap_model):
     if np.any(temp_test_params < 0):
         negs = temp_test_params[np.where(temp_test_params<0)]
         return 1e9 * (1 - np.sum(negs))
-    temp_test_trace = solve_for_voltage_trace(temp_test_params)
+    temp_test_trace = solve_for_voltage_trace(temp_test_params, ap_model)
     return np.sum((temp_test_trace-expt_trace)**2)
 
 
 def run_cmaes(cma_index):
-    opts = cma.CMAOptions()
-    opts['seed'] = cma_index
+    ap_model = ap_simulator.APSimulator()
+    ap_model.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
+    ap_model.DefineSolveTimes(solve_start,solve_end,solve_timestep)
+    ap_model.DefineModel(model_number)
+    ap_model.SetExtracellularPotassiumConc(extra_K_conc)
+    ap_model.SetNumberOfSolves(num_solves)
+    #npr.seed(cma_index)
+    #opts = cma.CMAOptions()
+    #npr.seed(cma_index)
+    #opts['seed'] = cma_index
+    #options = {'seed':cma_index}
     x0 = original_gs * (1. + 0.001*npr.randn(num_params))
     x0[np.where(x0<0)] = 1e-9
     sigma0 = 0.000001
-    es = cma.CMAEvolutionStrategy(x0, sigma0, opts)
+    es = cma.CMAEvolutionStrategy(x0, sigma0)#, options)
     while not es.stop():
         X = es.ask()
-        es.tell(X, [obj(x) for x in X])
+        es.tell(X, [obj(x, ap_model) for x in X])
         es.disp()
     res = es.result()
-    return np.concatenate(res[[0,1]])
+    answer = np.concatenate((res[0],[res[1]]))
+    return answer
 
 
 # 1. Hodgkin Huxley
@@ -48,16 +58,15 @@ def run_cmaes(cma_index):
 # 7. Paci (SC-CM ventricular)
 # 8. Gokhale 2017 ex293
 
-seed = 1
-npr.seed(seed)
 
-num_cores = 16  # assuming ARCUS-B!!
+
+num_cores = 2  # make 16 for ARCUS-B!!
 
 model_number = 6
 protocol = 1
 extra_K_conc = 5.4
 trace_numbers = [100, 101, 102, 103]
-num_solves = 1
+num_solves = 2
 
 expt_traces = []
 for i, t in enumerate(trace_numbers):
@@ -87,12 +96,6 @@ cmaes_indices = range(how_many_cmaes_runs)
 figs = []
 for i, t in enumerate(trace_numbers):
     expt_trace = expt_traces[i]
-    ap_model = ap_simulator.APSimulator()
-    ap_model.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
-    ap_model.DefineSolveTimes(solve_start,solve_end,solve_timestep)
-    ap_model.DefineModel(model_number)
-    ap_model.SetExtracellularPotassiumConc(extra_K_conc)
-    ap_model.SetNumberOfSolves(num_solves)
     best_paramses = []
     best_fs = []
     best_both = []
@@ -108,11 +111,17 @@ for i, t in enumerate(trace_numbers):
     pool.close()
     pool.join()
     best_boths = np.array(best_boths)
+    ap_model = ap_simulator.APSimulator()
+    ap_model.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
+    ap_model.DefineSolveTimes(solve_start,solve_end,solve_timestep)
+    ap_model.DefineModel(model_number)
+    ap_model.SetExtracellularPotassiumConc(extra_K_conc)
+    ap_model.SetNumberOfSolves(num_solves)
     for j in cmaes_indices:
         #best_params, best_f = run_cmaes(j)
         best_params = best_boths[j,:-1]
         best_f = best_boths[j,-1]
-        ax.plot(expt_times, solve_for_voltage_trace(best_params), label="Best f = {}".format(round(best_f,2)))
+        ax.plot(expt_times, solve_for_voltage_trace(best_params, ap_model), label="Best f = {}".format(round(best_f,2)))
     ax.legend()
     figs[i].tight_layout()
     cmaes_dir, best_fit_file = ps.dog_cmaes_path(t)
