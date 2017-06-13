@@ -1,5 +1,6 @@
 import ap_simulator
 import numpy as np
+import numpy.random as npr
 import matplotlib.pyplot as plt
 import time
 import pyap_setup as ps
@@ -23,7 +24,8 @@ def obj(temp_test_params):
 def run_cmaes(cma_index):
     opts = cma.CMAOptions()
     opts['seed'] = cma_index
-    x0 = original_gs
+    x0 = original_gs * (1. + 0.001*npr.randn(num_params))
+    x0[np.where(x0<0)] = 1e-9
     sigma0 = 0.000001
     es = cma.CMAEvolutionStrategy(x0, sigma0, opts)
     while not es.stop():
@@ -35,6 +37,7 @@ def run_cmaes(cma_index):
     best_obj = res[1]
     return best_params, best_obj
 
+
 # 1. Hodgkin Huxley
 # 2. Beeler Reuter
 # 3. Luo Rudy
@@ -43,6 +46,9 @@ def run_cmaes(cma_index):
 # 6. Davies (canine)
 # 7. Paci (SC-CM ventricular)
 # 8. Gokhale 2017 ex293
+
+seed = 1
+npr.seed(seed)
 
 model_number = 6
 protocol = 1
@@ -70,12 +76,14 @@ stimulus_start_time = 9.625
 how_many_cmaes_runs = 2
 
 original_gs, g_parameters = ps.get_original_params(model_number)
+num_params = len(original_gs)
 
 cmaes_indices = range(how_many_cmaes_runs)
 
 
 figs = []
 for i, t in enumerate(trace_numbers):
+    best_fit_file = ps.dog_cmaes_path(t)
     plt.close()
     expt_trace = expt_traces[i]
     ap_model = ap_simulator.APSimulator()
@@ -86,6 +94,7 @@ for i, t in enumerate(trace_numbers):
     ap_model.SetNumberOfSolves(num_solves)
     best_paramses = []
     best_fs = []
+    best_both = []
     figs.append(plt.figure())
     ax = figs[i].add_subplot(111)
     ax.grid()
@@ -97,8 +106,11 @@ for i, t in enumerate(trace_numbers):
         best_params, best_f = run_cmaes(j)
         best_paramses.append(best_params)
         best_fs.append(best_f)
+        best_both.append(np.concatenate((best_paramses[j],[best_fs[j]])))
         ax.plot(expt_times, solve_for_voltage_trace(best_paramses[j]), label="Best f = {}".format(round(best_fs[j],2)))
     ax.legend()
     figs[i].tight_layout()
+    best_both = np.array(best_both)
+    np.savetxt(best_fit_file, best_both)
 plt.show(block=True)
     
