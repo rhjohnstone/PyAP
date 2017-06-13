@@ -16,7 +16,7 @@ def obj(temp_test_params):
     if np.any(temp_test_params < 0):
         negs = temp_test_params[np.where(temp_test_params<0)]
         return 1e9 * (1 - np.sum(negs))
-    temp_test_trace = solve_for_voltage_trace(ap_model, temp_test_params)
+    temp_test_trace = solve_for_voltage_trace(temp_test_params)
     return np.sum((temp_test_trace-expt_trace)**2)
 
 
@@ -73,6 +73,8 @@ original_gs, g_parameters = ps.get_original_params(model_number)
 
 cmaes_indices = range(how_many_cmaes_runs)
 
+
+figs = []
 for i, t in enumerate(trace_numbers):
     plt.close()
     expt_trace = expt_traces[i]
@@ -84,20 +86,19 @@ for i, t in enumerate(trace_numbers):
     ap_model.SetNumberOfSolves(num_solves)
     best_paramses = []
     best_fs = []
-    figs = []
-    for i in cmaes_indices:
-        best_params, best_f = run_cmaes(i)
+    figs.append(plt.figure())
+    ax = figs[i].add_subplot(111)
+    ax.grid()
+    ax.set_title('Trace {}'.format(t))
+    ax.set_xlabel('Time (ms)')
+    ax.set_ylabel('Membrane voltage (mV)')
+    ax.plot(expt_times, expt_traces[i], label="Expt")
+    for j in cmaes_indices:
+        best_params, best_f = run_cmaes(j)
         best_paramses.append(best_params)
         best_fs.append(best_f)
-        figs.append(plt.figure())
-        ax = figs[i].add_subplot(111)
-        ax.grid()
-        ax.set_title('Trace {}'.format(t))
-        ax.set_xlabel('Time (ms)')
-        ax.set_ylabel('Membrane voltage (mV)')
-        ax.plot(expt_times, solve_for_voltage_trace(ap_model, best_paramses[i]), label="Best f = {}".format(round(best_fs[i],2)))
-        ax.plot(expt_times, expt_traces[i], label="Expt")
-        ax.legend()
-        figs[i].tight_layout()
-    plt.show(block=True)
+        ax.plot(expt_times, solve_for_voltage_trace(best_paramses[j]), label="Best f = {}".format(round(best_fs[j],2)))
+    ax.legend()
+    figs[i].tight_layout()
+plt.show(block=True)
     
