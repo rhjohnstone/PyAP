@@ -9,7 +9,7 @@ import cma
 
 def solve_for_voltage_trace(temp_g_params):
     ap_model.SetToModelInitialConditions()
-    return temp_ap_model.SolveForVoltageTraceWithParams(temp_g_params)
+    return ap_model.SolveForVoltageTraceWithParams(temp_g_params)
     
     
 def obj(temp_test_params):
