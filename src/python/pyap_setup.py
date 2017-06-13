@@ -105,7 +105,7 @@ def dog_cmaes_path(trace_number):
     cmaes_dir = "projects/PyAP/python/output/dog_teun/cmaes/"
     if not os.path.exists(cmaes_dir):
         os.makedirs(cmaes_dir)
-    return cmaes_dir+"dog_trace_{}_cmaes_best_fit.txt".format(trace_number)
+    return cmaes_dir, cmaes_dir+"dog_trace_{}_cmaes_best_fit.txt".format(trace_number)
 
 
 

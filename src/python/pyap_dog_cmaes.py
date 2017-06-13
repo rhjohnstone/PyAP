@@ -1,11 +1,14 @@
 import ap_simulator
 import numpy as np
 import numpy.random as npr
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import time
 import pyap_setup as ps
 import sys
 import cma
+import multiprocessing as mp
 
 
 def solve_for_voltage_trace(temp_g_params):
@@ -33,9 +36,7 @@ def run_cmaes(cma_index):
         es.tell(X, [obj(x) for x in X])
         es.disp()
     res = es.result()
-    best_params = res[0]
-    best_obj = res[1]
-    return best_params, best_obj
+    return np.flatten(res[[0,1]])
 
 
 # 1. Hodgkin Huxley
@@ -50,10 +51,12 @@ def run_cmaes(cma_index):
 seed = 1
 npr.seed(seed)
 
+num_cores = 16  # assuming ARCUS-B!!
+
 model_number = 6
 protocol = 1
 extra_K_conc = 5.4
-trace_numbers = [100]#, 101]
+trace_numbers = [100, 101, 102, 103]
 num_solves = 1
 
 expt_traces = []
@@ -73,7 +76,7 @@ stimulus_duration = 2.5
 solve_start, solve_end = expt_times[[0,-1]]
 solve_timestep = expt_times[1] - expt_times[0]
 stimulus_start_time = 9.625
-how_many_cmaes_runs = 2
+how_many_cmaes_runs = 32
 
 original_gs, g_parameters = ps.get_original_params(model_number)
 num_params = len(original_gs)
@@ -83,8 +86,6 @@ cmaes_indices = range(how_many_cmaes_runs)
 
 figs = []
 for i, t in enumerate(trace_numbers):
-    best_fit_file = ps.dog_cmaes_path(t)
-    plt.close()
     expt_trace = expt_traces[i]
     ap_model = ap_simulator.APSimulator()
     ap_model.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
@@ -102,15 +103,21 @@ for i, t in enumerate(trace_numbers):
     ax.set_xlabel('Time (ms)')
     ax.set_ylabel('Membrane voltage (mV)')
     ax.plot(expt_times, expt_traces[i], label="Expt")
+    pool = mp.Pool(num_cores)
+    best_boths = pool.map_async(run_cmaes, cmaes_indices).get(999999999)
+    pool.close()
+    pool.join()
+    best_boths = np.array(best_boths)
     for j in cmaes_indices:
-        best_params, best_f = run_cmaes(j)
-        best_paramses.append(best_params)
-        best_fs.append(best_f)
-        best_both.append(np.concatenate((best_paramses[j],[best_fs[j]])))
-        ax.plot(expt_times, solve_for_voltage_trace(best_paramses[j]), label="Best f = {}".format(round(best_fs[j],2)))
+        #best_params, best_f = run_cmaes(j)
+        best_params = best_boths[j,:-1]
+        best_f = best_boths[j,-1]
+        ax.plot(expt_times, solve_for_voltage_trace(best_params), label="Best f = {}".format(round(best_f,2)))
     ax.legend()
     figs[i].tight_layout()
-    best_both = np.array(best_both)
-    np.savetxt(best_fit_file, best_both)
-plt.show(block=True)
+    cmaes_dir, best_fit_file = ps.dog_cmaes_path(t)
+    np.savetxt(best_fit_file, best_boths)
+    figs[i].savefig(cmaes_dir+'best_fits.png')
+    plt.close()
+#plt.show(block=True)
     
