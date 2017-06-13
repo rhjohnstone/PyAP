@@ -117,7 +117,7 @@ for i, t in enumerate(trace_numbers):
     figs[i].tight_layout()
     cmaes_dir, best_fit_file = ps.dog_cmaes_path(t)
     np.savetxt(best_fit_file, best_boths)
-    figs[i].savefig(cmaes_dir+'best_fits.png')
+    figs[i].savefig(cmaes_dir+'trace_{}_best_fits.png'.format(t))
     plt.close()
 #plt.show(block=True)
     
