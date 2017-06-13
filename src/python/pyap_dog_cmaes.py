@@ -16,9 +16,8 @@ def obj(temp_test_params):
     if np.any(temp_test_params < 0):
         negs = temp_test_params[np.where(temp_test_params<0)]
         return 1e9 * (1 - np.sum(negs))
-    temp_expt_trace = expt_traces[temp_index]
     temp_test_trace = solve_for_voltage_trace(ap_model, temp_test_params)
-    return np.sum((temp_test_trace-temp_expt_trace)**2)
+    return np.sum((temp_test_trace-expt_trace)**2)
 
 
 def run_cmaes(cma_index):
@@ -76,6 +75,7 @@ cmaes_indices = range(how_many_cmaes_runs)
 
 for i, t in enumerate(trace_numbers):
     plt.close()
+    expt_trace = expt_traces[i]
     ap_model = ap_simulator.APSimulator()
     ap_model.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
     ap_model.DefineSolveTimes(solve_start,solve_end,solve_timestep)
