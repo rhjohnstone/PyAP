@@ -12,6 +12,9 @@ def solve_for_voltage_trace(temp_ap_model, temp_g_params):
     
     
 def obj(temp_test_params, temp_index):
+    if np.any(temp_test_params < 0):
+        negs = temp_test_params[np.where(temp_test_params<0)]
+        return 1e9 * (1 - np.sum(negs))
     temp_ap_model = aps[temp_index]
     temp_expt_trace = expt_traces[temp_index]
     temp_ap_model.SetToModelInitialConditions()
@@ -25,7 +28,7 @@ def run_cmaes(ap_index):
     opts = cma.CMAOptions()
     opts['seed'] = ap_index
     x0 = original_gs
-    sigma0 = 0.0001
+    sigma0 = 0.000001
     es = cma.CMAEvolutionStrategy(x0, sigma0, opts)
     while not es.stop():
         X = es.ask()
