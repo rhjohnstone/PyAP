@@ -8,6 +8,7 @@ import cma
 
 
 def solve_for_voltage_trace(temp_ap_model, temp_g_params):
+    temp_ap_model.SetToModelInitialConditions()
     return temp_ap_model.SolveForVoltageTraceWithParams(temp_g_params)
     
     
@@ -17,7 +18,6 @@ def obj(temp_test_params, temp_index):
         return 1e9 * (1 - np.sum(negs))
     temp_ap_model = aps[temp_index]
     temp_expt_trace = expt_traces[temp_index]
-    temp_ap_model.SetToModelInitialConditions()
     temp_test_trace = solve_for_voltage_trace(temp_ap_model, temp_test_params)
     return np.sum((temp_test_trace-temp_expt_trace)**2)
 
@@ -52,7 +52,7 @@ model_number = 6
 protocol = 1
 extra_K_conc = 5.4
 trace_numbers = [100]#, 101]
-num_solves = 5
+num_solves = 1
 
 expt_traces = []
 for i, t in enumerate(trace_numbers):
@@ -73,6 +73,9 @@ stimulus_start_time = 9.625
 
 original_gs, g_parameters = ps.get_original_params(model_number)
 
+best_paramses = []
+best_fs = []
+figs = []
 for i, t in enumerate(trace_numbers):
     aps.append(ap_simulator.APSimulator())
     aps[i].DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
@@ -80,5 +83,18 @@ for i, t in enumerate(trace_numbers):
     aps[i].DefineModel(model_number)
     aps[i].SetExtracellularPotassiumConc(extra_K_conc)
     aps[i].SetNumberOfSolves(num_solves)
-    print run_cmaes(i)
+    best_params, best_f = run_cmaes(i)
+    best_paramses.append(best_params)
+    best_fs.append(best_f)
+    figs.append(plt.figure())
+    ax = figs[i].add_subplot(111)
+    ax.grid()
+    ax.set_title('Trace {}'.format(t))
+    ax.set_xlabel('Time (ms)')
+    ax.set_ylabel('Membrane voltage (mV)')
+    ax.plot(times, solve_for_voltage_trace(aps[i], best_paramses[i]), label="Best f = {}".format(round(best_fs[i],2)))
+    ax.plot(times, expt_traces[i], label="Expt")
+    ax.legend()
+    figs[i].tight_layout()
+plt.show(block=True)
     
