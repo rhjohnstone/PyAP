@@ -36,7 +36,7 @@ def run_cmaes(cma_index):
         es.tell(X, [obj(x) for x in X])
         es.disp()
     res = es.result()
-    return np.flatten(res[[0,1]])
+    return np.concatenate(res[[0,1]])
 
 
 # 1. Hodgkin Huxley
