@@ -31,7 +31,10 @@ APSimulator::APSimulator()
       mSolveEnd(500),
       mSolveTimestep(0.2),
       mNumTimePts(2501),
-      mHaveRunToSteadyState(false)
+      mHaveRunToSteadyState(false),
+      mUseDataClamp(false),
+      mDataClampOn(0),
+      mDataClampOff(0)
 {
     std::cerr << "*** INSIDE CONSTRUCTOR (nothing should happen here) ***" << std::endl << std::flush;
 }
@@ -175,7 +178,7 @@ void APSimulator::SetToModelInitialConditions()
     mpModel->SetStateVariables(mpModel->GetInitialConditions());
 }
 
-std::vector<double> APSimulator::SolveForVoltageTraceWithParams(const std::vector<double>& rParams)
+std::vector<double> APSimulator::SolveForVoltageTraceWithParamsNoDataClamp(const std::vector<double>& rParams)
 {
     //std::cerr << "About to try and solve" << std::endl << std::flush;
     //mpModel->SetStateVariables(mpModel->GetInitialConditions());
@@ -207,7 +210,71 @@ std::vector<double> APSimulator::SolveForVoltageTraceWithParams(const std::vecto
         mNumberOfFailedSolves++;
     }
     return voltage_trace;
-}        
+}
+
+std::vector<double> APSimulator::SolveForVoltageTraceWithParamsWithDataClamp(const std::vector<double>& rParams)
+{
+    std::vector<double> voltage_trace;
+    
+    for (unsigned j=0; j<rParams.size(); j++)
+    {
+        mpModel->SetParameter(mParameterMetanames[j], rParams[j]);
+    }
+    //mpModel->SetStateVariable("membrane_voltage",mExptTrace[0]);
+
+    boost::static_pointer_cast<AbstractCvodeCellWithDataClamp>(mpModel)->TurnOffDataClamp();
+
+    
+    
+    if (mHowManySolves > 1)
+    {
+        for (unsigned i=0; i<mHowManySolves-1; i++)
+        {
+            mpModel->ResetSolver();
+            mpModel->Compute(mSolveStart, mDataClampOn, mSolveTimestep);
+            mpModel->ResetSolver();
+            boost::static_pointer_cast<AbstractCvodeCellWithDataClamp>(mpModel)->TurnOnDataClamp(200);
+            mpModel->Compute(mDataClampOn, mDataClampOff, mSolveTimestep);
+            mpModel->ResetSolver();
+            boost::static_pointer_cast<AbstractCvodeCellWithDataClamp>(mpModel)->TurnOffDataClamp();
+            mpModel->Compute(mDataClampOff, mSolveStart+mStimPeriod, mSolveTimestep);
+        }
+    }
+    
+    mpModel->ResetSolver();
+    OdeSolution sol1 = mpModel->Compute(mSolveStart, mDataClampOn, mSolveTimestep);
+    
+    mpModel->ResetSolver();
+    boost::static_pointer_cast<AbstractCvodeCellWithDataClamp>(mpModel)->TurnOnDataClamp(200);
+    OdeSolution sol2 = mpModel->Compute(mDataClampOn, mDataClampOff, mSolveTimestep);
+    mpModel->ResetSolver();
+    boost::static_pointer_cast<AbstractCvodeCellWithDataClamp>(mpModel)->TurnOffDataClamp();
+    OdeSolution sol3 = mpModel->Compute(mDataClampOff, mSolveEnd, mSolveTimestep);
+
+    voltage_trace = sol1.GetAnyVariable("membrane_voltage");
+    std::vector<double> voltage_trace_part_2 = sol2.GetAnyVariable("membrane_voltage");
+    std::vector<double> voltage_trace_part_3 = sol3.GetAnyVariable("membrane_voltage");
+
+    voltage_trace.erase(voltage_trace.end()-1);
+    voltage_trace.insert( voltage_trace.end(), voltage_trace_part_2.begin(), voltage_trace_part_2.end() );
+    voltage_trace.erase(voltage_trace.end()-1);
+    voltage_trace.insert( voltage_trace.end(), voltage_trace_part_3.begin(), voltage_trace_part_3.end() );
+    return voltage_trace;
+}
+
+std::vector<double> APSimulator::SolveForVoltageTraceWithParams(const std::vector<double>& rParams)
+{
+    std::vector<double> voltage_trace;
+    if (mUseDataClamp == false)
+    {
+        voltage_trace = SolveForVoltageTraceWithParamsNoDataClamp(rParams);
+    }
+    else
+    {
+        voltage_trace = SolveForVoltageTraceWithParamsWithDataClamp(rParams);
+    }
+    return voltage_trace;
+}  
 
 void APSimulator::SetTolerances(double rel_tol, double abs_tol)
 {

@@ -21,6 +21,9 @@ private:
     unsigned mNumTimePts;
     bool mHaveRunToSteadyState;
     double mStimPeriod;
+    bool mUseDataClamp;
+    double mDataClampOn;
+    double mDataClampOff;
 public:
     APSimulator();
     ~APSimulator();
@@ -30,6 +33,8 @@ public:
     void DefineModel(unsigned model_number);
     std::vector<std::string> GetParameterMetanames();
     std::vector<double> SolveForVoltageTraceWithParams(const std::vector<double>& rParams);
+    std::vector<double> SolveForVoltageTraceWithParamsNoDataClamp(const std::vector<double>& rParams);
+    std::vector<double> SolveForVoltageTraceWithParamsWithDataClamp(const std::vector<double>& rParams);
     void SetTolerances(double rel_tol, double abs_tol);
     void SetExtracellularPotassiumConc( double extra_K_conc );
     void SetNumberOfSolves( unsigned num_solves );
