@@ -24,7 +24,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/WrapPython.cmake)
 
 # Here we add extra arguments to force PyCML to use this extra argument (make Get and Set methods for
 # all metadata annotated variables). 
-set(Chaste_PYCML_EXTRA_ARGS "--expose-annotated-variables" "--assume-valid") # "--cvode-data-clamp" 
+set(Chaste_PYCML_EXTRA_ARGS "--expose-annotated-variables" "--assume-valid" "--cvode-data-clamp")
 
 # Trying to make it find DataClamp files/functions - RJ
 #include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/cellml/cellml)
