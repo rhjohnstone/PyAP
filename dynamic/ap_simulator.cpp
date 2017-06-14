@@ -75,6 +75,8 @@ BOOST_PYTHON_MODULE(_chaste_project_PyAP_ap_simulator)
         .def("SetNumberOfSolves", &APSimulator::SetNumberOfSolves)
         //.def("LoadStateVariables", &APSimulator::LoadStateVariables)
         .def("SetToModelInitialConditions", &APSimulator::SetToModelInitialConditions)
+        .def("UseDataClamp", &APSimulator::UseDataClamp)
+        .def("SetExperimentalTraceAndTimesForDataClamp", &APSimulator::SetExperimentalTraceAndTimesForDataClamp)
     ;
 
     PythonIterableToStl()

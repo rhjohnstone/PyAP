@@ -43,6 +43,8 @@ public:
     //void ArchiveStateVariables();
     //void LoadStateVariables();
     void SetToModelInitialConditions();
+    void UseDataClamp();
+    void SetExperimentalTraceAndTimesForDataClamp(const std::vector<double>& expt_times, const std::vector<double>& expt_trace)
 };
 
 

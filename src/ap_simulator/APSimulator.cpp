@@ -19,7 +19,7 @@
 #include "luo_rudy_1991Cvode.hpp"
 #include "ten_tusscher_model_2004_epiCvode.hpp"
 #include "ohara_rudy_2011_endoCvode.hpp"
-#include "davies_isap_2012Cvode.hpp"
+#include "davies_isap_2012CvodeDataClamp.hpp"
 #include "paci_hyttinen_aaltosetala_severi_ventricularVersionCvode.hpp"
 #include "gokhale_ex293_2017Cvode.hpp"
 
@@ -121,9 +121,9 @@ void APSimulator::DefineModel(unsigned model_number)
         mParameterMetanames.push_back("membrane_calcium_pump_current_conductance");                       // 0.0005
         mParameterMetanames.push_back("membrane_persistent_sodium_current_conductance");                  // 0.0075
     }
-    else if ( model_number == 6u ) // Davies 2012
+    else if ( model_number == 6u ) // Davies 2012 with data clamp
     {
-        mpModel.reset(new Celldavies_isap_2012FromCellMLCvode(p_solver, mpStimulus));
+        mpModel.reset(new Celldavies_isap_2012FromCellMLCvodeDataClamp(p_solver, mpStimulus));
         mParameterMetanames.push_back("membrane_fast_sodium_current_conductance");                        // 8.25
         mParameterMetanames.push_back("membrane_L_type_calcium_current_conductance");                     // 0.000243
         mParameterMetanames.push_back("membrane_inward_rectifier_potassium_current_conductance");         // 0.5
@@ -166,6 +166,16 @@ void APSimulator::DefineModel(unsigned model_number)
         mParameterMetanames.push_back("transfected_potassium_fast_component_contribution");  // 0.75
     }
     mpModel->SetMaxSteps(10000);
+}
+
+void APSimulator::UseDataClamp()
+{
+    mUseDataClamp = true;
+}
+
+void APSimulator::SetExperimentalTraceAndTimesForDataClamp(const std::vector<double>& expt_times, const std::vector<double>& expt_trace)
+{
+    boost::static_pointer_cast<AbstractCvodeCellWithDataClamp>(mpModel)->SetExperimentalData(expt_times, expt_trace);
 }
 
 std::vector<std::string> APSimulator::GetParameterMetanames()
