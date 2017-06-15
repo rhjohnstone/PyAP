@@ -18,7 +18,7 @@ model_number = 6
 protocol = 1
 extra_K_conc = 5.4
 trace_numbers = [100]#, 101]
-num_solves = 1
+num_solves = 2
 use_data_clamp = True
 
 expt_traces = []
@@ -31,6 +31,10 @@ for i, t in enumerate(trace_numbers):
     expt_traces.append(np.copy(trace))
 aps = []
 model_traces = []
+
+data_clamp_on = expt_times[39]
+data_clamp_off = expt_times[47]
+print data_clamp_on, data_clamp_off
 
 solve_start, solve_end = expt_times[[0,-1]]
 solve_timestep = expt_times[1] - expt_times[0]
@@ -48,7 +52,7 @@ for i, t in enumerate(trace_numbers):
     aps[i].DefineModel(model_number)
     aps[i].SetExtracellularPotassiumConc(extra_K_conc)
     aps[i].SetNumberOfSolves(num_solves)
-    aps[i].UseDataClamp()
+    aps[i].UseDataClamp(data_clamp_on, data_clamp_off)
     aps[i].SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_traces[i])
     try:
         model_traces.append(aps[i].SolveForVoltageTraceWithParams(original_gs*(1.+0.1*i)))

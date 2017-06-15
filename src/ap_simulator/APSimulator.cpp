@@ -168,9 +168,11 @@ void APSimulator::DefineModel(unsigned model_number)
     mpModel->SetMaxSteps(10000);
 }
 
-void APSimulator::UseDataClamp()
+void APSimulator::UseDataClamp(double data_clamp_on, double data_clamp_off)
 {
     mUseDataClamp = true;
+    mDataClampOn = data_clamp_on;
+    mDataClampOff = data_clamp_off;
 }
 
 void APSimulator::SetExperimentalTraceAndTimesForDataClamp(const std::vector<double>& expt_times, const std::vector<double>& expt_trace)
