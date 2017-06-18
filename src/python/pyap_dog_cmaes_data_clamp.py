@@ -33,7 +33,7 @@ def run_cmaes(cma_index):
     ap_model.SetNumberOfSolves(num_solves)
     ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
     ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
-    #npr.seed(cma_index)
+    npr.seed(cma_index)  # can't fix CMA-ES seed for some reason
     #opts = cma.CMAOptions()
     #npr.seed(cma_index)
     #opts['seed'] = cma_index
