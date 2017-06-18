@@ -1,9 +1,9 @@
-import ap_simulator
-import numpy as np
-import numpy.random as npr
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import ap_simulator
+import numpy as np
+import numpy.random as npr
 import time
 import pyap_setup as ps
 import sys
@@ -11,29 +11,28 @@ import cma
 import multiprocessing as mp
 
 
-def solve_for_voltage_trace(temp_g_params, ap_model):
-    ap_model.SetToModelInitialConditions()
-    return ap_model.SolveForVoltageTraceWithParams(temp_g_params)
+def solve_for_voltage_trace(temp_g_params, _ap_model):
+    _ap_model.SetToModelInitialConditions()
+    return _ap_model.SolveForVoltageTraceWithParams(temp_g_params)
     
     
-def obj(temp_test_params, ap_model):
+def obj(temp_test_params, temp_ap_model):
     if np.any(temp_test_params < 0):
         negs = temp_test_params[np.where(temp_test_params<0)]
         return 1e9 * (1 - np.sum(negs))
-    temp_test_trace = solve_for_voltage_trace(temp_test_params, ap_model)
+    temp_test_trace = solve_for_voltage_trace(temp_test_params, temp_ap_model)
     return np.sum((temp_test_trace-expt_trace)**2)
 
 
-ap_models = {}
 def run_cmaes(cma_index):
-    ap_models[cma_index] = ap_simulator.APSimulator()
-    ap_models[cma_index].DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
-    ap_models[cma_index].DefineSolveTimes(solve_start,solve_end,solve_timestep)
-    ap_models[cma_index].DefineModel(model_number)
-    ap_models[cma_index].SetExtracellularPotassiumConc(extra_K_conc)
-    ap_models[cma_index].SetNumberOfSolves(num_solves)
-    ap_models[cma_index].UseDataClamp(data_clamp_on, data_clamp_off)
-    ap_models[cma_index].SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
+    ap_model = ap_simulator.APSimulator()
+    ap_model.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
+    ap_model.DefineSolveTimes(solve_start,solve_end,solve_timestep)
+    ap_model.DefineModel(model_number)
+    ap_model.SetExtracellularPotassiumConc(extra_K_conc)
+    ap_model.SetNumberOfSolves(num_solves)
+    ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
+    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
     #npr.seed(cma_index)
     #opts = cma.CMAOptions()
     #npr.seed(cma_index)
@@ -41,26 +40,26 @@ def run_cmaes(cma_index):
     #options = {'seed':cma_index}
     x0 = original_gs * (1. + 0.001*npr.randn(num_params))
     fig = plt.figure()
-    #axz[cma_index] = figz[cma_index].add_subplot(111)
-    trace0 = solve_for_voltage_trace(x0, ap_models[cma_index])
-    f0 = obj(x0, ap_models[cma_index])
-    plt.plot(expt_times, expt_trace, label='Expt')
-    plt.plot(expt_times, trace0, label='f0 = {}'.format(round(f0,2)))
-    plt.xlabel('Time (ms)')
-    plt.ylabel('Membrane voltage (mV)')
-    plt.legend()
-    plt.grid()
+    ax = fig.add_subplot(111)
+    trace0 = solve_for_voltage_trace(x0, ap_model)
+    f0 = obj(x0, ap_model)
+    ax.plot(expt_times, expt_trace, label='Expt')
+    ax.plot(expt_times, trace0, label='f0 = {}'.format(round(f0,2)))
+    ax.set_xlabel('Time (ms)')
+    ax.set_ylabel('Membrane voltage (mV)')
+    ax.legend()
+    ax.grid()
     fig.savefig(cmaes_dir+'trace_{}_cmaes_index_{}_initial_fit.png'.format(t,cma_index))
-    plt.close()
+    #plt.close()
     print "x0:", x0
-    obj0 = obj(x0, ap_models[cma_index])
+    obj0 = obj(x0, ap_model)
     print "obj0:", round(obj0, 2)
     x0[np.where(x0<0)] = 1e-9
     sigma0 = 0.000001
     es = cma.CMAEvolutionStrategy(x0, sigma0)#, options)
     while not es.stop():
         X = es.ask()
-        es.tell(X, [obj(x, ap_models[cma_index]) for x in X])
+        es.tell(X, [obj(x, ap_model) for x in X])
         es.disp()
     res = es.result()
     answer = np.concatenate((res[0],[res[1]]))
@@ -133,6 +132,7 @@ for i, t in enumerate(trace_numbers):
     best_boths = pool.map_async(run_cmaes, cmaes_indices).get(999999999)
     pool.close()
     pool.join()
+    plt.close()
     best_boths = np.array(best_boths)
     ap_model = ap_simulator.APSimulator()
     ap_model.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
