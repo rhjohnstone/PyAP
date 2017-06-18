@@ -38,7 +38,7 @@ def run_cmaes(cma_index):
     #npr.seed(cma_index)
     #opts['seed'] = cma_index
     #options = {'seed':cma_index}
-    x0 = original_gs * (1. + 0.001*npr.randn(num_params))
+    x0 = original_gs * (1. + 0.01*npr.randn(num_params))
     fig = plt.figure()
     ax = fig.add_subplot(111)
     trace0 = solve_for_voltage_trace(x0, ap_model)
