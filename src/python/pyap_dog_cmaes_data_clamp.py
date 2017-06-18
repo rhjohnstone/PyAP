@@ -24,6 +24,8 @@ def obj(temp_test_params, ap_model):
     return np.sum((temp_test_trace-expt_trace)**2)
 
 
+figz = {}
+axz = {}
 def run_cmaes(cma_index):
     ap_model = ap_simulator.APSimulator()
     ap_model.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
@@ -39,18 +41,18 @@ def run_cmaes(cma_index):
     #opts['seed'] = cma_index
     #options = {'seed':cma_index}
     x0 = original_gs * (1. + 0.001*npr.randn(num_params))
-    figz = plt.figure()
-    axz = figz.add_subplot(111)
+    figz[cma_index] = plt.figure()
+    axz[cma_index] = figz[cma_index].add_subplot(111)
     trace0 = solve_for_voltage_trace(x0, ap_model)
     f0 = obj(x0, ap_model)
-    axz.plot(expt_times, expt_trace, label='Expt')
-    axz.plot(expt_times, trace0, label='f0 = {}'.format(round(f0,2)))
-    axz.set_xlabel('Time (ms)')
-    axz.set_ylabel('Membrane voltage (mV)')
-    axz.legend()
-    axz.grid()
+    axz[cma_index].plot(expt_times, expt_trace, label='Expt')
+    axz[cma_index].plot(expt_times, trace0, label='f0 = {}'.format(round(f0,2)))
+    axz[cma_index].set_xlabel('Time (ms)')
+    axz[cma_index].set_ylabel('Membrane voltage (mV)')
+    axz[cma_index].legend()
+    axz[cma_index].grid()
     #figz.tight_layout()
-    figz.savefig(cmaes_dir+'trace_{}_cmaes_index_{}_initial_fit.png'.format(t,cma_index))
+    figz[cma_index].savefig(cmaes_dir+'trace_{}_cmaes_index_{}_initial_fit.png'.format(t,cma_index))
     plt.close()
     print "x0:", x0
     obj0 = obj(x0, ap_model)
