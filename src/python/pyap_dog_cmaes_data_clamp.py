@@ -26,15 +26,16 @@ def obj(temp_test_params, ap_model):
 
 figz = {}
 axz = {}
+ap_models = {}
 def run_cmaes(cma_index):
-    ap_model = ap_simulator.APSimulator()
-    ap_model.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
-    ap_model.DefineSolveTimes(solve_start,solve_end,solve_timestep)
-    ap_model.DefineModel(model_number)
-    ap_model.SetExtracellularPotassiumConc(extra_K_conc)
-    ap_model.SetNumberOfSolves(num_solves)
-    ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
-    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
+    ap_models[cma_index] = ap_simulator.APSimulator()
+    ap_models[cma_index].DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
+    ap_models[cma_index].DefineSolveTimes(solve_start,solve_end,solve_timestep)
+    ap_models[cma_index].DefineModel(model_number)
+    ap_models[cma_index].SetExtracellularPotassiumConc(extra_K_conc)
+    ap_models[cma_index].SetNumberOfSolves(num_solves)
+    ap_models[cma_index].UseDataClamp(data_clamp_on, data_clamp_off)
+    ap_models[cma_index].SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
     #npr.seed(cma_index)
     #opts = cma.CMAOptions()
     #npr.seed(cma_index)
@@ -43,8 +44,8 @@ def run_cmaes(cma_index):
     x0 = original_gs * (1. + 0.001*npr.randn(num_params))
     figz[cma_index] = plt.figure()
     axz[cma_index] = figz[cma_index].add_subplot(111)
-    trace0 = solve_for_voltage_trace(x0, ap_model)
-    f0 = obj(x0, ap_model)
+    trace0 = solve_for_voltage_trace(x0, ap_models[cma_index])
+    f0 = obj(x0, ap_models[cma_index])
     axz[cma_index].plot(expt_times, expt_trace, label='Expt')
     axz[cma_index].plot(expt_times, trace0, label='f0 = {}'.format(round(f0,2)))
     axz[cma_index].set_xlabel('Time (ms)')
@@ -55,14 +56,14 @@ def run_cmaes(cma_index):
     figz[cma_index].savefig(cmaes_dir+'trace_{}_cmaes_index_{}_initial_fit.png'.format(t,cma_index))
     plt.close()
     print "x0:", x0
-    obj0 = obj(x0, ap_model)
+    obj0 = obj(x0, ap_models[cma_index])
     print "obj0:", round(obj0, 2)
     x0[np.where(x0<0)] = 1e-9
     sigma0 = 0.000001
     es = cma.CMAEvolutionStrategy(x0, sigma0)#, options)
     while not es.stop():
         X = es.ask()
-        es.tell(X, [obj(x, ap_model) for x in X])
+        es.tell(X, [obj(x, ap_models[cma_index]) for x in X])
         es.disp()
     res = es.result()
     answer = np.concatenate((res[0],[res[1]]))
