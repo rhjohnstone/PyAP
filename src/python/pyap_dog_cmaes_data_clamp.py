@@ -37,6 +37,16 @@ def run_cmaes(cma_index):
     #opts['seed'] = cma_index
     #options = {'seed':cma_index}
     x0 = original_gs * (1. + 0.001*npr.randn(num_params))
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    trace0 = solve_for_voltage_trace(x0, ap_model)
+    ax.plot(expt_times, expt_trace, label='Expt')
+    ax.plot(expt_times, trace0, label='Fit 0')
+    ax.set_xlabel('Time (ms)')
+    ax.set_ylabel('Membrane voltage (mV)')
+    fig.tight_layout()
+    fig.savefig(cmaes_dir+'trace_{}_cmaes_index_{}_initial_fit.png'.format(t,cma_index))
+    plt.close()
     print "x0:", x0
     obj0 = obj(x0, ap_model)
     print "obj0:", round(obj0, 2)
@@ -102,6 +112,7 @@ cmaes_indices = range(how_many_cmaes_runs)
 
 figs = []
 for i, t in enumerate(trace_numbers):
+    cmaes_dir, best_fit_file = ps.dog_cmaes_path(t)
     expt_trace = expt_traces[i]
     best_paramses = []
     best_fs = []
@@ -133,7 +144,6 @@ for i, t in enumerate(trace_numbers):
         ax.plot(expt_times, solve_for_voltage_trace(best_params, ap_model), label="Best f = {}".format(round(best_f,2)))
     ax.legend()
     figs[i].tight_layout()
-    cmaes_dir, best_fit_file = ps.dog_cmaes_path(t)
     np.savetxt(best_fit_file, best_boths)
     figs[i].savefig(cmaes_dir+'trace_{}_best_fits.png'.format(t))
     plt.close()
