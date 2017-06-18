@@ -37,6 +37,9 @@ def run_cmaes(cma_index):
     #opts['seed'] = cma_index
     #options = {'seed':cma_index}
     x0 = original_gs * (1. + 0.001*npr.randn(num_params))
+    print "x0:", x0
+    obj0 = obj(x0, ap_model)
+    print "obj0:", round(obj0, 2)
     x0[np.where(x0<0)] = 1e-9
     sigma0 = 0.000001
     es = cma.CMAEvolutionStrategy(x0, sigma0)#, options)
