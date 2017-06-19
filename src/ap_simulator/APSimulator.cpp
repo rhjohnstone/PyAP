@@ -306,6 +306,45 @@ void APSimulator::SetExtracellularPotassiumConc( double extra_K_conc )
     }
 }
 
+void APSimulator::SetIntracellularPotassiumConc( double intra_K_conc )
+{
+    try
+    {
+        mpModel->SetParameter("cytosolic_potassium_concentration", intra_K_conc);
+    }
+    catch (Exception &e)
+    {
+        std::cerr << "No cytosolic_potassium_concentration parameter in model" << std::endl << std::flush;
+        std::cerr << "error was " << e.GetShortMessage() << std::endl << std::flush;
+    }
+}
+
+void APSimulator::SetExtracellularSodiumConc( double extra_Na_conc )
+{
+    try
+    {
+        mpModel->SetParameter("extracellular_sodium_concentration", extra_Na_conc);
+    }
+    catch (Exception &e)
+    {
+        std::cerr << "No extracellular_sodium_concentration parameter in model" << std::endl << std::flush;
+        std::cerr << "error was " << e.GetShortMessage() << std::endl << std::flush;
+    }
+}
+
+void APSimulator::SetIntracellularSodiumConc( double intra_Na_conc )
+{
+    try
+    {
+        mpModel->SetParameter("cytosolic_sodium_concentration", intra_Na_conc);
+    }
+    catch (Exception &e)
+    {
+        std::cerr << "No cytosolic_sodium_concentration parameter in model" << std::endl << std::flush;
+        std::cerr << "error was " << e.GetShortMessage() << std::endl << std::flush;
+    }
+}
+
 void APSimulator::SetNumberOfSolves( unsigned num_solves )
 {
     mHowManySolves = num_solves;

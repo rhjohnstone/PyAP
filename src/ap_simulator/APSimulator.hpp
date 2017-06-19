@@ -37,6 +37,9 @@ public:
     std::vector<double> SolveForVoltageTraceWithParamsWithDataClamp(const std::vector<double>& rParams);
     void SetTolerances(double rel_tol, double abs_tol);
     void SetExtracellularPotassiumConc( double extra_K_conc );
+    void SetIntracellularPotassiumConc( double intra_K_conc );
+    void SetExtracellularSodiumConc( double extra_Na_conc );
+    void SetIntracellularSodiumConc( double intra_Na_conc );
     void SetNumberOfSolves( unsigned num_solves );
     boost::shared_ptr<AbstractCvodeCell> GetModel();
     bool RunToSteadyState();

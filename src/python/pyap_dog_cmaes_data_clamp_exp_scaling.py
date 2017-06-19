@@ -11,25 +11,31 @@ import cma
 import multiprocessing as mp
 
 
+def exponential_scaling(unscaled_params):
+    return original_gs ** (unscaled_params/10.)
+
+
 def solve_for_voltage_trace(temp_g_params, _ap_model):
     _ap_model.SetToModelInitialConditions()
     return _ap_model.SolveForVoltageTraceWithParams(temp_g_params)
     
     
 def obj(temp_test_params, temp_ap_model):
-    if np.any(temp_test_params < 0):
-        negs = temp_test_params[np.where(temp_test_params<0)]
-        return 1e9 * (1 - np.sum(negs))
-    temp_test_trace = solve_for_voltage_trace(temp_test_params, temp_ap_model)
+    scaled_params = exponential_scaling(temp_test_params)
+    temp_test_trace = solve_for_voltage_trace(scaled_params, temp_ap_model)
     return np.sum((temp_test_trace-expt_trace)**2)
 
 
 def run_cmaes(cma_index):
+    start = time.time()
     ap_model = ap_simulator.APSimulator()
     ap_model.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
     ap_model.DefineSolveTimes(solve_start,solve_end,solve_timestep)
     ap_model.DefineModel(model_number)
     ap_model.SetExtracellularPotassiumConc(extra_K_conc)
+    ap_model.SetIntracellularPotassiumConc(intra_K_conc)
+    ap_model.SetExtracellularSodiumConc(extra_Na_conc)
+    ap_model.SetIntracellularSodiumConc(intra_Na_conc)
     ap_model.SetNumberOfSolves(num_solves)
     ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
     ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
@@ -38,19 +44,20 @@ def run_cmaes(cma_index):
     #npr.seed(cma_index)
     #opts['seed'] = cma_index
     #options = {'seed':cma_index}
-    x0 = original_gs * (1. + 0.01*npr.randn(num_params))
+    x0 = 10. + npr.randn(num_params)
     print "x0:", x0
     obj0 = obj(x0, ap_model)
     print "obj0:", round(obj0, 2)
-    x0[np.where(x0<0)] = 1e-9
-    sigma0 = 0.000001
+    sigma0 = 0.1
     es = cma.CMAEvolutionStrategy(x0, sigma0)#, options)
     while not es.stop():
         X = es.ask()
         es.tell(X, [obj(x, ap_model) for x in X])
         es.disp()
     res = es.result()
-    answer = np.concatenate((res[0],[res[1]]))
+    answer = np.concatenate((exponential_scaling(res[0]),[res[1]]))
+    time_taken = time.time()-start
+    print "\n\nTime taken by one CMA-ES run: {} s\n\n".format(round(time_taken))
     return answer
 
 
@@ -65,13 +72,16 @@ def run_cmaes(cma_index):
 
 
 
-num_cores = 2  # make 16 for ARCUS-B!!
+num_cores = 16  # make 16 for ARCUS-B!!
 
 model_number = 6
 protocol = 1
 extra_K_conc = 5.4
-trace_numbers = range(150,170)#, 101]
-num_solves = 2
+intra_K_conc = 130
+extra_Na_conc = 140
+intra_Na_conc = 10
+trace_numbers = range(150,300)#, 101]
+num_solves = 32
 
 expt_traces = []
 for i, t in enumerate(trace_numbers):
@@ -97,7 +107,7 @@ stimulus_start_time = 0.
 original_gs, g_parameters = ps.get_original_params(model_number)
 num_params = len(original_gs)
 
-how_many_cmaes_runs = 2
+how_many_cmaes_runs = 32
 cmaes_indices = range(how_many_cmaes_runs)
 
 
@@ -115,10 +125,13 @@ for i, t in enumerate(trace_numbers):
     ax.set_xlabel('Time (ms)')
     ax.set_ylabel('Membrane voltage (mV)')
     ax.plot(expt_times, expt_traces[i], label="Expt")
-    pool = mp.Pool(num_cores)
-    best_boths = pool.map_async(run_cmaes, cmaes_indices).get(999999999)
-    pool.close()
-    pool.join()
+    try:
+        pool = mp.Pool(num_cores)
+        best_boths = pool.map_async(run_cmaes, cmaes_indices).get(9999)
+        pool.close()
+        pool.join()
+    except:
+        continue
     plt.close()
     best_boths = np.array(best_boths)
     ap_model = ap_simulator.APSimulator()
@@ -126,6 +139,9 @@ for i, t in enumerate(trace_numbers):
     ap_model.DefineSolveTimes(solve_start,solve_end,solve_timestep)
     ap_model.DefineModel(model_number)
     ap_model.SetExtracellularPotassiumConc(extra_K_conc)
+    ap_model.SetIntracellularPotassiumConc(intra_K_conc)
+    ap_model.SetExtracellularSodiumConc(extra_Na_conc)
+    ap_model.SetIntracellularSodiumConc(intra_Na_conc)
     ap_model.SetNumberOfSolves(num_solves)
     ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
     ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_traces[i])
