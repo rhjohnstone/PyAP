@@ -110,21 +110,13 @@ num_params = len(original_gs)
 how_many_cmaes_runs = 32
 cmaes_indices = range(how_many_cmaes_runs)
 
-
-figs = []
+plt.close()
 for i, t in enumerate(trace_numbers):
     cmaes_dir, best_fit_file = ps.dog_cmaes_path(t)
     expt_trace = expt_traces[i]
     best_paramses = []
     best_fs = []
     best_both = []
-    figs.append(plt.figure())
-    ax = figs[i].add_subplot(111)
-    ax.grid()
-    ax.set_title('Trace {}'.format(t))
-    ax.set_xlabel('Time (ms)')
-    ax.set_ylabel('Membrane voltage (mV)')
-    ax.plot(expt_times, expt_traces[i], label="Expt")
     try:
         pool = mp.Pool(num_cores)
         best_boths = pool.map_async(run_cmaes, cmaes_indices).get(9999)
@@ -132,7 +124,7 @@ for i, t in enumerate(trace_numbers):
         pool.join()
     except:
         continue
-    plt.close()
+    
     best_boths = np.array(best_boths)
     ap_model = ap_simulator.APSimulator()
     ap_model.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
@@ -148,11 +140,18 @@ for i, t in enumerate(trace_numbers):
     best_fit_index = np.argmin(best_boths[:,-1])
     best_params = best_boths[best_fit_index,:-1]
     best_f = best_boths[best_fit_index,-1]
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.grid()
+    ax.set_title('Trace {}'.format(t))
+    ax.set_xlabel('Time (ms)')
+    ax.set_ylabel('Membrane voltage (mV)')
+    ax.plot(expt_times, expt_traces[i], label="Expt")
     ax.plot(expt_times, solve_for_voltage_trace(best_params, ap_model), label="Best f = {}".format(round(best_f,2)))
     ax.legend()
-    figs[i].tight_layout()
+    fig.tight_layout()
     np.savetxt(best_fit_file, best_boths)
-    figs[i].savefig(cmaes_dir+'trace_{}_best_fits.png'.format(t))
-    figs[i].savefig(cmaes_dir+'trace_{}_best_fits.svg'.format(t))
+    fig.savefig(cmaes_dir+'trace_{}_best_fits.png'.format(t))
+    fig.savefig(cmaes_dir+'trace_{}_best_fits.svg'.format(t))
     plt.close()
     
