@@ -72,7 +72,7 @@ def run_cmaes(cma_index):
 
 
 
-num_cores = 16  # make 16 for ARCUS-B!!
+num_cores = 3  # make 16 for ARCUS-B!!
 
 model_number = 6
 protocol = 1
@@ -81,7 +81,8 @@ intra_K_conc = 130
 extra_Na_conc = 140
 intra_Na_conc = 10
 trace_numbers = range(150,300)#, 101]
-num_solves = 32
+
+num_solves = 2
 
 expt_traces = []
 for i, t in enumerate(trace_numbers):
@@ -107,7 +108,7 @@ stimulus_start_time = 0.
 original_gs, g_parameters = ps.get_original_params(model_number)
 num_params = len(original_gs)
 
-how_many_cmaes_runs = 32
+how_many_cmaes_runs = 6
 cmaes_indices = range(how_many_cmaes_runs)
 
 plt.close()
