@@ -76,7 +76,7 @@ def run_cmaes(cma_index):
 
 all_time_start = time.time()
 
-num_cores = 1  # make 16 for ARCUS-B!!
+num_cores = 16  # make 16 for ARCUS-B!!
 
 model_number = 9
 protocol = 1
@@ -84,7 +84,7 @@ extra_K_conc = 5.4
 intra_K_conc = 130
 extra_Na_conc = 140
 intra_Na_conc = 10
-trace_numbers = range(150,151)
+trace_numbers = range(150,300)
 
 num_solves = 2
 
@@ -112,7 +112,7 @@ stimulus_start_time = 0.
 original_gs, g_parameters = ps.get_original_params(model_number)
 num_params = len(original_gs)
 
-how_many_cmaes_runs = 1
+how_many_cmaes_runs = 20
 cmaes_indices = range(how_many_cmaes_runs)
 
 plt.close()
@@ -163,7 +163,7 @@ all_time_taken = time.time()-all_time_start
 print "\n\nAll time taken: {} s = {} min\n\n".format(round(all_time_taken), round(all_time_taken/60.))
 
 try:
-    copy_cmaes_dir = os.path.expandvars('${DATA}')+"/model_{}/cmaes/".format(model_number)
+    copy_cmaes_dir = os.path.expandvars('${DATA}')+"/PyAP_output/model_{}/cmaes/".format(model_number)
     shutil.copytree(cmaes_dir,copy_cmaes_dir)
 except:
     pass
