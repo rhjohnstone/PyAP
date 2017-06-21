@@ -106,11 +106,11 @@ def dog_trace_path(trace_number):
     return "projects/PyAP/python/input/dog_teun_csv/dog_AP_trace_{}.csv".format(trace_number)
 
 
-def dog_cmaes_path(trace_number):
-    cmaes_dir = "projects/PyAP/python/output/dog_teun/cmaes/"
+def dog_cmaes_path(model_number, trace_number):
+    cmaes_dir = "projects/PyAP/python/output/dog_teun/model_{}/cmaes/".format(model_number)
     if not os.path.exists(cmaes_dir):
         os.makedirs(cmaes_dir)
-    return cmaes_dir, cmaes_dir+"dog_trace_{}_cmaes_best_fit.txt".format(trace_number)
+    return cmaes_dir, cmaes_dir+"dog_trace_{}_model_{}_cmaes_best_fit.txt".format(trace_number, model_number)
 
 
 

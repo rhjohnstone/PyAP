@@ -9,6 +9,8 @@ import pyap_setup as ps
 import sys
 import cma
 import multiprocessing as mp
+import shutil
+import os
 
 
 def exponential_scaling(unscaled_params):
@@ -74,15 +76,15 @@ def run_cmaes(cma_index):
 
 all_time_start = time.time()
 
-num_cores = 16  # make 16 for ARCUS-B!!
+num_cores = 1  # make 16 for ARCUS-B!!
 
-model_number = 6
+model_number = 9
 protocol = 1
 extra_K_conc = 5.4
 intra_K_conc = 130
 extra_Na_conc = 140
 intra_Na_conc = 10
-trace_numbers = [150]
+trace_numbers = range(150,151)
 
 num_solves = 2
 
@@ -110,13 +112,13 @@ stimulus_start_time = 0.
 original_gs, g_parameters = ps.get_original_params(model_number)
 num_params = len(original_gs)
 
-how_many_cmaes_runs = 16
+how_many_cmaes_runs = 1
 cmaes_indices = range(how_many_cmaes_runs)
 
 plt.close()
 for i, t in enumerate(trace_numbers):
     trace_start_time = time.time()
-    cmaes_dir, best_fit_file = ps.dog_cmaes_path(t)
+    cmaes_dir, best_fit_file = ps.dog_cmaes_path(model_number, t)
     expt_trace = expt_traces[i]
     best_paramses = []
     best_fs = []
@@ -125,8 +127,8 @@ for i, t in enumerate(trace_numbers):
     best_boths = pool.map_async(run_cmaes, cmaes_indices).get(9999)
     pool.close()
     pool.join()
-    
     best_boths = np.array(best_boths)
+    np.savetxt(best_fit_file, best_boths)
     ap_model = ap_simulator.APSimulator()
     ap_model.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
     ap_model.DefineSolveTimes(solve_start,solve_end,solve_timestep)
@@ -151,7 +153,6 @@ for i, t in enumerate(trace_numbers):
     ax.plot(expt_times, solve_for_voltage_trace(best_params, ap_model), label="Best f = {}".format(round(best_f,2)))
     ax.legend()
     fig.tight_layout()
-    np.savetxt(best_fit_file, best_boths)
     fig.savefig(cmaes_dir+'trace_{}_best_fits.png'.format(t))
     fig.savefig(cmaes_dir+'trace_{}_best_fits.svg'.format(t))
     plt.close()
@@ -160,3 +161,10 @@ for i, t in enumerate(trace_numbers):
 
 all_time_taken = time.time()-all_time_start
 print "\n\nAll time taken: {} s = {} min\n\n".format(round(all_time_taken), round(all_time_taken/60.))
+
+try:
+    copy_cmaes_dir = os.path.expandvars('${DATA}')+"/model_{}/cmaes/".format(model_number)
+    shutil.copytree(cmaes_dir,copy_cmaes_dir)
+except:
+    pass
+
