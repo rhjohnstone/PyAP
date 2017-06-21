@@ -51,14 +51,19 @@ def get_original_params(model):
         g_parameters = ['G_{Na}', 'G_{CaL}', 'G_{K1}', 'G_{Ks}',
                         'G_{Kr}', 'G_{pCa}', 'K_{NaCa}', 'G_{bCa}',
                         'P_{NaK}', 'G_{to}', 'G_{bNa}', 'G_f']
-    elif (model==8): # Decker 2009 dog
-        original_gs = [9.075, 0.00015552, 0.5, 0.0826, 0.0138542, 0.497458]
-        g_parameters = ['G_{Na}', 'G_{CaL}', 'G_{K1}', 'G_{Ks}',
-                        'G_{Kr}', 'G_{to}']
-    elif (model==9): # Gokhale 2017 ex293
+    elif (model==8): # Gokhale 2017 ex293
         original_gs = [90.34, 6.609, 0.6976, 0.1332, 0.9, 0.75]
         g_parameters = ['G_{Na}', 'G_{K1}', 'G_{Na,wt}', 'G_{K1,wt}'
                         'd', 'f']
+    elif (model==9): # Davies 2012 dog LINEARISED by RJ
+        original_gs = [8.25, 0.000243, 0.5, 0.00276,
+                   0.00746925, 0.0138542, 0.0575, 0.0000007980336,
+                   5.85, 0.61875, 0.1805, 4e-7,
+                   0.000225, 0.011]
+        g_parameters = ['G_{Na}', 'G_{CaL}', 'G_{K1}', 'G_{pK}',
+                        'G_{Ks}', 'G_{Kr}', 'G_{pCa}', 'G_{bCa}',
+                        'k_{NaCa}', 'P_{NaK}', 'G_{to1}', 'G_{to2}',
+                        'G_{bCl}', 'G_{NaL}']
     original_gs = np.array(original_gs)
     return original_gs, g_parameters
     

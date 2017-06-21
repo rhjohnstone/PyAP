@@ -13,11 +13,12 @@ import sys
 # 6. Davies (canine)
 # 7. Paci (SC-CM ventricular)
 # 8. Gokhale 2017 ex293
+# 9. Davies (canine) linearised by RJ
 
-model_number = 6
+model_number = 9
 protocol = 1
 extra_K_conc = 5.4
-trace_numbers = [100]#, 101]
+trace_numbers = [150]
 num_solves = 2
 use_data_clamp = True
 
@@ -32,8 +33,8 @@ for i, t in enumerate(trace_numbers):
 aps = []
 model_traces = []
 
-data_clamp_on = expt_times[39]
-data_clamp_off = expt_times[47]
+data_clamp_on = expt_times[40]
+data_clamp_off = expt_times[48]
 print data_clamp_on, data_clamp_off
 
 solve_start, solve_end = expt_times[[0,-1]]
@@ -66,6 +67,7 @@ ax.grid()
 for i, t in enumerate(trace_numbers):
     ax.plot(expt_times,expt_traces[i], label="Expt {}".format(t))
     ax.plot(expt_times,model_traces[i], label="Model {}".format(t))
+ax.set_title("Model {}".format(model_number))
 ax.set_xlabel("Time (ms)")
 ax.set_ylabel("Membrane voltage (mV)")
 ax.set_title("Model {}".format(model_number))

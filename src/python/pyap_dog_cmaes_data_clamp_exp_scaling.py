@@ -27,6 +27,7 @@ def obj(temp_test_params, temp_ap_model):
 
 
 def run_cmaes(cma_index):
+    print "\n\n\nTrace {}, cma {}\n\n\n".format(t, cma_index)
     start = time.time()
     ap_model = ap_simulator.APSimulator()
     ap_model.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
@@ -69,8 +70,9 @@ def run_cmaes(cma_index):
 # 6. Davies (canine)
 # 7. Paci (SC-CM ventricular)
 # 8. Gokhale 2017 ex293
+# 9. Davies (canine) linearised by RJ
 
-
+all_time_start = time.time()
 
 num_cores = 3  # make 16 for ARCUS-B!!
 
@@ -108,7 +110,7 @@ stimulus_start_time = 0.
 original_gs, g_parameters = ps.get_original_params(model_number)
 num_params = len(original_gs)
 
-how_many_cmaes_runs = 6
+how_many_cmaes_runs = 3
 cmaes_indices = range(how_many_cmaes_runs)
 
 plt.close()
@@ -118,13 +120,10 @@ for i, t in enumerate(trace_numbers):
     best_paramses = []
     best_fs = []
     best_both = []
-    try:
-        pool = mp.Pool(num_cores)
-        best_boths = pool.map_async(run_cmaes, cmaes_indices).get(9999)
-        pool.close()
-        pool.join()
-    except:
-        continue
+    pool = mp.Pool(num_cores)
+    best_boths = pool.map_async(run_cmaes, cmaes_indices).get(9999)
+    pool.close()
+    pool.join()
     
     best_boths = np.array(best_boths)
     ap_model = ap_simulator.APSimulator()
@@ -155,4 +154,6 @@ for i, t in enumerate(trace_numbers):
     fig.savefig(cmaes_dir+'trace_{}_best_fits.png'.format(t))
     fig.savefig(cmaes_dir+'trace_{}_best_fits.svg'.format(t))
     plt.close()
-    
+
+all_time_taken = time.time()-all_time_start
+print "\n\nAll time taken: {} s = {} min\n\n".format(round(all_time_taken), round(all_time_taken/60.))
