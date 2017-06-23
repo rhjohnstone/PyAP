@@ -4,7 +4,6 @@ import argparse
 import numpy as np
 import sys
 import numpy.random as npr
-import matplotlib.pyplot as plt
 import time
 
 
@@ -150,9 +149,9 @@ chain_dir, chain_file = ps.dog_data_clamp_mcmc_file(model_number, trace_number)
 chain = do_mcmc(temperature)
 np.savetxt(chain_file, chain)
 
-fig = plt.figure()
+"""fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.hist(chain[:,0],color='blue',edgecolor='blue',normed=True,bins=40)
 ax.legend()
-plt.show(block=True)
+plt.show(block=True)"""
 
