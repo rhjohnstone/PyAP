@@ -5,27 +5,29 @@ import numpy as np
 import sys
 import numpy.random as npr
 import time
+import multiprocessing as mp
 
 
-def solve_for_voltage_trace(temp_g_params):
+def solve_for_voltage_trace(temp_g_params, ap_model):
     ap_model.SetToModelInitialConditions()
     return ap_model.SolveForVoltageTraceWithParams(temp_g_params)
 
 
-def log_target(temp_params):
+def log_target(temp_params, ap_model, expt_trace):
     if np.any(temp_params < 0): 
         return -np.inf
     temp_gs, temp_sigma = temp_params[:-1], temp_params[-1]
-    test_trace = solve_for_voltage_trace(temp_gs)
-    return -num_pts*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2)
+    test_trace = solve_for_voltage_trace(temp_gs, ap_model)
+    return -len(expt_trace)*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2)
     
     
-def compute_initial_sigma(temp_gs):
-    test_trace = solve_for_voltage_trace(temp_gs)
-    return np.sqrt(np.sum((test_trace-expt_trace)**2)/num_pts)
+def compute_initial_sigma(temp_gs, ap_model, expt_trace):
+    test_trace = solve_for_voltage_trace(temp_gs, ap_model)
+    return np.sqrt(np.sum((test_trace-expt_trace)**2)/len(expt_trace))
 
 
-def do_mcmc(temperature):#, theta0):
+def do_mcmc(trace_number, ap_model, expt_trace, temperature):#, theta0):
+    npr.seed(trace_number)
     print "Starting chain"
     start = time.time()
 
@@ -33,11 +35,11 @@ def do_mcmc(temperature):#, theta0):
         cmaes_results = np.loadtxt(ps.dog_cmaes_path(model_number, trace_number), delimiter=',')
         best_index = np.argmin(cmaes_results[:,-1])
         best_gs = cmaes_results[best_index,:-1]
-        theta_cur = np.concatenate((best_gs,[compute_initial_sigma(best_gs)]))
+        theta_cur = np.concatenate((best_gs,[compute_initial_sigma(best_gs, ap_model, expt_trace)]))
     except:
-        theta_cur = np.concatenate((original_gs,[compute_initial_sigma(original_gs)]))
+        theta_cur = np.concatenate((original_gs,[compute_initial_sigma(original_gs, ap_model, expt_trace)]))
     print "\ntheta_cur:", theta_cur, "\n"
-    log_target_cur = log_target(theta_cur)
+    log_target_cur = log_target(theta_cur, ap_model, expt_trace)
 
     total_iterations = 100000
     thinning = 5
@@ -70,7 +72,7 @@ def do_mcmc(temperature):#, theta0):
             print "loga:", loga
             print "cov_estimate:", cov_estimate
             sys.exit()"""
-        log_target_star = log_target(theta_star)
+        log_target_star = log_target(theta_star, ap_model, expt_trace)
         u = npr.rand()
         if np.log(u) < log_target_star - log_target_cur:
             accepted = 1
@@ -110,21 +112,7 @@ extra_K_conc = 5.4
 intra_K_conc = 130
 extra_Na_conc = 140
 intra_Na_conc = 10
-trace_number = int(sys.argv[1])
-expt_trace_path = ps.dog_trace_path(trace_number)
-try:
-    expt_times, expt_trace = 1000*np.loadtxt(expt_trace_path, delimiter=',').T
-except:
-    sys.exit( "\n\nCan't find (or load) {}\n\n".format(expt_trace_path) )
-num_pts = len(expt_trace)
 num_solves = 2
-
-data_clamp_on = expt_times[40]
-data_clamp_off = expt_times[48]
-print data_clamp_on, data_clamp_off
-
-solve_start, solve_end = expt_times[[0,-1]]
-solve_timestep = expt_times[1] - expt_times[0]
 stimulus_magnitude = 0
 stimulus_duration = 1
 stimulus_period = 1000
@@ -132,22 +120,50 @@ stimulus_start_time = 0.
 original_gs, g_parameters = ps.get_original_params(model_number)
 num_params = len(original_gs)+1  # include sigma
 
-ap_model = ap_simulator.APSimulator()
-ap_model.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
-ap_model.DefineSolveTimes(solve_start,solve_end,solve_timestep)
-ap_model.DefineModel(model_number)
-ap_model.SetExtracellularPotassiumConc(extra_K_conc)
-ap_model.SetIntracellularPotassiumConc(intra_K_conc)
-ap_model.SetExtracellularSodiumConc(extra_Na_conc)
-ap_model.SetIntracellularSodiumConc(intra_Na_conc)
-ap_model.SetNumberOfSolves(num_solves)
-ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
-ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
 
-temperature = 1
-chain_dir, chain_file = ps.dog_data_clamp_mcmc_file(model_number, trace_number)
-chain = do_mcmc(temperature)
-np.savetxt(chain_file, chain)
+def do_everything(trace_number):
+    expt_trace_path = ps.dog_trace_path(trace_number)
+    try:
+        expt_times, expt_trace = 1000*np.loadtxt(expt_trace_path, delimiter=',').T
+    except:
+        sys.exit( "\n\nCan't find (or load) {}\n\n".format(expt_trace_path) )
+    
+
+    data_clamp_on = expt_times[40]
+    data_clamp_off = expt_times[48]
+    print data_clamp_on, data_clamp_off
+
+    solve_start, solve_end = expt_times[[0,-1]]
+    solve_timestep = expt_times[1] - expt_times[0]
+
+    ap_model = ap_simulator.APSimulator()
+    ap_model.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
+    ap_model.DefineSolveTimes(solve_start,solve_end,solve_timestep)
+    ap_model.DefineModel(model_number)
+    ap_model.SetExtracellularPotassiumConc(extra_K_conc)
+    ap_model.SetIntracellularPotassiumConc(intra_K_conc)
+    ap_model.SetExtracellularSodiumConc(extra_Na_conc)
+    ap_model.SetIntracellularSodiumConc(intra_Na_conc)
+    ap_model.SetNumberOfSolves(num_solves)
+    ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
+    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
+
+    temperature = 1
+    chain_dir, chain_file = ps.dog_data_clamp_mcmc_file(model_number, trace_number)
+    chain = do_mcmc(trace_number, ap_model, expt_trace, temperature)
+    np.savetxt(chain_file, chain)
+    return None
+    
+first_trace = 150
+how_many_traces = 16
+traces = range(first_trace, first_trace+how_many_traces)
+num_cores = 16  # 16 for arcus-b
+
+pool = mp.Pool(num_cores)
+mcms = pool.map_async(do_everything, traces).get(999999)
+pool.close()
+pool.join()
+
 
 """fig = plt.figure()
 ax = fig.add_subplot(111)
