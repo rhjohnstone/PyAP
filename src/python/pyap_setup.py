@@ -113,7 +113,11 @@ def dog_cmaes_path(model_number, trace_number):
     return cmaes_dir, cmaes_dir+"dog_trace_{}_model_{}_cmaes_best_fit.txt".format(trace_number, model_number)
 
 
-
+def dog_data_clamp_mcmc_file(model_number, trace_number):
+    mcmc_dir = "projects/PyAP/python/output/dog_teun/trace_{}/model_{}/adaptive_mcmc/".format(trace_number, model_number)
+    if not os.path.exists(mcmc_dir):
+        os.makedirs(mcmc_dir)
+    return mcmc_dir, mcmc_dir+"dog_trace_{}_model_{}_adaptive_mcmc.txt".format(trace_number, model_number)
 
 
 
