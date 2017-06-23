@@ -40,7 +40,7 @@ def do_mcmc(temperature):#, theta0):
     print "\ntheta_cur:", theta_cur, "\n"
     log_target_cur = log_target(theta_cur)
 
-    total_iterations = 5000
+    total_iterations = 100000
     thinning = 5
     num_saved = total_iterations / thinning + 1
     burn = num_saved / 4
@@ -87,8 +87,8 @@ def do_mcmc(temperature):#, theta0):
             print t/status_when, "/", total_iterations/status_when
             print "acceptance =", acceptance
             time_taken_so_far = time.time()-start
-            estimated_time_left = int(total_iterations*time_taken_so_far/t)
-            print "\n\nEstimated time remaining: {} s = {} min\n\n".format(estimated_time_left, estimated_time_left/60)
+            estimated_time_left = int(total_iterations*time_taken_so_far/t - time_taken_so_far)
+            print "\n\nEstimated time remaining: {} s = {}-ish min\n\n".format(estimated_time_left, estimated_time_left/60)
         if t == adapt_when:
             mean_estimate = np.copy(theta_cur)
         if t > adapt_when:
@@ -111,7 +111,7 @@ extra_K_conc = 5.4
 intra_K_conc = 130
 extra_Na_conc = 140
 intra_Na_conc = 10
-trace_number = 150
+trace_number = int(sys.argv[1])
 expt_trace_path = ps.dog_trace_path(trace_number)
 try:
     expt_times, expt_trace = 1000*np.loadtxt(expt_trace_path, delimiter=',').T

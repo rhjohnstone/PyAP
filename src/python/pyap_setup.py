@@ -16,6 +16,7 @@ import numpy as np
 import os
 import sys
 
+
 def get_original_params(model):
     if (model==1): # Hodgkin Huxley
         original_gs = [120,36,0.3]
@@ -67,6 +68,7 @@ def get_original_params(model):
     original_gs = np.array(original_gs)
     return original_gs, g_parameters
     
+    
 def get_protocol_details(protocol): # pre-defined protocols
     if (protocol==1):
         solve_start = 0.
@@ -78,6 +80,7 @@ def get_protocol_details(protocol): # pre-defined protocols
         stimulus_start_time = 20
     return solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time
     
+    
 def synthetic_nonhierarchical_chain_file_and_figs_dir(model,protocol,python_seed): # synthetic data
     # keeping it outside of Chaste build folder, in case that gets wiped in a clean build, or something
     output_dir = os.path.expanduser('projects/RossJ/python/output/synthetic/nonhierarchical/model_{}/protocol_{}/python_seed_{}/'.format(model,protocol,python_seed))
@@ -88,6 +91,7 @@ def synthetic_nonhierarchical_chain_file_and_figs_dir(model,protocol,python_seed
             os.makedirs(d)
     chain_file = chain_dir + 'model_{}_protocol_{}_python_seed_{}_synthetic_nonhierarchical_mcmc.txt'.format(model,protocol,python_seed)
     return chain_file, figs_dir
+    
     
 def synthetic_hierarchical_chain_file_and_figs_dir(model,protocol,num_expts,python_seed): # synthetic data
     # keeping it outside of Chaste build folder, in case that gets wiped in a clean build, or something
