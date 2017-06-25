@@ -155,9 +155,9 @@ def do_everything(trace_number):
     return None
     
 first_trace = 150
-how_many_traces = 1
+how_many_traces = 16
 traces = range(first_trace, first_trace+how_many_traces)
-num_cores = 1  # 16 for arcus-b
+num_cores = 16  # 16 for arcus-b
 
 pool = mp.Pool(num_cores)
 mcms = pool.map_async(do_everything, traces).get(9999999)

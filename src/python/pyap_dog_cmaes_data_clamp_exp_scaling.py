@@ -84,7 +84,10 @@ extra_K_conc = 5.4
 intra_K_conc = 130
 extra_Na_conc = 140
 intra_Na_conc = 10
-trace_numbers = range(150,300)
+
+first_trace = 150
+how_many_traces = 16
+trace_numbers = range(first_trace,first_trace+how_many_traces)
 
 num_solves = 2
 
