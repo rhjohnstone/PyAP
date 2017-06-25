@@ -121,20 +121,30 @@ def dog_cmaes_path(model_number, trace_number):
     if arcus_b:
         cmaes_dir = os.path.expandvars("$DATA/PyAP_output/dog_teun/cmaes/model_{}/".format(model_number))
     else:
-        cmaes_dir = "projects/PyAP/python/output/dog_teun/model_{}/cmaes/".format(model_number)
+        cmaes_dir = "projects/PyAP/python/output/dog_teun/cmaes/model_{}/".format(model_number)
     if not os.path.exists(cmaes_dir):
         os.makedirs(cmaes_dir)
-    return cmaes_dir, cmaes_dir+"dog_trace_{}_model_{}_cmaes_best_fit.txt".format(trace_number, model_number)
+    return cmaes_dir, cmaes_dir+"dog_model_{}_trace_{}_cmaes_best_fit.txt".format(model_number, trace_number)
 
 
-def dog_data_clamp_mcmc_file(model_number, trace_number):
+def dog_data_clamp_unscaled_mcmc_file(model_number, trace_number):
     if arcus_b:
-        mcmc_dir = os.path.expandvars("$DATA/PyAP_output/dog_teun/adaptive_mcmc/trace_{}/model_{}/".format(trace_number, model_number))
+        mcmc_dir = os.path.expandvars("$DATA/PyAP_output/dog_teun/adaptive_mcmc/unscaled/model_{}/trace_{}/".format(model_number, trace_number))
     else:
-        mcmc_dir = "projects/PyAP/python/output/dog_teun/adaptive_mcmc/model_{}/trace_{}/".format(trace_number, model_number)
+        mcmc_dir = "projects/PyAP/python/output/dog_teun/adaptive_mcmc/unscaled/model_{}/trace_{}/".format(model_number, trace_number)
     if not os.path.exists(mcmc_dir):
         os.makedirs(mcmc_dir)
-    return mcmc_dir, mcmc_dir+"dog_trace_{}_model_{}_adaptive_mcmc.txt".format(trace_number, model_number)
+    return mcmc_dir, mcmc_dir+"dog_model_{}_trace_{}_adaptive_mcmc_unscaled.txt".format(model_number, trace_number)
+
+
+def dog_data_clamp_exp_scaled_mcmc_file(model_number, trace_number):
+    if arcus_b:
+        mcmc_dir = os.path.expandvars("$DATA/PyAP_output/dog_teun/adaptive_mcmc/exp_scaled/model_{}/trace_{}/".format(model_number, trace_number))
+    else:
+        mcmc_dir = "projects/PyAP/python/output/dog_teun/adaptive_mcmc/exp_scaled/model_{}/trace_{}/".format(model_number, trace_number)
+    if not os.path.exists(mcmc_dir):
+        os.makedirs(mcmc_dir)
+    return mcmc_dir, mcmc_dir+"dog_model_{}_trace_{}_adaptive_mcmc_exp_scaled.txt".format(model_number, trace_number)
 
 
 

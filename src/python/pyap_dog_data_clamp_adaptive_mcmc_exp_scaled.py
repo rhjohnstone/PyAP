@@ -8,20 +8,32 @@ import time
 import multiprocessing as mp
 
 
+def exponential_scaling(unscaled_params):
+    return original_gs ** unscaled_params
+
+
 def solve_for_voltage_trace(temp_g_params, ap_model):
     ap_model.SetToModelInitialConditions()
     return ap_model.SolveForVoltageTraceWithParams(temp_g_params)
 
 
-def log_target(temp_params, ap_model, expt_trace):
-    if np.any(temp_params < 0): 
+def log_target(temp_unscaled_params, ap_model, expt_trace):
+    temp_unscaled_gs, temp_sigma = temp_unscaled_params[:-1], temp_unscaled_params[-1]
+    if (temp_sigma <= 0):
         return -np.inf
-    temp_gs, temp_sigma = temp_params[:-1], temp_params[-1]
-    test_trace = solve_for_voltage_trace(temp_gs, ap_model)
-    return -len(expt_trace)*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2)
+    else:
+        temp_gs = exponential_scaling(temp_unscaled_gs)
+        try:
+            test_trace = solve_for_voltage_trace(temp_gs, ap_model)
+        except:
+            print "Failed to solve"
+            print temp_gs
+            sys.exit()
+        return -len(expt_trace)*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2) + np.dot(temp_unscaled_gs, log_gs)
     
     
-def compute_initial_sigma(temp_gs, ap_model, expt_trace):
+def compute_initial_sigma(temp_unscaled_gs, ap_model, expt_trace):
+    temp_gs = exponential_scaling(temp_unscaled_gs)
     test_trace = solve_for_voltage_trace(temp_gs, ap_model)
     return np.sqrt(np.sum((test_trace-expt_trace)**2)/len(expt_trace))
 
@@ -35,13 +47,14 @@ def do_mcmc(trace_number, ap_model, expt_trace, temperature):#, theta0):
         cmaes_results = np.loadtxt(ps.dog_cmaes_path(model_number, trace_number), delimiter=',')
         best_index = np.argmin(cmaes_results[:,-1])
         best_gs = cmaes_results[best_index,:-1]
-        theta_cur = np.concatenate((best_gs,[compute_initial_sigma(best_gs, ap_model, expt_trace)]))
+        initial_unscaled_gs = np.log(best_gs) / log_gs
     except:
-        theta_cur = np.concatenate((original_gs,[compute_initial_sigma(original_gs, ap_model, expt_trace)]))
+        initial_unscaled_gs = np.ones(num_params-1)
+    theta_cur = np.concatenate((initial_unscaled_gs,[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
     print "\ntheta_cur:", theta_cur, "\n"
     log_target_cur = log_target(theta_cur, ap_model, expt_trace)
 
-    total_iterations = 1000000
+    total_iterations = 10000
     thinning = 5
     num_saved = total_iterations / thinning + 1
     burn = num_saved / 3
@@ -52,8 +65,8 @@ def do_mcmc(trace_number, ap_model, expt_trace, temperature):#, theta0):
     loga = 0.
     acceptance = 0.
 
-    mean_estimate = np.copy(theta_cur)
-    cov_estimate = 0.1*np.eye(num_params)
+    mean_estimate = np.abs(theta_cur)
+    cov_estimate = 0.01*np.eye(num_params)
 
     status_when = 500
     adapt_when = 100*num_params
@@ -118,6 +131,7 @@ stimulus_duration = 1
 stimulus_period = 1000
 stimulus_start_time = 0.
 original_gs, g_parameters = ps.get_original_params(model_number)
+log_gs = np.log(original_gs)
 num_params = len(original_gs)+1  # include sigma
 
 
@@ -149,7 +163,7 @@ def do_everything(trace_number):
     ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
 
     temperature = 1
-    chain_dir, chain_file = ps.dog_data_clamp_unscaled_mcmc_file(model_number, trace_number)
+    chain_dir, chain_file = ps.dog_data_clamp_exp_scaled_mcmc_file(model_number, trace_number)
     chain = do_mcmc(trace_number, ap_model, expt_trace, temperature)
     np.savetxt(chain_file, chain)
     return None
