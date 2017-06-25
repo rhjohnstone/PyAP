@@ -119,7 +119,7 @@ def dog_trace_path(trace_number):
 
 def dog_cmaes_path(model_number, trace_number):
     if arcus_b:
-        cmaes_dir = os.path.expandvars("${DATA}/PyAP_output/dog_teun/cmaes/model_{}/".format(model_number))
+        cmaes_dir = os.path.expandvars("$DATA/PyAP_output/dog_teun/cmaes/model_{}/".format(model_number))
     else:
         cmaes_dir = "projects/PyAP/python/output/dog_teun/model_{}/cmaes/".format(model_number)
     if not os.path.exists(cmaes_dir):
@@ -129,7 +129,7 @@ def dog_cmaes_path(model_number, trace_number):
 
 def dog_data_clamp_mcmc_file(model_number, trace_number):
     if arcus_b:
-        mcmc_dir = os.path.expandvars("${DATA}/PyAP_output/dog_teun/adaptive_mcmc/trace_{}/model_{}/".format(trace_number, model_number))
+        mcmc_dir = os.path.expandvars("$DATA/PyAP_output/dog_teun/adaptive_mcmc/trace_{}/model_{}/".format(trace_number, model_number))
     else:
         mcmc_dir = "projects/PyAP/python/output/dog_teun/adaptive_mcmc/model_{}/trace_{}/".format(trace_number, model_number)
     if not os.path.exists(mcmc_dir):
