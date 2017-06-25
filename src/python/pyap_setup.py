@@ -15,6 +15,13 @@ CHOICE OF CELL MODEL
 import numpy as np
 import os
 import sys
+import socket
+
+if socket.getfqdn().endswith("arcus.arc.local"):
+    arcus_b = True
+    print "\nHopefully on arcus-b\n"
+else:
+    arcus_b = False
 
 
 def get_original_params(model):
@@ -111,14 +118,20 @@ def dog_trace_path(trace_number):
 
 
 def dog_cmaes_path(model_number, trace_number):
-    cmaes_dir = "projects/PyAP/python/output/dog_teun/model_{}/cmaes/".format(model_number)
+    if arcus_b:
+        cmaes_dir = os.path.expandvars("${DATA}/PyAP_output/dog_teun/cmaes/model_{}/".format(model_number))
+    else:
+        cmaes_dir = "projects/PyAP/python/output/dog_teun/model_{}/cmaes/".format(model_number)
     if not os.path.exists(cmaes_dir):
         os.makedirs(cmaes_dir)
     return cmaes_dir, cmaes_dir+"dog_trace_{}_model_{}_cmaes_best_fit.txt".format(trace_number, model_number)
 
 
 def dog_data_clamp_mcmc_file(model_number, trace_number):
-    mcmc_dir = "projects/PyAP/python/output/dog_teun/trace_{}/model_{}/adaptive_mcmc/".format(trace_number, model_number)
+    if arcus_b:
+        mcmc_dir = os.path.expandvars("${DATA}/PyAP_output/dog_teun/adaptive_mcmc/trace_{}/model_{}/".format(trace_number, model_number))
+    else:
+        mcmc_dir = "projects/PyAP/python/output/dog_teun/adaptive_mcmc/model_{}/trace_{}/".format(trace_number, model_number)
     if not os.path.exists(mcmc_dir):
         os.makedirs(mcmc_dir)
     return mcmc_dir, mcmc_dir+"dog_trace_{}_model_{}_adaptive_mcmc.txt".format(trace_number, model_number)
