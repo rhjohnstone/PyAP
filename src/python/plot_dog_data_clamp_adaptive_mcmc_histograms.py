@@ -28,12 +28,12 @@ def plot_all(trace_number):
         fig = plt.figure()
         ax = fig.add_subplot(111)
         ax.grid()
-        if exp_scaling:
-            ax.set_title("Re-scaled, but MCMC done with exp scaling")
-            params_to_hist = original_gs[i]**chain[:,i]
-        else:
-            ax.set_title("MCMC done on unscaled params")
-            params_to_hist = chain[:,i]
+        #if exp_scaling:
+        #    ax.set_title("Re-scaled, but MCMC done with exp scaling")
+        #    params_to_hist = original_gs[i]**chain[:,i]
+        #else:
+        #    ax.set_title("MCMC done on unscaled params")
+        params_to_hist = chain[:,i]
         ax.hist(params_to_hist, normed=True, bins=40, color='blue', edgecolor='blue')
         ax.set_xlabel("$"+g_parameters[i]+"$")
         ax.set_ylabel('Marginal density')
