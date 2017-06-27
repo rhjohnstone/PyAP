@@ -1,4 +1,4 @@
-import ap_simulator
+import ap_simulator  
 import pyap_setup as ps
 import argparse
 import numpy as np
@@ -42,22 +42,24 @@ def do_mcmc(trace_number, ap_model, expt_trace, temperature):#, theta0):
     npr.seed(trace_number)
     print "Starting chain"
     start = time.time()
-
+    cmaes_dir, cmaes_path = ps.dog_cmaes_path(model_number, trace_number)
     try:
-        cmaes_results = np.loadtxt(ps.dog_cmaes_path(model_number, trace_number), delimiter=',')
+        cmaes_results = np.loadtxt(cmaes_path)
+        print cmaes_results
         best_index = np.argmin(cmaes_results[:,-1])
         best_gs = cmaes_results[best_index,:-1]
         initial_unscaled_gs = np.log(best_gs) / log_gs
-    except:
+    except Exception, e:
+        print e
         initial_unscaled_gs = np.ones(num_params-1)
     theta_cur = np.concatenate((initial_unscaled_gs,[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
     print "\ntheta_cur:", theta_cur, "\n"
     log_target_cur = log_target(theta_cur, ap_model, expt_trace)
 
-    total_iterations = 1000000
+    total_iterations = 100000
     thinning = 5
     num_saved = total_iterations / thinning + 1
-    burn = num_saved / 3
+    burn = num_saved / 4
 
     chain = np.zeros((num_saved, num_params+1))
     chain[0, :] = np.concatenate((theta_cur, [log_target_cur]))
@@ -66,7 +68,7 @@ def do_mcmc(trace_number, ap_model, expt_trace, temperature):#, theta0):
     acceptance = 0.
 
     mean_estimate = np.abs(theta_cur)
-    cov_estimate = 0.01*np.eye(num_params)
+    cov_estimate = 0.001*np.eye(num_params)
 
     status_when = 500
     adapt_when = 100*num_params
@@ -116,7 +118,9 @@ def do_mcmc(trace_number, ap_model, expt_trace, temperature):#, theta0):
     # discard burn-in before saving chain, just to save space mostly
     time_taken = int(time.time() - start)
     print "\n\nTime taken: {} s = {} min\n\n".format(time_taken,time_taken/60)
-    return chain[burn:, :]
+    chain = chain[burn:, :]
+    chain[:,:-2] = original_gs**chain[:,:-2]  # return params scaled back into G-space
+    return chain
 
 
 model_number = 9
