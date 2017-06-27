@@ -52,7 +52,7 @@ def get_original_params(model):
                         'G_{Ks}', 'G_{Kr}', 'G_{pCa}', 'G_{bCa}',
                         'k_{NaCa}', 'P_{NaK}', 'G_{to1}', 'G_{to2}',
                         'G_{bCl}', 'G_{NaL}']
-    elif (model==7): # Paci ventricular-like SC-CM
+    elif (model==7) or (model==10): # Paci ventricular-like SC-CM, m10 is linearised by RJ
         original_gs = [3671.2302, 8.635702e-5, 28.1492, 2.041,
                    29.8667, 0.4125, 4900, 0.69264,
                    1.841424, 29.9038, 0.9, 30.10312]
@@ -115,6 +115,10 @@ def synthetic_hierarchical_chain_file_and_figs_dir(model,protocol,num_expts,pyth
 
 def dog_trace_path(trace_number):
     return "projects/PyAP/python/input/dog_teun_csv/dog_AP_trace_{}.csv".format(trace_number)
+    
+
+def roche_trace_path(trace_number):
+    return "projects/PyAP/python/input/roche_170123_2_2_csv/Trace_2_2_{}_1.csv".format(trace_number)
 
 
 def dog_cmaes_path(model_number, trace_number):
@@ -145,6 +149,26 @@ def dog_data_clamp_exp_scaled_mcmc_file(model_number, trace_number):
     if not os.path.exists(mcmc_dir):
         os.makedirs(mcmc_dir)
     return mcmc_dir, mcmc_dir+"dog_model_{}_trace_{}_adaptive_mcmc_exp_scaled.txt".format(model_number, trace_number)
+
+
+def roche_cmaes_path(model_number, trace_number):
+    if arcus_b:
+        cmaes_dir = os.path.expandvars("$DATA/PyAP_output/roche_170123_2_2/cmaes/model_{}/".format(model_number))
+    else:
+        cmaes_dir = "projects/PyAP/python/output/roche_170123_2_2/cmaes/model_{}/".format(model_number)
+    if not os.path.exists(cmaes_dir):
+        os.makedirs(cmaes_dir)
+    return cmaes_dir, cmaes_dir+"roche_170123_2_2_model_{}_trace_{}_cmaes_best_fit.txt".format(model_number, trace_number)
+
+
+def roche_data_clamp_exp_scaled_mcmc_file(model_number, trace_number):
+    if arcus_b:
+        mcmc_dir = os.path.expandvars("$DATA/PyAP_output/roche_170123_2_2/adaptive_mcmc/exp_scaled/model_{}/trace_{}/".format(model_number, trace_number))
+    else:
+        mcmc_dir = "projects/PyAP/python/output/roche_170123_2_2/adaptive_mcmc/exp_scaled/model_{}/trace_{}/".format(model_number, trace_number)
+    if not os.path.exists(mcmc_dir):
+        os.makedirs(mcmc_dir)
+    return mcmc_dir, mcmc_dir+"roche_170123_2_2_model_{}_trace_{}_adaptive_mcmc_exp_scaled.txt".format(model_number, trace_number)
 
 
 

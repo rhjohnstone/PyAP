@@ -32,7 +32,8 @@ def do_mcmc(trace_number, ap_model, expt_trace, temperature):#, theta0):
     start = time.time()
 
     try:
-        cmaes_results = np.loadtxt(ps.dog_cmaes_path(model_number, trace_number), delimiter=',')
+        cmaes_dir, cmaes_path = ps.dog_cmaes_path(model_number, trace_number)
+        cmaes_results = np.loadtxt(cmaes_path)
         best_index = np.argmin(cmaes_results[:,-1])
         best_gs = cmaes_results[best_index,:-1]
         theta_cur = np.concatenate((best_gs,[compute_initial_sigma(best_gs, ap_model, expt_trace)]))
@@ -41,10 +42,10 @@ def do_mcmc(trace_number, ap_model, expt_trace, temperature):#, theta0):
     print "\ntheta_cur:", theta_cur, "\n"
     log_target_cur = log_target(theta_cur, ap_model, expt_trace)
 
-    total_iterations = 1000000
+    total_iterations = 20000
     thinning = 5
     num_saved = total_iterations / thinning + 1
-    burn = num_saved / 3
+    burn = num_saved / 2
 
     chain = np.zeros((num_saved, num_params+1))
     chain[0, :] = np.concatenate((theta_cur, [log_target_cur]))
@@ -53,7 +54,7 @@ def do_mcmc(trace_number, ap_model, expt_trace, temperature):#, theta0):
     acceptance = 0.
 
     mean_estimate = np.copy(theta_cur)
-    cov_estimate = 0.1*np.eye(num_params)
+    cov_estimate = 0.01*np.diag(np.abs(mean_estimate))
 
     status_when = 500
     adapt_when = 100*num_params
@@ -155,9 +156,9 @@ def do_everything(trace_number):
     return None
     
 first_trace = 150
-how_many_traces = 16
+how_many_traces = 1
 traces = range(first_trace, first_trace+how_many_traces)
-num_cores = 16  # 16 for arcus-b
+num_cores = 1  # 16 for arcus-b
 
 pool = mp.Pool(num_cores)
 mcms = pool.map_async(do_everything, traces).get(9999999)

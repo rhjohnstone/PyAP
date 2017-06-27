@@ -76,34 +76,36 @@ def run_cmaes(cma_index):
 
 all_time_start = time.time()
 
-num_cores = 3  # make 16 for ARCUS-B!!
+num_cores = 16  # make 16 for ARCUS-B!!
 
-model_number = 9
+model_number = 10  # Paci (linearised) for Roche data
 protocol = 1
-extra_K_conc = 5.4
-intra_K_conc = 130
-extra_Na_conc = 140
-intra_Na_conc = 10
 
-first_trace = 150
-how_many_traces = 1
+extra_K_conc = 4
+intra_K_conc = 125
+extra_Na_conc = 150
+intra_Na_conc = 10.115
+
+first_trace = 100  # only 100-115 available
+how_many_traces = 16
 trace_numbers = range(first_trace,first_trace+how_many_traces)
 
 num_solves = 2
 
+# Roche traces already in correct units
 expt_traces = []
 for i, t in enumerate(trace_numbers):
-    trace_path = ps.dog_trace_path(t)
+    trace_path = ps.roche_trace_path(t)
     if i==0:
-        expt_times, trace = 1000*np.loadtxt(trace_path,delimiter=',').T
+        expt_times, trace = np.loadtxt(trace_path,delimiter=',').T
     else:
-        trace = 1000*np.loadtxt(trace_path,delimiter=',',usecols=[1])
+        trace = np.loadtxt(trace_path,delimiter=',',usecols=[1])
     expt_traces.append(np.copy(trace))
 aps = []
 model_traces = []
 
-data_clamp_on = expt_times[40]
-data_clamp_off = expt_times[48]
+data_clamp_on = expt_times[1250]
+data_clamp_off = expt_times[1300]
 print data_clamp_on, data_clamp_off
 
 solve_start, solve_end = expt_times[[0,-1]]
@@ -115,21 +117,27 @@ stimulus_start_time = 0.
 original_gs, g_parameters = ps.get_original_params(model_number)
 num_params = len(original_gs)
 
-how_many_cmaes_runs = 20
+how_many_cmaes_runs = 16
 cmaes_indices = range(how_many_cmaes_runs)
 
 plt.close()
 for i, t in enumerate(trace_numbers):
     trace_start_time = time.time()
-    cmaes_dir, best_fit_file = ps.dog_cmaes_path(model_number, t)
+    cmaes_dir, best_fit_file = ps.roche_cmaes_path(model_number, t)
     expt_trace = expt_traces[i]
     best_paramses = []
     best_fs = []
     best_both = []
-    pool = mp.Pool(num_cores)
-    best_boths = pool.map_async(run_cmaes, cmaes_indices).get(9999)
-    pool.close()
-    pool.join()
+    if num_cores > 1:
+        pool = mp.Pool(num_cores)
+        best_boths = pool.map_async(run_cmaes, cmaes_indices).get(9999)
+        pool.close()
+        pool.join()
+    else:
+        print "not parallel"
+        best_boths = []
+        for ci in cmaes_indices:
+            best_boths.append(run_cmaes(ci))
     best_boths = np.array(best_boths)
     np.savetxt(best_fit_file, best_boths)
     ap_model = ap_simulator.APSimulator()
@@ -164,10 +172,4 @@ for i, t in enumerate(trace_numbers):
 
 all_time_taken = time.time()-all_time_start
 print "\n\nAll time taken: {} s = {} min\n\n".format(round(all_time_taken), round(all_time_taken/60.))
-
-try:
-    copy_cmaes_dir = os.path.expandvars('${DATA}')+"/PyAP_output/model_{}/cmaes/".format(model_number)
-    shutil.copytree(cmaes_dir,copy_cmaes_dir)
-except:
-    pass
 
