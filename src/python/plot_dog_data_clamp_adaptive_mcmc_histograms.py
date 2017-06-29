@@ -4,12 +4,6 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import pyap_setup as ps
 
-
-def exponential_scaling(unscaled_params):
-    return original_gs ** unscaled_params
-
-
-
 model_number = 9
 #trace_number = 150
 
@@ -57,7 +51,7 @@ def plot_all(trace_number, exp_scaling):
     return None
     
 for es in [True, False]:
-    for trace_number in xrange(150,150+1):
+    for trace_number in xrange(150,150+16):
         try:
             plot_all(trace_number, es)
         except:
