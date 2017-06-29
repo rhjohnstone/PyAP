@@ -183,7 +183,7 @@ def roche_data_clamp_exp_scaled_mcmc_file(model_number, trace_number):
     return mcmc_dir, mcmc_dir+"roche_170123_2_2_model_{}_trace_{}_adaptive_mcmc_exp_scaled.txt".format(model_number, trace_number)
 
 
-def general_data_trace_path(
+#def general_data_trace_path(
 
 
 
