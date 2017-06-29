@@ -16,6 +16,18 @@ import numpy as np
 import os
 import sys
 import socket
+import argparse
+
+parser = argparse.ArgumentParser()
+requiredNamed = parser.add_argument_group('required arguments')
+requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
+if len(sys.argv)==1:
+    parser.print_help()
+    sys.exit(1)
+args = parser.parse_args()
+trace_path = args.data_file
+expt_name = trace_path.split('/')[4]
+print expt_name
 
 if socket.getfqdn().endswith("arcus.arc.local"):
     arcus_b = True
@@ -171,7 +183,7 @@ def roche_data_clamp_exp_scaled_mcmc_file(model_number, trace_number):
     return mcmc_dir, mcmc_dir+"roche_170123_2_2_model_{}_trace_{}_adaptive_mcmc_exp_scaled.txt".format(model_number, trace_number)
 
 
-
+def general_data_trace_path(
 
 
 
