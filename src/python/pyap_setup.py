@@ -1,14 +1,16 @@
 """
 CHOICE OF CELL MODEL 
 
-1. Hodgkin Huxley '52
-2. Beeler Reuter '77
-3. Luo Rudy '91
-4. Ten Tusscher Epi. '04
-5. O'Hara Rudy Endo. '11
-6. Davies 2012
-7. Paci ventricular
-8. Decker 2009 dog
+# 1. Hodgkin Huxley
+# 2. Beeler Reuter
+# 3. Luo Rudy
+# 4. ten Tusscher
+# 5. O'Hara Rudy
+# 6. Davies (canine)
+# 7. Paci (SC-CM ventricular)
+# 8. Gokhale 2017 ex293
+# 9. Davies (canine) linearised by RJ
+# 10. Paci linearised by RJ
 
 """
 
@@ -26,14 +28,56 @@ if len(sys.argv)==1:
     sys.exit(1)
 args = parser.parse_args()
 trace_path = args.data_file
-expt_name = trace_path.split('/')[4]
+split_trace_path = trace_path.split('/')
+expt_name = split_trace_path[4]
+trace_name = split_trace_path[-1][:-4]
+options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 print expt_name
+print trace_name
+
+pyap_options = {}
+with open(options_file, 'r') as infile:
+    for line in infile:
+        (key, val) = line.split()
+        if (key == "model_number") or (key == "num_solves"):
+            val = int(val)
+        else:
+            val = float(val)
+        pyap_options[key] = val
 
 if socket.getfqdn().endswith("arcus.arc.local"):
     arcus_b = True
     print "\nHopefully on arcus-b\n"
 else:
     arcus_b = False
+
+
+def cmaes_and_figs_files(model_number):
+    if arcus_b:
+        cmaes_dir = os.path.expandvars("$DATA/PyAP_output/{}/cmaes/model_{}/".format(expt_name, model_number))
+    else:
+        cmaes_dir = "projects/PyAP/python/output/{}/cmaes/model_{}/".format(expt_name, model_number)
+    txt_dir, png_dir, svg_dir = cmaes_dir+"params/", cmaes_dir+"figs/png/", cmaes_dir+"figs/svg/"
+    for d in [txt_dir, png_dir, svg_dir]:
+        if not os.path.exists(d):
+            os.makedirs(d)
+    cmaes_best_fits_file = txt_dir+"{}_model_{}_trace_{}_cmaes_best_fits.txt".format(expt_name, model_number, trace_name)
+    best_fit_png = png_dir+"{}_model_{}_trace_{}_cmaes_best_fit.png".format(expt_name, model_number, trace_name)
+    best_fit_svg = svg_dir+"{}_model_{}_trace_{}_cmaes_best_fit.svg".format(expt_name, model_number, trace_name)
+    return cmaes_best_fits_file, best_fit_png, best_fit_svg
+
+
+def mcmc_exp_scaled_file_and_figs_dirs(model_number):
+    if arcus_b:
+        mcmc_dir = os.path.expandvars("$DATA/PyAP_output/{}/mcmc_exp_scaled/model_{}/{}/".format(expt_name, model_number, trace_name))
+    else:
+        mcmc_dir = "projects/PyAP/python/output/{}/mcmc_exp_scaled/model_{}/{}/".format(expt_name, model_number, trace_name)
+    txt_dir, png_dir = mcmc_dir+"chain/", mcmc_dir+"figs/png/"
+    for d in [txt_dir, png_dir]:
+        if not os.path.exists(d):
+            os.makedirs(d)
+    mcmc_file = txt_dir+"{}_model_{}_trace_{}_mcmc_exp_scaled.txt".format(expt_name, model_number, trace_name)
+    return mcmc_file, png_dir
 
 
 def get_original_params(model):
