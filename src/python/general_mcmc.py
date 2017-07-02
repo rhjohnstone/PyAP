@@ -59,7 +59,7 @@ def do_mcmc(ap_model, expt_trace, temperature):#, theta0):
     print "\ntheta_cur:", theta_cur, "\n"
     log_target_cur = log_target(theta_cur, ap_model, expt_trace)
 
-    total_iterations = 10000
+    total_iterations = 1000000
     thinning = 5
     num_saved = total_iterations / thinning + 1
     burn = num_saved / 4

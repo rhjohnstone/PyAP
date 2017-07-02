@@ -93,7 +93,7 @@ stimulus_start_time = 0.
 original_gs, g_parameters = ps.get_original_params(ps.pyap_options["model_number"])
 num_params = len(original_gs)
 
-how_many_cmaes_runs = 16
+how_many_cmaes_runs = 32
 cmaes_indices = range(how_many_cmaes_runs)
 
 trace_start_time = time.time()
