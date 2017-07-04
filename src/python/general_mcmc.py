@@ -59,7 +59,7 @@ def do_mcmc(ap_model, expt_trace, temperature):#, theta0):
     print "\ntheta_cur:", theta_cur, "\n"
     log_target_cur = log_target(theta_cur, ap_model, expt_trace)
 
-    total_iterations = 1000000
+    total_iterations = 500000
     thinning = 5
     num_saved = total_iterations / thinning + 1
     burn = num_saved / 4
@@ -73,8 +73,8 @@ def do_mcmc(ap_model, expt_trace, temperature):#, theta0):
     mean_estimate = np.abs(theta_cur)
     cov_estimate = 0.0001*np.eye(num_params)
 
-    status_when = 500
-    adapt_when = 100*num_params
+    status_when = 5000
+    adapt_when = 500*num_params
 
     t = 1
     s = 1
@@ -159,6 +159,7 @@ def do_everything():
     mcmc_file, png_dir = ps.mcmc_exp_scaled_file_and_figs_dirs(ps.pyap_options["model_number"])
     chain = do_mcmc(ap_model, expt_trace, temperature)
     np.savetxt(mcmc_file, chain)
+    print "\nSaved MCMC output at {}\n".format(mcmc_file)
     return None
     
 
