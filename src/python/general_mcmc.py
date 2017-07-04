@@ -73,7 +73,7 @@ def do_mcmc(ap_model, expt_trace, temperature):#, theta0):
     mean_estimate = np.abs(theta_cur)
     cov_estimate = 0.0001*np.eye(num_params)
 
-    status_when = 5000
+    status_when = total_iterations / 100
     adapt_when = 500*num_params
 
     t = 1
