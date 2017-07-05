@@ -156,9 +156,15 @@ def do_everything():
     ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
 
     temperature = 1
-    mcmc_file, png_dir = ps.mcmc_exp_scaled_file_and_figs_dirs(ps.pyap_options["model_number"])
+    mcmc_file, log_file, png_dir = ps.mcmc_exp_scaled_file_log_file_and_figs_dirs(ps.pyap_options["model_number"])
+    log_start_time = time.time()
     chain = do_mcmc(ap_model, expt_trace, temperature)
+    log_time_taken = time.time() - log_start_time
     np.savetxt(mcmc_file, chain)
+    with open(log_file, "w") as outfile:
+        outfile.write(ps.expt_name+"\n")
+        outfile.write(ps.trace_name+"\n")
+        outfile.write("Time taken: {} s = {} min = {} hr\n".format(int(log_time_taken), int(log_time_taken/60.), round(log_time_taken/3600.,1)))
     print "\nSaved MCMC output at {}\n".format(mcmc_file)
     return None
     

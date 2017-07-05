@@ -8,7 +8,7 @@ import sys
 original_gs, g_parameters = ps.get_original_params(ps.pyap_options["model_number"])
 num_gs = len(original_gs)
 
-mcmc_file, png_dir = ps.mcmc_exp_scaled_file_and_figs_dirs(ps.pyap_options["model_number"])
+mcmc_file, log_file, png_dir = ps.mcmc_exp_scaled_file_log_file_and_figs_dirs(ps.pyap_options["model_number"])
 try:
     chain = np.loadtxt(mcmc_file)
 except:

@@ -67,7 +67,7 @@ def cmaes_and_figs_files(model_number):
     return cmaes_best_fits_file, best_fit_png, best_fit_svg
 
 
-def mcmc_exp_scaled_file_and_figs_dirs(model_number):
+def mcmc_exp_scaled_file_log_file_and_figs_dirs(model_number):
     if arcus_b:
         mcmc_dir = os.path.expandvars("$DATA/PyAP_output/{}/mcmc_exp_scaled/model_{}/{}/".format(expt_name, model_number, trace_name))
     else:
@@ -77,7 +77,8 @@ def mcmc_exp_scaled_file_and_figs_dirs(model_number):
         if not os.path.exists(d):
             os.makedirs(d)
     mcmc_file = txt_dir+"{}_model_{}_trace_{}_mcmc_exp_scaled.txt".format(expt_name, model_number, trace_name)
-    return mcmc_file, png_dir
+    log_file = mcmc_dir+"{}_model_{}_trace_{}_mcmc_exp_scaled.log".format(expt_name, model_number, trace_name)
+    return mcmc_file, log_file, png_dir
 
 
 def get_original_params(model):
