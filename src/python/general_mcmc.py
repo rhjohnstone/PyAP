@@ -10,10 +10,8 @@ import argparse
 
 mcmc_parser = argparse.ArgumentParser()
 mcmc_parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
-args, unknown = parser.parse_known_args()
-print args
-print unknown
-sys.exit()
+args, unknown = mcmc_parser.parse_known_args()
+
 
 def exponential_scaling(unscaled_params):
     return original_gs ** unscaled_params
@@ -83,7 +81,12 @@ def do_mcmc(ap_model, expt_trace, temperature):#, theta0):
     except Exception, e:
         print "\n",e,"\n"
         initial_unscaled_gs = np.ones(num_params-1)
-    theta_cur = np.concatenate((initial_unscaled_gs,[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
+    if args.unscaled:
+        theta_cur = np.concatenate((exponential_scaling(initial_unscaled_gs),[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
+    else:
+        theta_cur = np.concatenate((initial_unscaled_gs,[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
+    mean_estimate = np.abs(theta_cur)
+    cov_estimate = 0.001*np.diag(mean_estimate)
     print "\ntheta_cur:", theta_cur, "\n"
     log_target_cur = log_target(theta_cur, ap_model, expt_trace)
 
@@ -98,8 +101,7 @@ def do_mcmc(ap_model, expt_trace, temperature):#, theta0):
     loga = 0.
     acceptance = 0.
 
-    mean_estimate = np.abs(theta_cur)
-    cov_estimate = 0.0001*np.eye(num_params)
+    
 
     status_when = total_iterations / 100
     adapt_when = 500*num_params
@@ -184,7 +186,7 @@ def do_everything():
     ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
 
     temperature = 1
-    mcmc_file, log_file, png_dir = ps.mcmc_exp_scaled_file_log_file_and_figs_dirs(ps.pyap_options["model_number"])
+    mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(ps.pyap_options["model_number"], args.unscaled)
     log_start_time = time.time()
     chain = do_mcmc(ap_model, expt_trace, temperature)
     log_time_taken = time.time() - log_start_time

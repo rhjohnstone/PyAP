@@ -3,12 +3,16 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import sys
+import sysimport argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
+args, unknown = parser.parse_known_args()
 
 original_gs, g_parameters = ps.get_original_params(ps.pyap_options["model_number"])
 num_gs = len(original_gs)
 
-mcmc_file, log_file, png_dir = ps.mcmc_exp_scaled_file_log_file_and_figs_dirs(ps.pyap_options["model_number"])
+mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(ps.pyap_options["model_number"], args.unscaled)
 try:
     chain = np.loadtxt(mcmc_file)
 except:
