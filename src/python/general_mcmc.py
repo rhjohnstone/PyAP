@@ -6,7 +6,16 @@ import sys
 import numpy.random as npr
 import time
 import multiprocessing as mp
+import argparse
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
+args = parser.parse_args()
+
+
+print args.unscaled
+print args
+sys.exit()
 
 def exponential_scaling(unscaled_params):
     return original_gs ** unscaled_params
@@ -17,7 +26,7 @@ def solve_for_voltage_trace(temp_g_params, ap_model):
     return ap_model.SolveForVoltageTraceWithParams(temp_g_params)
 
 
-def log_target(temp_unscaled_params, ap_model, expt_trace):
+def log_target_exp_scaled(temp_unscaled_params, ap_model, expt_trace):
     temp_unscaled_gs, temp_sigma = temp_unscaled_params[:-1], temp_unscaled_params[-1]
     if (temp_sigma <= 0):
         return -np.inf
@@ -30,12 +39,33 @@ def log_target(temp_unscaled_params, ap_model, expt_trace):
             print temp_gs
             sys.exit()
         return -len(expt_trace)*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2) + np.dot(temp_unscaled_gs, log_gs)
-    
+
+
+def log_target_unscaled(temp_params, ap_model, expt_trace):
+    """Log target distribution with improper semi-infinite prior"""
+    if np.any(temp_params < 0):
+        return -np.inf
+    else:
+        temp_gs, temp_sigma = temp_params[:-1], temp_params[-1]
+        try:
+            test_trace = solve_for_voltage_trace(temp_gs, ap_model)
+        except:
+            print "Failed to solve"
+            print temp_gs
+            sys.exit()
+        return -len(expt_trace)*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2)
+
     
 def compute_initial_sigma(temp_unscaled_gs, ap_model, expt_trace):
     temp_gs = exponential_scaling(temp_unscaled_gs)
     test_trace = solve_for_voltage_trace(temp_gs, ap_model)
     return np.sqrt(np.sum((test_trace-expt_trace)**2)/len(expt_trace))
+    
+    
+if args.unscaled:
+    log_target = log_target_unscaled
+else:
+    log_target = log_target_exp_scaled
 
 
 def do_mcmc(ap_model, expt_trace, temperature):#, theta0):
