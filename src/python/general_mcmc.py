@@ -8,13 +8,11 @@ import time
 import multiprocessing as mp
 import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
-args = parser.parse_args()
-
-
-print args.unscaled
+mcmc_parser = argparse.ArgumentParser()
+mcmc_parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
+args, unknown = parser.parse_known_args()
 print args
+print unknown
 sys.exit()
 
 def exponential_scaling(unscaled_params):

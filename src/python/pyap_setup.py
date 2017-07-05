@@ -26,7 +26,9 @@ requiredNamed.add_argument("--data-file", type=str, help="csv file from which to
 if len(sys.argv)==1:
     parser.print_help()
     sys.exit(1)
-args = parser.parse_args()
+args, unknown = parser.parse_known_args()
+print args
+print unknown
 trace_path = args.data_file
 split_trace_path = trace_path.split('/')
 expt_name = split_trace_path[4]
