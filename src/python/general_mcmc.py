@@ -194,7 +194,7 @@ def do_everything():
     with open(log_file, "w") as outfile:
         outfile.write(ps.expt_name+"\n")
         outfile.write(ps.trace_name+"\n")
-        outfile.write("Time taken: {} s = {} min = {} hr\n".format(int(log_time_taken), int(log_time_taken/60.), round(log_time_taken/3600.,1)))
+        outfile.write("Time taken: {} s = {} min = {} hr\n".format(int(log_time_taken), round(log_time_taken/60.,1), round(log_time_taken/3600.,1)))
     print "\nSaved MCMC output at {}\n".format(mcmc_file)
     return None
     

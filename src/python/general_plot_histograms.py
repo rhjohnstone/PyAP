@@ -16,7 +16,7 @@ mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(ps.pyap_optio
 try:
     chain = np.loadtxt(mcmc_file)
 except:
-    sys.exit("\nCan't find (or load) MCMC output file\n")
+    sys.exit("\nCan't find (or load) {}\n".format(ps.trace_path)
 
 for i in xrange(num_gs+1):
     fig = plt.figure()
