@@ -19,6 +19,9 @@ import sys
 # 9. Davies (canine) linearised by RJ
 # 10. Paci linearised by RJ
 
+python_seed = 1
+npr.seed(python_seed)
+
 expt_name = "synthetic_davies"
 trace_name = "synthetic_davies_seed_{}".format(python_seed)
 trace_file = "../workspace/PyAP/src/python/input/{}/traces/{}.csv".format(expt_name, trace_name)
@@ -31,8 +34,7 @@ options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 
 noise_sigma = 1.
 
-python_seed = 1
-npr.seed(python_seed)
+
 
 solve_start = 0.
 solve_end = 500.
