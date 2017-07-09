@@ -24,7 +24,7 @@ npr.seed(python_seed)
 
 expt_name = "synthetic_davies"
 trace_name = "synthetic_davies_seed_{}".format(python_seed)
-trace_file = "../workspace/PyAP/src/python/input/{}/traces/{}.csv".format(expt_name, trace_name)
+trace_path = "../workspace/PyAP/src/python/input/{}/traces/{}.csv".format(expt_name, trace_name)
 pyap_options_file = "../workspace/PyAP/src/python/input/{}/PyAP_options.txt".format(expt_name)
 
 split_trace_path = trace_path.split('/')
