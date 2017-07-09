@@ -2,7 +2,7 @@ import ap_simulator
 import numpy as np
 import numpy.random as npr
 import matplotlib
-matlplotlib.use('Agg')
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import time
 import pyap_setup as ps
