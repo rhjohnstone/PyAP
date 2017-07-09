@@ -18,33 +18,6 @@ import numpy as np
 import os
 import sys
 import socket
-import argparse
-
-parser = argparse.ArgumentParser()
-#requiredNamed = parser.add_argument_group('required arguments')
-#requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
-parser.add_argument("--data-file", type=str, help="csv file from which to read in data", required=False)
-#if len(sys.argv)==1:
-#    parser.print_help()
-#    sys.exit(1)
-args, unknown = parser.parse_known_args()
-trace_path = args.data_file
-split_trace_path = trace_path.split('/')
-expt_name = split_trace_path[4]
-trace_name = split_trace_path[-1][:-4]
-options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
-print expt_name
-print trace_name
-
-pyap_options = {}
-with open(options_file, 'r') as infile:
-    for line in infile:
-        (key, val) = line.split()
-        if (key == "model_number") or (key == "num_solves"):
-            val = int(val)
-        else:
-            val = float(val)
-        pyap_options[key] = val
 
 if socket.getfqdn().endswith("arcus.arc.local"):
     arcus_b = True
@@ -53,7 +26,7 @@ else:
     arcus_b = False
 
 
-def cmaes_and_figs_files(model_number):
+def cmaes_and_figs_files(model_number, expt_name, trace_name):
     if arcus_b:
         cmaes_dir = os.path.expandvars("$DATA/PyAP_output/{}/cmaes/model_{}/".format(expt_name, model_number))
     else:
@@ -68,7 +41,7 @@ def cmaes_and_figs_files(model_number):
     return cmaes_best_fits_file, best_fit_png, best_fit_svg
 
 
-def mcmc_file_log_file_and_figs_dirs(model_number, unscaled):
+def mcmc_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscaled):
     if unscaled:
         scale_bit = "mcmc_unscaled"
     else:
@@ -232,8 +205,6 @@ def roche_data_clamp_exp_scaled_mcmc_file(model_number, trace_number):
         os.makedirs(mcmc_dir)
     return mcmc_dir, mcmc_dir+"roche_170123_2_2_model_{}_trace_{}_adaptive_mcmc_exp_scaled.txt".format(model_number, trace_number)
 
-
-#def general_data_trace_path(
 
 
 

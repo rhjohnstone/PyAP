@@ -8,9 +8,30 @@ import time
 import multiprocessing as mp
 import argparse
 
-mcmc_parser = argparse.ArgumentParser()
-mcmc_parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
-args, unknown = mcmc_parser.parse_known_args()
+parser = argparse.ArgumentParser()
+requiredNamed = parser.add_argument_group('required arguments')
+requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
+parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
+args, unknown = parser.parse_known_args()
+if len(sys.argv)==1:
+    parser.print_help()
+    sys.exit(1)
+args, unknown = parser.parse_known_args()
+trace_path = args.data_file
+split_trace_path = trace_path.split('/')
+expt_name = split_trace_path[4]
+trace_name = split_trace_path[-1][:-4]
+options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
+
+pyap_options = {}
+with open(options_file, 'r') as infile:
+    for line in infile:
+        (key, val) = line.split()
+        if (key == "model_number") or (key == "num_solves"):
+            val = int(val)
+        else:
+            val = float(val)
+        pyap_options[key] = val
 
 
 def exponential_scaling(unscaled_params):
@@ -68,7 +89,7 @@ def do_mcmc(ap_model, expt_trace, temperature):#, theta0):
     #npr.seed(trace_number)
     print "Starting chain"
     start = time.time()
-    cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(ps.pyap_options["model_number"])
+    cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, trace_name)
     try:
         cmaes_results = np.loadtxt(cmaes_best_fits_file)
         ndim = cmaes_results.ndim
@@ -159,41 +180,41 @@ def do_mcmc(ap_model, expt_trace, temperature):#, theta0):
 stimulus_magnitude = 0
 stimulus_duration = 1
 stimulus_start_time = 0.
-original_gs, g_parameters = ps.get_original_params(ps.pyap_options["model_number"])
+original_gs, g_parameters = ps.get_original_params(pyap_options["model_number"])
 log_gs = np.log(original_gs)
 num_params = len(original_gs)+1  # include sigma
 
 
 def do_everything():
     try:
-        expt_times, expt_trace = np.loadtxt(ps.trace_path,delimiter=',').T
+        expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
     except:
-        sys.exit( "\n\nCan't find (or load) {}\n\n".format(ps.trace_path) )
+        sys.exit( "\n\nCan't find (or load) {}\n\n".format(trace_path) )
     
     solve_start, solve_end = expt_times[[0,-1]]
     solve_timestep = expt_times[1] - expt_times[0]
 
     ap_model = ap_simulator.APSimulator()
-    ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, ps.pyap_options["stimulus_period"], stimulus_start_time)
+    ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
     ap_model.DefineSolveTimes(solve_start, solve_end, solve_timestep)
-    ap_model.DefineModel(ps.pyap_options["model_number"])
-    ap_model.SetExtracellularPotassiumConc(ps.pyap_options["extra_K_conc"])
-    ap_model.SetIntracellularPotassiumConc(ps.pyap_options["intra_K_conc"])
-    ap_model.SetExtracellularSodiumConc(ps.pyap_options["extra_Na_conc"])
-    ap_model.SetIntracellularSodiumConc(ps.pyap_options["intra_Na_conc"])
-    ap_model.SetNumberOfSolves(ps.pyap_options["num_solves"])
-    ap_model.UseDataClamp(ps.pyap_options["data_clamp_on"], ps.pyap_options["data_clamp_off"])
+    ap_model.DefineModel(pyap_options["model_number"])
+    ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
+    ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
+    ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
+    ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
+    ap_model.SetNumberOfSolves(pyap_options["num_solves"])
+    ap_model.UseDataClamp(pyap_options["data_clamp_on"], pyap_options["data_clamp_off"])
     ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
 
     temperature = 1
-    mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(ps.pyap_options["model_number"], args.unscaled)
+    mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled)
     log_start_time = time.time()
     chain = do_mcmc(ap_model, expt_trace, temperature)
     log_time_taken = time.time() - log_start_time
     np.savetxt(mcmc_file, chain)
     with open(log_file, "w") as outfile:
-        outfile.write(ps.expt_name+"\n")
-        outfile.write(ps.trace_name+"\n")
+        outfile.write(expt_name+"\n")
+        outfile.write(trace_name+"\n")
         outfile.write("Time taken: {} s = {} min = {} hr\n".format(int(log_time_taken), round(log_time_taken/60.,1), round(log_time_taken/3600.,1)))
     print "\nSaved MCMC output at {}\n".format(mcmc_file)
     return None

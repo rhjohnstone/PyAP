@@ -23,6 +23,7 @@ expt_name = "synthetic_davies"
 
 model_number = 9
 protocol = 1
+num_solves = 2
 
 noise_sigma = 1.
 
@@ -40,6 +41,7 @@ ap = ap_simulator.APSimulator()
 ap.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
 ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
 ap.DefineModel(model_number)
+ap_model.SetNumberOfSolves(num_solves)
 try:
     true_trace = ap.SolveForVoltageTraceWithParams(original_gs)
 except ap_simulator.CPPException as e:
