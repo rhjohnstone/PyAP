@@ -23,7 +23,7 @@ import argparse
 parser = argparse.ArgumentParser()
 #requiredNamed = parser.add_argument_group('required arguments')
 #requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
-parser.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
+parser.add_argument("--data-file", type=str, help="csv file from which to read in data", required=False)
 #if len(sys.argv)==1:
 #    parser.print_help()
 #    sys.exit(1)
