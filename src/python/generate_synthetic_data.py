@@ -25,10 +25,10 @@ npr.seed(python_seed)
 
 expt_name = "synthetic_davies"
 trace_name = "synthetic_davies_seed_{}".format(python_seed)
-traces_dir = "../workspace/PyAP/src/python/input/{}/traces/"
+traces_dir = "../workspace/PyAP/src/python/input/{}/traces/".format(expt_name)
 if not os.path.exists(traces_dir):
     os.makedirs(traces_dir)
-trace_path = traces_dir+"{}.csv".format(expt_name, trace_name)
+trace_path = traces_dir+"{}.csv".format(trace_name)
 options_file = "../workspace/PyAP/src/python/input/{}/PyAP_options.txt".format(expt_name)
 
 
