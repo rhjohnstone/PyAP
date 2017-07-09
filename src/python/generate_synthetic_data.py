@@ -58,7 +58,7 @@ for python_seed in xrange(1,4):
 
     original_gs, g_parameters = ps.get_original_params(pyap_options["model_number"])
 
-    expt_params = original_gs * (1. + 0.1*npr.randn(len(original_gs)))
+    expt_params = original_gs * (1. + 0.05*npr.randn(len(original_gs)))
     expt_params[np.where(expt_params<0.)] = 0.
 
     times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
@@ -74,7 +74,7 @@ for python_seed in xrange(1,4):
     ap_model.SetNumberOfSolves(pyap_options["num_solves"])
     try:
         print "Going to try to solve with params"
-        true_trace = ap_model.SolveForVoltageTraceWithParams(original_gs)
+        true_trace = ap_model.SolveForVoltageTraceWithParams(expt_params)
     except ap_simulator.CPPException as e:
         print e.GetMessage
         sys.exit()
