@@ -58,7 +58,7 @@ for python_seed in xrange(1,4):
 
     original_gs, g_parameters = ps.get_original_params(pyap_options["model_number"])
 
-    expt_params = original_gs * (1. + 0.01*npr.randn(len(original_gs)))
+    expt_params = original_gs * (1. + 0.1*npr.randn(len(original_gs)))
     expt_params[np.where(expt_params<0.)] = 0.
 
     times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
@@ -84,6 +84,7 @@ for python_seed in xrange(1,4):
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
+    ax.grid()
     ax.plot(times,true_trace)
     ax.set_xlabel("Time (ms)")
     ax.set_ylabel("Membrane voltage (mV)")
