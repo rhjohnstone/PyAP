@@ -1,8 +1,8 @@
 import ap_simulator
 import numpy as np
 import numpy.random as npr
-import matplotlib
-matplotlib.use('Agg')
+#import matplotlib
+#matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import time
 import pyap_setup as ps
@@ -43,6 +43,7 @@ ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
 ap.DefineModel(model_number)
 ap.SetNumberOfSolves(num_solves)
 try:
+    print "Going to try to solve with params"
     true_trace = ap.SolveForVoltageTraceWithParams(original_gs)
 except ap_simulator.CPPException as e:
     print e.GetMessage
