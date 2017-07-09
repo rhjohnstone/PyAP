@@ -20,11 +20,11 @@ import os
 # 9. Davies (canine) linearised by RJ
 # 10. Paci linearised by RJ
 
-fig = plt.figure()
-ax = fig.add_subplot(111)
-ax.grid()
-ax.set_xlabel("Time (ms)")
-ax.set_ylabel("Membrane voltage (mV)")
+#fig = plt.figure()
+#ax = fig.add_subplot(111)
+#ax.grid()
+#ax.set_xlabel("Time (ms)")
+#ax.set_ylabel("Membrane voltage (mV)")
 
 python_seed = 1
 for python_seed in xrange(1,4):
@@ -88,6 +88,6 @@ for python_seed in xrange(1,4):
     true_trace += noise_sigma*npr.randn(len(true_trace))
     np.savetxt(trace_file, np.vstack((times, true_trace)).T, delimiter=',')
 
-    ax.plot(times,true_trace)
-plt.show(block=True)
+    #ax.plot(times,true_trace)
+#plt.show(block=True)
 
