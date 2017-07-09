@@ -21,11 +21,12 @@ import socket
 import argparse
 
 parser = argparse.ArgumentParser()
-requiredNamed = parser.add_argument_group('required arguments')
-requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
-if len(sys.argv)==1:
-    parser.print_help()
-    sys.exit(1)
+#requiredNamed = parser.add_argument_group('required arguments')
+#requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
+parser.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
+#if len(sys.argv)==1:
+#    parser.print_help()
+#    sys.exit(1)
 args, unknown = parser.parse_known_args()
 trace_path = args.data_file
 split_trace_path = trace_path.split('/')
