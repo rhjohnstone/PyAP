@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import time
 import pyap_setup as ps
 import sys
+import os
 
 # 1. Hodgkin Huxley
 # 2. Beeler Reuter
@@ -24,13 +25,12 @@ npr.seed(python_seed)
 
 expt_name = "synthetic_davies"
 trace_name = "synthetic_davies_seed_{}".format(python_seed)
-trace_path = "../workspace/PyAP/src/python/input/{}/traces/{}.csv".format(expt_name, trace_name)
-pyap_options_file = "../workspace/PyAP/src/python/input/{}/PyAP_options.txt".format(expt_name)
+traces_dir = "../workspace/PyAP/src/python/input/{}/traces/"
+if not os.path.exists(traces_dir):
+    os.makedirs(traces_dir)
+trace_path = traces_dir+"{}.csv".format(expt_name, trace_name)
+options_file = "../workspace/PyAP/src/python/input/{}/PyAP_options.txt".format(expt_name)
 
-split_trace_path = trace_path.split('/')
-expt_name = split_trace_path[4]
-trace_name = split_trace_path[-1][:-4]
-options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 
 noise_sigma = 1.
 
