@@ -28,7 +28,7 @@ trace_name = "synthetic_davies_seed_{}".format(python_seed)
 traces_dir = "../workspace/PyAP/src/python/input/{}/traces/".format(expt_name)
 if not os.path.exists(traces_dir):
     os.makedirs(traces_dir)
-trace_path = traces_dir+"{}.csv".format(trace_name)
+trace_file = traces_dir+"{}.csv".format(trace_name)
 options_file = "../workspace/PyAP/src/python/input/{}/PyAP_options.txt".format(expt_name)
 
 
@@ -55,7 +55,7 @@ pyap_options = { "model_number":9,
                  
 with open(options_file, "w") as outfile:
     for option in pyap_options:
-        outfile.write('"{}":{}\n'.format(option, pyap_options[option]))
+        outfile.write('{} {}\n'.format(option, pyap_options[option]))
 
 original_gs, g_parameters = ps.get_original_params(pyap_options["model_number"])
 
@@ -78,6 +78,7 @@ except ap_simulator.CPPException as e:
     sys.exit()
     
 true_trace += noise_sigma*npr.randn(len(true_trace))
+np.savetxt(trace_file, np.vstack((times, true_trace)).T, delimiter=',')
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
