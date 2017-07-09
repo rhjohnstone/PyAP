@@ -20,6 +20,12 @@ import os
 # 9. Davies (canine) linearised by RJ
 # 10. Paci linearised by RJ
 
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.grid()
+ax.set_xlabel("Time (ms)")
+ax.set_ylabel("Membrane voltage (mV)")
+
 python_seed = 1
 for python_seed in xrange(1,4):
     npr.seed(python_seed)
@@ -58,7 +64,7 @@ for python_seed in xrange(1,4):
 
     original_gs, g_parameters = ps.get_original_params(pyap_options["model_number"])
 
-    expt_params = original_gs * (1. + 0.05*npr.randn(len(original_gs)))
+    expt_params = original_gs * (1. + 0.1*npr.randn(len(original_gs)))
     expt_params[np.where(expt_params<0.)] = 0.
 
     times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
@@ -82,12 +88,6 @@ for python_seed in xrange(1,4):
     true_trace += noise_sigma*npr.randn(len(true_trace))
     np.savetxt(trace_file, np.vstack((times, true_trace)).T, delimiter=',')
 
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.grid()
     ax.plot(times,true_trace)
-    ax.set_xlabel("Time (ms)")
-    ax.set_ylabel("Membrane voltage (mV)")
-    ax.set_title("Model {}".format(pyap_options["model_number"]))
 plt.show(block=True)
 
