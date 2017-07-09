@@ -20,31 +20,57 @@ import sys
 # 10. Paci linearised by RJ
 
 expt_name = "synthetic_davies"
+trace_name = "synthetic_davies_seed_{}".format(python_seed)
+trace_file = "../workspace/PyAP/src/python/input/{}/traces/{}.csv".format(expt_name, trace_name)
+pyap_options_file = "../workspace/PyAP/src/python/input/{}/PyAP_options.txt".format(expt_name)
 
-model_number = 9
-protocol = 1
-num_solves = 2
+split_trace_path = trace_path.split('/')
+expt_name = split_trace_path[4]
+trace_name = split_trace_path[-1][:-4]
+options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 
 noise_sigma = 1.
 
 python_seed = 1
 npr.seed(python_seed)
 
-solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time = ps.get_protocol_details(protocol)
+solve_start = 0.
+solve_end = 500.
+solve_timestep = 0.2
+stimulus_magnitude = -25.5
+stimulus_duration = 2
+stimulus_start_time = 50
 
-original_gs, g_parameters = ps.get_original_params(model_number)
+pyap_options = { "model_number":9,
+                 "num_solves":2,
+                 "extra_K_conc":5.4,
+                 "intra_K_conc":130,
+                 "extra_Na_conc":140,
+                 "intra_Na_conc":10,
+                 "data_clamp_on":50,
+                 "data_clamp_off":52,
+                 "stimulus_period":1000 }
+                 
+with open(options_file, "w") as outfile:
+    for option in pyap_options:
+        outfile.write('"{}":{}\n'.format(option, pyap_options[option]))
+
+original_gs, g_parameters = ps.get_original_params(pyap_options["model_number"])
 
 times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
 
-ap = ap_simulator.APSimulator()
-
-ap.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
-ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
-ap.DefineModel(model_number)
-ap.SetNumberOfSolves(num_solves)
+ap_model = ap_simulator.APSimulator()
+ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
+ap_model.DefineSolveTimes(solve_start, solve_end, solve_timestep)
+ap_model.DefineModel(pyap_options["model_number"])
+ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
+ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
+ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
+ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
+ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 try:
     print "Going to try to solve with params"
-    true_trace = ap.SolveForVoltageTraceWithParams(original_gs)
+    true_trace = ap_model.SolveForVoltageTraceWithParams(original_gs)
 except ap_simulator.CPPException as e:
     print e.GetMessage
     sys.exit()
@@ -56,5 +82,5 @@ ax = fig.add_subplot(111)
 ax.plot(times,true_trace)
 ax.set_xlabel("Time (ms)")
 ax.set_ylabel("Membrane voltage (mV)")
-ax.set_title("Model {}".format(model_number))
+ax.set_title("Model {}".format(pyap_options["model_number"]))
 plt.show(block=True)

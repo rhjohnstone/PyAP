@@ -114,7 +114,7 @@ def get_original_params(model):
 def get_protocol_details(protocol): # pre-defined protocols
     if (protocol==1):
         solve_start = 0.
-        solve_end = 400.
+        solve_end = 500.
         solve_timestep = 0.2
         stimulus_magnitude = -25.5
         stimulus_duration = 2
