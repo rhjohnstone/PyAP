@@ -1,0 +1,9 @@
+num_solves 2
+intra_K_conc 130
+extra_Na_conc 140
+data_clamp_off 51.5
+data_clamp_on 50
+stimulus_period 1000
+extra_K_conc 5.4
+model_number 9
+intra_Na_conc 10
