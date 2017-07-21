@@ -3,6 +3,7 @@ import numpy as np
 import argparse
 import pyap_setup as ps
 import sys
+import os
 
 """
 Need to load pre-existing best-fit params, solve for the traces, then save these traces.
