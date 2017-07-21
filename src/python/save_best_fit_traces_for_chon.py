@@ -41,6 +41,15 @@ split_trace_path = trace_path.split('/')
 expt_name = split_trace_path[4]
 trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
+pyap_options = {}
+with open(options_file, 'r') as infile:
+    for line in infile:
+        (key, val) = line.split()
+        if (key == "model_number") or (key == "num_solves"):
+            val = int(val)
+        else:
+            val = float(val)
+        pyap_options[key] = val
 
 cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, trace_name)
 best_boths = np.loadtxt(cmaes_best_fits_file)
