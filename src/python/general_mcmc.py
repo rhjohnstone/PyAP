@@ -218,21 +218,7 @@ def do_everything():
         outfile.write("Time taken: {} s = {} min = {} hr\n".format(int(log_time_taken), round(log_time_taken/60.,1), round(log_time_taken/3600.,1)))
     print "\nSaved MCMC output at {}\n".format(mcmc_file)
     return None
-    
-
-
-"""num_cores = 1  # 16 for arcus-b
-pool = mp.Pool(num_cores)
-mcms = pool.map_async(do_everything, traces).get(9999999)
-pool.close()
-pool.join()"""
 
 do_everything()
 
-
-"""fig = plt.figure()
-ax = fig.add_subplot(111)
-ax.hist(chain[:,0],color='blue',edgecolor='blue',normed=True,bins=40)
-ax.legend()
-plt.show(block=True)"""
 
