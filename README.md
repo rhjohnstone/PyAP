@@ -62,4 +62,23 @@ python projects/PyAP/python/pyap_example.py
 
 ## MCMC-like stuff
 
-I'll add a specific example (probably after Eights...), but in the above example we've got the AP trace out of Chaste, which is all we need to start defining likelihood functions in Python with which to do MCMC etc.
+Currently it's just set up to use the data clamp method to stimulate an AP.
+
+There is an optional, but recommended, CMA-ES minimisation script. If you run this before the MCMC, the MCMC will start from the best point found by the CMA-ES. If you don't run the CMA-ES, the MCMC will just start from the original model parameters, and so will either take a while to find the mode and converge, or might get stuck in a local optimum that is much less good than the "real" one.
+
+To run, the input data trace must be located at
+```bash
+$PYAP_PROJECT_SOURCE_DIR/src/python/input/$EXPT_NAME/traces/$TRACE_NAME.csv
+```
+where it is in csv format, with the first column being time and the second column being membrane voltage, both already in the correct units.
+There must also be
+
+```bash
+$PYAP_PROJECT_SOURCE_DIR/src/python/input/$EXPT_NAME/PyAP_options.txt
+```
+See already-included examples for how this file must look. Currently all of those options must be there, but their values can be changed.
+
+To run the CMA-ES, you also have to specify how many cores to use, and how many CMA-ES minimisations to perform. e.g.
+```bash
+python projects/PyAP/python/general_cmaes.py --data-file projects/PyAP/python/input/$EXPT_NAME/traces/$TRACE_NAME.csv --num-cores 3 --num-runs 9
+```
