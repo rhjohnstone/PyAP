@@ -11,6 +11,7 @@ import argparse
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
+parser.add_argument("-i", "--iterations", type=int, help="total MCMC iterations", default=500000)
 parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
@@ -111,7 +112,7 @@ def do_mcmc(ap_model, expt_trace, temperature):#, theta0):
     print "\ntheta_cur:", theta_cur, "\n"
     log_target_cur = log_target(theta_cur, ap_model, expt_trace)
 
-    total_iterations = 500000
+    total_iterations = args.iterations
     thinning = 5
     num_saved = total_iterations / thinning + 1
     burn = num_saved / 4
