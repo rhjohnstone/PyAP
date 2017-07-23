@@ -16,6 +16,8 @@ import argparse
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
+requiredNamed.add_argument("--num-cores", type=int, help="how many cores to run multiple CMA-ES minimisations on", required=True)
+requiredNamed.add_argument("--num-runs", type=int, help="how many CMA-ES minimisations to run", required=True)
 parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
@@ -107,7 +109,7 @@ def run_cmaes(cma_index):
 
 all_time_start = time.time()
 
-num_cores = 16  # make 16 for ARCUS-B!!
+num_cores = args.num_cores  # make 16 for ARCUS-B!!
 
 expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
 
@@ -119,7 +121,7 @@ stimulus_start_time = 0.
 original_gs, g_parameters = ps.get_original_params(pyap_options["model_number"])
 num_params = len(original_gs)
 
-how_many_cmaes_runs = 32
+how_many_cmaes_runs = args.num_runs
 cmaes_indices = range(how_many_cmaes_runs)
 
 trace_start_time = time.time()
