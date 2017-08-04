@@ -300,7 +300,7 @@ def do_everything():
         ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
 
     temperature = 1
-    mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled)
+    mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled, args.non_adaptive)
     log_start_time = time.time()
     chain = do_mcmc(ap_model, expt_trace, temperature)
     log_time_taken = time.time() - log_start_time

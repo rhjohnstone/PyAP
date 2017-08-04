@@ -41,21 +41,25 @@ def cmaes_and_figs_files(model_number, expt_name, trace_name):
     return cmaes_best_fits_file, best_fit_png, best_fit_svg
 
 
-def mcmc_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscaled):
+def mcmc_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscaled, non_adaptive):
     if unscaled:
         scale_bit = "mcmc_unscaled"
     else:
         scale_bit = "mcmc_exp_scaled"
-    if arcus_b:
-        mcmc_dir = os.path.expandvars("$DATA/PyAP_output/{}/{}/model_{}/{}/".format(expt_name, scale_bit, model_number, trace_name))
+    if non_adaptive:
+        adaptive_bit = "non_adaptive"
     else:
-        mcmc_dir = "projects/PyAP/python/output/{}/{}/model_{}/{}/".format(expt_name, scale_bit, model_number, trace_name)
+        adaptive_bit = "adaptive"
+    if arcus_b:
+        mcmc_dir = os.path.expandvars("$DATA/PyAP_output/{}/{}/{}/model_{}/{}/".format(expt_name, scale_bit, adaptive_bit, model_number, trace_name))
+    else:
+        mcmc_dir = "projects/PyAP/python/output/{}/{}/{}/model_{}/{}/".format(expt_name, scale_bit, adaptive_bit, model_number, trace_name)
     txt_dir, png_dir = mcmc_dir+"chain/", mcmc_dir+"figs/png/"
     for d in [txt_dir, png_dir]:
         if not os.path.exists(d):
             os.makedirs(d)
-    mcmc_file = txt_dir+"{}_model_{}_trace_{}_{}.txt".format(expt_name, model_number, trace_name, scale_bit)
-    log_file = mcmc_dir+"{}_model_{}_trace_{}_{}.log".format(expt_name, model_number, trace_name, scale_bit)
+    mcmc_file = txt_dir+"{}_model_{}_trace_{}_{}_{}.txt".format(expt_name, model_number, trace_name, scale_bit, adaptive_bit)
+    log_file = mcmc_dir+"{}_model_{}_trace_{}_{}_{}.log".format(expt_name, model_number, trace_name, scale_bit, adaptive_bit)
     return mcmc_file, log_file, png_dir
 
 
