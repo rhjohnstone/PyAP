@@ -62,7 +62,7 @@ for python_seed in xrange(1,4):
         for option in pyap_options:
             outfile.write('{} {}\n'.format(option, pyap_options[option]))
 
-    original_gs, g_parameters = ps.get_original_params(pyap_options["model_number"])
+    original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 
     expt_params = original_gs * (1. + 0.1*npr.randn(len(original_gs)))
     expt_params[np.where(expt_params<0.)] = 0.

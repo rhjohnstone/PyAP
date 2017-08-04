@@ -181,7 +181,7 @@ def do_mcmc(ap_model, expt_trace, temperature):#, theta0):
 stimulus_magnitude = 0
 stimulus_duration = 1
 stimulus_start_time = 0.
-original_gs, g_parameters = ps.get_original_params(pyap_options["model_number"])
+original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 log_gs = np.log(original_gs)
 num_params = len(original_gs)+1  # include sigma
 

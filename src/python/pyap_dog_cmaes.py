@@ -87,7 +87,7 @@ solve_timestep = expt_times[1] - expt_times[0]
 stimulus_start_time = 9.625
 how_many_cmaes_runs = 32
 
-original_gs, g_parameters = ps.get_original_params(model_number)
+original_gs, g_parameters, model_name = ps.get_original_params(model_number)
 num_params = len(original_gs)
 
 cmaes_indices = range(how_many_cmaes_runs)

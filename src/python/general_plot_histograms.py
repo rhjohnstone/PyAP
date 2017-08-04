@@ -30,7 +30,7 @@ with open(options_file, 'r') as infile:
             val = float(val)
         pyap_options[key] = val
 
-original_gs, g_parameters = ps.get_original_params(ps.pyap_options["model_number"])
+original_gs, g_parameters, model_name = ps.get_original_params(ps.pyap_options["model_number"])
 num_gs = len(original_gs)
 
 mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled)

@@ -118,7 +118,7 @@ solve_timestep = expt_times[1] - expt_times[0]
 stimulus_magnitude = 0.
 stimulus_duration = 1.
 stimulus_start_time = 0.
-original_gs, g_parameters = ps.get_original_params(pyap_options["model_number"])
+original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_params = len(original_gs)
 
 how_many_cmaes_runs = args.num_runs

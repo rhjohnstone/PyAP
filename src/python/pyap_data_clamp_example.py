@@ -44,7 +44,7 @@ stimulus_duration = 1
 stimulus_period = 1000
 stimulus_start_time = 0.
 
-original_gs, g_parameters = ps.get_original_params(model_number)
+original_gs, g_parameters, model_name = ps.get_original_params(model_number)
 
 for i, t in enumerate(trace_numbers):
     aps.append(ap_simulator.APSimulator())

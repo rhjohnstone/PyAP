@@ -24,7 +24,7 @@ protocol = 1
 
 solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time = ps.get_protocol_details(protocol)
 
-original_gs, g_parameters = ps.get_original_params(model_number)
+original_gs, g_parameters, model_name = ps.get_original_params(model_number)
 
 times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
 
@@ -44,5 +44,5 @@ ax = fig.add_subplot(111)
 ax.plot(times,true_trace)
 ax.set_xlabel("Time (ms)")
 ax.set_ylabel("Membrane voltage (mV)")
-ax.set_title("Model {}".format(model_number))
+ax.set_title(model_name)
 plt.show(block=True)

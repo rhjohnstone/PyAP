@@ -8,7 +8,7 @@ model_number = 9
 #trace_number = 150
 
 def plot_all(trace_number, exp_scaling):
-    original_gs, g_parameters = ps.get_original_params(model_number)
+    original_gs, g_parameters, model_name = ps.get_original_params(model_number)
     num_gs = len(original_gs)
 
     if exp_scaling:

@@ -37,7 +37,7 @@ solve_start, solve_end = expt_times[[0,-1]]
 solve_timestep = expt_times[1] - expt_times[0]
 stimulus_start_time = 9.625
 
-original_gs, g_parameters = ps.get_original_params(model_number)
+original_gs, g_parameters, model_name = ps.get_original_params(model_number)
 
 for i, t in enumerate(trace_numbers):
     aps.append(ap_simulator.APSimulator())
