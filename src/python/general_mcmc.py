@@ -34,6 +34,9 @@ with open(options_file, 'r') as infile:
             val = float(val)
         pyap_options[key] = val
 
+data_clamp_on = pyap_options["data_clamp_on"]
+data_clamp_off = pyap_options["data_clamp_off"]
+
 
 def exponential_scaling(unscaled_params):
     return original_gs ** unscaled_params
@@ -178,9 +181,9 @@ def do_mcmc(ap_model, expt_trace, temperature):#, theta0):
     return chain
 
 
-stimulus_magnitude = 0
-stimulus_duration = 1
-stimulus_start_time = 0.
+protocol = 1
+solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
+solve_end = 100  # just for HH
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 log_gs = np.log(original_gs)
 num_params = len(original_gs)+1  # include sigma
@@ -204,8 +207,9 @@ def do_everything():
     ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
     ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
     ap_model.SetNumberOfSolves(pyap_options["num_solves"])
-    ap_model.UseDataClamp(pyap_options["data_clamp_on"], pyap_options["data_clamp_off"])
-    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
+    if (data_clamp_on < data_clamp_off):
+        ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
+        ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
 
     temperature = 1
     mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled)
