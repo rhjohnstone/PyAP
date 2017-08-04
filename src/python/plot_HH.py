@@ -15,5 +15,11 @@ fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
 ax.scatter(X, Y, Z)
+
+ax.set_title("Hodgkin Huxley 1952 CMA-ES best fits")
+ax.set_xlabel('$G_{Na}$')
+ax.set_ylabel('$G_K$')
+ax.set_zlabel('$G_l$')
+
 plt.show()
 
