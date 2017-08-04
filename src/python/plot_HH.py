@@ -23,16 +23,16 @@ print eigenvalues
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
+for i in xrange(3):
+    start_end = np.array([mu, mu + 0.5 * eigenvectors[i]])
+    ax.plot(*start_end.T)
+
 ax.scatter(*data.T)
-
-start_end = np.array([mu, mu + 0.5 * eigenvectors[0]])
-print start_end
-
 ax.set_title("Hodgkin Huxley 1952 CMA-ES best fits")
 ax.set_xlabel('$G_{Na}$')
 ax.set_ylabel('$G_K$')
 ax.set_zlabel('$G_l$')
-ax.plot(*start_end.T)
+
 
 plt.show()
 
