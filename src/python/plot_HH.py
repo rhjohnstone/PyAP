@@ -15,7 +15,9 @@ all_points = np.loadtxt(cmaes_best_fits_file)
 data = all_points[:,:-1]
 
 pca = PCA(data)
-print pca
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
 
 ax.scatter(*data.T)
 
