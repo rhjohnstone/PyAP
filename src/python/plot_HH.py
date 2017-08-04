@@ -31,7 +31,7 @@ ax.set_title("Hodgkin Huxley 1952 CMA-ES best fits")
 ax.set_xlabel('$G_{Na}$')
 ax.set_ylabel('$G_K$')
 ax.set_zlabel('$G_l$')
-#ax.plot()
+ax.plot(*start_end.T)
 
 plt.show()
 
