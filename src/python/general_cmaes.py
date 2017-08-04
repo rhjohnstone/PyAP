@@ -39,6 +39,9 @@ with open(options_file, 'r') as infile:
         else:
             val = float(val)
         pyap_options[key] = val
+        
+data_clamp_on = pyap_options["data_clamp_on"]
+data_clamp_off = pyap_options["data_clamp_off"]
 
 
 def exponential_scaling(unscaled_params):
@@ -72,7 +75,8 @@ def run_cmaes(cma_index):
     ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
     ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
     ap_model.SetNumberOfSolves(pyap_options["num_solves"])
-    ap_model.UseDataClamp(pyap_options["data_clamp_on"], pyap_options["data_clamp_off"])
+    if (data_clamp_on < data_clamp_off):
+        ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
     ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
     npr.seed(cma_index)  # can't fix CMA-ES seed for some reason
     #opts = cma.CMAOptions()
@@ -113,11 +117,8 @@ num_cores = args.num_cores  # make 16 for ARCUS-B!!
 
 expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
 
-solve_start, solve_end = expt_times[[0,-1]]
-solve_timestep = expt_times[1] - expt_times[0]
-stimulus_magnitude = 0.
-stimulus_duration = 1.
-stimulus_start_time = 0.
+protocol = 1
+solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_params = len(original_gs)
 

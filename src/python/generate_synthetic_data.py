@@ -27,67 +27,65 @@ import os
 #ax.set_ylabel("Membrane voltage (mV)")
 
 python_seed = 1
-for python_seed in xrange(1,4):
-    npr.seed(python_seed)
+npr.seed(python_seed)
 
-    expt_name = "synthetic_davies"
-    trace_name = "synthetic_davies_seed_{}".format(python_seed)
-    traces_dir = "../workspace/PyAP/src/python/input/{}/traces/".format(expt_name)
-    if not os.path.exists(traces_dir):
-        os.makedirs(traces_dir)
-    trace_file = traces_dir+"{}.csv".format(trace_name)
-    options_file = "../workspace/PyAP/src/python/input/{}/PyAP_options.txt".format(expt_name)
+protocol = 1
+solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
+solve_end = 100
+
+expt_name = "synthetic_HH"
+trace_name = "synthetic_HH"
+traces_dir = "../workspace/PyAP/src/python/input/{}/traces/".format(expt_name)
+if not os.path.exists(traces_dir):
+    os.makedirs(traces_dir)
+trace_file = traces_dir+"{}.csv".format(trace_name)
+options_file = "../workspace/PyAP/src/python/input/{}/PyAP_options.txt".format(expt_name)
 
 
-    noise_sigma = 1.
+noise_sigma = 0.25
 
-    solve_start = 0.
-    solve_end = 500.
-    solve_timestep = 0.2
-    stimulus_magnitude = -25.5
-    stimulus_duration = 2
-    stimulus_start_time = 50
 
-    pyap_options = { "model_number":9,
-                     "num_solves":2,
-                     "extra_K_conc":5.4,
-                     "intra_K_conc":130,
-                     "extra_Na_conc":140,
-                     "intra_Na_conc":10,
-                     "data_clamp_on":50,
-                     "data_clamp_off":52,
-                     "stimulus_period":1000 }
-                     
-    with open(options_file, "w") as outfile:
-        for option in pyap_options:
-            outfile.write('{} {}\n'.format(option, pyap_options[option]))
+pyap_options = { "model_number":1,
+                 "num_solves":1,
+                 "extra_K_conc":5.4,
+                 "intra_K_conc":130,
+                 "extra_Na_conc":140,
+                 "intra_Na_conc":10,
+                 "data_clamp_on":0,
+                 "data_clamp_off":0,
+                 "stimulus_period":1000 }
+                 
+with open(options_file, "w") as outfile:
+    for option in pyap_options:
+        outfile.write('{} {}\n'.format(option, pyap_options[option]))
 
-    original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
+original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 
-    expt_params = original_gs * (1. + 0.1*npr.randn(len(original_gs)))
-    expt_params[np.where(expt_params<0.)] = 0.
+expt_params = original_gs * (1. + 0.1*npr.randn(len(original_gs)))
+expt_params[np.where(expt_params<0.)] = 0.
 
-    times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
+times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
 
-    ap_model = ap_simulator.APSimulator()
-    ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
-    ap_model.DefineSolveTimes(solve_start, solve_end, solve_timestep)
-    ap_model.DefineModel(pyap_options["model_number"])
-    ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
-    ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
-    ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
-    ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
-    ap_model.SetNumberOfSolves(pyap_options["num_solves"])
-    try:
-        print "Going to try to solve with params"
-        true_trace = ap_model.SolveForVoltageTraceWithParams(expt_params)
-    except ap_simulator.CPPException as e:
-        print e.GetMessage
-        sys.exit()
-        
-    true_trace += noise_sigma*npr.randn(len(true_trace))
-    np.savetxt(trace_file, np.vstack((times, true_trace)).T, delimiter=',')
+ap_model = ap_simulator.APSimulator()
+ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
+ap_model.DefineSolveTimes(solve_start, solve_end, solve_timestep)
+ap_model.DefineModel(pyap_options["model_number"])
+ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
+ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
+ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
+ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
+ap_model.SetNumberOfSolves(pyap_options["num_solves"])
+try:
+    print "Going to try to solve with params"
+    true_trace = ap_model.SolveForVoltageTraceWithParams(expt_params)
+except ap_simulator.CPPException as e:
+    print e.GetMessage
+    sys.exit()
+    
+true_trace += noise_sigma*npr.randn(len(true_trace))
+np.savetxt(trace_file, np.vstack((times, true_trace)).T, delimiter=',')
 
-    #ax.plot(times,true_trace)
-#plt.show(block=True)
+plt.plot(times, true_trace)
+plt.show()
+
 
