@@ -14,7 +14,13 @@ all_points = np.loadtxt(cmaes_best_fits_file)
 
 data = all_points[:,:-1]
 
-pca = PCA(data)
+mu = data.mean(axis=0)
+centred_data = data - mu
+eigenvectors, eigenvalues, V = np.linalg.svd(centred_data.T)#, full_matrices=False)
+projected_data = np.dot(centred_data, eigenvectors)
+sigma = projected_data.std(axis=0).mean()
+
+print eigenvectors
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
