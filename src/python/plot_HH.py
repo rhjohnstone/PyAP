@@ -22,10 +22,11 @@ fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
 eigvend = mu + 0.5*eigenvectors[0]
-ax.plot([mu[0], eigvend[0]], [mu[1], eigvend[1]], [mu[2], eigvend[2]])
-
+#ax.plot([mu[0], eigvend[0]], [mu[1], eigvend[1]], [mu[2], eigvend[2]])
 
 ax.scatter(*data.T)
+ax.scatter(mu)
+ax.scatter(eigvend)
 ax.set_title("Hodgkin Huxley 1952 CMA-ES best fits")
 ax.set_xlabel('$G_{Na}$')
 ax.set_ylabel('$G_K$')
