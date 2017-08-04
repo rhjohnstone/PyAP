@@ -17,15 +17,12 @@ data = all_points[:,:-1]
 mu = data.mean(axis=0)
 centred_data = data - mu
 eigenvectors, eigenvalues, V = np.linalg.svd(centred_data.T)#, full_matrices=False)
-print eigenvalues
-
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-for i in xrange(3):
-    start_end = np.array([mu, mu + 0.5 * eigenvectors[i]])
-    ax.plot(*start_end.T)
+eigvend = mu + 0.5*eigenvectors[0]
+ax.plot([mu[0], eigven[0]], [mu[1], eigven[1]], [mu[2], eigven[2]])
 
 ax.scatter(*data.T)
 ax.set_title("Hodgkin Huxley 1952 CMA-ES best fits")
