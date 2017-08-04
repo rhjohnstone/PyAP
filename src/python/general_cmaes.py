@@ -119,6 +119,7 @@ expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
 
 protocol = 1
 solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
+solve_end = 100  # just for HH
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_params = len(original_gs)
 

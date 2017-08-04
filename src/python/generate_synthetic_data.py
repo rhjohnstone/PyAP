@@ -31,7 +31,7 @@ npr.seed(python_seed)
 
 protocol = 1
 solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
-solve_end = 100
+solve_end = 100  # just for HH
 
 expt_name = "synthetic_HH"
 trace_name = "synthetic_HH"
