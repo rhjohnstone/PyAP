@@ -77,7 +77,7 @@ def run_cmaes(cma_index):
     ap_model.SetNumberOfSolves(pyap_options["num_solves"])
     if (data_clamp_on < data_clamp_off):
         ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
-    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
+        ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
     npr.seed(cma_index)  # can't fix CMA-ES seed for some reason
     #opts = cma.CMAOptions()
     #npr.seed(cma_index)
@@ -149,8 +149,9 @@ ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
 ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
 ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
 ap_model.SetNumberOfSolves(pyap_options["num_solves"])
-ap_model.UseDataClamp(pyap_options["data_clamp_on"], pyap_options["data_clamp_off"])
-ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
+if (data_clamp_on < data_clamp_off):
+    ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
+    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
 best_fit_index = np.argmin(best_boths[:,-1])
 best_params = best_boths[best_fit_index,:-1]
 best_f = best_boths[best_fit_index,-1]

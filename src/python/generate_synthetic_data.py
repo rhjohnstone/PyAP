@@ -61,8 +61,10 @@ with open(options_file, "w") as outfile:
 
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 
-expt_params = original_gs * (1. + 0.1*npr.randn(len(original_gs)))
-expt_params[np.where(expt_params<0.)] = 0.
+#expt_params = original_gs * (1. + 0.1*npr.randn(len(original_gs)))
+#expt_params[np.where(expt_params<0.)] = 0.
+
+expt_params = original_gs
 
 times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
 
