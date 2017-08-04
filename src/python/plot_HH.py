@@ -16,7 +16,7 @@ data = all_points[:,:-1]
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-ax.scatter(data.T)
+ax.scatter(*data.T)
 
 ax.set_title("Hodgkin Huxley 1952 CMA-ES best fits")
 ax.set_xlabel('$G_{Na}$')
