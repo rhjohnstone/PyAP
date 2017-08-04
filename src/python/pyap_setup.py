@@ -87,7 +87,7 @@ def get_original_params(model):
                         'G_{Ks}', 'G_{Kr}', 'G_{pCa}', 'G_{bCa}',
                         'k_{NaCa}', 'P_{NaK}', 'G_{to1}', 'G_{to2}',
                         'G_{bCl}', 'G_{NaL}']
-    elif (model==7) or (model==10): # Paci ventricular-like SC-CM, m10 is linearised by RJ
+    elif (model==7): # Paci ventricular-like SC-CM
         original_gs = [3671.2302, 8.635702e-5, 28.1492, 2.041,
                    29.8667, 0.4125, 4900, 0.69264,
                    1.841424, 29.9038, 0.9, 30.10312]
@@ -98,15 +98,6 @@ def get_original_params(model):
         original_gs = [90.34, 6.609, 0.6976, 0.1332, 0.9, 0.75]
         g_parameters = ['G_{Na}', 'G_{K1}', 'G_{Na,wt}', 'G_{K1,wt}'
                         'd', 'f']
-    elif (model==9): # Davies 2012 dog LINEARISED by RJ
-        original_gs = [8.25, 0.000243, 0.5, 0.00276,
-                   0.00746925, 0.0138542, 0.0575, 0.0000007980336,
-                   5.85, 0.61875, 0.1805, 4e-7,
-                   0.000225, 0.011]
-        g_parameters = ['G_{Na}', 'G_{CaL}', 'G_{K1}', 'G_{pK}',
-                        'G_{Ks}', 'G_{Kr}', 'G_{pCa}', 'G_{bCa}',
-                        'k_{NaCa}', 'P_{NaK}', 'G_{to1}', 'G_{to2}',
-                        'G_{bCl}', 'G_{NaL}']
     original_gs = np.array(original_gs)
     return original_gs, g_parameters
     
