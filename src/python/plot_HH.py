@@ -24,14 +24,14 @@ ax = fig.add_subplot(111, projection='3d')
 
 ax.scatter(*data.T)
 
-start, end = mu, mu + 2 * eigenvectors[0]
-print start, end
+start_end = np.array([mu, mu + 2 * eigenvectors[0]])
+print start_end
 
 ax.set_title("Hodgkin Huxley 1952 CMA-ES best fits")
 ax.set_xlabel('$G_{Na}$')
 ax.set_ylabel('$G_K$')
 ax.set_zlabel('$G_l$')
-ax.plot([start, end])
+#ax.plot()
 
 plt.show()
 
