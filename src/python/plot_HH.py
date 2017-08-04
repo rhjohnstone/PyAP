@@ -27,6 +27,9 @@ ax = fig.add_subplot(111, projection='3d')
 
 ax.scatter(*data.T)
 
+start, end = mu, mu + sigma * eigenvectors[0]
+print start, end
+
 ax.set_title("Hodgkin Huxley 1952 CMA-ES best fits")
 ax.set_xlabel('$G_{Na}$')
 ax.set_ylabel('$G_K$')
