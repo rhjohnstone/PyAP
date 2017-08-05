@@ -25,7 +25,7 @@ ax.set_title("Hodgkin Huxley 1952 CMA-ES best fits")
 ax.set_xlabel('$G_{Na}$')
 ax.set_ylabel('$G_K$')
 ax.set_zlabel('$G_l$')
-xlim, ylim, zlim = ax.get_xlim(), ax.get_ylim(), ax.get_zlim()
+xlim, ylim, zlim = np.copy(ax.get_xlim()), np.copy(ax.get_ylim()), np.copy(ax.get_zlim())
 
 start = mu - eigenvectors[:,0]
 end = mu + eigenvectors[:,0]
