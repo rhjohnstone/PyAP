@@ -32,12 +32,12 @@ end = mu + eigenvectors[:,0]
 
 eigvend = mu + 0.5*eigenvectors[:,0]
 line = np.vstack((start, end))
-ax.plot(*line.T)
+ax.plot(*line.T, color='red', label='First principal component')
 
 ax.set_xlim(xlim)
 ax.set_ylim(ylim)
 ax.set_zlim(zlim)
 
-
+ax.legend()
 plt.show()
 
