@@ -16,13 +16,14 @@ data = all_points[:,:-1]
 
 mu = data.mean(axis=0)
 centred_data = data - mu
-eigenvectors, eigenvalues, V = np.linalg.svd(centred_data)#, full_matrices=False)
+eigenvectors, eigenvalues, V = np.linalg.svd(centred_data.T, full_matrices=False)
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
 eigvend = mu + 0.5*eigenvectors[0]
-#ax.plot([mu[0], eigvend[0]], [mu[1], eigvend[1]], [mu[2], eigvend[2]])
+lines = np.hstack((end, eigvend))
+print lines
 
 ax.scatter(*data.T)
 ax.scatter(mu)
