@@ -1,5 +1,7 @@
 import pyap_setup as ps
 from mpl_toolkits.mplot3d import Axes3D
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.mlab import PCA
@@ -39,5 +41,8 @@ line = np.vstack((start, end))
 ax.plot(*line.T, color='red', label='First principal component')
 
 #ax.legend()
-plt.show()
+fig.savefig("cmaes_best_fits.png")
+fig.tight_layout()
+fig.savefig("cmaes_best_fits_tight.png")
+plt.close()
 
