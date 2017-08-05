@@ -21,7 +21,7 @@ eigenvectors, eigenvalues, V = np.linalg.svd(centred_data.T, full_matrices=False
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-eigvend = mu + 0.01*eigenvectors[:,0]
+eigvend = mu + 0.5*eigenvectors[:,0]
 line = np.vstack((mu, eigvend))
 ax.plot(*line.T)
 
