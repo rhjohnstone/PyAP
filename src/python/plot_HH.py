@@ -26,10 +26,15 @@ ax.set_xlabel('$G_{Na}$')
 ax.set_ylabel('$G_K$')
 ax.set_zlabel('$G_l$')
 
-start = mu - eigenvectors[:,0]
-end = mu + eigenvectors[:,0]
+scale = 0.1
+main_eigv = eigenvectors[:,0]
+start = mu - scale*main_eigv
+end = mu + scale*main_eigv
 
-eigvend = mu + 0.1*eigenvectors[:,0]
+print mu
+print main_eigv
+
+eigvend = mu + 0.01*eigenvectors[:,0]
 line = np.vstack((start, end))
 ax.plot(*line.T, color='red', label='First principal component')
 
