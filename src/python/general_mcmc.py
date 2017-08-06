@@ -91,6 +91,7 @@ else:
 
 
 def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
+    global loga, acceptance
     #npr.seed(trace_number)
     print "Starting chain"
     start = time.time()
@@ -112,7 +113,7 @@ def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
     else:
         theta_cur = np.concatenate((initial_unscaled_gs,[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
     mean_estimate = np.abs(theta_cur)
-    cov_estimate = 0.001*np.diag(mean_estimate)
+    cov_estimate = 0.01*np.diag(mean_estimate)
     print "\ntheta_cur:", theta_cur, "\n"
     log_target_cur = log_target(theta_cur, ap_model, expt_trace)
 
@@ -175,13 +176,14 @@ def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
     # discard burn-in before saving chain, just to save space mostly
     time_taken = int(time.time() - start)
     print "\n\nTime taken: {} s = {} min\n\n".format(time_taken,time_taken/60)
-    chain = chain[burn:, :]
+    #chain = chain[burn:, :]
     if not args.unscaled:
         chain[:,:-2] = original_gs**chain[:,:-2]  # return params scaled back into G-space
     return chain
 
 
 def do_mcmc_non_adaptive(ap_model, expt_trace, temperature):#, theta0):
+    global loga, acceptance
     #npr.seed(trace_number)
     print "Starting chain"
     start = time.time()
@@ -202,7 +204,7 @@ def do_mcmc_non_adaptive(ap_model, expt_trace, temperature):#, theta0):
         theta_cur = np.concatenate((exponential_scaling(initial_unscaled_gs),[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
     else:
         theta_cur = np.concatenate((initial_unscaled_gs,[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
-    cov_estimate = 0.001*np.diag(np.abs(theta_cur))
+    cov_estimate = 0.01*np.diag(np.abs(theta_cur))
     print "\ntheta_cur:", theta_cur, "\n"
     log_target_cur = log_target(theta_cur, ap_model, expt_trace)
 
@@ -260,7 +262,7 @@ def do_mcmc_non_adaptive(ap_model, expt_trace, temperature):#, theta0):
     # discard burn-in before saving chain, just to save space mostly
     time_taken = int(time.time() - start)
     print "\n\nTime taken: {} s = {} min\n\n".format(time_taken,time_taken/60)
-    chain = chain[burn:, :]
+    #chain = chain[burn:, :]
     if not args.unscaled:
         chain[:,:-2] = original_gs**chain[:,:-2]  # return params scaled back into G-space
     return chain
@@ -308,9 +310,11 @@ def do_everything():
     log_time_taken = time.time() - log_start_time
     np.savetxt(mcmc_file, chain)
     with open(log_file, "w") as outfile:
-        outfile.write(expt_name+"\n")
-        outfile.write(trace_name+"\n")
+        outfile.write("Expt: {}n".format(expt_name))
+        outfile.write("Trace: {}n".format(trace_name))
         outfile.write("Time taken: {} s = {} min = {} hr\n".format(int(log_time_taken), round(log_time_taken/60.,1), round(log_time_taken/3600.,1)))
+        outfile.write("Final loga: {}n".format(loga))
+        outfile.write("Final acceptance rate: {}n".format(acceptance))
     print "\nSaved MCMC output at {}\n".format(mcmc_file)
     return None
 

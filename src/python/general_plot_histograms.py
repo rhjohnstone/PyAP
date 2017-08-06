@@ -44,6 +44,9 @@ try:
     chain = np.loadtxt(mcmc_file)
 except:
     sys.exit("\nCan't find (or load) {}\n".format(mcmc_file))
+    
+saved_its, num_params_plus_1 = chain.shape
+burn = saved_its/4
 
 for i in xrange(num_gs+1):
     fig = plt.figure()
@@ -56,7 +59,7 @@ for i in xrange(num_gs+1):
     else:
         ax.set_xlabel(r"$\sigma$")
         savelabel = png_dir+'sigma_marginal.png'
-    ax.hist(chain[:,i], normed=True, bins=40, color='blue', edgecolor='blue')
+    ax.hist(chain[burn:,i], normed=True, bins=40, color='blue', edgecolor='blue')
     fig.tight_layout()
     fig.savefig(savelabel)
     plt.close()
@@ -65,7 +68,7 @@ for i in xrange(num_gs+1):
 fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.grid()
-ax.plot(chain[:,-1], lw=1, color='blue')
+ax.plot(chain[burn:,-1], lw=1, color='blue')
 ax.set_xlabel("Saved iteration")
 ax.set_ylabel('Log-target')
 fig.tight_layout()
@@ -89,10 +92,10 @@ while count < 2:
             subplot_position = num_params*i+j+1
             if i==j:
                 axes[ij] = matrix_fig.add_subplot(num_params,num_params,subplot_position)
-                axes[ij].hist(chain[:,i],bins=50,normed=True,color='blue', edgecolor='blue')
+                axes[ij].hist(chain[burn:,i],bins=50,normed=True,color='blue', edgecolor='blue')
             elif j==0: # this column shares x-axis with top-left
                 axes[ij] = matrix_fig.add_subplot(num_params,num_params,subplot_position,sharex=axes["00"])
-                counts, xedges, yedges, Image = axes[ij].hist2d(chain[:,j],chain[:,i],cmap='hot_r',bins=50,norm=norm)
+                counts, xedges, yedges, Image = axes[ij].hist2d(chain[burn:,j],chain[burn:,i],cmap='hot_r',bins=50,norm=norm)
                 maxcounts = np.amax(counts)
                 if maxcounts > colormax:
                     colormax = maxcounts
@@ -101,7 +104,7 @@ while count < 2:
                     colormin = mincounts
             else:
                 axes[ij] = matrix_fig.add_subplot(num_params,num_params,subplot_position,sharex=axes[str(j)+str(j)],sharey=axes[str(i)+"0"])
-                counts, xedges, yedges, Image = axes[ij].hist2d(chain[:,j],chain[:,i],cmap='hot_r',bins=50,norm=norm)
+                counts, xedges, yedges, Image = axes[ij].hist2d(chain[burn:,j],chain[burn:,i],cmap='hot_r',bins=50,norm=norm)
                 maxcounts = np.amax(counts)
                 if maxcounts > colormax:
                     colormax = maxcounts
