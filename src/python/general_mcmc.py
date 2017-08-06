@@ -176,7 +176,8 @@ def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
     time_taken = int(time.time() - start)
     print "\n\nTime taken: {} s = {} min\n\n".format(time_taken,time_taken/60)
     chain = chain[burn:, :]
-    chain[:,:-2] = original_gs**chain[:,:-2]  # return params scaled back into G-space
+    if not args.unscaled:
+        chain[:,:-2] = original_gs**chain[:,:-2]  # return params scaled back into G-space
     return chain
 
 
@@ -260,7 +261,8 @@ def do_mcmc_non_adaptive(ap_model, expt_trace, temperature):#, theta0):
     time_taken = int(time.time() - start)
     print "\n\nTime taken: {} s = {} min\n\n".format(time_taken,time_taken/60)
     chain = chain[burn:, :]
-    chain[:,:-2] = original_gs**chain[:,:-2]  # return params scaled back into G-space
+    if not args.unscaled:
+        chain[:,:-2] = original_gs**chain[:,:-2]  # return params scaled back into G-space
     return chain
 
 

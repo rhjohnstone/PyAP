@@ -118,9 +118,9 @@ while count < 2:
             if i==j==0:
                 hidden_labels.append(axes[ij].get_yticklabels())
             if i==num_params-1:
-                axes[str(i)+str(j)].set_xlabel(labels[j])
+                axes[str(i)+str(j)].set_xlabel("$"+labels[j]+"$")
             if j==0 and i>0:
-                axes[str(i)+str(j)].set_ylabel(labels[i])
+                axes[str(i)+str(j)].set_ylabel("$"+labels[i]+"$")
                 
             plt.xticks(rotation=30)
     norm = matplotlib.colors.Normalize(vmin=colormin,vmax=colormax)
