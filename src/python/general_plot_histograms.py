@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import sys
 import argparse
 
+# Already discarded burn-in when saving MCMC file, so no need to discard here
+
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
@@ -87,10 +89,10 @@ while count < 2:
             subplot_position = num_params*i+j+1
             if i==j:
                 axes[ij] = matrix_fig.add_subplot(num_params,num_params,subplot_position)
-                axes[ij].hist(chain[burn:,i],bins=50,normed=True,color='blue', edgecolor='blue')
+                axes[ij].hist(chain[:,i],bins=50,normed=True,color='blue', edgecolor='blue')
             elif j==0: # this column shares x-axis with top-left
                 axes[ij] = matrix_fig.add_subplot(num_params,num_params,subplot_position,sharex=axes["00"])
-                counts, xedges, yedges, Image = axes[ij].hist2d(chain[burn:,j],chain[burn:,i],cmap='hot_r',bins=50,norm=norm)
+                counts, xedges, yedges, Image = axes[ij].hist2d(chain[:,j],chain[:,i],cmap='hot_r',bins=50,norm=norm)
                 maxcounts = np.amax(counts)
                 if maxcounts > colormax:
                     colormax = maxcounts
@@ -99,7 +101,7 @@ while count < 2:
                     colormin = mincounts
             else:
                 axes[ij] = matrix_fig.add_subplot(num_params,num_params,subplot_position,sharex=axes[str(j)+str(j)],sharey=axes[str(i)+"0"])
-                counts, xedges, yedges, Image = axes[ij].hist2d(chain[burn:,j],chain[burn:,i],cmap='hot_r',bins=50,norm=norm)
+                counts, xedges, yedges, Image = axes[ij].hist2d(chain[:,j],chain[:,i],cmap='hot_r',bins=50,norm=norm)
                 maxcounts = np.amax(counts)
                 if maxcounts > colormax:
                     colormax = maxcounts
