@@ -3,7 +3,8 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import sysimport argparse
+import sys
+import argparse
 
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
