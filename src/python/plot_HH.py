@@ -34,7 +34,8 @@ start = mu - scale*main_eigv
 end = mu + scale*main_eigv
 
 print mu
-print main_eigv
+print "eigv:", main_eigv
+print "unnormed eigv:", main_eigv/np.linalg.norm(main_eigv)
 
 eigvend = mu + 0.01*eigenvectors[:,0]
 line = np.vstack((start, end))
