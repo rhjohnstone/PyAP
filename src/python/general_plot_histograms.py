@@ -77,9 +77,10 @@ hidden_labels = []
 count = 0
 # there's probably a better way to do this
 # I plot all the histograms to normalize the colours, in an attempt to give a better comparison between the pairwise plots
+num_params = num_gs+1
 while count < 2:
     axes = {}
-    matrix_fig = plt.figure(figsize=(3*(num_gs+1),3*(num_gs+1)))
+    matrix_fig = plt.figure(figsize=(3*num_params,3*num_params))
     for i in range(num_params):
         for j in range(i+1):
             ij = str(i)+str(j)
