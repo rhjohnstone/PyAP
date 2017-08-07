@@ -36,7 +36,7 @@ ax.set_xlabel('$G_{Na}$')
 ax.set_ylabel('$G_K$')
 ax.set_zlabel('$G_l$')
 
-scale = 0.1
+scale = 0.5
 main_eigv = eigenvectors[:,0]
 start = mu - scale*main_eigv
 end = mu + scale*main_eigv
