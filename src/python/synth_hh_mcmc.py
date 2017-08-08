@@ -203,7 +203,7 @@ def do_mcmc_non_adaptive(ap_model, expt_trace, temperature):#, theta0):
         #initial_unscaled_gs = np.ones(num_params-1)
     if args.unscaled:
         #theta_cur = np.concatenate((exponential_scaling(initial_unscaled_gs),[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
-        theta_cur = true_params * npr.rand(4)
+        theta_cur = true_params * npr.rand(4) * 10.
     else:
         theta_cur = np.concatenate((initial_unscaled_gs,[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
     cov_estimate = 0.01*np.diag(np.abs(theta_cur))

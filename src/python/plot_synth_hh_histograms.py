@@ -51,21 +51,28 @@ except:
     sys.exit("\nCan't find (or load) {}\n".format(mcmc_file))
     
 saved_its, num_params_plus_1 = chain.shape
-burn = saved_its/4
+#burn = saved_its/4
+burn = 0
 
 for i in xrange(num_gs+1):
     fig = plt.figure()
-    ax = fig.add_subplot(111)
+    ax = fig.add_subplot(211)
+    ax2 = fig.add_subplot(212, sharex=ax)
+    ax2.grid()
     ax.grid()
     ax.set_title("{} - seed {}".format(model_name, args.seed))
-    ax.set_ylabel('Marginal density')
+    ax.set_ylabel('Normalised frequency')
     if i < num_gs:
-        ax.set_xlabel("$"+g_parameters[i]+"$")
+        ax2.set_xlabel("$"+g_parameters[i]+"$")
         savelabel = png_dir+g_parameters[i]+'_marginal.png'
     else:
-        ax.set_xlabel(r"$\sigma$")
+        ax2.set_xlabel(r"$\sigma$")
         savelabel = png_dir+'sigma_marginal.png'
-    ax.hist(chain[burn:,i], normed=True, bins=40, color='blue', edgecolor='blue')
+    plt.setp(ax.get_xticklabels(), visible=False)
+    ax.hist(chain[burn:, i], normed=True, bins=40, color='blue', edgecolor='blue')
+    ax2.plot(chain[burn:, i], range(burn, saved_its))
+    ax2.invert_yaxis()
+    ax2.set_ylabel('Saved MCMC iteration')
     fig.tight_layout()
     fig.savefig(savelabel)
     plt.close()
