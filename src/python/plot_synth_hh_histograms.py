@@ -68,10 +68,10 @@ for i in xrange(num_gs+1):
     ax.set_ylabel('Normalised frequency')
     if i < num_gs:
         ax2.set_xlabel("$"+g_parameters[i]+"$")
-        savelabel = png_dir+g_parameters[i]+'_marginal_seed_{}.png'.format(args.seed))
+        savelabel = png_dir+g_parameters[i]+'_marginal_seed_{}.png'.format(args.seed)
     else:
         ax2.set_xlabel(r"$\sigma$")
-        savelabel = png_dir+'sigma_marginal_seed_{}.png'.format(args.seed))
+        savelabel = png_dir+'sigma_marginal_seed_{}.png'.format(args.seed)
     plt.setp(ax.get_xticklabels(), visible=False)
     ax.hist(chain[burn:, i], normed=True, bins=40, color='blue', edgecolor='blue')
     ax2.plot(chain[burn:, i], range(burn, saved_its))
@@ -155,6 +155,9 @@ matrix_fig.savefig(png_dir+'scatterplot_matrix_seed_{}.png'.format(args.seed))
 #matrix_fig.savefig(images_dir+"{}_{}_scatterplot_matrix.pdf".format(drug,channel))
 plt.close()
 
-g_means = np.mean(chain[burn:, :3], axis=0)
-print means/original_gs
+best_ll_index = np.argmax(chain[burn:, -1])
+best_gs = chain[burn+best_ll_index, :3]
+
+#g_means = np.mean(chain[burn:, :3], axis=0)
+print "best_gs/original_gs =", best_gs/original_gs
 
