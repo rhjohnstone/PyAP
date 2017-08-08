@@ -68,10 +68,10 @@ for i in xrange(num_gs+1):
     ax.set_ylabel('Normalised frequency')
     if i < num_gs:
         ax2.set_xlabel("$"+g_parameters[i]+"$")
-        savelabel = png_dir+g_parameters[i]+'_marginal.png'
+        savelabel = png_dir+g_parameters[i]+'_marginal_seed_{}.png'.format(args.seed))
     else:
         ax2.set_xlabel(r"$\sigma$")
-        savelabel = png_dir+'sigma_marginal.png'
+        savelabel = png_dir+'sigma_marginal_seed_{}.png'.format(args.seed))
     plt.setp(ax.get_xticklabels(), visible=False)
     ax.hist(chain[burn:, i], normed=True, bins=40, color='blue', edgecolor='blue')
     ax2.plot(chain[burn:, i], range(burn, saved_its))
@@ -90,7 +90,7 @@ ax.plot(chain[burn:,-1], lw=1, color='blue')
 ax.set_xlabel("Saved iteration")
 ax.set_ylabel('Log-target')
 fig.tight_layout()
-fig.savefig(png_dir+'log_target.png')
+fig.savefig(png_dir+'log_target_seed_{}.png'.format(args.seed))
 plt.close()
 
 # plot scatterplot matrix of posterior(s)
@@ -151,7 +151,10 @@ while count < 2:
 plt.setp(hidden_labels, visible=False)
 
 matrix_fig.tight_layout()
-matrix_fig.savefig(png_dir+'scatterplot_matrix.png')
+matrix_fig.savefig(png_dir+'scatterplot_matrix_seed_{}.png'.format(args.seed))
 #matrix_fig.savefig(images_dir+"{}_{}_scatterplot_matrix.pdf".format(drug,channel))
 plt.close()
+
+g_means = np.mean(chain[burn:, :3], axis=0)
+print means/original_gs
 
