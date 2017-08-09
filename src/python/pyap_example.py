@@ -22,6 +22,7 @@ def example_likelihood_function(trace):
 protocol = 1
 
 solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time = ps.get_protocol_details(protocol)
+solve_end = 100
 times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
 for model_number in xrange(1,2):
 
@@ -48,6 +49,12 @@ for model_number in xrange(1,2):
             print e.GetMessage
             sys.exit()
         ax.plot(times, trace, label=m)
+        
+    random_gs = [0.5, 1, 2] * original_gs
+    ap.SetToModelInitialConditions()
+    trace = ap.SolveForVoltageTraceWithParams(scaled_gs)
+    ax.plot(times, trace, label="[0.5, 1, 2]")
+        
     ax.set_xlabel("Time (ms)")
     ax.set_ylabel("Membrane voltage (mV)")
     ax.set_title(model_name)
