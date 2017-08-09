@@ -26,7 +26,7 @@ solve_end = 100
 times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
 for model_number in xrange(1,2):
 
-    multiples = [0.5, 1, 2, 5]
+    multiples = [0.3, 1, 3, 10]
 
     original_gs, g_parameters, model_name = ps.get_original_params(model_number)
     original_gs = np.array(original_gs)
@@ -50,10 +50,11 @@ for model_number in xrange(1,2):
             sys.exit()
         ax.plot(times, trace, label=m)
         
-    random_gs = [0.5, 1, 2] * original_gs
+    random_scales = [0.3, 3, 10]
+    random_gs = random_scales * original_gs
     ap.SetToModelInitialConditions()
     trace = ap.SolveForVoltageTraceWithParams(scaled_gs)
-    ax.plot(times, trace, label="[0.5, 1, 2]")
+    ax.plot(times, trace, label=str(random_scales))
         
     ax.set_xlabel("Time (ms)")
     ax.set_ylabel("Membrane voltage (mV)")
