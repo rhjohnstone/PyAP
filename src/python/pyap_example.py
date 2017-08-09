@@ -24,7 +24,7 @@ protocol = 1
 solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time = ps.get_protocol_details(protocol)
 for model_number in xrange(1,3):
 
-    if i==1:
+    if model_number==1:
         solve_end = 100
     else:
         solve_end = 400
