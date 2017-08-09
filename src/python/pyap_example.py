@@ -23,24 +23,34 @@ protocol = 1
 
 solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time = ps.get_protocol_details(protocol)
 times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
-for model_number in xrange(1,7):
+for model_number in xrange(1,2):
+
+    multiples = [0.5, 1, 2, 5]
+
     original_gs, g_parameters, model_name = ps.get_original_params(model_number)
+    original_gs = np.array(original_gs)
 
     ap = ap_simulator.APSimulator()
     ap.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
     ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
     ap.DefineModel(model_number)
-    try:
-        true_trace = ap.SolveForVoltageTraceWithParams(original_gs)
-    except ap_simulator.CPPException as e:
-        print e.GetMessage
-        sys.exit()
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.plot(times,true_trace)
+    ax.grid()
+    
+    for m in multiples:
+        scaled_gs = m * original_gs
+        try:
+            ap.SetToModelInitialConditions()
+            trace = ap.SolveForVoltageTraceWithParams(scaled_gs)
+        except ap_simulator.CPPException as e:
+            print e.GetMessage
+            sys.exit()
+        ax.plot(times, trace, label=m)
     ax.set_xlabel("Time (ms)")
     ax.set_ylabel("Membrane voltage (mV)")
     ax.set_title(model_name)
+    ax.legend()
     plt.show(block=True)
 
