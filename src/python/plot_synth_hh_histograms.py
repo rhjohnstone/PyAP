@@ -101,7 +101,7 @@ count = 0
 # there's probably a better way to do this
 # I plot all the histograms to normalize the colours, in an attempt to give a better comparison between the pairwise plots
 num_params = num_gs+1
-while count < 2:
+"""while count < 2:
     axes = {}
     matrix_fig = plt.figure(figsize=(3*num_params,3*num_params))
     for i in range(num_params):
@@ -153,7 +153,7 @@ plt.setp(hidden_labels, visible=False)
 matrix_fig.tight_layout()
 matrix_fig.savefig(png_dir+'scatterplot_matrix_seed_{}.png'.format(args.seed))
 #matrix_fig.savefig(images_dir+"{}_{}_scatterplot_matrix.pdf".format(drug,channel))
-plt.close()
+plt.close()"""
 
 best_ll_index = np.argmax(chain[burn:, -1])
 best_gs = chain[burn+best_ll_index, :3]
