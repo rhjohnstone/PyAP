@@ -39,6 +39,7 @@ with open(options_file, 'r') as infile:
 data_clamp_on = pyap_options["data_clamp_on"]
 data_clamp_off = pyap_options["data_clamp_off"]
 
+npr.seed(args.seed)
 
 def exponential_scaling(unscaled_params):
     return original_gs ** unscaled_params
@@ -110,9 +111,10 @@ def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
         print "\n",e,"\n"
         initial_unscaled_gs = np.ones(num_params-1)
     if args.unscaled:
-        theta_cur = np.concatenate((exponential_scaling(initial_unscaled_gs),[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
+        #theta_cur = np.concatenate((exponential_scaling(initial_unscaled_gs),[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
+        theta_cur = true_params * npr.rand(4) * 10.
     else:
-        theta_cur = np.concatenate((initial_unscaled_gs,[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
+        sys.exit("\nOnly doing unscaled in this script\n")
     mean_estimate = np.abs(theta_cur)
     cov_estimate = 0.01*np.diag(mean_estimate)
     print "\ntheta_cur:", theta_cur, "\n"
@@ -205,7 +207,7 @@ def do_mcmc_non_adaptive(ap_model, expt_trace, temperature):#, theta0):
         #theta_cur = np.concatenate((exponential_scaling(initial_unscaled_gs),[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
         theta_cur = true_params * npr.rand(4) * 10.
     else:
-        theta_cur = np.concatenate((initial_unscaled_gs,[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
+        sys.exit("\nOnly doing unscaled in this script\n")
     cov_estimate = 0.01*np.diag(np.abs(theta_cur))
     print "\ntheta_cur:", theta_cur, "\n"
     log_target_cur = log_target(theta_cur, ap_model, expt_trace)
