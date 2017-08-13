@@ -58,7 +58,7 @@ if args.burn:
 else:
     burn = 0
 
-"""for i in xrange(num_gs+1):
+for i in xrange(num_gs+1):
     fig = plt.figure()
     ax = fig.add_subplot(211)
     ax2 = fig.add_subplot(212, sharex=ax)
@@ -91,6 +91,7 @@ ax.set_xlabel("Saved iteration")
 ax.set_ylabel('Log-target')
 fig.tight_layout()
 fig.savefig(png_dir+'log_target_seed_{}.png'.format(args.seed))
+fig.savefig(png_dir+'log_target_seed_{}.pdf'.format(args.seed))
 plt.close()
 
 # plot scatterplot matrix of posterior(s)
@@ -153,7 +154,7 @@ plt.setp(hidden_labels, visible=False)
 matrix_fig.tight_layout()
 matrix_fig.savefig(png_dir+'scatterplot_matrix_seed_{}.png'.format(args.seed))
 #matrix_fig.savefig(images_dir+"{}_{}_scatterplot_matrix.pdf".format(drug,channel))
-plt.close()"""
+plt.close()
 
 best_ll_index = np.argmax(chain[burn:, -1])
 best_gs = chain[burn+best_ll_index, :3]
