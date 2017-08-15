@@ -178,6 +178,8 @@ ax.legend()
 fig.tight_layout()
 fig.savefig(best_fit_png)
 fig.savefig(best_fit_svg)
+best_fit_pdf = best_fit_png[:-3]+".pdf"
+fig.savefig(best_fit_pdf)
 plt.close()
 trace_time_taken = time.time()-trace_start_time
 print "\n\n{}, time taken: {} s = {} min\n\n".format(trace_name, round(trace_time_taken), round(trace_time_taken/60.))
