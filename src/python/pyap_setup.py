@@ -9,8 +9,6 @@ CHOICE OF CELL MODEL
 # 6. Davies (canine)
 # 7. Paci (SC-CM ventricular)
 # 8. Gokhale 2017 ex293
-# 9. Davies (canine) linearised by RJ
-# 10. Paci linearised by RJ
 
 """
 

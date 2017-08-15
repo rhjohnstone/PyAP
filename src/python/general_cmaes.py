@@ -67,17 +67,19 @@ def run_cmaes(cma_index):
     print "\n\n\n{}, cma {}\n\n\n".format(trace_name, cma_index)
     start = time.time()
     ap_model = ap_simulator.APSimulator()
-    ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
-    ap_model.DefineSolveTimes(solve_start, solve_end, solve_timestep)
+    if (data_clamp_on < data_clamp_off):
+        ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
+        ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
+        ap_model.DefineStimulus(0, 1, pyap_options["stimulus_period"], 0)
+    else:
+        ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
+    ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
     ap_model.DefineModel(pyap_options["model_number"])
     ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
     ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
     ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
     ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
     ap_model.SetNumberOfSolves(pyap_options["num_solves"])
-    if (data_clamp_on < data_clamp_off):
-        ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
-        ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
     npr.seed(cma_index)  # can't fix CMA-ES seed for some reason
     #opts = cma.CMAOptions()
     #npr.seed(cma_index)
@@ -119,7 +121,8 @@ expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
 
 protocol = 1
 solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
-solve_end = 100  # just for HH
+if pyap_options["model_number"] == 1:
+    solve_end = 100  # just for HH
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_params = len(original_gs)
 
