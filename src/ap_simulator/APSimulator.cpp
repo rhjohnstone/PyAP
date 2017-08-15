@@ -243,18 +243,15 @@ std::vector<double> APSimulator::SolveForVoltageTraceWithParamsNoDataClamp(const
 
 std::vector<double> APSimulator::SolveForVoltageTraceWithParamsWithDataClamp(const std::vector<double>& rParams)
 {
-    std::cerr << "About to solve with data clamp" << std::endl << std::flush;
     std::vector<double> voltage_trace;
     
     for (unsigned j=0; j<rParams.size(); j++)
     {
         mpModel->SetParameter(mParameterMetanames[j], rParams[j]);
     }
-    std::cerr << "Conductance parameters set" << std::endl << std::flush;
     //mpModel->SetStateVariable("membrane_voltage",mExptTrace[0]);
 
     boost::static_pointer_cast<AbstractCvodeCellWithDataClamp>(mpModel)->TurnOffDataClamp();
-    std::cerr << "Initially turned DC off" << std::endl << std::flush;
     
     
     if (mHowManySolves > 1)
@@ -262,14 +259,8 @@ std::vector<double> APSimulator::SolveForVoltageTraceWithParamsWithDataClamp(con
         for (unsigned i=0; i<mHowManySolves-1; i++)
         {
             mpModel->ResetSolver();
-            std::cerr << "About to do first solve bit" << std::endl << std::flush;
-            std::cerr << "mSolveStart = " << mSolveStart << std::endl << std::flush;
-            std::cerr << "mDataClampOn = " << mDataClampOn << std::endl << std::flush;
-            std::cerr << "mSolveTimestep = " << mSolveTimestep << std::endl << std::flush;
             mpModel->Compute(mSolveStart, mDataClampOn, mSolveTimestep);
-            std::cerr << "Just done first solve bit" << std::endl << std::flush;
             mpModel->ResetSolver();
-            std::cerr << "Reset solver, about to turn DC on" << std::endl << std::flush;
             boost::static_pointer_cast<AbstractCvodeCellWithDataClamp>(mpModel)->TurnOnDataClamp(200);
             mpModel->Compute(mDataClampOn, mDataClampOff, mSolveTimestep);
             mpModel->ResetSolver();
