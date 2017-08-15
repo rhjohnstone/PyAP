@@ -261,9 +261,11 @@ std::vector<double> APSimulator::SolveForVoltageTraceWithParamsWithDataClamp(con
         for (unsigned i=0; i<mHowManySolves-1; i++)
         {
             mpModel->ResetSolver();
+            std::cerr << "About to do first solve bit" << std::endl << std::flush;
             mpModel->Compute(mSolveStart, mDataClampOn, mSolveTimestep);
+            std::cerr << "Just done first solve bit" << std::endl << std::flush;
             mpModel->ResetSolver();
-            std::cerr << "Did first solve bit, about to turn DC on" << std::endl << std::flush;
+            std::cerr << "Reset solver, about to turn DC on" << std::endl << std::flush;
             boost::static_pointer_cast<AbstractCvodeCellWithDataClamp>(mpModel)->TurnOnDataClamp(200);
             mpModel->Compute(mDataClampOn, mDataClampOff, mSolveTimestep);
             mpModel->ResetSolver();
