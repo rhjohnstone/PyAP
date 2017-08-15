@@ -262,6 +262,9 @@ std::vector<double> APSimulator::SolveForVoltageTraceWithParamsWithDataClamp(con
         {
             mpModel->ResetSolver();
             std::cerr << "About to do first solve bit" << std::endl << std::flush;
+            std::cerr << "mSolveStart = " << mSolveStart << std::endl << std::flush;
+            std::cerr << "mDataClampOn = " << mDataClampOn << std::endl << std::flush;
+            std::cerr << "mSolveTimestep = " << mSolveTimestep << std::endl << std::flush;
             mpModel->Compute(mSolveStart, mDataClampOn, mSolveTimestep);
             std::cerr << "Just done first solve bit" << std::endl << std::flush;
             mpModel->ResetSolver();
