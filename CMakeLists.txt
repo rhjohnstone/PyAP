@@ -17,7 +17,7 @@ find_package(Chaste COMPONENTS heart)
 # This is needed if your project is not contained in the projects folder within a Chaste source tree.
 #find_package(Chaste COMPONENTS heart crypt PATHS /path/to/chaste-install NO_DEFAULT_PATH)
 
-
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
 
 # Include the Python wrapping build logic
 include(${CMAKE_CURRENT_SOURCE_DIR}/WrapPython.cmake)
