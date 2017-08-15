@@ -138,6 +138,7 @@ void APSimulator::DefineModel(unsigned model_number)
         mParameterMetanames.push_back("membrane_transient_outward_chloride_current_conductance");         // 4e-7
         mParameterMetanames.push_back("membrane_background_chloride_current_conductance");                // 0.000225
         mParameterMetanames.push_back("membrane_persistent_sodium_current_conductance");                  // 0.011
+        std::cerr << "Defined mpModel as Davies with DC" << std::endl << std::flush;
     }
     /*else if ( model_number == 7u ) // Paci ventricular
     {
