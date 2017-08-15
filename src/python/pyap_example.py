@@ -25,7 +25,7 @@ solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimul
 for model_number in xrange(1,3):
 
     if model_number==1:
-        solve_end = 100
+        solve_end = 60
     else:
         solve_end = 400
     times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
