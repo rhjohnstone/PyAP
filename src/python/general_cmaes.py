@@ -67,6 +67,7 @@ def run_cmaes(cma_index):
     print "\n\n\n{}, cma {}\n\n\n".format(trace_name, cma_index)
     start = time.time()
     ap_model = ap_simulator.APSimulator()
+    ap_model.DefineModel(pyap_options["model_number"])
     if (data_clamp_on < data_clamp_off):
         ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
         ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
@@ -74,7 +75,6 @@ def run_cmaes(cma_index):
     else:
         ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
     ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
-    ap_model.DefineModel(pyap_options["model_number"])
     ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
     ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
     ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
