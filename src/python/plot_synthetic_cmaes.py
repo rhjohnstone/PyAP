@@ -57,6 +57,9 @@ ap_model.SetNumberOfSolves(num_solves)
 expt_times = np.arange(solve_start, solve_end+solve_timestep, solve_timestep)
 expt_trace = solve_for_voltage_trace(expt_params, ap_model) + 0.25*npr.randn(len(expt_times))
 
+
+fig = plt.figure()
+
 ax1 = fig.add_subplot(2, 3, 4)
 ax2 = fig.add_subplot(2, 3, 5, sharey = ax1)
 ax3 = fig.add_subplot(2, 3, 6, sharey = ax1)
@@ -88,7 +91,9 @@ while not es.stop():
         ap_axs[axi].plot(expt_times, expt_trace, label="Expt")
         ap_axs[axi].plot(expt_times, solve_for_voltage_trace(temp_gs, ap_model), label="Iteration {}".format(it))
         ap_axs[axi].legend()
-        bar_axs[axi].bar(temp_percents)
+        bar_axs[axi].hline(100)
+        bar_axs[axi].bar(np.arange(num_gs), temp_percents)
+        bar_axs[axi].set_xticklabels([r"${}$".format(gp) for gp in g_parameters])
         axi += 1
     X = es.ask()
     es.tell(X, [obj(x, ap_model) for x in X])
