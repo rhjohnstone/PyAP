@@ -60,6 +60,7 @@ ax = fig.add_subplot(111)
 ax.grid()
 ax.set_xlabel('Time (ms)')
 ax.set_ylabel('Membrane voltage (mV)')
+ax.plot(expt_times, expt_trace, label="Expt")
 
 x0 = 20.*npr.rand(num_gs)
 print "x0:", x0
@@ -68,7 +69,7 @@ print "obj0:", round(obj0, 2)
 sigma0 = 0.1
 es = cma.CMAEvolutionStrategy(x0, sigma0)#, options)
 it = 0
-test_its = [0, 100, 500]
+test_its = [0, 100, 300]
 while not es.stop():
     if it in test_its:
         ax.plot(expt_times, solve_for_voltage_trace(es.mean, ap_model), label="Iteration {}".format(it))
