@@ -3,6 +3,8 @@ import ap_simulator
 import numpy as np
 import numpy.random as npr
 import argparse
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import sys
 import cma
@@ -58,7 +60,7 @@ expt_times = np.arange(solve_start, solve_end+solve_timestep, solve_timestep)
 expt_trace = solve_for_voltage_trace(expt_params, ap_model) + 0.25*npr.randn(len(expt_times))
 
 
-fig = plt.figure(figsize=(18,9))
+fig = plt.figure(figsize=(16,8))
 
 ax1 = fig.add_subplot(2, 4, 5)
 ax2 = fig.add_subplot(2, 4, 6, sharey = ax1)
@@ -97,7 +99,7 @@ while not es.stop():
         ap_axs[axi].plot(expt_times, expt_trace, color='red')
         ap_axs[axi].plot(expt_times, solve_for_voltage_trace(temp_gs, ap_model), color='blue')
         ap_axs[axi].legend()
-        bar_axs[axi].xaxis.grid()
+        bar_axs[axi].yaxis.grid()
         bar_axs[axi].axhline(100, color='red')
         bar_axs[axi].bar(bar_pos, temp_percents, align='center', color='blue', tick_label=g_labels)
         if (axi>0):
@@ -128,7 +130,7 @@ best_ap.set_xlabel('Time (ms)')
 best_ap.plot(expt_times, expt_trace, color='red')
 best_ap.plot(expt_times, solve_for_voltage_trace(best_gs, ap_model), color='blue')
 best_ap.legend()
-best_bar.xaxis.grid()
+best_bar.yaxis.grid()
 best_bar.axhline(100, color='red')
 best_bar.bar(bar_pos, temp_percents, align='center', color='blue', tick_label=g_labels)
 plt.setp(best_ap.get_yticklabels(), visible=False)
@@ -139,8 +141,8 @@ bar_axs[0].set_ylabel(r'% of true')
 fig.tight_layout()
 fig.savefig('cmaes_its.png')
 fig.savefig('cmaes_its.pdf')
-plt.show(block=True)
-
+#plt.show(block=True)
+plt.close()
 
 
 
