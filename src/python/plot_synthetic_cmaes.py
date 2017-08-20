@@ -64,14 +64,15 @@ ax.set_xlabel('Time (ms)')
 ax.set_ylabel('Membrane voltage (mV)')
 ax.plot(expt_times, expt_trace, label="Expt")
 
-x0 = 10. + npr.randn(num_params)
+x0 = 10. + 5.*npr.randn(num_gs)
+x0[x0<0] = 0.
 print "x0:", x0
 obj0 = obj(x0, ap_model)
 print "obj0:", round(obj0, 2)
 sigma0 = 0.1
 es = cma.CMAEvolutionStrategy(x0, sigma0)#, options)
 it = 0
-test_its = [0, 100, 300]
+test_its = [0, 10, 100]
 while not es.stop():
     if it in test_its:
         ax.plot(expt_times, solve_for_voltage_trace(exponential_scaling(es.mean), ap_model), label="Iteration {}".format(it))
