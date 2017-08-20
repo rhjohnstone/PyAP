@@ -72,7 +72,7 @@ ax6 = fig.add_subplot(2, 3, 3, sharey = ax4)
 
 bar_axs = [ax4, ax5, ax6]
 
-ks = 1.+0.1*npr.randn(num_gs)
+ks = 1.+npr.randn(num_gs)
 ks[ks<0] = 1e-2
 x0 = 10. * (1. + np.log(ks)/np.log(original_gs))
 print "x0:", x0
@@ -93,15 +93,14 @@ while not es.stop():
         ap_axs[axi].grid()
         ap_axs[axi].set_xlabel('Time (ms)')
         ap_axs[axi].plot(expt_times, expt_trace, label="Expt", color='red')
-        ap_axs[axi].plot(expt_times, solve_for_voltage_trace(temp_gs, ap_model), label="Iteration {}".format(it), color='blue')
+        ap_axs[axi].plot(expt_times, solve_for_voltage_trace(temp_gs, ap_model), label="It. {}".format(it), color='blue')
         ap_axs[axi].legend()
         bar_axs[axi].grid()
         bar_axs[axi].axhline(100, color='red')
-        bar_axs[axi].bar(bar_pos, temp_percents, align='center', color='blue')
-        bar_axs[axi].set_xticklabels(g_labels)
-        if (axi==1) or (axi==2):
-            ap_axs[axi].yaxis.set_ticklabels([])
-            bar_axs[axi].yaxis.set_ticklabels([])
+        bar_axs[axi].bar(bar_pos, temp_percents, align='center', color='blue', tick_label=g_labels)
+        if (axi>0):
+            plt.setp(ap_axs[axi].get_yticklabels(), visible=False)
+            plt.setp(bar_axs[axi].get_yticklabels(), visible=False)
         axi += 1
     X = es.ask()
     es.tell(X, [obj(x, ap_model) for x in X])
