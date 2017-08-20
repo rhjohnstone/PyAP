@@ -79,7 +79,7 @@ print "x0:", x0
 obj0 = obj(x0, ap_model)
 print "obj0:", round(obj0, 2)
 sigma0 = 0.1
-es = cma.CMAEvolutionStrategy(x0, sigma0)#, options)
+es = cma.CMAEvolutionStrategy(x0, sigma0, options={'seed':100})#, options)
 it = 0
 test_its = [0, 10, 100]
 axi = 0
@@ -111,12 +111,14 @@ print "{} iterations total".format(it)
 res = es.result()
 
 best_xs = res[0]
+print "best_xs:", best_xs
 #ax.plot(expt_times, solve_for_voltage_trace(exponential_scaling(best_gs), ap_model), label="Best fit")
 
 best_bar = fig.add_subplot(2, 4, 4, sharey = ax4)
 best_ap = fig.add_subplot(2, 4, 8, sharey = ax1)
 
 temp_gs = np.copy(exponential_scaling(best_xs))
+print "best_gs:", best_gs
 temp_percents = 100. * np.copy(temp_gs / original_gs)
 print temp_percents
 best_bar.set_title("Best fit")
