@@ -72,7 +72,9 @@ ax6 = fig.add_subplot(2, 3, 3, sharey = ax4)
 
 bar_axs = [ax4, ax5, ax6]
 
-x0 = 10. + np.log(npr.randn(num_gs))/np.log(original_gs)
+ks = 1.+0.1*npr.randn(num_gs)
+ks[ks<0] = 1e-2
+x0 = 10. * (1. + np.log(ks)/np.log(original_gs))
 print "x0:", x0
 obj0 = obj(x0, ap_model)
 print "obj0:", round(obj0, 2)
