@@ -8,6 +8,12 @@ import time
 import multiprocessing as mp
 import argparse
 
+
+def solve_for_voltage_trace(temp_g_params, ap_model):
+    ap_model.SetToModelInitialConditions()
+    return ap_model.SolveForVoltageTraceWithParams(temp_g_params)
+    
+
 python_seed = 1
 npr.seed(python_seed)
 
@@ -28,42 +34,82 @@ expt_name = split_trace_path[4]
 trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 
-def trace_label(dog):
-    if (dog < 10):
-        return "00"+str(dog)
-    elif (10 <= dog < 100):
-        return "0"+str(dog)
-    else:
-        return str(dog)
+pyap_options = {}
+with open(options_file, 'r') as infile:
+    for line in infile:
+        (key, val) = line.split()
+        if (key == "model_number") or (key == "num_solves"):
+            val = int(val)
+        else:
+            val = float(val)
+        pyap_options[key] = val
+        
+data_clamp_on = pyap_options["data_clamp_on"]
+data_clamp_off = pyap_options["data_clamp_off"]
+        
+original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
+num_gs = len(original_gs)
 
 #num_processors = multiprocessing.cpu_count()
-#num_processes = min(num_processors-1,N_e) # counts available cores and makes one fewer process
-    
-expt_noise = 0.25
+#num_processes = min(num_processors-1,args.num_traces) # counts available cores and makes one fewer process
 
-num_params, true_gs, g_parameters, g_intervals = ModelSetup.ChooseModel(model) # don't need g_intervals
-true_gs = true_gs[:-1]
-num_params -= 1 # sigma is included in the original num_params
-ModelSetup.CheckProtocolChoice(protocol)
+split_trace_name = trace_name.split("_")
+first_trace_number = int(split_trace_name[-1])  # need a specific-ish format currently
+trace_numbers = range(first_trace_number, first_trace_number+args.num_traces)
+print trace_numbers
+
+
+
+best_fits = np.zeros((args.num_traces, num_gs))
+expt_traces = {}
+ap_models = []
+for i, t in enumerate(trace_numbers):
+    temp_trace_path = "{}_{}.csv".format(trace_path[:-8], t)
+    temp_times, temp_trace = np.loadtxt(temp_trace_path,delimiter=',').T
+    if i==0:
+        expt_times = temp_times
+    expt_traces[t] = np.copy(temp_trace)
+    temp_trace_name = trace_name[:-3]+str(t)
+    cmaes_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, temp_trace_name)
+    all_best_fits = np.loadtxt(cmaes_file)
+    best_index = np.argmin(all_best_fits[:, -1])
+    best_params = all_best_fits[best_index, :-1]
+    best_fits[i*num_gs:(i+1)*num_gs] = np.copy(best_params)
+    temp_ap_model = ap_simulator.APSimulator()
+    if (data_clamp_on < data_clamp_off):
+        temp_ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
+        temp_ap_model.DefineModel(pyap_options["model_number"])
+        temp_ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
+        temp_ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, np.copy(temp_trace))
+    else:
+        temp_ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
+        temp_ap_model.DefineModel(pyap_options["model_number"])
+    temp_ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
+    temp_ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
+    temp_ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
+    temp_ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
+    temp_ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
+    temp_ap_model.SetNumberOfSolves(pyap_options["num_solves"])
+    ap_models.append(temp_ap_model)
+print best_fits
+print expt_traces
+print ap_models
+
+sys.exit()
 
 # defined in generate_synthetic_data.py, should abstract(?) this so it's definitely consistent
 scale_for_generating_expt_params = 0.1
 top_theta = true_gs
 top_sigma_squared = (scale_for_generating_expt_params * true_gs)**2
 
-trace_directory = "../input/dog/dog_traces_csv/"
-
-
-cmaes_directory = "../output/dog/m"+str(model)+"/p"+str(protocol)+"/best_fits/"
-params_files = [cmaes_directory+"trace_"+trace_label(i)+"_cmaes_output.txt" for i in range(first_dog,first_dog+N_e)]
 start = time.time()
-starting_points = np.array([params[np.argmax(params[:,-1]),:-1] for params in [np.loadtxt(cmaes_file) for cmaes_file in params_files]])
+starting_points = np.copy(best_fits)
 
 #sys.exit()
 
 
 starting_mean = np.mean(starting_points,axis=0)
-if N_e == 1:
+if args.num_traces == 1:
     starting_vars = 0.1*np.ones(len(starting_mean))
 else:
     starting_vars = np.var(starting_points,axis=0)
@@ -72,17 +118,7 @@ print "starting_mean:\n",starting_mean
     
 print "starting_points:\n", starting_points
 
-def chain_segment_file(chain_dir,model,protocol,N_e,segment):
-    if (0 <= segment < 10):
-        seg_str = "00"+str(segment)
-    elif (10 <= segment < 100):
-        seg_str = "0"+str(segment)
-    elif (100 <= segment < 1000):
-        seg_str = str(segment)
-    return chain_dir + "m_"+str(model)+"_p_"+str(protocol)+"_N_e_"+str(N_e)+"_hierarchical_"+seg_str+".txt"
-
-
-directory = "../output/hierarchical/dog_2/m"+str(model)+"/p"+str(protocol)+"/post_cmaes/first_dog_"+str(first_dog)+"/"+str(N_e)+"_expts/"
+directory = "../output/hierarchical/dog_2/m"+str(model)+"/p"+str(protocol)+"/post_cmaes/first_dog_"+str(first_dog)+"/"+str(args.num_traces)+"_expts/"
 if not os.path.exists(directory):
     os.makedirs(directory)
 chain_dir = directory + "chain/"
@@ -100,7 +136,7 @@ else:
 gif_dir = directory+'gif/'
     
 segment = 0
-output_file = chain_segment_file(chain_dir,model,protocol,N_e,segment)
+output_file = chain_segment_file(chain_dir,model,protocol,args.num_traces,segment)
 with open(output_file,'w') as outfile:
     pass
 
@@ -108,9 +144,9 @@ print "directory:\n",directory
 
 old_eta_js = np.zeros((num_params,4))
 old_eta_js[:,0] = starting_mean
-old_eta_js[:,1] = 1. * N_e
-old_eta_js[:,2] = 0.5 * N_e
-old_eta_js[:,3] = 0.5 * N_e * starting_vars
+old_eta_js[:,1] = 1. * args.num_traces
+old_eta_js[:,2] = 0.5 * args.num_traces
+old_eta_js[:,3] = 0.5 * args.num_traces * starting_vars
 #old_eta_js[:,3] = starting_vars * (old_eta_js[:,2]+1)
 
 print "old_eta_js:\n", old_eta_js
@@ -119,7 +155,7 @@ print "old_eta_js:\n", old_eta_js
 
 cells = []
 expt_traces = []
-for i in range(N_e):
+for i in range(args.num_traces):
     trace = first_dog + i
     cells.append(cs.CellSimulator(model, protocol, c_seed, 1, true_gs, expt_noise, trace))
     expt_traces.append(cells[i].get_expt_traces())
@@ -143,7 +179,7 @@ def get_test_trace(params,index):
 
 #print "old_eta_js =\n", old_eta_js
 
-uniform_noise_prior = [0.,100.*expt_noise]
+uniform_noise_prior = [0.,20.]
 
 def new_eta(old_eta,samples): # for sampling from conjugate prior-ed N-IG
     assert(len(old_eta)==4)
@@ -167,16 +203,16 @@ def log_pi_theta_i(theta_i,theta,sigma_squareds,sigma,data_i,test_i):
     sum_2 = np.sum(((theta_i-theta)**2)/sigma_squareds)
     return -0.5 * (sum_1 + sum_2)
     
-def log_pi_sigma(expt_datas,test_datas,sigma,N_e,num_pts):
+def log_pi_sigma(expt_datas,test_datas,sigma,Ne,num_pts):
     #print expt_datas
     #print test_datas
     if (not (uniform_noise_prior[0] < sigma < uniform_noise_prior[1])):
         return -np.inf
     else:
-        return -N_e*num_pts*np.log(sigma) - np.sum((expt_datas-test_datas)**2) / (2*sigma**2)
+        return -Ne*num_pts*np.log(sigma) - np.sum((expt_datas-test_datas)**2) / (2*sigma**2)
         
-def compute_initial_sigma(expt_datas,test_datas,N_e,num_pts):
-    return np.sqrt(np.sum((expt_datas-test_datas)**2) / (N_e*num_pts))
+def compute_initial_sigma(expt_datas,test_datas,Ne,num_pts):
+    return np.sqrt(np.sum((expt_datas-test_datas)**2) / (Ne*num_pts))
         
     
 top_theta_cur = np.copy(starting_mean)
@@ -211,11 +247,11 @@ print theta_is_cur, "\n"
 
 
 temp_test_traces_cur = []
-for i in range(N_e):
+for i in range(args.num_traces):
     temp_test_traces_cur.append(get_test_trace(theta_is_cur[i],i))
 print temp_test_traces_cur
 
-noise_sigma_cur = compute_initial_sigma(expt_traces,temp_test_traces_cur,N_e,num_pts)
+noise_sigma_cur = compute_initial_sigma(expt_traces,temp_test_traces_cur,args.num_traces,num_pts)
 
 print "noise_sigma_cur:\n", noise_sigma_cur
 
@@ -223,15 +259,15 @@ MCMC = [np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatte
 
 fig = plt.figure(figsize=(10,8))
 ax = fig.add_subplot(111)
-for i in range(N_e):
+for i in range(args.num_traces):
     ax.plot(times,temp_test_traces_cur[i],label='Best fit '+str(first_dog+i))
     ax.plot(times,expt_traces[i],label='Dog '+str(first_dog+i))
-ax.set_title('Model '+str(model)+', first dog '+str(first_dog)+', N_e '+str(N_e))
+ax.set_title('Model '+str(model)+', first dog '+str(first_dog)+', args.num_traces '+str(args.num_traces))
 ax.set_xlabel('Time (ms)')
 ax.set_ylabel('Membrane voltage (mV)')
 ax.legend()
 fig.tight_layout()
-fig.savefig(directory+str(N_e)+'_synthetic_data.png')
+fig.savefig(directory+str(args.num_traces)+'_synthetic_data.png')
 
 
 #sys.exit()
@@ -242,15 +278,15 @@ MCMC_iterations = 1000000
 #pool = multiprocessing.Pool(num_processes) # not sure where best to have this line
 
 covariances = []
-for i in range(N_e):
+for i in range(args.num_traces):
     covariances.append(cov_proposal_scale*np.diag(theta_is_cur[i]))
 print "covariances:\n", covariances, "\n"
 
 means = np.copy(theta_is_cur)
 print "means:\n", means, "\n"
 
-logas = [0.]*N_e
-acceptances = [0.]*N_e
+logas = [0.]*args.num_traces
+acceptances = [0.]*args.num_traces
 sigma_loga = 0.
 sigma_acceptance = 0.
 
@@ -280,7 +316,7 @@ def update_covariance_matrix(t,thetaCur,mean_estimate,cov_estimate,loga,accepted
     plt.show(block=True)
 sys.exit()"""
 
-targets_cur = np.zeros(N_e)
+targets_cur = np.zeros(args.num_traces)
 start = time.time()
 t = 0
 print "About to start MCMC\n"
@@ -295,7 +331,7 @@ while True:
             segment_size = os.stat(output_file).st_size
             if (segment_size > 100000000):
                 segment += 1
-                output_file = chain_segment_file(chain_dir,model,protocol,N_e,segment)
+                output_file = chain_segment_file(chain_dir,model,protocol,args.num_traces,segment)
                 with open(output_file,'w') as outfile:
                     pass
             with open(output_file,'a') as outfile:
@@ -330,7 +366,7 @@ while True:
 
         # theta i's for each experiment
         
-        for i in range(N_e):
+        for i in range(args.num_traces):
             while True:
                 theta_i_star = npr.multivariate_normal(theta_is_cur[i],np.exp(logas[i])*covariances[i])
                 if (np.all(theta_i_star>=0)):
@@ -377,8 +413,8 @@ while True:
             noise_sigma_star = noise_sigma_cur + np.exp(sigma_loga)*sigma_proposal_scale*npr.randn()
             if (uniform_noise_prior[0] < noise_sigma_star < uniform_noise_prior[1]):
                 break
-        sigma_target_star = log_pi_sigma(expt_traces,temp_test_traces_cur,noise_sigma_star,N_e,num_pts)
-        sigma_target_cur = log_pi_sigma(expt_traces,temp_test_traces_cur,noise_sigma_cur,N_e,num_pts)
+        sigma_target_star = log_pi_sigma(expt_traces,temp_test_traces_cur,noise_sigma_star,args.num_traces,num_pts)
+        sigma_target_cur = log_pi_sigma(expt_traces,temp_test_traces_cur,noise_sigma_cur,args.num_traces,num_pts)
         u = npr.rand()
         if (np.log(u) < sigma_target_star - sigma_target_cur):
             noise_sigma_cur = noise_sigma_star
