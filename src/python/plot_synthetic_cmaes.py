@@ -60,15 +60,15 @@ expt_trace = solve_for_voltage_trace(expt_params, ap_model) + 0.25*npr.randn(len
 
 fig = plt.figure()
 
-ax1 = fig.add_subplot(2, 3, 4)
-ax2 = fig.add_subplot(2, 3, 5, sharey = ax1)
-ax3 = fig.add_subplot(2, 3, 6, sharey = ax1)
+ax1 = fig.add_subplot(2, 4, 5)
+ax2 = fig.add_subplot(2, 4, 6, sharey = ax1)
+ax3 = fig.add_subplot(2, 4, 7, sharey = ax1)
 
 ap_axs = [ax1, ax2, ax3]
 
-ax4 = fig.add_subplot(2, 3, 1)
-ax5 = fig.add_subplot(2, 3, 2, sharey = ax4)
-ax6 = fig.add_subplot(2, 3, 3, sharey = ax4)
+ax4 = fig.add_subplot(2, 4, 1)
+ax5 = fig.add_subplot(2, 4, 2, sharey = ax4)
+ax6 = fig.add_subplot(2, 4, 3, sharey = ax4)
 
 bar_axs = [ax4, ax5, ax6]
 
@@ -110,8 +110,26 @@ while not es.stop():
 print "{} iterations total".format(it)
 res = es.result()
 
-best_gs = res[0]
+best_xs = res[0]
 #ax.plot(expt_times, solve_for_voltage_trace(exponential_scaling(best_gs), ap_model), label="Best fit")
+
+best_bar = fig.add_subplot(2, 4, 4, sharey = ax4)
+best_ap = fig.add_subplot(2, 4, 8, sharey = ax1)
+
+temp_gs = np.copy(exponential_scaling(best_xs))
+temp_percents = 100. * np.copy(temp_gs / original_gs)
+print temp_percents
+best_bar.set_title("Best fit")
+best_ap.grid()
+best_ap.set_xlabel('Time (ms)')
+best_ap.plot(expt_times, expt_trace, color='red')
+best_ap.plot(expt_times, solve_for_voltage_trace(temp_gs, ap_model), color='blue')
+best_ap.legend()
+best_bar.grid()
+best_bar.axhline(100, color='red')
+best_bar.bar(bar_pos, temp_percents, align='center', color='blue', tick_label=g_labels)
+plt.setp(best_ap.get_yticklabels(), visible=False)
+plt.setp(best_bar.get_yticklabels(), visible=False)
 
 ap_axs[0].set_ylabel('Membrane voltage (mV)')
 bar_axs[0].set_ylabel(r'% of true')
