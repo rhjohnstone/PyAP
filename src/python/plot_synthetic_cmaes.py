@@ -68,14 +68,15 @@ print "obj0:", round(obj0, 2)
 sigma0 = 0.1
 es = cma.CMAEvolutionStrategy(x0, sigma0)#, options)
 it = 0
-test_its = [0, 1000, 5000]
+test_its = [0, 100, 500]
 while not es.stop():
     if it in test_its:
         ax.plot(expt_times, solve_for_voltage_trace(es.mean, ap_model), label="Iteration {}".format(it))
     X = es.ask()
     es.tell(X, [obj(x, ap_model) for x in X])
     es.disp()
-    it += 1 
+    it += 1
+print "{} iterations total".format(it)
 res = es.result()
 
 best_gs = res[0]
