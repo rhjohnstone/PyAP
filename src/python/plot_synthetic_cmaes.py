@@ -57,7 +57,7 @@ ap_model.SetNumberOfSolves(num_solves)
 expt_times = np.arange(solve_start, solve_end+solve_timestep, solve_timestep)
 expt_trace = solve_for_voltage_trace(expt_params, ap_model) + 0.25*npr.randn(len(expt_times))
 
-fig, axs = plt.subplots(3, 2, sharex=True)
+fig, axs = plt.subplots(2, 3, sharey=True)
 #ax = fig.add_subplot(111)
 #ax.grid()
 #ax.set_xlabel('Time (ms)')
@@ -73,13 +73,17 @@ sigma0 = 0.1
 es = cma.CMAEvolutionStrategy(x0, sigma0)#, options)
 it = 0
 test_its = [0, 10, 100]
+axi = 0
 while not es.stop():
-    axi = 0
     if it in test_its:
-        axs[axi,0].set_ylabel('Membrane voltage (mV)')
-        axs[axi,0].plot(expt_times, expt_trace, label="Expt")
-        axs[axi,0].plot(expt_times, solve_for_voltage_trace(exponential_scaling(es.mean), ap_model), label="Iteration {}".format(it))
-        axs[axi,0].legend()
+        temp_gs = exponential_scaling(es.mean)
+        temp_percents = temp_gs / original_gs
+        axs[1, axi].grid()
+        axs[1, axi].set_xlabel('Time (ms)')
+        axs[1, axi].plot(expt_times, expt_trace, label="Expt")
+        axs[1, axi].plot(expt_times, solve_for_voltage_trace(temp_gs, ap_model), label="Iteration {}".format(it))
+        axs[1, axi].legend()
+        #axs[0,axi].bar(temp_percents)
         axi += 1
     X = es.ask()
     es.tell(X, [obj(x, ap_model) for x in X])
@@ -91,7 +95,8 @@ res = es.result()
 best_gs = res[0]
 #ax.plot(expt_times, solve_for_voltage_trace(exponential_scaling(best_gs), ap_model), label="Best fit")
 
-
+axs[1,0].set_ylabel('Membrane voltage (mV)')
+fig.tight_layout()
 plt.show(block=True)
 
 
