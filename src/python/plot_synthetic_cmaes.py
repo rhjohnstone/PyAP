@@ -60,7 +60,7 @@ expt_times = np.arange(solve_start, solve_end+solve_timestep, solve_timestep)
 expt_trace = solve_for_voltage_trace(expt_params, ap_model) + 0.25*npr.randn(len(expt_times))
 
 
-fig = plt.figure(figsize=(14,8))
+fig = plt.figure(figsize=(12,6))
 
 ax1 = fig.add_subplot(2, 4, 5)
 ax2 = fig.add_subplot(2, 4, 6, sharey = ax1)
@@ -100,7 +100,7 @@ while not es.stop():
         ap_axs[axi].plot(expt_times, solve_for_voltage_trace(temp_gs, ap_model), color='blue')
         ap_axs[axi].legend()
         bar_axs[axi].yaxis.grid()
-        bar_axs[axi].axhline(100, color='red')
+        bar_axs[axi].axhline(100, color='red', lw=2)
         bar_axs[axi].bar(bar_pos, temp_percents, align='center', color='blue', tick_label=g_labels)
         if (axi>0):
             plt.setp(ap_axs[axi].get_yticklabels(), visible=False)
