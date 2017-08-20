@@ -3,8 +3,8 @@ import ap_simulator
 import numpy as np
 import numpy.random as npr
 import argparse
-import matplotlib
-matplotlib.use('Agg')
+#import matplotlib
+#matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import sys
 import cma
@@ -60,7 +60,7 @@ expt_times = np.arange(solve_start, solve_end+solve_timestep, solve_timestep)
 expt_trace = solve_for_voltage_trace(expt_params, ap_model) + 0.25*npr.randn(len(expt_times))
 
 
-fig = plt.figure(figsize=(16,8))
+fig = plt.figure(figsize=(14,8))
 
 ax1 = fig.add_subplot(2, 4, 5)
 ax2 = fig.add_subplot(2, 4, 6, sharey = ax1)
