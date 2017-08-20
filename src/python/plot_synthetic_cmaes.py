@@ -90,10 +90,11 @@ while not es.stop():
         temp_gs = exponential_scaling(es.mean)
         temp_percents = 100. * temp_gs / original_gs
         print temp_percents
+        bar_axs[axi].set_title("Iteration {}".format(it))
         ap_axs[axi].grid()
         ap_axs[axi].set_xlabel('Time (ms)')
-        ap_axs[axi].plot(expt_times, expt_trace, label="Expt", color='red')
-        ap_axs[axi].plot(expt_times, solve_for_voltage_trace(temp_gs, ap_model), label="It. {}".format(it), color='blue')
+        ap_axs[axi].plot(expt_times, expt_trace, color='red')
+        ap_axs[axi].plot(expt_times, solve_for_voltage_trace(temp_gs, ap_model), color='blue')
         ap_axs[axi].legend()
         bar_axs[axi].grid()
         bar_axs[axi].axhline(100, color='red')
