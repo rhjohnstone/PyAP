@@ -4,6 +4,8 @@ import numpy as np
 import numpy.random as npr
 import argparse
 import matplotlib.pyplot as plt
+import sys
+import cma
 
 seed = 1
 npr.seed(seed)
@@ -21,7 +23,7 @@ solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, s
 if args.model == 1:
     solve_end = 100  # just for HH
 original_gs, g_parameters, model_name = ps.get_original_params(args.model)
-num_params = len(original_gs)
+num_gs = len(original_gs)
 num_solves = 1
 
 expt_params = np.copy(original_gs)
@@ -36,6 +38,8 @@ def solve_for_voltage_trace(temp_g_params, _ap_model):
     
     
 def obj(temp_test_params, temp_ap_model):
+    if np.any(temp_test_params < 0):
+        return np.inf
     #scaled_params = exponential_scaling(temp_test_params)
     #temp_test_trace = solve_for_voltage_trace(scaled_params, temp_ap_model)
     temp_test_trace = solve_for_voltage_trace(temp_test_params, temp_ap_model)
@@ -48,14 +52,13 @@ ap_model.DefineModel(args.model)
 ap_model.DefineSolveTimes(solve_start, solve_end, solve_timestep)
 ap_model.SetNumberOfSolves(num_solves)
 
-expt_times = np.linspace(solve_start, solve_end+solve_timestep, solve_timestep)
+expt_times = np.arange(solve_start, solve_end+solve_timestep, solve_timestep)
 expt_trace = solve_for_voltage_trace(expt_params, ap_model)
-plt.plot(expt_times, expt_trace)
-plt.show()
+#plt.plot(expt_times, expt_trace)
+#plt.show()
 
-sdgsd
 
-x0 = 10. + npr.randn(num_params)
+x0 = 20.*npr.rand(num_gs)
 print "x0:", x0
 obj0 = obj(x0, ap_model)
 print "obj0:", round(obj0, 2)
@@ -67,7 +70,8 @@ while not es.stop():
     es.disp()
 res = es.result()
 
-
+best_gs = res[0]
+print best_gs
 
 
 
