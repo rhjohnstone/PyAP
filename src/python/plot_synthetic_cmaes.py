@@ -57,12 +57,17 @@ ap_model.SetNumberOfSolves(num_solves)
 expt_times = np.arange(solve_start, solve_end+solve_timestep, solve_timestep)
 expt_trace = solve_for_voltage_trace(expt_params, ap_model) + 0.25*npr.randn(len(expt_times))
 
-fig, axs = plt.subplots(2, 3, sharey=True)
-#ax = fig.add_subplot(111)
-#ax.grid()
-#ax.set_xlabel('Time (ms)')
-#ax.set_ylabel('Membrane voltage (mV)')
-#ax.plot(expt_times, expt_trace, label="Expt")
+ax1 = fig.add_subplot(2, 3, 4)
+ax2 = fig.add_subplot(2, 3, 5, sharey = ax1)
+ax3 = fig.add_subplot(2, 3, 6, sharey = ax1)
+
+ap_axs = [ax1, ax2, ax3]
+
+ax4 = fig.add_subplot(2, 3, 1)
+ax5 = fig.add_subplot(2, 3, 2, sharey = ax1)
+ax6 = fig.add_subplot(2, 3, 3, sharey = ax1)
+
+bar_axs = [ax4, ax5, ax6]
 
 x0 = 10. + 5.*npr.randn(num_gs)
 x0[x0<0] = 0.
@@ -78,12 +83,12 @@ while not es.stop():
     if it in test_its:
         temp_gs = exponential_scaling(es.mean)
         temp_percents = temp_gs / original_gs
-        axs[1, axi].grid()
-        axs[1, axi].set_xlabel('Time (ms)')
-        axs[1, axi].plot(expt_times, expt_trace, label="Expt")
-        axs[1, axi].plot(expt_times, solve_for_voltage_trace(temp_gs, ap_model), label="Iteration {}".format(it))
-        axs[1, axi].legend()
-        #axs[0,axi].bar(temp_percents)
+        ap_axs[axi].grid()
+        ap_axs[axi].set_xlabel('Time (ms)')
+        ap_axs[axi].plot(expt_times, expt_trace, label="Expt")
+        ap_axs[axi].plot(expt_times, solve_for_voltage_trace(temp_gs, ap_model), label="Iteration {}".format(it))
+        ap_axs[axi].legend()
+        bar_axs[axi].bar(temp_percents)
         axi += 1
     X = es.ask()
     es.tell(X, [obj(x, ap_model) for x in X])
@@ -95,7 +100,8 @@ res = es.result()
 best_gs = res[0]
 #ax.plot(expt_times, solve_for_voltage_trace(exponential_scaling(best_gs), ap_model), label="Best fit")
 
-axs[1,0].set_ylabel('Membrane voltage (mV)')
+ap_axs[0].set_ylabel('Membrane voltage (mV)')
+bar_axs[0].set_ylabel(r'% of true')
 fig.tight_layout()
 plt.show(block=True)
 
