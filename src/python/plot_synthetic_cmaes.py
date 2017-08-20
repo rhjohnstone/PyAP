@@ -67,8 +67,8 @@ ax3 = fig.add_subplot(2, 3, 6, sharey = ax1)
 ap_axs = [ax1, ax2, ax3]
 
 ax4 = fig.add_subplot(2, 3, 1)
-ax5 = fig.add_subplot(2, 3, 2, sharey = ax1)
-ax6 = fig.add_subplot(2, 3, 3, sharey = ax1)
+ax5 = fig.add_subplot(2, 3, 2, sharey = ax4)
+ax6 = fig.add_subplot(2, 3, 3, sharey = ax4)
 
 bar_axs = [ax4, ax5, ax6]
 
@@ -86,12 +86,14 @@ while not es.stop():
     if it in test_its:
         temp_gs = exponential_scaling(es.mean)
         temp_percents = temp_gs / original_gs
+        print temp_percents
         ap_axs[axi].grid()
         ap_axs[axi].set_xlabel('Time (ms)')
         ap_axs[axi].plot(expt_times, expt_trace, label="Expt")
         ap_axs[axi].plot(expt_times, solve_for_voltage_trace(temp_gs, ap_model), label="Iteration {}".format(it))
         ap_axs[axi].legend()
-        bar_axs[axi].hline(100)
+        bar_axs[axi].grid()
+        bar_axs[axi].axhline(100)
         bar_axs[axi].bar(np.arange(num_gs), temp_percents)
         bar_axs[axi].set_xticklabels([r"${}$".format(gp) for gp in g_parameters])
         axi += 1
