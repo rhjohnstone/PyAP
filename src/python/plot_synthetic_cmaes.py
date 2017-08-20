@@ -124,7 +124,7 @@ best_gs = np.copy(exponential_scaling(best_xs))
 print "best_gs:", best_gs
 temp_percents = 100. * np.copy(best_gs / original_gs)
 print temp_percents
-best_bar.set_title("Best fit")
+best_bar.set_title("Iteration {} (best)".format(it))
 best_ap.grid()
 best_ap.set_xlabel('Time (ms)')
 best_ap.plot(expt_times, expt_trace, color='red')
@@ -137,7 +137,7 @@ plt.setp(best_ap.get_yticklabels(), visible=False)
 plt.setp(best_bar.get_yticklabels(), visible=False)
 
 ap_axs[0].set_ylabel('Membrane voltage (mV)')
-bar_axs[0].set_ylabel(r'% of true')
+bar_axs[0].set_ylabel(r'% of true values')
 fig.tight_layout()
 fig.savefig('cmaes_its.png')
 fig.savefig('cmaes_its.pdf')
