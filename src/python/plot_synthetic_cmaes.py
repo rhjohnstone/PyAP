@@ -28,6 +28,11 @@ num_solves = 1
 
 expt_params = np.copy(original_gs)
 
+
+def exponential_scaling(unscaled_params):
+    return original_gs ** (unscaled_params/10.)
+
+
 def solve_for_voltage_trace(temp_g_params, _ap_model):
     _ap_model.SetToModelInitialConditions()
     try:
@@ -38,11 +43,8 @@ def solve_for_voltage_trace(temp_g_params, _ap_model):
     
     
 def obj(temp_test_params, temp_ap_model):
-    if np.any(temp_test_params < 0):
-        return np.inf
-    #scaled_params = exponential_scaling(temp_test_params)
-    #temp_test_trace = solve_for_voltage_trace(scaled_params, temp_ap_model)
-    temp_test_trace = solve_for_voltage_trace(temp_test_params, temp_ap_model)
+    scaled_params = exponential_scaling(temp_test_params)
+    temp_test_trace = solve_for_voltage_trace(scaled_params, temp_ap_model)
     return np.sum((temp_test_trace-expt_trace)**2)
 
 
@@ -62,8 +64,7 @@ ax.set_xlabel('Time (ms)')
 ax.set_ylabel('Membrane voltage (mV)')
 ax.plot(expt_times, expt_trace, label="Expt")
 
-x0 = original_gs * (1. + npr.randn(num_gs))
-x0[x0<0] = 0.
+x0 = 10. + npr.randn(num_params)
 print "x0:", x0
 obj0 = obj(x0, ap_model)
 print "obj0:", round(obj0, 2)
@@ -73,7 +74,7 @@ it = 0
 test_its = [0, 100, 300]
 while not es.stop():
     if it in test_its:
-        ax.plot(expt_times, solve_for_voltage_trace(es.mean, ap_model), label="Iteration {}".format(it))
+        ax.plot(expt_times, solve_for_voltage_trace(exponential_scaling(es.mean), ap_model), label="Iteration {}".format(it))
     X = es.ask()
     es.tell(X, [obj(x, ap_model) for x in X])
     es.disp()
@@ -82,7 +83,7 @@ print "{} iterations total".format(it)
 res = es.result()
 
 best_gs = res[0]
-ax.plot(expt_times, solve_for_voltage_trace(best_gs, ap_model), label="Best fit")
+ax.plot(expt_times, solve_for_voltage_trace(exponential_scaling(best_gs), ap_model), label="Best fit")
 
 ax.legend()
 plt.show(block=True)
