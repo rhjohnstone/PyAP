@@ -82,10 +82,12 @@ es = cma.CMAEvolutionStrategy(x0, sigma0)#, options)
 it = 0
 test_its = [0, 10, 100]
 axi = 0
+bar_pos = np.arange(num_gs)
+g_labels = [r"${}$".format(gp) for gp in g_parameters]
 while not es.stop():
-    if it in test_its:
+    if axi, it in enumerate(test_its):
         temp_gs = exponential_scaling(es.mean)
-        temp_percents = temp_gs / original_gs
+        temp_percents = 100. * temp_gs / original_gs
         print temp_percents
         ap_axs[axi].grid()
         ap_axs[axi].set_xlabel('Time (ms)')
@@ -94,9 +96,11 @@ while not es.stop():
         ap_axs[axi].legend()
         bar_axs[axi].grid()
         bar_axs[axi].axhline(100)
-        bar_axs[axi].bar(np.arange(num_gs), temp_percents)
-        bar_axs[axi].set_xticklabels([r"${}$".format(gp) for gp in g_parameters])
-        axi += 1
+        bar_axs[axi].bar(bar_pos, temp_percents, align='center')
+        #bar_axs[axi].set_xticklabels()
+        if (axi==1) or (axi==2):
+            ap_axs[axi].yaxis.set_ticklabels([])
+            bar_axs[axi].yaxis.set_ticklabels([])
     X = es.ask()
     es.tell(X, [obj(x, ap_model) for x in X])
     es.disp()
