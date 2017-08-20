@@ -85,7 +85,7 @@ axi = 0
 bar_pos = np.arange(num_gs)
 g_labels = [r"${}$".format(gp) for gp in g_parameters]
 while not es.stop():
-    if axi, it in enumerate(test_its):
+    if it in test_its:
         temp_gs = exponential_scaling(es.mean)
         temp_percents = 100. * temp_gs / original_gs
         print temp_percents
@@ -101,6 +101,7 @@ while not es.stop():
         if (axi==1) or (axi==2):
             ap_axs[axi].yaxis.set_ticklabels([])
             bar_axs[axi].yaxis.set_ticklabels([])
+        axi += 1
     X = es.ask()
     es.tell(X, [obj(x, ap_model) for x in X])
     es.disp()
