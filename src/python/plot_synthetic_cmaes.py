@@ -72,8 +72,7 @@ ax6 = fig.add_subplot(2, 3, 3, sharey = ax4)
 
 bar_axs = [ax4, ax5, ax6]
 
-x0 = 10. + 5.*npr.randn(num_gs)
-x0[x0<0] = 0.
+x0 = 10. + np.log(npr.randn(num_gs))/np.log(original_gs)
 print "x0:", x0
 obj0 = obj(x0, ap_model)
 print "obj0:", round(obj0, 2)
@@ -91,13 +90,13 @@ while not es.stop():
         print temp_percents
         ap_axs[axi].grid()
         ap_axs[axi].set_xlabel('Time (ms)')
-        ap_axs[axi].plot(expt_times, expt_trace, label="Expt")
-        ap_axs[axi].plot(expt_times, solve_for_voltage_trace(temp_gs, ap_model), label="Iteration {}".format(it))
+        ap_axs[axi].plot(expt_times, expt_trace, label="Expt", color='red')
+        ap_axs[axi].plot(expt_times, solve_for_voltage_trace(temp_gs, ap_model), label="Iteration {}".format(it), color='blue')
         ap_axs[axi].legend()
         bar_axs[axi].grid()
-        bar_axs[axi].axhline(100)
-        bar_axs[axi].bar(bar_pos, temp_percents, align='center')
-        #bar_axs[axi].set_xticklabels()
+        bar_axs[axi].axhline(100, color='red')
+        bar_axs[axi].bar(bar_pos, temp_percents, align='center', color='blue')
+        bar_axs[axi].set_xticklabels(g_labels)
         if (axi==1) or (axi==2):
             ap_axs[axi].yaxis.set_ticklabels([])
             bar_axs[axi].yaxis.set_ticklabels([])
