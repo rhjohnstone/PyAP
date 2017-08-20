@@ -87,8 +87,8 @@ bar_pos = np.arange(num_gs)
 g_labels = [r"${}$".format(gp) for gp in g_parameters]
 while not es.stop():
     if it in test_its:
-        temp_gs = exponential_scaling(es.mean)
-        temp_percents = 100. * temp_gs / original_gs
+        temp_gs = np.copy(exponential_scaling(es.mean))
+        temp_percents = 100. * np.copy(temp_gs / original_gs)
         print temp_percents
         bar_axs[axi].set_title("Iteration {}".format(it))
         ap_axs[axi].grid()
