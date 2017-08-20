@@ -7,16 +7,16 @@ import matplotlib.pyplot as plt
 import sys
 import cma
 
-seed = 1
-npr.seed(seed)
-
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--model", type=int, help="AP model number", required=True)
+requiredNamed.add_argument("--seed", type=int, help="Python random seed", required=True)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
     parser.print_help()
     sys.exit(1)
+
+npr.seed(args.seed)
 
 protocol = 1
 solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
