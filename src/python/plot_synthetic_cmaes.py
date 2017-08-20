@@ -62,7 +62,8 @@ ax.set_xlabel('Time (ms)')
 ax.set_ylabel('Membrane voltage (mV)')
 ax.plot(expt_times, expt_trace, label="Expt")
 
-x0 = 20.*npr.rand(num_gs)
+x0 = original_gs * (1. + npr.randn(num_gs))
+x0[x0<0] = 0.
 print "x0:", x0
 obj0 = obj(x0, ap_model)
 print "obj0:", round(obj0, 2)
