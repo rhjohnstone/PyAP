@@ -201,10 +201,11 @@ noise_sigma_cur = compute_initial_sigma(expt_traces,temp_test_traces_cur,args.nu
 
 print "noise_sigma_cur:\n", noise_sigma_cur
 
-MCMC = [np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatten(),[noise_sigma_cur]))]
 
-fig = plt.figure(figsize=(10,8))
+
+"""fig = plt.figure()
 ax = fig.add_subplot(111)
+ax.grid()
 for i, t in enumerate(trace_numbers):
     ax.plot(expt_times, temp_test_traces_cur[i], label='Best fit {}'.format(t))
     ax.plot(expt_times, expt_traces[i], label='Trace {}'.format(t))
@@ -213,21 +214,30 @@ ax.set_xlabel('Time (ms)')
 ax.set_ylabel('Membrane voltage (mV)')
 ax.legend()
 fig.tight_layout()
-plt.show(block=True)
-sys.exit()
+plt.show(block=True)"""
+
+#sys.exit()
 #fig.savefig(directory+str(args.num_traces)+'_synthetic_data.png')
 
 
 #sys.exit()
 
 thinning = 5
-MCMC_iterations = 1000000
+MCMC_iterations = 10000
+num_saved_its = MCMC_iterations / thinning + 1
+burn = num_saved_its / 4
+
+status_when = MCMC_iterations / 100
+
+MCMC = np.zeros((num_saved_its, (2+args.num_expts)*num_gs+1))
+MCMC[0, :] = np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatten(),[noise_sigma_cur]))
+print "\n", MCMC, "\n"
 
 #pool = multiprocessing.Pool(num_processes) # not sure where best to have this line
 
 covariances = []
 for i in range(args.num_traces):
-    covariances.append(cov_proposal_scale*np.diag(theta_is_cur[i]))
+    covariances.append(cov_proposal_scale*np.diag(theta_is_cur[i,:]))
 print "covariances:\n", covariances, "\n"
 
 means = np.copy(theta_is_cur)
@@ -266,121 +276,106 @@ sys.exit()"""
 
 targets_cur = np.zeros(args.num_traces)
 start = time.time()
-t = 0
+t = 1
 print "About to start MCMC\n"
-while True:
-    try:
-        if ( ( t>0 ) and ( t%500==0 ) ):
-            print t, "iterations"
-            print "logas =", logas
-            print "acceptances =", acceptances
-            print "sigma_loga =", sigma_loga
-            print "sigma_acceptance =", sigma_acceptance
-            segment_size = os.stat(output_file).st_size
-            if (segment_size > 100000000):
-                segment += 1
-                output_file = chain_segment_file(chain_dir,model,protocol,args.num_traces,segment)
-                with open(output_file,'w') as outfile:
-                    pass
-            with open(output_file,'a') as outfile:
-                np.savetxt(outfile,MCMC)
-            print "sys.getsizeof(MCMC) =", sys.getsizeof(MCMC)
-            MCMC = []
-        for j in range(num_gs):
-            temp_eta = new_eta(old_eta_js[j],theta_is_cur[:,j])
-            """if (t==3000):
-                print "\n\nold_eta_js["+str(j)+"]:\n", old_eta_js[j],"\n"
-                print "theta_is_cur[:,"+str(j)+"]:\n", theta_is_cur[:,j],"\n"
-                print "temp_eta:\n", temp_eta,"\n"
-                print "old_eta_js:\n", old_eta_js, "\n"
-                gif_fig = plt.figure()
-                gif_ax = gif_fig.add_subplot(111)
-                gif_range = np.linspace(0,0.001,1000)
-                #rv = st.invgamma(old_eta_js[0,3]+2,scale=old_eta_js[0,3]+1)
-                rv = st.invgamma(temp_eta[2],scale=temp_eta[3])
-                gif_ax.plot(gif_range,rv.pdf(gif_range))
-                gif_fig.tight_layout()
-                plt.show(block=True)"""
-            while True:
-                temp_top_theta_cur, temp_top_sigma_squared_cur = sample_from_N_IG(temp_eta)
-                if (temp_top_theta_cur > 0):
-                    break
-            if (t==3000):
-                print "temp_top_theta_cur =", temp_top_theta_cur
-                print "temp_top_sigma_squared_cur =", temp_top_sigma_squared_cur
-            top_theta_cur[j] = temp_top_theta_cur
-            top_sigma_squareds_cur[j] = temp_top_sigma_squared_cur
-                    
-
-        # theta i's for each experiment
-        
-        for i in range(args.num_traces):
-            while True:
-                theta_i_star = npr.multivariate_normal(theta_is_cur[i],np.exp(logas[i])*covariances[i])
-                if (np.all(theta_i_star>=0)):
-                    break
-        #temp_test_traces_star = pool.map(get_test_trace, theta_is_star)
-        #temp_test_traces_star = [get_test_trace(xy) for xy in theta_is_star]
-            #if (np.any(theta_i_star<0)):
-                #print theta_i_star, "WTF"
-            temp_test_trace_star = get_test_trace(theta_i_star,i)
-        
-            targets_cur[i] = log_pi_theta_i(theta_is_cur[i],top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_traces_cur[i])
-            target_star = log_pi_theta_i(      theta_i_star,top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_trace_star)
-            if (3000 <= t < 3020):
-                print "t =", t
-                print "theta_is_cur["+str(i)+"]:\n", theta_is_cur[i]
-                print "theta_i_star:\n", theta_i_star
-                print "theta_is_cur["+str(i)+"] - theta_i_star:\n", theta_is_cur[i]-theta_i_star
-                print "targets_cur["+str(i)+"]:\n", targets_cur[i]
-                print "target_star:\n", target_star
-                print "target_star - targets_cur["+str(i)+"] =", target_star - targets_cur[i], "\n"
-                print "np.sum((temp_test_traces_cur["+str(i)+"]-temp_test_trace_star)**2) =", np.sum((temp_test_traces_cur[i]-temp_test_trace_star)**2)
-                #plt.plot(times,temp_test_traces_cur[i],label='temp_test_traces_cur['+str(i)+']')
-                #plt.plot(times,temp_test_trace_star,label='temp_test_trace_star')
-                #plt.plot(times,expt_traces[i],label='expt_traces['+str(i)+']')
-                #plt.legend()
-                #plt.show(block=True)
-            u = npr.rand()
-            if (np.log(u) < target_star - targets_cur[i]):
-                theta_is_cur[i] = np.copy(theta_i_star)
-                temp_test_traces_cur[i] = np.copy(temp_test_trace_star)
-                accepted = 1
-                if (3000 <= t < 3020):
-                    print "accepted!\n"
-            else:
-                accepted = 0
-            if (t > 200*num_gs):
-                temp_cov, temp_mean, temp_loga = update_covariance_matrix(t,theta_is_cur[i],means[i],covariances[i],logas[i],accepted)
-                covariances[i] = np.copy(temp_cov)
-                means[i] = np.copy(temp_mean)
-                logas[i] = temp_loga
-            acceptances[i] = (t*acceptances[i] + accepted)/(t+1.)
-        # noise sigma
+while (t <= MCMC_iterations):
+    for j in range(num_gs):
+        temp_eta = new_eta(old_eta_js[j],theta_is_cur[:,j])
+        """if (t==3000):
+            print "\n\nold_eta_js["+str(j)+"]:\n", old_eta_js[j],"\n"
+            print "theta_is_cur[:,"+str(j)+"]:\n", theta_is_cur[:,j],"\n"
+            print "temp_eta:\n", temp_eta,"\n"
+            print "old_eta_js:\n", old_eta_js, "\n"
+            gif_fig = plt.figure()
+            gif_ax = gif_fig.add_subplot(111)
+            gif_range = np.linspace(0,0.001,1000)
+            #rv = st.invgamma(old_eta_js[0,3]+2,scale=old_eta_js[0,3]+1)
+            rv = st.invgamma(temp_eta[2],scale=temp_eta[3])
+            gif_ax.plot(gif_range,rv.pdf(gif_range))
+            gif_fig.tight_layout()
+            plt.show(block=True)"""
         while True:
-            noise_sigma_star = noise_sigma_cur + np.exp(sigma_loga)*sigma_proposal_scale*npr.randn()
-            if (uniform_noise_prior[0] < noise_sigma_star < uniform_noise_prior[1]):
+            temp_top_theta_cur, temp_top_sigma_squared_cur = sample_from_N_IG(temp_eta)
+            if (temp_top_theta_cur > 0):
                 break
-        sigma_target_star = log_pi_sigma(expt_traces,temp_test_traces_cur,noise_sigma_star,args.num_traces,num_pts)
-        sigma_target_cur = log_pi_sigma(expt_traces,temp_test_traces_cur,noise_sigma_cur,args.num_traces,num_pts)
+        if (t==3000):
+            print "temp_top_theta_cur =", temp_top_theta_cur
+            print "temp_top_sigma_squared_cur =", temp_top_sigma_squared_cur
+        top_theta_cur[j] = temp_top_theta_cur
+        top_sigma_squareds_cur[j] = temp_top_sigma_squared_cur
+                
+
+    # theta i's for each experiment
+    
+    for i in range(args.num_traces):
+        while True:
+            theta_i_star = npr.multivariate_normal(theta_is_cur[i],np.exp(logas[i])*covariances[i])
+            if (np.all(theta_i_star>=0)):
+                break
+    #temp_test_traces_star = pool.map(get_test_trace, theta_is_star)
+    #temp_test_traces_star = [get_test_trace(xy) for xy in theta_is_star]
+        #if (np.any(theta_i_star<0)):
+            #print theta_i_star, "WTF"
+        temp_test_trace_star = get_test_trace(theta_i_star,i)
+    
+        targets_cur[i] = log_pi_theta_i(theta_is_cur[i],top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_traces_cur[i])
+        target_star = log_pi_theta_i(      theta_i_star,top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_trace_star)
+        if (3000 <= t < 3020):
+            print "t =", t
+            print "theta_is_cur["+str(i)+"]:\n", theta_is_cur[i]
+            print "theta_i_star:\n", theta_i_star
+            print "theta_is_cur["+str(i)+"] - theta_i_star:\n", theta_is_cur[i]-theta_i_star
+            print "targets_cur["+str(i)+"]:\n", targets_cur[i]
+            print "target_star:\n", target_star
+            print "target_star - targets_cur["+str(i)+"] =", target_star - targets_cur[i], "\n"
+            print "np.sum((temp_test_traces_cur["+str(i)+"]-temp_test_trace_star)**2) =", np.sum((temp_test_traces_cur[i]-temp_test_trace_star)**2)
+            #plt.plot(times,temp_test_traces_cur[i],label='temp_test_traces_cur['+str(i)+']')
+            #plt.plot(times,temp_test_trace_star,label='temp_test_trace_star')
+            #plt.plot(times,expt_traces[i],label='expt_traces['+str(i)+']')
+            #plt.legend()
+            #plt.show(block=True)
         u = npr.rand()
-        if (np.log(u) < sigma_target_star - sigma_target_cur):
-            noise_sigma_cur = noise_sigma_star
+        if (np.log(u) < target_star - targets_cur[i]):
+            theta_is_cur[i] = np.copy(theta_i_star)
+            temp_test_traces_cur[i] = np.copy(temp_test_trace_star)
             accepted = 1
+            if (3000 <= t < 3020):
+                print "accepted!\n"
         else:
             accepted = 0
-        sigma_acceptance = (t*sigma_acceptance + accepted)/(t+1)
         if (t > 200*num_gs):
-            r = t - 200*num_gs
-            gamma_r = 1/(r+1)**0.6
-            sigma_loga += gamma_r*(accepted-0.25)
-        if ( t%thinning == 0 ):   
-            MCMC.append(np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatten(),[noise_sigma_cur])))
-        t += 1
-    except KeyboardInterrupt:
-        print "\nInterrupting MCMC loop"
-        #sys.exit()
-        break
+            temp_cov, temp_mean, temp_loga = update_covariance_matrix(t,theta_is_cur[i],means[i],covariances[i],logas[i],accepted)
+            covariances[i] = np.copy(temp_cov)
+            means[i] = np.copy(temp_mean)
+            logas[i] = temp_loga
+        acceptances[i] = (t*acceptances[i] + accepted)/(t+1.)
+    # noise sigma
+    while True:
+        noise_sigma_star = noise_sigma_cur + np.exp(sigma_loga)*sigma_proposal_scale*npr.randn()
+        if (uniform_noise_prior[0] < noise_sigma_star < uniform_noise_prior[1]):
+            break
+    sigma_target_star = log_pi_sigma(expt_traces,temp_test_traces_cur,noise_sigma_star,args.num_traces,num_pts)
+    sigma_target_cur = log_pi_sigma(expt_traces,temp_test_traces_cur,noise_sigma_cur,args.num_traces,num_pts)
+    u = npr.rand()
+    if (np.log(u) < sigma_target_star - sigma_target_cur):
+        noise_sigma_cur = noise_sigma_star
+        accepted = 1
+    else:
+        accepted = 0
+    sigma_acceptance = (t*sigma_acceptance + accepted)/(t+1)
+    if (t > 200*num_gs):
+        r = t - 200*num_gs
+        gamma_r = 1/(r+1)**0.6
+        sigma_loga += gamma_r*(accepted-0.25)
+    if ( t%thinning == 0 ):   
+        MCMC[t/thinning, :] = np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatten(),[noise_sigma_cur])))
+    t += 1
+    if ( t%status_when==0 ):
+        print t, "iterations"
+        print "logas =", logas
+        print "acceptances =", acceptances
+        print "sigma_loga =", sigma_loga
+        print "sigma_acceptance =", sigma_acceptance
 print "Time taken:", time.time()-start, "s"
 #print final_state
 
