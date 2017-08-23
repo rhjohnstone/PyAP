@@ -59,7 +59,6 @@ trace_numbers = range(first_trace_number, first_trace_number+args.num_traces)
 print trace_numbers
 
 
-
 best_fits_params = np.zeros((args.num_traces, num_gs))
 expt_traces = []
 ap_models = []
@@ -91,7 +90,9 @@ for i, t in enumerate(trace_numbers):
     temp_ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
     temp_ap_model.SetNumberOfSolves(pyap_options["num_solves"])
     ap_models.append(temp_ap_model)
+    temp_test_traces_cur.append(np.copy(solve_for_voltage_trace(best_params, temp_ap_model)))
 expt_traces = np.array(expt_traces)
+temp_test_traces_cur = np.array(temp_test_traces_cur)
 #print best_fits_params
 #print expt_traces
 #print ap_models
@@ -124,12 +125,7 @@ print "old_eta_js:\n", old_eta_js
 
 num_pts = len(expt_times)
 
-sys.exit()
-
-
-def get_test_trace(params,index):
-    return cells[index].solve_for_voltage_with_params(params)
-
+#sys.exit()
 
 uniform_noise_prior = [0.,20.]
 
@@ -198,10 +194,6 @@ print theta_is_cur, "\n"
 
 
 
-temp_test_traces_cur = []
-for i in range(args.num_traces):
-    temp_test_traces_cur.append(get_test_trace(theta_is_cur[i],i))
-print temp_test_traces_cur
 
 noise_sigma_cur = compute_initial_sigma(expt_traces,temp_test_traces_cur,args.num_traces,num_pts)
 
@@ -219,7 +211,9 @@ ax.set_xlabel('Time (ms)')
 ax.set_ylabel('Membrane voltage (mV)')
 ax.legend()
 fig.tight_layout()
-fig.savefig(directory+str(args.num_traces)+'_synthetic_data.png')
+plt.show(block=True)
+sys.exit()
+#fig.savefig(directory+str(args.num_traces)+'_synthetic_data.png')
 
 
 #sys.exit()
