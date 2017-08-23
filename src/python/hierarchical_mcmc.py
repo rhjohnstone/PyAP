@@ -229,7 +229,7 @@ burn = num_saved_its / 4
 
 status_when = MCMC_iterations / 100
 
-MCMC = np.zeros((num_saved_its, (2+args.num_expts)*num_gs+1))
+MCMC = np.zeros((num_saved_its, (2+args.num_traces)*num_gs+1))
 MCMC[0, :] = np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatten(),[noise_sigma_cur]))
 print "\n", MCMC, "\n"
 
@@ -281,26 +281,10 @@ print "About to start MCMC\n"
 while (t <= MCMC_iterations):
     for j in range(num_gs):
         temp_eta = new_eta(old_eta_js[j],theta_is_cur[:,j])
-        """if (t==3000):
-            print "\n\nold_eta_js["+str(j)+"]:\n", old_eta_js[j],"\n"
-            print "theta_is_cur[:,"+str(j)+"]:\n", theta_is_cur[:,j],"\n"
-            print "temp_eta:\n", temp_eta,"\n"
-            print "old_eta_js:\n", old_eta_js, "\n"
-            gif_fig = plt.figure()
-            gif_ax = gif_fig.add_subplot(111)
-            gif_range = np.linspace(0,0.001,1000)
-            #rv = st.invgamma(old_eta_js[0,3]+2,scale=old_eta_js[0,3]+1)
-            rv = st.invgamma(temp_eta[2],scale=temp_eta[3])
-            gif_ax.plot(gif_range,rv.pdf(gif_range))
-            gif_fig.tight_layout()
-            plt.show(block=True)"""
         while True:
             temp_top_theta_cur, temp_top_sigma_squared_cur = sample_from_N_IG(temp_eta)
             if (temp_top_theta_cur > 0):
                 break
-        if (t==3000):
-            print "temp_top_theta_cur =", temp_top_theta_cur
-            print "temp_top_sigma_squared_cur =", temp_top_sigma_squared_cur
         top_theta_cur[j] = temp_top_theta_cur
         top_sigma_squareds_cur[j] = temp_top_sigma_squared_cur
                 
@@ -320,20 +304,6 @@ while (t <= MCMC_iterations):
     
         targets_cur[i] = log_pi_theta_i(theta_is_cur[i],top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_traces_cur[i])
         target_star = log_pi_theta_i(      theta_i_star,top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_trace_star)
-        if (3000 <= t < 3020):
-            print "t =", t
-            print "theta_is_cur["+str(i)+"]:\n", theta_is_cur[i]
-            print "theta_i_star:\n", theta_i_star
-            print "theta_is_cur["+str(i)+"] - theta_i_star:\n", theta_is_cur[i]-theta_i_star
-            print "targets_cur["+str(i)+"]:\n", targets_cur[i]
-            print "target_star:\n", target_star
-            print "target_star - targets_cur["+str(i)+"] =", target_star - targets_cur[i], "\n"
-            print "np.sum((temp_test_traces_cur["+str(i)+"]-temp_test_trace_star)**2) =", np.sum((temp_test_traces_cur[i]-temp_test_trace_star)**2)
-            #plt.plot(times,temp_test_traces_cur[i],label='temp_test_traces_cur['+str(i)+']')
-            #plt.plot(times,temp_test_trace_star,label='temp_test_trace_star')
-            #plt.plot(times,expt_traces[i],label='expt_traces['+str(i)+']')
-            #plt.legend()
-            #plt.show(block=True)
         u = npr.rand()
         if (np.log(u) < target_star - targets_cur[i]):
             theta_is_cur[i] = np.copy(theta_i_star)
@@ -368,7 +338,7 @@ while (t <= MCMC_iterations):
         gamma_r = 1/(r+1)**0.6
         sigma_loga += gamma_r*(accepted-0.25)
     if ( t%thinning == 0 ):   
-        MCMC[t/thinning, :] = np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatten(),[noise_sigma_cur])))
+        MCMC[t/thinning, :] = np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatten(),[noise_sigma_cur]))
     t += 1
     if ( t%status_when==0 ):
         print t, "iterations"
