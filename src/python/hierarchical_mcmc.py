@@ -205,10 +205,10 @@ MCMC = [np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatte
 
 fig = plt.figure(figsize=(10,8))
 ax = fig.add_subplot(111)
-for i in range(args.num_traces):
-    ax.plot(expt_times, temp_test_traces_cur[i], label='Best fit '+str(first_dog+i))
-    ax.plot(expt_times, expt_traces[i], label='Dog '+str(first_dog+i))
-ax.set_title('Model '+str(pyap_options["model_number"])+', first dog '+str(first_dog)+', args.num_traces '+str(args.num_traces))
+for i, t in enumerate(trace_numbers):
+    ax.plot(expt_times, temp_test_traces_cur[i], label='Best fit {}'.format(t))
+    ax.plot(expt_times, expt_traces[i], label='Trace {}'.format(t))
+ax.set_title('Model {}, trace {}, $N_e$ {}'.format(pyap_options["model_number"], t, args.num_traces))
 ax.set_xlabel('Time (ms)')
 ax.set_ylabel('Membrane voltage (mV)')
 ax.legend()
