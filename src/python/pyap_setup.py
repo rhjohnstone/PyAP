@@ -63,9 +63,9 @@ def mcmc_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscal
     
 def hierarchical_mcmc_files(model, expt_name, first_trace_name, num_traces):
     if arcus_b:
-        mcmc_dir = os.path.expandvars("$DATA/PyAP_output/{}/hierarchical_mcmc/{}/{}_traces/model_{}/".format(expt_name, first_trace_name, num_traces, model)
+        mcmc_dir = os.path.expandvars("$DATA/PyAP_output/{}/hierarchical_mcmc/{}/{}_traces/model_{}/".format(expt_name, first_trace_name, num_traces, model))
     else:
-        mcmc_dir = os.path.expandvars("projects/PyAP/python/output/{}/hierarchical_mcmc/{}/{}_traces/model_{}/".format(expt_name, first_trace_name, num_traces, model)
+        mcmc_dir = os.path.expandvars("projects/PyAP/python/output/{}/hierarchical_mcmc/{}/{}_traces/model_{}/".format(expt_name, first_trace_name, num_traces, model))
     txt_dir, png_dir, pdf_dir = mcmc_dir+"chain/", mcmc_dir+"figs/png/", mcmc_dir+"figs/pdf/"
     for d in [txt_dir, png_dir, pdf_dir]:
         if not os.path.exists(d):
