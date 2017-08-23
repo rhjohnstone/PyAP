@@ -8,6 +8,9 @@ import time
 import multiprocessing as mp
 import argparse
 import matplotlib.pyplot as plt
+from scipy.stats import invgamma
+
+start = time.time()
 
 
 def solve_for_voltage_trace(temp_g_params, ap_model):
@@ -101,7 +104,7 @@ temp_test_traces_cur = np.array(temp_test_traces_cur)
 
 #sys.exit()
 
-start = time.time()
+
 starting_points = np.copy(best_fits_params)
 
 
@@ -144,7 +147,7 @@ def new_eta(old_eta,samples): # for sampling from conjugate prior-ed N-IG
     
 def sample_from_N_IG(eta):
     mu, nu, alpha, beta = eta
-    sigma_squared = st.invgamma.rvs(alpha,scale=beta)
+    sigma_squared = invgamma.rvs(alpha,scale=beta)
     sample = mu + np.sqrt(sigma_squared/nu)*npr.randn()
     return sample,sigma_squared
     
@@ -346,7 +349,9 @@ while (t <= MCMC_iterations):
         print "acceptances =", acceptances
         print "sigma_loga =", sigma_loga
         print "sigma_acceptance =", sigma_acceptance
-print "Time taken:", time.time()-start, "s"
+        
+tt = time.time()-start
+print "Time taken: {} s = {} min".format(round(tt), round(tt/60.,1))
 #print final_state
 
 print "\nAll done.\n"
