@@ -12,6 +12,11 @@ from scipy.stats import invgamma
 
 start = time.time()
 
+inf = np.inf
+dot = np.dot
+multivariate_normal = npr.multivariate_normal
+npcopy = np.copy
+exp = np.exp
 
 def solve_for_voltage_trace(temp_g_params, ap_model):
     ap_model.SetToModelInitialConditions()
@@ -77,19 +82,19 @@ for i, t in enumerate(trace_numbers):
     temp_times, temp_trace = np.loadtxt(temp_trace_path,delimiter=',').T
     if i==0:
         expt_times = temp_times
-    expt_traces.append(np.copy(temp_trace))
+    expt_traces.append(npcopy(temp_trace))
     temp_trace_name = trace_name[:-3]+str(t)
     cmaes_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, temp_trace_name)
     all_best_fits = np.loadtxt(cmaes_file)
     best_index = np.argmin(all_best_fits[:, -1])
     best_params = all_best_fits[best_index, :-1]
-    best_fits_params[i, :] = np.copy(best_params)
+    best_fits_params[i, :] = npcopy(best_params)
     temp_ap_model = ap_simulator.APSimulator()
     if (data_clamp_on < data_clamp_off):
         temp_ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
         temp_ap_model.DefineModel(pyap_options["model_number"])
         temp_ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
-        temp_ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, np.copy(temp_trace))
+        temp_ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, npcopy(temp_trace))
     else:
         temp_ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
         temp_ap_model.DefineModel(pyap_options["model_number"])
@@ -100,7 +105,7 @@ for i, t in enumerate(trace_numbers):
     temp_ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
     temp_ap_model.SetNumberOfSolves(pyap_options["num_solves"])
     ap_models.append(temp_ap_model)
-    temp_test_traces_cur.append(np.copy(solve_for_voltage_trace(best_params, temp_ap_model)))
+    temp_test_traces_cur.append(npcopy(solve_for_voltage_trace(best_params, temp_ap_model)))
 expt_traces = np.array(expt_traces)
 temp_test_traces_cur = np.array(temp_test_traces_cur)
 #print best_fits_params
@@ -110,7 +115,7 @@ temp_test_traces_cur = np.array(temp_test_traces_cur)
 #sys.exit()
 
 
-starting_points = np.copy(best_fits_params)
+starting_points = npcopy(best_fits_params)
 
 
 starting_mean = np.mean(starting_points,axis=0)
@@ -150,10 +155,11 @@ def new_eta(old_eta,samples): # for sampling from conjugate prior-ed N-IG
     new_beta = beta + 0.5*np.sum((samples-x_bar)**2) + 0.5*((num_samples*nu)/(nu+num_samples))*(x_bar-mu)**2
     return new_mu,new_nu,new_alpha,new_beta
     
+randn = npr.randn
 def sample_from_N_IG(eta):
     mu, nu, alpha, beta = eta
     sigma_squared = invgamma.rvs(alpha,scale=beta)
-    sample = mu + np.sqrt(sigma_squared/nu)*npr.randn()
+    sample = mu + np.sqrt(sigma_squared/nu)*randn()
     return sample,sigma_squared
     
 def log_pi_theta_i(theta_i,theta,sigma_squareds,sigma,data_i,test_i):
@@ -165,7 +171,7 @@ def log_pi_sigma(expt_datas,test_datas,sigma,Ne,num_pts):
     #print expt_datas
     #print test_datas
     if (not (uniform_noise_prior[0] < sigma < uniform_noise_prior[1])):
-        return -np.inf
+        return -inf
     else:
         return -Ne*num_pts*np.log(sigma) - np.sum((expt_datas-test_datas)**2) / (2*sigma**2)
         
@@ -173,9 +179,9 @@ def compute_initial_sigma(expt_datas,test_datas,Ne,num_pts):
     return np.sqrt(np.sum((expt_datas-test_datas)**2) / (Ne*num_pts))
         
     
-top_theta_cur = np.copy(starting_mean)
-top_sigma_squareds_cur = np.copy(starting_vars)
-theta_is_cur = np.copy(starting_points)
+top_theta_cur = npcopy(starting_mean)
+top_sigma_squareds_cur = npcopy(starting_vars)
+theta_is_cur = npcopy(starting_points)
 #print "theta_is_cur:\n", theta_is_cur
 
 
@@ -246,7 +252,7 @@ for i in range(args.num_traces):
     covariances.append(cov_proposal_scale*np.diag(theta_is_cur[i,:]))
 print "covariances:\n", covariances, "\n"
 
-means = np.copy(theta_is_cur)
+means = npcopy(theta_is_cur)
 print "means:\n", means, "\n"
 
 logas = [0.]*args.num_traces
@@ -259,7 +265,7 @@ def update_covariance_matrix(t,thetaCur,mean_estimate,cov_estimate,loga,accepted
     s = t - when_to_adapt
     gamma_s = 1/(s+1)**0.6
     temp_covariance_bit = np.array([thetaCur-mean_estimate])
-    new_cov_estimate = (1-gamma_s) * cov_estimate + gamma_s * np.dot(np.transpose(temp_covariance_bit),temp_covariance_bit)
+    new_cov_estimate = (1-gamma_s) * cov_estimate + gamma_s * dot(np.transpose(temp_covariance_bit),temp_covariance_bit)
     new_mean_estimate = (1-gamma_s) * mean_estimate + gamma_s * thetaCur
     new_loga = loga + gamma_s*(accepted-0.25)
     return new_cov_estimate, new_mean_estimate, new_loga
@@ -301,7 +307,7 @@ while (t <= MCMC_iterations):
     
     for i in range(args.num_traces):
         while True:
-            theta_i_star = npr.multivariate_normal(theta_is_cur[i, :],np.exp(logas[i])*covariances[i])
+            theta_i_star = multivariate_normal(theta_is_cur[i, :],exp(logas[i])*covariances[i])
             if (np.all(theta_i_star>=0)):
                 break
     #temp_test_traces_star = pool.map(get_test_trace, theta_is_star)
@@ -316,8 +322,8 @@ while (t <= MCMC_iterations):
         #print "target_star:", target_star
         u = npr.rand()
         if (np.log(u) < target_star - target_cur):
-            theta_is_cur[i, :] = np.copy(theta_i_star)
-            temp_test_traces_cur[i] = np.copy(temp_test_trace_star)
+            theta_is_cur[i, :] = npcopy(theta_i_star)
+            temp_test_traces_cur[i] = npcopy(temp_test_trace_star)
             accepted = 1
         else:
             accepted = 0
@@ -328,13 +334,13 @@ while (t <= MCMC_iterations):
             #print "target_cur:", target_cur
             #print "target_star:", target_star
             temp_cov, temp_mean, temp_loga = update_covariance_matrix(t,theta_is_cur[i, :],means[i],covariances[i],logas[i],accepted)
-            covariances[i] = np.copy(temp_cov)
-            means[i] = np.copy(temp_mean)
+            covariances[i] = npcopy(temp_cov)
+            means[i] = npcopy(temp_mean)
             logas[i] = temp_loga
         acceptances[i] = (t*acceptances[i] + accepted)/(t+1.)
     # noise sigma
     while True:
-        noise_sigma_star = noise_sigma_cur + np.exp(sigma_loga)*sigma_proposal_scale*npr.randn()
+        noise_sigma_star = noise_sigma_cur + exp(sigma_loga)*sigma_proposal_scale*randn()
         if (uniform_noise_prior[0] < noise_sigma_star < uniform_noise_prior[1]):
             break
     sigma_target_star = log_pi_sigma(expt_traces,temp_test_traces_cur,noise_sigma_star,args.num_traces,num_pts)
