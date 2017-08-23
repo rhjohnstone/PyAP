@@ -303,7 +303,7 @@ while (t <= MCMC_iterations):
     #temp_test_traces_star = [get_test_trace(xy) for xy in theta_is_star]
         #if (np.any(theta_i_star<0)):
             #print theta_i_star, "WTF"
-        temp_test_trace_star = get_test_trace(theta_i_star,i)
+        temp_test_trace_star = solve_for_voltage_trace(theta_i_star, ap_models[i])
     
         targets_cur[i] = log_pi_theta_i(theta_is_cur[i],top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_traces_cur[i])
         target_star = log_pi_theta_i(      theta_i_star,top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_trace_star)
@@ -312,8 +312,6 @@ while (t <= MCMC_iterations):
             theta_is_cur[i] = np.copy(theta_i_star)
             temp_test_traces_cur[i] = np.copy(temp_test_trace_star)
             accepted = 1
-            if (3000 <= t < 3020):
-                print "accepted!\n"
         else:
             accepted = 0
         if (t > 200*num_gs):
