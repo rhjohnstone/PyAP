@@ -194,10 +194,7 @@ print top_theta_cur, "\n"
 print "theta_is_cur:\n"
 print theta_is_cur, "\n"
         
-for row in theta_is_cur:
-    for i in range(len(row)):
-        if (row[i] < 0):
-            row[i] = 0
+theta_is_cur[theta_is_cur<0] = 0.
             
 print "theta_is_cur:\n"
 print theta_is_cur, "\n"
@@ -282,7 +279,6 @@ def update_covariance_matrix(t,thetaCur,mean_estimate,cov_estimate,loga,accepted
     plt.show(block=True)
 sys.exit()"""
 
-targets_cur = np.zeros(args.num_traces)
 start = time.time()
 t = 1
 print "About to start MCMC\n"
@@ -301,7 +297,7 @@ while (t <= MCMC_iterations):
     
     for i in range(args.num_traces):
         while True:
-            theta_i_star = npr.multivariate_normal(theta_is_cur[i],np.exp(logas[i])*covariances[i])
+            theta_i_star = npr.multivariate_normal(theta_is_cur[i, :],np.exp(logas[i])*covariances[i])
             if (np.all(theta_i_star>=0)):
                 break
     #temp_test_traces_star = pool.map(get_test_trace, theta_is_star)
@@ -310,17 +306,19 @@ while (t <= MCMC_iterations):
             #print theta_i_star, "WTF"
         temp_test_trace_star = solve_for_voltage_trace(theta_i_star, ap_models[i])
     
-        targets_cur[i] = log_pi_theta_i(theta_is_cur[i],top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_traces_cur[i])
-        target_star = log_pi_theta_i(      theta_i_star,top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_trace_star)
+        target_cur = log_pi_theta_i(theta_is_cur[i, :],top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_traces_cur[i])
+        print "target_cur:", target_cur
+        target_star = log_pi_theta_i(theta_i_star,top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_trace_star)
+        print "target_star:", target_star
         u = npr.rand()
-        if (np.log(u) < target_star - targets_cur[i]):
-            theta_is_cur[i] = np.copy(theta_i_star)
+        if (np.log(u) < target_star - target_cur):
+            theta_is_cur[i, :] = np.copy(theta_i_star)
             temp_test_traces_cur[i] = np.copy(temp_test_trace_star)
             accepted = 1
         else:
             accepted = 0
         if (t > 200*num_gs):
-            temp_cov, temp_mean, temp_loga = update_covariance_matrix(t,theta_is_cur[i],means[i],covariances[i],logas[i],accepted)
+            temp_cov, temp_mean, temp_loga = update_covariance_matrix(t,theta_is_cur[i, :],means[i],covariances[i],logas[i],accepted)
             covariances[i] = np.copy(temp_cov)
             means[i] = np.copy(temp_mean)
             logas[i] = temp_loga
