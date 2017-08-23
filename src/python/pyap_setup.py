@@ -59,6 +59,20 @@ def mcmc_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscal
     mcmc_file = txt_dir+"{}_model_{}_trace_{}_{}_{}.txt".format(expt_name, model_number, trace_name, scale_bit, adaptive_bit)
     log_file = mcmc_dir+"{}_model_{}_trace_{}_{}_{}.log".format(expt_name, model_number, trace_name, scale_bit, adaptive_bit)
     return mcmc_file, log_file, png_dir
+    
+    
+def hierarchical_mcmc_files(model, expt_name, first_trace_name, num_traces):
+    if arcus_b:
+        mcmc_dir = os.path.expandvars("$DATA/PyAP_output/{}/hierarchical_mcmc/{}/{}_traces/model_{}/".format(expt_name, first_trace_name, num_traces, model)
+    else:
+        mcmc_dir = os.path.expandvars("projects/PyAP/python/output/{}/hierarchical_mcmc/{}/{}_traces/model_{}/".format(expt_name, first_trace_name, num_traces, model)
+    txt_dir, png_dir, pdf_dir = mcmc_dir+"chain/", mcmc_dir+"figs/png/", mcmc_dir+"figs/pdf/"
+    for d in [txt_dir, png_dir, pdf_dir]:
+        if not os.path.exists(d):
+            os.makedirs(d)
+    mcmc_file = txt_dir+"{}_hMCMC_{}_with_{}_traces_model_{}.txt".format(expt_name, first_trace_name, num_traces, model)
+    log_file = mcmc_dir+"{}_hMCMC_{}_with_{}_traces_model_{}.log".format(expt_name, first_trace_name, num_traces, model)
+    return mcmc_file, log_file, png_dir, pdf_dir
 
 
 def get_original_params(model):

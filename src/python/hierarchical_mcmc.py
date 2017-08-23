@@ -60,21 +60,21 @@ print trace_numbers
 
 
 
-best_fits = np.zeros((args.num_traces, num_gs))
-expt_traces = {}
+best_fits_params = np.zeros((args.num_traces, num_gs))
+expt_traces = []
 ap_models = []
 for i, t in enumerate(trace_numbers):
     temp_trace_path = "{}_{}.csv".format(trace_path[:-8], t)
     temp_times, temp_trace = np.loadtxt(temp_trace_path,delimiter=',').T
     if i==0:
         expt_times = temp_times
-    expt_traces[t] = np.copy(temp_trace)
+    expt_traces.append(np.copy(temp_trace))
     temp_trace_name = trace_name[:-3]+str(t)
     cmaes_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, temp_trace_name)
     all_best_fits = np.loadtxt(cmaes_file)
     best_index = np.argmin(all_best_fits[:, -1])
     best_params = all_best_fits[best_index, :-1]
-    best_fits[i*num_gs:(i+1)*num_gs] = np.copy(best_params)
+    best_fits_params[i*num_gs:(i+1)*num_gs] = np.copy(best_params)
     temp_ap_model = ap_simulator.APSimulator()
     if (data_clamp_on < data_clamp_off):
         temp_ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
@@ -91,21 +91,14 @@ for i, t in enumerate(trace_numbers):
     temp_ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
     temp_ap_model.SetNumberOfSolves(pyap_options["num_solves"])
     ap_models.append(temp_ap_model)
-print best_fits
+expt_traces = np.array(expt_traces)
+print best_fits_params
 print expt_traces
 print ap_models
 
-sys.exit()
-
-# defined in generate_synthetic_data.py, should abstract(?) this so it's definitely consistent
-scale_for_generating_expt_params = 0.1
-top_theta = true_gs
-top_sigma_squared = (scale_for_generating_expt_params * true_gs)**2
 
 start = time.time()
-starting_points = np.copy(best_fits)
-
-#sys.exit()
+starting_points = np.copy(best_fits_params)
 
 
 starting_mean = np.mean(starting_points,axis=0)
@@ -118,66 +111,24 @@ print "starting_mean:\n",starting_mean
     
 print "starting_points:\n", starting_points
 
-directory = "../output/hierarchical/dog_2/m"+str(model)+"/p"+str(protocol)+"/post_cmaes/first_dog_"+str(first_dog)+"/"+str(args.num_traces)+"_expts/"
-if not os.path.exists(directory):
-    os.makedirs(directory)
-chain_dir = directory + "chain/"
-if not os.path.exists(chain_dir):
-    os.makedirs(chain_dir)
-else:
-    for the_file in os.listdir(chain_dir):
-        file_path = os.path.join(chain_dir, the_file)
-        try:
-            if os.path.isfile(file_path):
-                os.unlink(file_path)
-        except Exception, e:
-            print e
-    
-gif_dir = directory+'gif/'
-    
-segment = 0
-output_file = chain_segment_file(chain_dir,model,protocol,args.num_traces,segment)
-with open(output_file,'w') as outfile:
-    pass
-
-print "directory:\n",directory
+mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, args.num_traces)
 
 old_eta_js = np.zeros((num_params,4))
 old_eta_js[:,0] = starting_mean
 old_eta_js[:,1] = 1. * args.num_traces
 old_eta_js[:,2] = 0.5 * args.num_traces
 old_eta_js[:,3] = 0.5 * args.num_traces * starting_vars
-#old_eta_js[:,3] = starting_vars * (old_eta_js[:,2]+1)
 
 print "old_eta_js:\n", old_eta_js
 
+num_pts = len(expt_times)
 
-
-cells = []
-expt_traces = []
-for i in range(args.num_traces):
-    trace = first_dog + i
-    cells.append(cs.CellSimulator(model, protocol, c_seed, 1, true_gs, expt_noise, trace))
-    expt_traces.append(cells[i].get_expt_traces())
-expt_traces = np.array(expt_traces)
-
-
-times = cells[0].get_expt_times()
-num_pts = len(times)
-
-print "\n\n***\nCreated cell and got expt_traces and times\n***\n\n"
-print "times:\n", times
-print "expt_traces:\n", expt_traces
-
-
-
-#sys.exit()
+sys.exit()
 
 
 def get_test_trace(params,index):
     return cells[index].solve_for_voltage_with_params(params)
 
-#print "old_eta_js =\n", old_eta_js
 
 uniform_noise_prior = [0.,20.]
 
