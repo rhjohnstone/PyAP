@@ -279,6 +279,8 @@ def update_covariance_matrix(t,thetaCur,mean_estimate,cov_estimate,loga,accepted
     plt.show(block=True)
 sys.exit()"""
 
+adapt_started = True
+
 start = time.time()
 t = 1
 print "About to start MCMC\n"
@@ -307,9 +309,9 @@ while (t <= MCMC_iterations):
         temp_test_trace_star = solve_for_voltage_trace(theta_i_star, ap_models[i])
     
         target_cur = log_pi_theta_i(theta_is_cur[i, :],top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_traces_cur[i])
-        print "target_cur:", target_cur
+        #print "target_cur:", target_cur
         target_star = log_pi_theta_i(theta_i_star,top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_trace_star)
-        print "target_star:", target_star
+        #print "target_star:", target_star
         u = npr.rand()
         if (np.log(u) < target_star - target_cur):
             theta_is_cur[i, :] = np.copy(theta_i_star)
@@ -318,6 +320,11 @@ while (t <= MCMC_iterations):
         else:
             accepted = 0
         if (t > 200*num_gs):
+            if adapt_started:
+                print "\nAdaptation started\n"
+                adapt_started = False
+            print "target_cur:", target_cur
+            print "target_star:", target_star
             temp_cov, temp_mean, temp_loga = update_covariance_matrix(t,theta_is_cur[i, :],means[i],covariances[i],logas[i],accepted)
             covariances[i] = np.copy(temp_cov)
             means[i] = np.copy(temp_mean)
