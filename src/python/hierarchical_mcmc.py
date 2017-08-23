@@ -7,6 +7,7 @@ import numpy.random as npr
 import time
 import multiprocessing as mp
 import argparse
+import matplotlib.pyplot as plt
 
 
 def solve_for_voltage_trace(temp_g_params, ap_model):
@@ -62,6 +63,7 @@ print trace_numbers
 best_fits_params = np.zeros((args.num_traces, num_gs))
 expt_traces = []
 ap_models = []
+temp_test_traces_cur = []
 for i, t in enumerate(trace_numbers):
     temp_trace_path = "{}_{}.csv".format(trace_path[:-8], t)
     temp_times, temp_trace = np.loadtxt(temp_trace_path,delimiter=',').T
