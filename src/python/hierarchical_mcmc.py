@@ -322,11 +322,11 @@ while (t <= MCMC_iterations):
         else:
             accepted = 0
         if (t > when_to_adapt):
-            if adapt_started:
-                print "\nAdaptation started\n"
-                adapt_started = False
-            print "target_cur:", target_cur
-            print "target_star:", target_star
+            #if adapt_started:
+            #    print "\nAdaptation started\n"
+            #    adapt_started = False
+            #print "target_cur:", target_cur
+            #print "target_star:", target_star
             temp_cov, temp_mean, temp_loga = update_covariance_matrix(t,theta_is_cur[i, :],means[i],covariances[i],logas[i],accepted)
             covariances[i] = np.copy(temp_cov)
             means[i] = np.copy(temp_mean)
