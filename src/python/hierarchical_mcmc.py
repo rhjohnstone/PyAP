@@ -231,6 +231,7 @@ thinning = 5
 MCMC_iterations = 10000
 num_saved_its = MCMC_iterations / thinning + 1
 burn = num_saved_its / 4
+when_to_adapt = 100*num_gs
 
 status_when = MCMC_iterations / 100
 
@@ -255,7 +256,7 @@ sigma_acceptance = 0.
 
 #if t > 1000*number_of_parameters:
 def update_covariance_matrix(t,thetaCur,mean_estimate,cov_estimate,loga,accepted):
-    s = t - 200*num_gs
+    s = t - when_to_adapt
     gamma_s = 1/(s+1)**0.6
     temp_covariance_bit = np.array([thetaCur-mean_estimate])
     new_cov_estimate = (1-gamma_s) * cov_estimate + gamma_s * np.dot(np.transpose(temp_covariance_bit),temp_covariance_bit)
@@ -280,6 +281,7 @@ def update_covariance_matrix(t,thetaCur,mean_estimate,cov_estimate,loga,accepted
 sys.exit()"""
 
 adapt_started = True
+
 
 start = time.time()
 t = 1
@@ -319,7 +321,7 @@ while (t <= MCMC_iterations):
             accepted = 1
         else:
             accepted = 0
-        if (t > 200*num_gs):
+        if (t > when_to_adapt):
             if adapt_started:
                 print "\nAdaptation started\n"
                 adapt_started = False
@@ -344,8 +346,8 @@ while (t <= MCMC_iterations):
     else:
         accepted = 0
     sigma_acceptance = (t*sigma_acceptance + accepted)/(t+1)
-    if (t > 200*num_gs):
-        r = t - 200*num_gs
+    if (t > when_to_adapt):
+        r = t - when_to_adapt
         gamma_r = 1/(r+1)**0.6
         sigma_loga += gamma_r*(accepted-0.25)
     if ( t%thinning == 0 ):   
