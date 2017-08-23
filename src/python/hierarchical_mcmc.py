@@ -73,9 +73,10 @@ for i, t in enumerate(trace_numbers):
     cmaes_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, temp_trace_name)
     print cmaes_file
     all_best_fits = np.loadtxt(cmaes_file)
+    print all_best_fits
     best_index = np.argmin(all_best_fits[:, -1])
     best_params = all_best_fits[best_index, :-1]
-    best_fits_params[i*num_gs:(i+1)*num_gs] = np.copy(best_params)
+    best_fits_params[i, :] = np.copy(best_params)
     temp_ap_model = ap_simulator.APSimulator()
     if (data_clamp_on < data_clamp_off):
         temp_ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
