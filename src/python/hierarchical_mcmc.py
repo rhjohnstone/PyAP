@@ -174,8 +174,8 @@ theta_is_cur = np.copy(starting_points)
 #print "theta_is_cur:\n", theta_is_cur
 
 
-cov_proposal_scale = 0.0000001
-sigma_proposal_scale = 0.01
+cov_proposal_scale = 0.0001
+sigma_proposal_scale = 0.1
 
 print "top_theta_cur:\n"
 print top_theta_cur, "\n"

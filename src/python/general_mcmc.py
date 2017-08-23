@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
 parser.add_argument("-i", "--iterations", type=int, help="total MCMC iterations", default=500000)
+parser.add_argument("-s", "--seed", type=int, help="Python random seed", default=0)
 parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
 parser.add_argument("--non-adaptive", action="store_true", help="do not adapt proposal covariance matrix", default=False)
 args, unknown = parser.parse_known_args()
@@ -24,6 +25,9 @@ split_trace_path = trace_path.split('/')
 expt_name = split_trace_path[4]
 trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
+
+if args.seed:
+    npr.seed(args.seed)
 
 pyap_options = {}
 with open(options_file, 'r') as infile:
