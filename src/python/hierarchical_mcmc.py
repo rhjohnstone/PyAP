@@ -15,7 +15,12 @@ start = time.time()
 
 def solve_for_voltage_trace(temp_g_params, ap_model):
     ap_model.SetToModelInitialConditions()
-    return ap_model.SolveForVoltageTraceWithParams(temp_g_params)
+    try:
+        return ap_model.SolveForVoltageTraceWithParams(temp_g_params)
+    except:
+        print "Failed to solve"
+        print "temp_g_params:", temp_g_params
+        sys.exit()
     
 
 python_seed = 1
