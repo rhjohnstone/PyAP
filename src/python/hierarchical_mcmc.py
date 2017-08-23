@@ -113,7 +113,7 @@ print "starting_points:\n", starting_points
 
 mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, args.num_traces)
 
-old_eta_js = np.zeros((num_params,4))
+old_eta_js = np.zeros((num_gs,4))
 old_eta_js[:,0] = starting_mean
 old_eta_js[:,1] = 1. * args.num_traces
 old_eta_js[:,2] = 0.5 * args.num_traces
@@ -243,7 +243,7 @@ sigma_acceptance = 0.
 
 #if t > 1000*number_of_parameters:
 def update_covariance_matrix(t,thetaCur,mean_estimate,cov_estimate,loga,accepted):
-    s = t - 200*num_params
+    s = t - 200*num_gs
     gamma_s = 1/(s+1)**0.6
     temp_covariance_bit = np.array([thetaCur-mean_estimate])
     new_cov_estimate = (1-gamma_s) * cov_estimate + gamma_s * np.dot(np.transpose(temp_covariance_bit),temp_covariance_bit)
@@ -289,7 +289,7 @@ while True:
                 np.savetxt(outfile,MCMC)
             print "sys.getsizeof(MCMC) =", sys.getsizeof(MCMC)
             MCMC = []
-        for j in range(num_params):
+        for j in range(num_gs):
             temp_eta = new_eta(old_eta_js[j],theta_is_cur[:,j])
             """if (t==3000):
                 print "\n\nold_eta_js["+str(j)+"]:\n", old_eta_js[j],"\n"
@@ -353,7 +353,7 @@ while True:
                     print "accepted!\n"
             else:
                 accepted = 0
-            if (t > 200*num_params):
+            if (t > 200*num_gs):
                 temp_cov, temp_mean, temp_loga = update_covariance_matrix(t,theta_is_cur[i],means[i],covariances[i],logas[i],accepted)
                 covariances[i] = np.copy(temp_cov)
                 means[i] = np.copy(temp_mean)
@@ -373,8 +373,8 @@ while True:
         else:
             accepted = 0
         sigma_acceptance = (t*sigma_acceptance + accepted)/(t+1)
-        if (t > 200*num_params):
-            r = t - 200*num_params
+        if (t > 200*num_gs):
+            r = t - 200*num_gs
             gamma_r = 1/(r+1)**0.6
             sigma_loga += gamma_r*(accepted-0.25)
         if ( t%thinning == 0 ):   
