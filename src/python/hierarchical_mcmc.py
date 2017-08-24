@@ -244,6 +244,9 @@ def do_mcmc():
     when_to_adapt = 100*num_gs
 
     status_when = MCMC_iterations / 100
+    
+    print "top_theta_cur:", top_theta_cur
+    print "noise_sigma_cur:", noise_sigma_cur
 
     MCMC = np.zeros((num_saved_its, (2+args.num_traces)*num_gs+1))
     MCMC[0, :] = np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatten(),[noise_sigma_cur]))
