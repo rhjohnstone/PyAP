@@ -436,8 +436,8 @@ def do_mcmc_parallel():
         temp_test_traces_star = pool.map_async(solve_star, theta_i_stars_and_ap_model_index).get(999)
         pool.close()
         pool.join()
-        print "\n\ntemp_test_traces:\n", temp_test_traces_star
-        sys.exit()
+        #print "\n\ntemp_test_traces:\n", temp_test_traces_star
+        #sys.exit()
         
         #temp_test_traces_star = [get_test_trace(xy) for xy in theta_is_star]
             #if (np.any(theta_i_star<0)):
