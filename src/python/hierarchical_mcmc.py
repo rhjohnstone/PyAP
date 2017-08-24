@@ -289,7 +289,6 @@ sys.exit()"""
 adapt_started = True
 
 
-start = time.time()
 t = 1
 print "About to start MCMC\n"
 while (t <= MCMC_iterations):
@@ -366,8 +365,21 @@ while (t <= MCMC_iterations):
         print "sigma_loga =", sigma_loga
         print "sigma_acceptance =", sigma_acceptance
         
+np.savetxt(mcmc_file, MCMC)
+        
 tt = time.time()-start
 print "Time taken: {} s = {} min".format(round(tt), round(tt/60.,1))
 #print final_state
+
+with open(log_file, "w") as outfile:
+    outfile.write("Model {}: {}\n".format(pyap_options["model_number"], model_name))
+    outfile.write("Expt name: {}\n".format(expt_name))
+    outfile.write("First trace: {}\n".format(trace_name))
+    outfile.write("Fitting to {} traces\n\n".format(args.num_traces))
+    outfile.write("Total time taken: {} s = {} min = {} hr\n\n".format(round(tt), round(tt/60.,1), round(tt/3600.,2)))
+    outfile.write("Final logas: {}\n".format(logas))
+    outfile.write("Final sigma_loga: {}\n".format(sigma_loga))
+    outfile.write("Final acceptances: {}\n".format(acceptances))
+    outfile.write("Final sigma_acceptance: {}\n".format(sigma_acceptance))
 
 print "\nAll done.\n"
