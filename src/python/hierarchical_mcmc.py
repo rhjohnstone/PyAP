@@ -133,7 +133,12 @@ print "starting_mean:\n",starting_mean
     
 print "starting_points:\n", starting_points
 
-mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, args.num_traces)
+if args.num_cores>1:
+    parallel = True
+else:
+    parallel = False
+
+mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, args.num_traces, parallel)
 
 old_eta_js = np.zeros((num_gs,4))
 old_eta_js[:,0] = starting_mean
