@@ -236,6 +236,7 @@ plt.show(block=True)"""
 #sys.exit()
 
 def do_mcmc():
+    global noise_sigma_cur
 
     thinning = 5
     MCMC_iterations = args.iterations
