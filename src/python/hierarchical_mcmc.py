@@ -18,6 +18,11 @@ multivariate_normal = npr.multivariate_normal
 npcopy = np.copy
 exp = np.exp
 
+
+def ap_model_getinitargs(self):
+    return None
+        
+
 def solve_for_voltage_trace(temp_g_params, ap_model):
     ap_model.SetToModelInitialConditions()
     try:
@@ -95,6 +100,7 @@ for i, t in enumerate(trace_numbers):
     best_params = all_best_fits[best_index, :-1]
     best_fits_params[i, :] = npcopy(best_params)
     temp_ap_model = ap_simulator.APSimulator()
+    temp_ap_model.__getinitargs__ = ap_model_getinitargs
     if (data_clamp_on < data_clamp_off):
         temp_ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
         temp_ap_model.DefineModel(pyap_options["model_number"])
@@ -411,6 +417,7 @@ def do_mcmc_parallel():
         new_loga = loga + gamma_s*(accepted-0.25)
         return new_cov_estimate, new_mean_estimate, new_loga
         
+        
 
     adapt_started = True
     theta_i_stars = np.zeros((args.num_traces, num_gs))
@@ -439,7 +446,7 @@ def do_mcmc_parallel():
                     break
                     
         theta_i_stars_and_ap_models = zip(theta_i_stars, ap_models)
-        temp_test_traces_star = pool.map(solve_star, theta_i_stars_and_ap_models)
+        temp_test_traces_star = pool.map_async(solve_star, theta_i_stars_and_ap_models).get(999)
         print "\n\ntemp_test_traces:\n", temp_test_traces_star
         sys.exit()
         
