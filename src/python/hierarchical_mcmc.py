@@ -413,11 +413,10 @@ def do_mcmc_parallel():
     adapt_started = True
     theta_i_stars = np.zeros((args.num_traces, num_gs))
 
-    
     t = 1
     print "About to start MCMC\n"
     while (t <= MCMC_iterations):
-        for j in range(num_gs):
+        for j in xrange(num_gs):
             temp_eta = new_eta(old_eta_js[j],theta_is_cur[:,j])
             while True:
                 temp_top_theta_cur, temp_top_sigma_squared_cur = sample_from_N_IG(temp_eta)
@@ -429,7 +428,7 @@ def do_mcmc_parallel():
 
         # theta i's for each experiment
         
-        for i in range(args.num_traces):
+        for i in xrange(args.num_traces):
             while True:
                 theta_i_star = multivariate_normal(theta_is_cur[i, :],exp(logas[i])*covariances[i])
                 if (np.all(theta_i_star>=0)):
@@ -441,14 +440,10 @@ def do_mcmc_parallel():
         temp_test_traces_star = pool.map_async(solve_star, theta_i_stars_and_ap_model_index).get(999)
         pool.close()
         pool.join()
-        #print "\n\ntemp_test_traces:\n", temp_test_traces_star
-        #sys.exit()
-        
-        #temp_test_traces_star = [get_test_trace(xy) for xy in theta_is_star]
-            #if (np.any(theta_i_star<0)):
-                #print theta_i_star, "WTF"
+
         for i in xrange(args.num_traces):
             temp_test_trace_star = temp_test_traces_star[i]
+            theta_i_star = theta_i_stars[i, :]
         
             target_cur = log_pi_theta_i(theta_is_cur[i, :],top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_traces_cur[i])
             #print "target_cur:", target_cur
@@ -462,11 +457,6 @@ def do_mcmc_parallel():
             else:
                 accepted = 0
             if (t > when_to_adapt):
-                #if adapt_started:
-                #    print "\nAdaptation started\n"
-                #    adapt_started = False
-                #print "target_cur:", target_cur
-                #print "target_star:", target_star
                 temp_cov, temp_mean, temp_loga = update_covariance_matrix(t,theta_is_cur[i, :],means[i],covariances[i],logas[i],accepted)
                 covariances[i] = npcopy(temp_cov)
                 means[i] = npcopy(temp_mean)
