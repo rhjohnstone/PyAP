@@ -367,6 +367,8 @@ def do_mcmc_parallel():
     from multiprocessing import Pool
     global noise_sigma_cur
     
+    print "\nPARALLEL\n"
+    
     pool = Pool(args.num_cores)
 
     thinning = 5
@@ -443,7 +445,8 @@ def do_mcmc_parallel():
         #temp_test_traces_star = [get_test_trace(xy) for xy in theta_is_star]
             #if (np.any(theta_i_star<0)):
                 #print theta_i_star, "WTF"
-            temp_test_trace_star = solve_for_voltage_trace(theta_i_star, ap_models[i])
+        for i in xrange(args.num_traces):
+            temp_test_trace_star = temp_test_traces_star[i]
         
             target_cur = log_pi_theta_i(theta_is_cur[i, :],top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_traces_cur[i])
             #print "target_cur:", target_cur
