@@ -359,7 +359,7 @@ def do_mcmc_series():
     
 
 def do_mcmc_parallel():
-    from pathos.multiprocessing import ProcessingPool as Pool
+    from multiprocessing import Pool
     global noise_sigma_cur
     
     print "\nPARALLEL\n"
@@ -380,8 +380,6 @@ def do_mcmc_parallel():
     MCMC = np.zeros((num_saved_its, (2+args.num_traces)*num_gs+1))
     MCMC[0, :] = np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatten(),[noise_sigma_cur]))
     print "\n", MCMC, "\n"
-
-    #pool = multiprocessing.Pool(num_processes) # not sure where best to have this line
 
     covariances = []
     for i in range(args.num_traces):
@@ -435,7 +433,7 @@ def do_mcmc_parallel():
                     
         theta_i_stars_and_ap_models = zip(theta_i_stars, ap_models)
         pool = Pool(args.num_cores)
-        temp_test_traces_star = pool.map(solve_star, theta_i_stars_and_ap_models)
+        temp_test_traces_star = pool.map_async(solve_star, theta_i_stars_and_ap_models).get(999)
         pool.close()
         pool.join()
         print "\n\ntemp_test_traces:\n", temp_test_traces_star
