@@ -309,7 +309,7 @@ def do_mcmc_series():
                 theta_i_star = multivariate_normal(theta_is_cur[i, :],exp(logas[i])*covariances[i])
                 if (np.all(theta_i_star>=0)):
                     break
-            temp_test_trace_star = solve_for_voltage_trace(theta_i_star, ap_models[i])
+            temp_test_trace_star = solve_for_voltage_trace(theta_i_star, i)
         
             target_cur = log_pi_theta_i(theta_is_cur[i, :],top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_traces_cur[i])
             #print "target_cur:", target_cur
