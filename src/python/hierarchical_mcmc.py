@@ -1,4 +1,4 @@
-import ap_simulator  
+import ap_simulator
 import pyap_setup as ps
 import argparse
 import numpy as np
@@ -6,7 +6,6 @@ import sys
 import numpy.random as npr
 import time
 import multiprocessing as mp
-import argparse
 import matplotlib.pyplot as plt
 from scipy.stats import invgamma
 
