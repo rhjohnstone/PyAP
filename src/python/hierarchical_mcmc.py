@@ -18,8 +18,8 @@ multivariate_normal = npr.multivariate_normal
 npcopy = np.copy
 exp = np.exp
 
-def solve_for_voltage_trace(temp_g_params, ap_model):
-    ap_model.SetToModelInitialConditions()
+def solve_for_voltage_trace(temp_g_params, ap_model_index):
+    ap_models[ap_model_index].SetToModelInitialConditions()
     try:
         return ap_model.SolveForVoltageTraceWithParams(temp_g_params)
     except:
@@ -28,8 +28,8 @@ def solve_for_voltage_trace(temp_g_params, ap_model):
         sys.exit()
         
 
-def solve_star(temp_g_params_and_ap_model):
-    return solve_for_voltage_trace(*temp_g_params_and_ap_model)
+def solve_star(temp_g_params_and_ap_model_index):
+    return solve_for_voltage_trace(*temp_g_params_and_ap_model_index)
     
 
 python_seed = 1
@@ -431,9 +431,9 @@ def do_mcmc_parallel():
                     theta_i_stars[i, :] = theta_i_star
                     break
                     
-        theta_i_stars_and_ap_models = zip(theta_i_stars, ap_models)
+        theta_i_stars_and_ap_model_index = zip(theta_i_stars, range(args.num_traces))
         pool = Pool(args.num_cores)
-        temp_test_traces_star = pool.map_async(solve_star, theta_i_stars_and_ap_models).get(999)
+        temp_test_traces_star = pool.map_async(solve_star, theta_i_stars_and_ap_model_index).get(999)
         pool.close()
         pool.join()
         print "\n\ntemp_test_traces:\n", temp_test_traces_star
