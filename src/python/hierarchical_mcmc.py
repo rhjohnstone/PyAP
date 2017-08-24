@@ -8,7 +8,6 @@ import time
 import multiprocessing as mp
 import argparse
 import matplotlib.pyplot as plt
-import multiprocessing as mp
 from scipy.stats import invgamma
 
 start = time.time()
@@ -27,6 +26,10 @@ def solve_for_voltage_trace(temp_g_params, ap_model):
         print "Failed to solve"
         print "temp_g_params:", temp_g_params
         sys.exit()
+        
+
+def solve_star(temp_g_params_and_ap_model):
+    return solve_for_voltage_trace(*temp_g_params_and_ap_model)
     
 
 python_seed = 1
@@ -235,7 +238,7 @@ plt.show(block=True)"""
 
 #sys.exit()
 
-def do_mcmc():
+def do_mcmc_series():
     global noise_sigma_cur
 
     thinning = 5
@@ -358,6 +361,146 @@ def do_mcmc():
             print "sigma_loga =", sigma_loga
             print "sigma_acceptance =", sigma_acceptance
     return MCMC, logas, sigma_loga, acceptances, sigma_acceptance
+    
+
+def do_mcmc_parallel():
+    from multiprocessing import Pool
+    global noise_sigma_cur
+    
+    pool = Pool(args.num_cores)
+
+    thinning = 5
+    MCMC_iterations = args.iterations
+    num_saved_its = MCMC_iterations / thinning + 1
+    burn = num_saved_its / 4
+    when_to_adapt = 100*num_gs
+
+    status_when = MCMC_iterations / 100
+    
+    print "top_theta_cur:", top_theta_cur
+    print "noise_sigma_cur:", noise_sigma_cur
+
+    MCMC = np.zeros((num_saved_its, (2+args.num_traces)*num_gs+1))
+    MCMC[0, :] = np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatten(),[noise_sigma_cur]))
+    print "\n", MCMC, "\n"
+
+    #pool = multiprocessing.Pool(num_processes) # not sure where best to have this line
+
+    covariances = []
+    for i in range(args.num_traces):
+        covariances.append(cov_proposal_scale*np.diag(theta_is_cur[i,:]))
+    print "covariances:\n", covariances, "\n"
+
+    means = npcopy(theta_is_cur)
+    print "means:\n", means, "\n"
+
+    logas = [0.]*args.num_traces
+    acceptances = [0.]*args.num_traces
+    sigma_loga = 0.
+    sigma_acceptance = 0.
+
+    #if t > 1000*number_of_parameters:
+    def update_covariance_matrix(t,thetaCur,mean_estimate,cov_estimate,loga,accepted):
+        s = t - when_to_adapt
+        gamma_s = 1/(s+1)**0.6
+        temp_covariance_bit = np.array([thetaCur-mean_estimate])
+        new_cov_estimate = (1-gamma_s) * cov_estimate + gamma_s * dot(np.transpose(temp_covariance_bit),temp_covariance_bit)
+        new_mean_estimate = (1-gamma_s) * mean_estimate + gamma_s * thetaCur
+        new_loga = loga + gamma_s*(accepted-0.25)
+        return new_cov_estimate, new_mean_estimate, new_loga
+        
+
+    adapt_started = True
+    theta_i_stars = np.zeros((args.num_traces, num_gs))
+
+    t = 1
+    print "About to start MCMC\n"
+    while (t <= MCMC_iterations):
+        for j in range(num_gs):
+            temp_eta = new_eta(old_eta_js[j],theta_is_cur[:,j])
+            while True:
+                temp_top_theta_cur, temp_top_sigma_squared_cur = sample_from_N_IG(temp_eta)
+                if (temp_top_theta_cur > 0):
+                    break
+            top_theta_cur[j] = temp_top_theta_cur
+            top_sigma_squareds_cur[j] = temp_top_sigma_squared_cur
+                    
+
+        # theta i's for each experiment
+        
+        for i in range(args.num_traces):
+            while True:
+                theta_i_star = multivariate_normal(theta_is_cur[i, :],exp(logas[i])*covariances[i])
+                if (np.all(theta_i_star>=0)):
+                    theta_i_stars[i, :] = theta_i_star
+                    break
+                    
+        theta_i_stars_and_ap_models = zip(theta_i_stars, ap_models)
+        temp_test_traces_star = pool.map(solve_star, theta_i_stars_and_ap_models)
+        print "\n\ntemp_test_traces:\n", temp_test_traces_star
+        sys.exit()
+        
+        #temp_test_traces_star = [get_test_trace(xy) for xy in theta_is_star]
+            #if (np.any(theta_i_star<0)):
+                #print theta_i_star, "WTF"
+            temp_test_trace_star = solve_for_voltage_trace(theta_i_star, ap_models[i])
+        
+            target_cur = log_pi_theta_i(theta_is_cur[i, :],top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_traces_cur[i])
+            #print "target_cur:", target_cur
+            target_star = log_pi_theta_i(theta_i_star,top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_trace_star)
+            #print "target_star:", target_star
+            u = npr.rand()
+            if (np.log(u) < target_star - target_cur):
+                theta_is_cur[i, :] = npcopy(theta_i_star)
+                temp_test_traces_cur[i] = npcopy(temp_test_trace_star)
+                accepted = 1
+            else:
+                accepted = 0
+            if (t > when_to_adapt):
+                #if adapt_started:
+                #    print "\nAdaptation started\n"
+                #    adapt_started = False
+                #print "target_cur:", target_cur
+                #print "target_star:", target_star
+                temp_cov, temp_mean, temp_loga = update_covariance_matrix(t,theta_is_cur[i, :],means[i],covariances[i],logas[i],accepted)
+                covariances[i] = npcopy(temp_cov)
+                means[i] = npcopy(temp_mean)
+                logas[i] = temp_loga
+            acceptances[i] = (t*acceptances[i] + accepted)/(t+1.)
+        # noise sigma
+        while True:
+            noise_sigma_star = noise_sigma_cur + exp(sigma_loga)*sigma_proposal_scale*randn()
+            if (uniform_noise_prior[0] < noise_sigma_star < uniform_noise_prior[1]):
+                break
+        sigma_target_star = log_pi_sigma(expt_traces,temp_test_traces_cur,noise_sigma_star,args.num_traces,num_pts)
+        sigma_target_cur = log_pi_sigma(expt_traces,temp_test_traces_cur,noise_sigma_cur,args.num_traces,num_pts)
+        u = npr.rand()
+        if (np.log(u) < sigma_target_star - sigma_target_cur):
+            noise_sigma_cur = noise_sigma_star
+            accepted = 1
+        else:
+            accepted = 0
+        sigma_acceptance = (t*sigma_acceptance + accepted)/(t+1)
+        if (t > when_to_adapt):
+            r = t - when_to_adapt
+            gamma_r = 1/(r+1)**0.6
+            sigma_loga += gamma_r*(accepted-0.25)
+        if ( t%thinning == 0 ):   
+            MCMC[t/thinning, :] = np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatten(),[noise_sigma_cur]))
+        t += 1
+        if ( t%status_when==0 ):
+            print t, "iterations"
+            print "logas =", logas
+            print "acceptances =", acceptances
+            print "sigma_loga =", sigma_loga
+            print "sigma_acceptance =", sigma_acceptance
+    return MCMC, logas, sigma_loga, acceptances, sigma_acceptance
+
+
+if args.num_cores == 1:
+    do_mcmc = do_mcmc_series
+elif args.num_cores>1:
+    do_mcmc = do_mcmc_parallel
     
 MCMC, logas, sigma_loga, acceptances, sigma_acceptance = do_mcmc()
 np.savetxt(mcmc_file, MCMC)
