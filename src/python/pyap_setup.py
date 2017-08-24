@@ -67,9 +67,9 @@ def hierarchical_mcmc_files(model, expt_name, first_trace_name, num_traces, para
     else:
         first_bit = os.path.expandvars("projects/PyAP/python/output/")
     if parallel:
-        mcmc_dir = first_bit+"{}/hierarchical_mcmc_parallel/{}/{}_traces/model_{}/".format(expt_name, first_trace_name, num_traces, model))
+        mcmc_dir = first_bit+"{}/hierarchical_mcmc_parallel/{}/{}_traces/model_{}/".format(expt_name, first_trace_name, num_traces, model)
     else:
-        mcmc_dir = first_bit+"{}/hierarchical_mcmc_series/{}/{}_traces/model_{}/".format(expt_name, first_trace_name, num_traces, model))
+        mcmc_dir = first_bit+"{}/hierarchical_mcmc_series/{}/{}_traces/model_{}/".format(expt_name, first_trace_name, num_traces, model)
     txt_dir, png_dir, pdf_dir = mcmc_dir+"chain/", mcmc_dir+"figs/png/", mcmc_dir+"figs/pdf/"
     for d in [txt_dir, png_dir, pdf_dir]:
         if not os.path.exists(d):
