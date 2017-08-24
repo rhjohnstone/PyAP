@@ -369,7 +369,7 @@ def do_mcmc_parallel():
     
     print "\nPARALLEL\n"
     
-    pool = Pool(args.num_cores)
+    
 
     thinning = 5
     MCMC_iterations = args.iterations
@@ -417,6 +417,7 @@ def do_mcmc_parallel():
 
     t = 1
     print "About to start MCMC\n"
+    pool = Pool(args.num_cores)
     while (t <= MCMC_iterations):
         for j in range(num_gs):
             temp_eta = new_eta(old_eta_js[j],theta_is_cur[:,j])
