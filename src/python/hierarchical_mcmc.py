@@ -413,6 +413,7 @@ def do_mcmc_parallel():
     adapt_started = True
     theta_i_stars = np.zeros((args.num_traces, num_gs))
 
+    pool = Pool(args.num_cores)
     t = 1
     print "About to start MCMC\n"
     while (t <= MCMC_iterations):
@@ -436,10 +437,9 @@ def do_mcmc_parallel():
                     break
                     
         theta_i_stars_and_ap_model_index = zip(theta_i_stars, range(args.num_traces))
-        pool = Pool(args.num_cores)
+        
         temp_test_traces_star = pool.map_async(solve_star, theta_i_stars_and_ap_model_index).get(999)
-        pool.close()
-        pool.join()
+
 
         for i in xrange(args.num_traces):
             temp_test_trace_star = temp_test_traces_star[i]
@@ -489,6 +489,8 @@ def do_mcmc_parallel():
             print "acceptances =", acceptances
             print "sigma_loga =", sigma_loga
             print "sigma_acceptance =", sigma_acceptance
+    pool.close()
+    pool.join()
     return MCMC, logas, sigma_loga, acceptances, sigma_acceptance
 
 
