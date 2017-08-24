@@ -8,6 +8,7 @@ import time
 import multiprocessing as mp
 import argparse
 import matplotlib.pyplot as plt
+import multiprocessing as mp
 from scipy.stats import invgamma
 
 start = time.time()
@@ -35,7 +36,8 @@ parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
 requiredNamed.add_argument("--num-traces", type=int, help="number of traces to fit to, including the one specified as argument", required=True)
-parser.add_argument("-i", "--iterations", type=int, help="total MCMC iterations", default=500000)
+requiredNamed.add_argument("-i", "--iterations", type=int, help="total MCMC iterations", required=True)
+parser.add_argument("-nc", "--num-cores", type=int, help="number of cores to parallelise solving expt traces", default=1)
 #parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
@@ -234,7 +236,7 @@ plt.show(block=True)"""
 #sys.exit()
 
 thinning = 5
-MCMC_iterations = 10000
+MCMC_iterations = args.iterations
 num_saved_its = MCMC_iterations / thinning + 1
 burn = num_saved_its / 4
 when_to_adapt = 100*num_gs
