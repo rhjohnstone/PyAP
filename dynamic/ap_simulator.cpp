@@ -66,7 +66,6 @@ BOOST_PYTHON_MODULE(_chaste_project_PyAP_ap_simulator)
     //;
 
     class_<APSimulator>("APSimulator")
-        .enable_pickling()
         .def("DefineStimulus", &APSimulator::DefineStimulus)
         .def("DefineSolveTimes", &APSimulator::DefineSolveTimes)
         .def("DefineModel", &APSimulator::DefineModel)

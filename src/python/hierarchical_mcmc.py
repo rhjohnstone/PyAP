@@ -18,11 +18,6 @@ multivariate_normal = npr.multivariate_normal
 npcopy = np.copy
 exp = np.exp
 
-
-def ap_model_getinitargs(self):
-    return None
-        
-
 def solve_for_voltage_trace(temp_g_params, ap_model):
     ap_model.SetToModelInitialConditions()
     try:
@@ -100,7 +95,6 @@ for i, t in enumerate(trace_numbers):
     best_params = all_best_fits[best_index, :-1]
     best_fits_params[i, :] = npcopy(best_params)
     temp_ap_model = ap_simulator.APSimulator()
-    temp_ap_model.__getinitargs__ = ap_model_getinitargs
     if (data_clamp_on < data_clamp_off):
         temp_ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
         temp_ap_model.DefineModel(pyap_options["model_number"])
@@ -417,14 +411,13 @@ def do_mcmc_parallel():
         new_loga = loga + gamma_s*(accepted-0.25)
         return new_cov_estimate, new_mean_estimate, new_loga
         
-        
 
     adapt_started = True
     theta_i_stars = np.zeros((args.num_traces, num_gs))
 
+    pool = Pool(args.num_cores)
     t = 1
     print "About to start MCMC\n"
-    pool = Pool(args.num_cores)
     while (t <= MCMC_iterations):
         for j in range(num_gs):
             temp_eta = new_eta(old_eta_js[j],theta_is_cur[:,j])
