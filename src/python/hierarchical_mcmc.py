@@ -21,7 +21,7 @@ exp = np.exp
 def solve_for_voltage_trace(temp_g_params, ap_model_index):
     ap_models[ap_model_index].SetToModelInitialConditions()
     try:
-        return ap_model.SolveForVoltageTraceWithParams(temp_g_params)
+        return ap_models[ap_model_index].SolveForVoltageTraceWithParams(temp_g_params)
     except:
         print "Failed to solve"
         print "temp_g_params:", temp_g_params
@@ -110,7 +110,7 @@ for i, t in enumerate(trace_numbers):
     temp_ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
     temp_ap_model.SetNumberOfSolves(pyap_options["num_solves"])
     ap_models.append(temp_ap_model)
-    temp_test_traces_cur.append(npcopy(solve_for_voltage_trace(best_params, temp_ap_model)))
+    temp_test_traces_cur.append(npcopy(solve_for_voltage_trace(best_params, i)))
 expt_traces = np.array(expt_traces)
 temp_test_traces_cur = np.array(temp_test_traces_cur)
 #print best_fits_params
