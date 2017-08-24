@@ -256,7 +256,6 @@ def do_mcmc_series():
     MCMC[0, :] = np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatten(),[noise_sigma_cur]))
     print "\n", MCMC, "\n"
 
-    #pool = multiprocessing.Pool(num_processes) # not sure where best to have this line
 
     covariances = []
     for i in range(args.num_traces):
@@ -305,10 +304,6 @@ def do_mcmc_series():
                 theta_i_star = multivariate_normal(theta_is_cur[i, :],exp(logas[i])*covariances[i])
                 if (np.all(theta_i_star>=0)):
                     break
-        #temp_test_traces_star = pool.map(get_test_trace, theta_is_star)
-        #temp_test_traces_star = [get_test_trace(xy) for xy in theta_is_star]
-            #if (np.any(theta_i_star<0)):
-                #print theta_i_star, "WTF"
             temp_test_trace_star = solve_for_voltage_trace(theta_i_star, ap_models[i])
         
             target_cur = log_pi_theta_i(theta_is_cur[i, :],top_theta_cur,top_sigma_squareds_cur,noise_sigma_cur,expt_traces[i],temp_test_traces_cur[i])
@@ -364,7 +359,7 @@ def do_mcmc_series():
     
 
 def do_mcmc_parallel():
-    from multiprocessing import Pool
+    from pathos.multiprocessing import ProcessingPool as Pool
     global noise_sigma_cur
     
     print "\nPARALLEL\n"
@@ -415,7 +410,7 @@ def do_mcmc_parallel():
     adapt_started = True
     theta_i_stars = np.zeros((args.num_traces, num_gs))
 
-    pool = Pool(args.num_cores)
+    
     t = 1
     print "About to start MCMC\n"
     while (t <= MCMC_iterations):
@@ -439,7 +434,10 @@ def do_mcmc_parallel():
                     break
                     
         theta_i_stars_and_ap_models = zip(theta_i_stars, ap_models)
-        temp_test_traces_star = pool.map_async(solve_star, theta_i_stars_and_ap_models).get(999)
+        pool = Pool(args.num_cores)
+        temp_test_traces_star = pool.map(solve_star, theta_i_stars_and_ap_models)
+        pool.close()
+        pool.join()
         print "\n\ntemp_test_traces:\n", temp_test_traces_star
         sys.exit()
         
