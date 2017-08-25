@@ -61,7 +61,7 @@ def log_target_exp_scaled(temp_unscaled_params, ap_model, expt_trace):
         try:
             test_trace = solve_for_voltage_trace(temp_gs, ap_model)
         except:
-            print "Failed to solve"
+            print "Failed to solve at iteration", t
             print temp_gs
             sys.exit()
         return -len(expt_trace)*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2) + np.dot(temp_unscaled_gs, log_gs)
@@ -95,7 +95,7 @@ else:
 
 
 def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
-    global loga, acceptance
+    global loga, acceptance, t
     #npr.seed(trace_number)
     print "Starting chain"
     start = time.time()
