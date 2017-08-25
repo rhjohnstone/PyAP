@@ -28,7 +28,7 @@ def cmaes_and_figs_files(model_number, expt_name, trace_name):
     if arcus_b:
         first_bit = os.path.expandvars("$DATA/PyAP_output/")
     else:
-        first_bit = os.path.expandvars("~/PyAP_output/")
+        first_bit = os.path.expanduser("~/PyAP_output/")
     cmaes_dir = first_bit+"{}/cmaes/model_{}/".format(expt_name, model_number)
     txt_dir, png_dir, svg_dir = cmaes_dir+"params/", cmaes_dir+"figs/png/", cmaes_dir+"figs/svg/"
     for d in [txt_dir, png_dir, svg_dir]:
@@ -52,7 +52,7 @@ def mcmc_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscal
     if arcus_b:
         first_bit = os.path.expandvars("$DATA/PyAP_output/")
     else:
-        first_bit = os.path.expandvars("~/PyAP_output/")
+        first_bit = os.path.expanduser("~/PyAP_output/")
     mcmc_dir = first_bit+"{}/{}/{}/model_{}/{}/".format(expt_name, scale_bit, adaptive_bit, model_number, trace_name)
     txt_dir, png_dir = mcmc_dir+"chain/", mcmc_dir+"figs/png/"
     for d in [txt_dir, png_dir]:
@@ -67,7 +67,7 @@ def hierarchical_mcmc_files(model, expt_name, first_trace_name, num_traces, para
     if arcus_b:
         first_bit = os.path.expandvars("$DATA/PyAP_output/")
     else:
-        first_bit = os.path.expandvars("~/PyAP_output/")
+        first_bit = os.path.expanduser("~/PyAP_output/")
     if parallel:
         mcmc_dir = first_bit+"{}/hierarchical_mcmc_parallel/{}/{}_traces/model_{}/".format(expt_name, first_trace_name, num_traces, model)
     else:

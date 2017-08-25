@@ -58,6 +58,22 @@ chain = np.loadtxt(mcmc_file)
 num_saved_its, num_params = chain.shape
 burn = num_saved_its/4
 
+for n, i in it.product(range(2), range(num_gs)):
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.grid()
+    if n == 0:
+        xlabel = r"\hat{" + g_paramterers[i] +"}$"
+        figname = "trace_{}_top_{}.png".format(n, g_parameters[i])
+    elif n == 1:
+        xlabel = r"\sigma_{" + g_paramterers[i] +"}^2$"  # need to check if this squared is correct
+        figname = "trace_{}_sigma_{}_squared.png".format(n, g_parameters[i])
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel("Normalised frequency")
+    idx = (2+n)*num_gs + i
+    ax.hist(chain[burn:, idx], bins=40, color='blue', edgecolor='blue')
+    fig.savefig(png_dir+figname)
+    plt.close()
 
 for n, i in it.product(range(args.num_traces), range(num_gs)):
     fig = plt.figure()
@@ -69,5 +85,14 @@ for n, i in it.product(range(args.num_traces), range(num_gs)):
     ax.hist(chain[burn:, idx], bins=40, color='blue', edgecolor='blue')
     fig.savefig(png_dir+"trace_{}_{}.png".format(n, g_parameters[i]))
     plt.close()
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.grid()
+ax.set_xlabel(r"\sigma")
+ax.set_ylabel("Normalised frequency")
+ax.hist(chain[burn:, -1], bins=40, color='blue', edgecolor='blue')
+fig.savefig(png_dir+"trace_{}_noise_sigma.png".format(n))
+plt.close()
 
 
