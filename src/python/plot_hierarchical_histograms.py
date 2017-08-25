@@ -4,6 +4,7 @@ import numpy as np
 import sys
 import numpy.random as npr
 import matplotlib.pyplot as plt
+import itertools as it
 
 
 #python_seed = 1
