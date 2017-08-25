@@ -32,7 +32,8 @@ expt_name = split_trace_path[4]
 trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 
-
+split_trace_name = trace_name.split("_")
+first_trace_number = int(split_trace_name[-1])
 
 pyap_options = {}
 with open(options_file, 'r') as infile:
@@ -58,15 +59,18 @@ chain = np.loadtxt(mcmc_file)
 num_saved_its, num_params = chain.shape
 burn = num_saved_its/4
 
+trace_numbers = range(first_trace_number, first_trace_number+args.num_traces)
+
 for n, i in it.product(range(2), range(num_gs)):
+    print n, i
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.grid()
     if n == 0:
-        xlabel = r"\hat{" + g_paramterers[i] +"}$"
+        xlabel = r"\hat{" + g_parameters[i] +"}$"
         figname = "trace_{}_top_{}.png".format(n, g_parameters[i])
     elif n == 1:
-        xlabel = r"\sigma_{" + g_paramterers[i] +"}^2$"  # need to check if this squared is correct
+        xlabel = r"\sigma_{" + g_parameters[i] +"}^2$"  # need to check if this squared is correct
         figname = "trace_{}_sigma_{}_squared.png".format(n, g_parameters[i])
     ax.set_xlabel(xlabel)
     ax.set_ylabel("Normalised frequency")
@@ -75,17 +79,19 @@ for n, i in it.product(range(2), range(num_gs)):
     fig.savefig(png_dir+figname)
     plt.close()
 
-for n, i in it.product(range(args.num_traces), range(num_gs)):
+for t, i in it.product(trace_numbers, range(num_gs)):
+    print t, i
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.grid()
     ax.set_xlabel(g_labels[i])
     ax.set_ylabel("Normalised frequency")
-    idx = (2+n)*num_gs + i
+    idx = (2+t)*num_gs + i
     ax.hist(chain[burn:, idx], bins=40, color='blue', edgecolor='blue')
-    fig.savefig(png_dir+"trace_{}_{}.png".format(n, g_parameters[i]))
+    fig.savefig(png_dir+"trace_{}_{}.png".format(t, g_parameters[i]))
     plt.close()
 
+print "sigma"
 fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.grid()
