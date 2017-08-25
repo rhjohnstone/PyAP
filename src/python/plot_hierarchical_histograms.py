@@ -49,7 +49,7 @@ data_clamp_off = pyap_options["data_clamp_off"]
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
 
-
+g_labels = ["${}$".format(g) for g in g_parameters]
 
 mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, args.num_traces, args.parallel)
 
@@ -57,7 +57,16 @@ chain = np.loadtxt(mcmc_file)
 num_saved_its, num_params = chain.shape
 burn = num_saved_its/4
 
-plt.hist(chain[burn:, 3*num_gs], bins=40, color='blue', edgecolor='blue')
-plt.show(block=True)
+
+for n, i in it.product(range(args.num_traces), range(num_gs)):
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.grid()
+    ax.set_xlabel(g_labels[i])
+    ax.set_ylabel("Normalised frequency")
+    idx = (2+n)*num_gs + i
+    ax.hist(chain[burn:, idx], bins=40, color='blue', edgecolor='blue')
+    fig.savefig(png_dir+"trace_{}_{}.png".format(n, g_parameters[i]))
+    plt.close()
 
 
