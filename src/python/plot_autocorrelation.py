@@ -1,5 +1,8 @@
 import pyap_setup as ps
 import argparse
+import sys
+import numpy as np
+import matplotlib.pyplot as plt
 from statsmodels.graphics.tsaplots import plot_acf
 
 parser = argparse.ArgumentParser()
@@ -29,4 +32,16 @@ with open(options_file, 'r') as infile:
         pyap_options[key] = val
 
 mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled, args.non_adaptive)
+
+chain = np.loadtxt(mcmc_file)
+
+saved_its, num_params = chain.shape
+burn = saved_its/4
+
+G_Na_samples = chain[burn:, 0]
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+plot_acf(G_Na_samples, ax=ax)
+plt.show(block=True)
 
