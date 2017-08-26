@@ -5,6 +5,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 from statsmodels.graphics.tsaplots import plot_acf
 
+
+def acorr(x, ax=None):
+    if ax is None:
+        ax = plt.gca()
+
+    x = x - x.mean()
+
+    autocorr = np.correlate(x, x, mode='full')
+    autocorr /= autocorr.max()
+
+    return ax.stem(autocorr)
+    
+
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
@@ -43,6 +56,11 @@ G_Na_samples = chain[burn:, 0]
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
-plot_acf(G_Na_samples, ax=ax)
+plot_acf(G_Na_samples, ax=ax, use_vlines=False)
+
+fig2 = plt.figure()
+ax2 = fig2.add_subplot(111)
+acorr(G_Na_samples, ax=ax2)
+
 plt.show(block=True)
 
