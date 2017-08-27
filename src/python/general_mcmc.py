@@ -19,7 +19,6 @@ args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
     parser.print_help()
     sys.exit(1)
-args, unknown = parser.parse_known_args()
 trace_path = args.data_file
 split_trace_path = trace_path.split('/')
 expt_name = split_trace_path[4]
