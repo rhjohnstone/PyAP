@@ -185,6 +185,7 @@ if (data_clamp_on < data_clamp_off):
     ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
     ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
 best_fit_index = np.argmin(best_boths[:,-1])
+print "best_params:\n", best_params
 best_params = best_boths[best_fit_index,:-1]
 best_f = best_boths[best_fit_index,-1]
 fig = plt.figure()
