@@ -24,12 +24,15 @@ else:
     arcus_b = False
 
 
-def cmaes_and_figs_files(model_number, expt_name, trace_name):
+def cmaes_and_figs_files(model_number, expt_name, trace_name, unscaled):
     if arcus_b:
         first_bit = os.path.expandvars("$DATA/PyAP_output/")
     else:
         first_bit = os.path.expanduser("~/PyAP_output/")
-    cmaes_dir = first_bit+"{}/cmaes/model_{}/".format(expt_name, model_number)
+    if unscaled:
+        cmaes_dir = first_bit+"{}/cmaes/model_{}/unscaled/".format(expt_name, model_number)
+    else:
+        cmaes_dir = first_bit+"{}/cmaes/model_{}/exp_scaled/".format(expt_name, model_number)
     txt_dir, png_dir, svg_dir = cmaes_dir+"params/", cmaes_dir+"figs/png/", cmaes_dir+"figs/svg/"
     for d in [txt_dir, png_dir, svg_dir]:
         if not os.path.exists(d):

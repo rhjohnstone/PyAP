@@ -23,7 +23,6 @@ args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
     parser.print_help()
     sys.exit(1)
-args, unknown = parser.parse_known_args()
 trace_path = args.data_file
 split_trace_path = trace_path.split('/')
 expt_name = split_trace_path[4]
@@ -57,10 +56,21 @@ def solve_for_voltage_trace(temp_g_params, _ap_model):
         sys.exit()
     
     
-def obj(temp_test_params, temp_ap_model):
+def obj_exp_scaled(temp_test_params, temp_ap_model):
     scaled_params = exponential_scaling(temp_test_params)
     temp_test_trace = solve_for_voltage_trace(scaled_params, temp_ap_model)
     return np.sum((temp_test_trace-expt_trace)**2)
+    
+    
+def obj_unscaled(temp_test_params, temp_ap_model):
+    temp_test_trace = solve_for_voltage_trace(temp_test_params, temp_ap_model)
+    return np.sum((temp_test_trace-expt_trace)**2)
+    
+
+if args.unscaled:
+    obj = obj_unscaled
+else:
+    obj = obj_exp_scaled
 
 
 def run_cmaes(cma_index):
@@ -86,7 +96,11 @@ def run_cmaes(cma_index):
     #npr.seed(cma_index)
     #opts['seed'] = cma_index
     #options = {'seed':cma_index}
-    x0 = 10. + npr.randn(num_params)
+    if args.unscaled:
+        x0 = np.copy(original_gs) * (1. + 0.5*npr.randn(num_params))
+        x0[x0<0] = 0.
+    else:
+        x0 = 10. + npr.randn(num_params)
     print "x0:", x0
     obj0 = obj(x0, ap_model)
     print "obj0:", round(obj0, 2)
@@ -97,7 +111,10 @@ def run_cmaes(cma_index):
         es.tell(X, [obj(x, ap_model) for x in X])
         es.disp()
     res = es.result()
-    answer = np.concatenate((exponential_scaling(res[0]),[res[1]]))
+    if args.unscaled:
+        answer = np.copy(res[[0,1]])
+    else:
+        answer = np.concatenate((exponential_scaling(res[0]),[res[1]]))
     time_taken = time.time()-start
     print "\n\nTime taken by one CMA-ES run: {} s\n\n".format(round(time_taken))
     return answer
@@ -131,7 +148,7 @@ how_many_cmaes_runs = args.num_runs
 cmaes_indices = range(how_many_cmaes_runs)
 
 trace_start_time = time.time()
-cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, trace_name)
+cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, trace_name, args.unscaled)
 
 if num_cores > 1:
     pool = mp.Pool(num_cores)
