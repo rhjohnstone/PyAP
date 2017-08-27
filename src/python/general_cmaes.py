@@ -104,7 +104,7 @@ def run_cmaes(cma_index):
         print "UNSCALED"
         x0 = np.copy(original_gs) * (1. + 0.5*npr.randn(num_params))
         x0[x0<0] = 1e-3
-        sigma0 = 0.0000001
+        sigma0 = 0.00000001
     else:
         x0 = 10. + npr.randn(num_params)
         sigma0 = 0.1
