@@ -100,7 +100,7 @@ def run_cmaes(cma_index):
     #options = {'seed':cma_index}
     if args.unscaled:
         print "UNSCALED"
-        x0 = np.copy(original_gs) * (1. + 0.5*npr.randn(num_params))
+        x0 = np.sqrt(original_gs) * (1. + 0.5*npr.randn(num_params))
         sigma0 = 0.000001
     else:
         x0 = 10. + npr.randn(num_params)
