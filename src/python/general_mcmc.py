@@ -62,8 +62,9 @@ def log_target_exp_scaled(temp_unscaled_params, ap_model, expt_trace):
             test_trace = solve_for_voltage_trace(temp_gs, ap_model)
         except:
             print "Failed to solve at iteration", t
-            print temp_gs
-            sys.exit()
+            print "temp_gs:\n", temp_gs
+            print "original_gs:\n", original_gs
+            return -np.inf
         return -len(expt_trace)*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2) + np.dot(temp_unscaled_gs, log_gs)
 
 
@@ -76,9 +77,10 @@ def log_target_unscaled(temp_params, ap_model, expt_trace):
         try:
             test_trace = solve_for_voltage_trace(temp_gs, ap_model)
         except:
-            print "Failed to solve"
-            print temp_gs
-            sys.exit()
+            print "Failed to solve at iteration", t
+            print "temp_gs:\n", temp_gs
+            print "original_gs:\n", original_gs
+            return -np.inf
         return -len(expt_trace)*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2)
 
     
