@@ -65,9 +65,7 @@ def obj_exp_scaled(temp_test_params, temp_ap_model):
     
     
 def obj_unscaled(temp_test_params, temp_ap_model):
-    if np.any(temp_test_params<0):
-        return -np.inf
-    temp_test_trace = solve_for_voltage_trace(temp_test_params, temp_ap_model)
+    temp_test_trace = solve_for_voltage_trace(temp_test_params**2, temp_ap_model)
     return np.sum((temp_test_trace-expt_trace)**2)
     
 
@@ -103,8 +101,7 @@ def run_cmaes(cma_index):
     if args.unscaled:
         print "UNSCALED"
         x0 = np.copy(original_gs) * (1. + 0.5*npr.randn(num_params))
-        x0[x0<0] = 1e-3
-        sigma0 = 0.00000001
+        sigma0 = 0.000001
     else:
         x0 = 10. + npr.randn(num_params)
         sigma0 = 0.1
@@ -121,7 +118,7 @@ def run_cmaes(cma_index):
         es.disp()
     res = es.result()
     if args.unscaled:
-        answer = np.concatenate((res[0],[res[1]]))
+        answer = np.concatenate((res[0]**2,[res[1]]))
     else:
         answer = np.concatenate((exponential_scaling(res[0]),[res[1]]))
     time_taken = time.time()-start
