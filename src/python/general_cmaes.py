@@ -116,7 +116,7 @@ def run_cmaes(cma_index):
         es.disp()
     res = es.result()
     if args.unscaled:
-        answer = np.copy(res[[0,1]])
+        answer = np.concatenate((res[0],[res[1]]))
     else:
         answer = np.concatenate((exponential_scaling(res[0]),[res[1]]))
     time_taken = time.time()-start
