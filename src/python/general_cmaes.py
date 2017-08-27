@@ -102,13 +102,14 @@ def run_cmaes(cma_index):
     #options = {'seed':cma_index}
     if args.unscaled:
         x0 = np.copy(original_gs) * (1. + 0.5*npr.randn(num_params))
-        x0[x0<0] = 0.
+        x0[x0<0] = 1e-3
+        sigma0 = 0.01
     else:
         x0 = 10. + npr.randn(num_params)
+        sigma0 = 0.1
     print "x0:", x0
     obj0 = obj(x0, ap_model)
     print "obj0:", round(obj0, 2)
-    sigma0 = 0.1
     es = cma.CMAEvolutionStrategy(x0, sigma0)#, options)
     while not es.stop():
         X = es.ask()
@@ -185,8 +186,8 @@ if (data_clamp_on < data_clamp_off):
     ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
     ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
 best_fit_index = np.argmin(best_boths[:,-1])
-print "best_params:\n", best_params
 best_params = best_boths[best_fit_index,:-1]
+print "best_params:\n", best_params
 best_f = best_boths[best_fit_index,-1]
 fig = plt.figure()
 ax = fig.add_subplot(111)
