@@ -62,7 +62,7 @@ ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 
 cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, trace_name, args.unscaled)
 
-fig, (ax1, ax2) = plt.subplots(1, sharey=True)
+fig, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
 best_fits = np.loadtxt(cmaes_best_fits_file)
 best_index = np.argmin(best_fits[:, -1])
 best_params = best_fits[best_index, :-1]
