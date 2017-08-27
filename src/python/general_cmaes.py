@@ -65,6 +65,8 @@ def obj_exp_scaled(temp_test_params, temp_ap_model):
     
     
 def obj_unscaled(temp_test_params, temp_ap_model):
+    if np.any(temp_test_params<0):
+        return -np.inf
     temp_test_trace = solve_for_voltage_trace(temp_test_params, temp_ap_model)
     return np.sum((temp_test_trace-expt_trace)**2)
     
