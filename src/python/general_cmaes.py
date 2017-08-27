@@ -53,6 +53,8 @@ def solve_for_voltage_trace(temp_g_params, _ap_model):
         return _ap_model.SolveForVoltageTraceWithParams(temp_g_params)
     except ap_simulator.CPPException, e:
         print e.GetShortMessage
+        print "temp_g_params:\n", temp_g_params
+        print "original_gs:\n", original_gs
         sys.exit()
     
     
