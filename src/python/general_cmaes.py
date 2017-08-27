@@ -103,7 +103,7 @@ def run_cmaes(cma_index):
     if args.unscaled:
         x0 = np.copy(original_gs) * (1. + 0.5*npr.randn(num_params))
         x0[x0<0] = 1e-3
-        sigma0 = 0.0001
+        sigma0 = 0.00001
     else:
         x0 = 10. + npr.randn(num_params)
         sigma0 = 0.1
@@ -114,8 +114,8 @@ def run_cmaes(cma_index):
     es = cma.CMAEvolutionStrategy(x0, sigma0)#, options)
     while not es.stop():
         X = es.ask()
-        for q in X:
-            print X
+        #for q in X:
+        #    print X
         es.tell(X, [obj(x, ap_model) for x in X])
         es.disp()
     res = es.result()
