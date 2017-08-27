@@ -2,6 +2,8 @@ import pyap_setup as ps
 import matplotlib.pyplot as plt
 import numpy as np
 import argparse
+import sys
+import ap_simulator
 
 
 def solve_for_voltage_trace(temp_g_params, _ap_model):
@@ -40,6 +42,8 @@ with open(options_file, 'r') as infile:
         else:
             val = float(val)
         pyap_options[key] = val
+data_clamp_on = pyap_options["data_clamp_on"]
+data_clamp_off = pyap_options["data_clamp_off"]
 
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(g_parameters)
@@ -61,7 +65,7 @@ cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_
 fig, (ax1, ax2) = plt.subplots(1, sharey=True)
 best_fits = np.loadtxt(cmaes_best_fits_file)
 best_index = np.argmin(best_fits[:, -1])
-best_params = best_fits[best_index, :-1])
+best_params = best_fits[best_index, :-1]
 best_trace = solve_for_voltage_trace(best_params, ap_model)
 ax1.plot(expt_times, expt_trace, color='red', label='Expt')
 ax1.plot(expt_times, best_trace, color='blue', label='Best fit')
