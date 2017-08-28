@@ -77,5 +77,7 @@ for i, ax in enumerate(axes):
     ax.plot(expt_times, best_trace, color='blue', label='Best fit')
     ax.legend()
 fig.tight_layout()
-plt.show(block=True)
+fig.savefig("unscaled_dog_best_fits.png")
+fig.savefig("unscaled_dog_best_fits.pdf")
+plt.close()
 
