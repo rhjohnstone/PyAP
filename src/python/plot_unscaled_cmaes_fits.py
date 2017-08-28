@@ -59,13 +59,14 @@ ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 
 
 
-fig, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
+fig, (ax1, ax2) = plt.subplots(1, 2, sharey=True, figsize=(8,4))
 ax1.set_ylabel('Membrane voltage (mV)')
 axes = [ax1, ax2]
 ts = ['dog_AP_trace_150', 'dog_AP_trace_151']
 for i, ax in enumerate(axes):
     ax.grid()
     ax.set_xlabel('Time (ms)')
+    ax.set_title('Canine trace #{}'.format(150+i))
     cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, ts[i], unscaled)
     expt_times, expt_trace = np.loadtxt(data_file(150+i), delimiter=',').T
     best_fits = np.loadtxt(cmaes_best_fits_file)
@@ -75,5 +76,6 @@ for i, ax in enumerate(axes):
     ax.plot(expt_times, expt_trace, color='red', label='Expt')
     ax.plot(expt_times, best_trace, color='blue', label='Best fit')
     ax.legend()
+fig.tight_layout()
 plt.show(block=True)
 
