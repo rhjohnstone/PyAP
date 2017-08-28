@@ -16,8 +16,11 @@ def solve_for_voltage_trace(temp_g_params, _ap_model):
         print "original_gs:\n", original_gs
         sys.exit()
 
+
 def data_file(t):
-    return data_file = "projects/PyAP/python/input/dog_teun/traces/dog_AP_trace_{}.csv".format(t)
+    return "projects/PyAP/python/input/dog_teun/traces/dog_AP_trace_{}.csv".format(t)
+
+
 unscaled = True
 trace_path = data_file(150)
 split_trace_path = trace_path.split('/')
