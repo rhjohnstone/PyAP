@@ -38,9 +38,6 @@ for model_number in xrange(6,7):
         solve_end = 400
     times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
 
-    k = 2.
-    G_CaL_scales = [k, 1./k]
-
     original_gs, g_parameters, model_name = ps.get_original_params(model_number)
     original_gs = np.array(original_gs)
 
@@ -56,21 +53,31 @@ for model_number in xrange(6,7):
         ax.grid()
         ax.plot(times, original_trace, color='red', label='Original')
     
-    for m in [0.5, 2]:
+    a = 13
+    b = 10
+    k = (1.*a)/b
+    
+    percent = int(100*(k-1))
+    
+    for i, m in enumerate([1./k, k]):
         scaled_gs = np.copy(original_gs) * m
         #scaled_gs[1] *= m
         trace = solve_with_params(scaled_gs)
-        ax2.plot(times, trace, label=r"$\times "+str(m)+"$")
+        if i==0:
+            label = r"$\times \frac{"+str(a)+"}{"str(b)+"}$"
+        elif i==1:
+            label = r"$\times \frac{"+str(b)+"}{"str(a)+"}$"
+        ax2.plot(times, trace, label=label)
         
-    scaled_gs = np.copy(original_gs) * 0.5
+    scaled_gs = np.copy(original_gs) * (2-k)
     #scaled_gs[1] *= 0.5
     trace = solve_with_params(scaled_gs)
-    ax1.plot(times, trace, label=r"$-50\%$")
+    ax1.plot(times, trace, label=r"$-"+str(percent)+"\%$")
         
-    scaled_gs = np.copy(original_gs) * 1.5
+    scaled_gs = np.copy(original_gs) * k
     #scaled_gs[1] *= 1.5
     trace = solve_with_params(scaled_gs)
-    ax1.plot(times, trace, label=r"$+50\%$")
+    ax1.plot(times, trace, label=r"$+"+str(percent)+"\%$")
         
         
     ax2.set_xlabel("Time (ms)")
