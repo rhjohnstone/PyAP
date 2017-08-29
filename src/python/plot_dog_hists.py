@@ -3,6 +3,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import argparse
 import sys
+import pyap_setup as ps
 
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
@@ -20,9 +21,6 @@ expt_name = split_trace_path[4]
 trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 
-if args.seed:
-    npr.seed(args.seed)
-
 pyap_options = {}
 with open(options_file, 'r') as infile:
     for line in infile:
@@ -34,6 +32,7 @@ with open(options_file, 'r') as infile:
         pyap_options[key] = val
 
 fig, axs = plt.subplots(5, 3)
+axs = axs.flatten()
 ids = range(15)
 mymap = mpl.colors.LinearSegmentedColormap.from_list('mycolors',['blue','red'])
 color_idx = np.linspace(0, 1, args.num_traces)
