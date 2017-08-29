@@ -57,20 +57,20 @@ for model_number in xrange(6,7):
         ax.plot(times, original_trace, color='red', label='Original')
     
     for m in [0.5, 2]:
-        scaled_gs = np.copy(original_gs)
-        scaled_gs[1] *= m
+        scaled_gs = np.copy(original_gs) * m
+        #scaled_gs[1] *= m
         trace = solve_with_params(scaled_gs)
-        ax2.plot(times, trace, label=r"$G_{CaL} \times "+str(m)+"$")
+        ax2.plot(times, trace, label=r"$\times "+str(m)+"$")
         
-    scaled_gs = np.copy(original_gs)
-    scaled_gs[1] *= 0.5
+    scaled_gs = np.copy(original_gs) * 0.5
+    #scaled_gs[1] *= 0.5
     trace = solve_with_params(scaled_gs)
-    ax1.plot(times, trace, label=r"$G_{CaL} - 50\%$")
+    ax1.plot(times, trace, label=r"$-50\%$")
         
-    scaled_gs = np.copy(original_gs)
-    scaled_gs[1] *= 1.5
+    scaled_gs = np.copy(original_gs) * 1.5
+    #scaled_gs[1] *= 1.5
     trace = solve_with_params(scaled_gs)
-    ax1.plot(times, trace, label=r"$G_{CaL} + 50\%$")
+    ax1.plot(times, trace, label=r"$+50\%$")
         
         
     ax2.set_xlabel("Time (ms)")
