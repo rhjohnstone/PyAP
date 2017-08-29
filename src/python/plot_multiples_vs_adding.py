@@ -49,7 +49,7 @@ for model_number in xrange(6,7):
     ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
     ap.DefineModel(model_number)
 
-    fig, (ax1, ax2) = plt.subplot(1,2,figsize=(8,4),sharey=True)
+    fig, (ax1, ax2) = plt.subplots(1,2,figsize=(10,5),sharey=True)
     
     original_trace = solve_with_params(original_gs)
     for ax in [ax1, ax2]:
@@ -63,14 +63,14 @@ for model_number in xrange(6,7):
         ax1.plot(times, trace, label=r"$G_{CaL} \times "+str(m)+"$")
         
     scaled_gs = np.copy(original_gs)
-    scaled_gs[1] *= 1.5
-    trace = solve_with_params(scaled_gs)
-    ax2.plot(times, trace, label=r"$G_{CaL} + 50\%$")
-        
-    scaled_gs = np.copy(original_gs)
     scaled_gs[1] *= 0.5
     trace = solve_with_params(scaled_gs)
     ax2.plot(times, trace, label=r"$G_{CaL} - 50\%$")
+        
+    scaled_gs = np.copy(original_gs)
+    scaled_gs[1] *= 1.5
+    trace = solve_with_params(scaled_gs)
+    ax2.plot(times, trace, label=r"$G_{CaL} + 50\%$")
         
         
     ax1.set_xlabel("Time (ms)")
