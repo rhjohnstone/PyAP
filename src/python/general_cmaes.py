@@ -98,12 +98,12 @@ def run_cmaes(cma_index):
     #npr.seed(cma_index)
     #opts['seed'] = cma_index
     #options = {'seed':cma_index}
-    x0 = np.sqrt(original_gs) * (1. + 0.5*npr.randn(num_params))
+    x0 = np.sqrt(original_gs) * (1. + 0.1*npr.randn(num_params))
     if args.unscaled:
         print "UNSCALED"
         sigma0 = 0.00001
     else:
-        x0 = np.log(x0**2) / np.log(original_gs)
+        x0 = 10.*np.log(x0**2) / np.log(original_gs)
         sigma0 = 0.1
     print "x0:", x0
     print "sigma0:", sigma0
