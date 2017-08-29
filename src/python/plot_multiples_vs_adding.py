@@ -60,22 +60,22 @@ for model_number in xrange(6,7):
         scaled_gs = np.copy(original_gs)
         scaled_gs[1] *= m
         trace = solve_with_params(scaled_gs)
-        ax1.plot(times, trace, label=r"$G_{CaL} \times "+str(m)+"$")
+        ax2.plot(times, trace, label=r"$G_{CaL} \times "+str(m)+"$")
         
     scaled_gs = np.copy(original_gs)
     scaled_gs[1] *= 0.5
     trace = solve_with_params(scaled_gs)
-    ax2.plot(times, trace, label=r"$G_{CaL} - 50\%$")
+    ax1.plot(times, trace, label=r"$G_{CaL} - 50\%$")
         
     scaled_gs = np.copy(original_gs)
     scaled_gs[1] *= 1.5
     trace = solve_with_params(scaled_gs)
-    ax2.plot(times, trace, label=r"$G_{CaL} + 50\%$")
+    ax1.plot(times, trace, label=r"$G_{CaL} + 50\%$")
         
         
-    ax1.set_xlabel("Time (ms)")
     ax2.set_xlabel("Time (ms)")
-    ax1.set_ylabel("Membrane voltage (mV)")
+    ax1.set_xlabel("Time (ms)")
+    ax2.set_ylabel("Membrane voltage (mV)")
     #ax1.set_title(model_name)
     ax1.legend()
     ax2.legend()
