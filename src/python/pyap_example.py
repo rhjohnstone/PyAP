@@ -22,7 +22,7 @@ def example_likelihood_function(trace):
 protocol = 1
 
 solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time = ps.get_protocol_details(protocol)
-for model_number in xrange(1,3):
+for model_number in xrange(6,7):
 
     if model_number==1:
         solve_end = 60
@@ -30,7 +30,8 @@ for model_number in xrange(1,3):
         solve_end = 400
     times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
 
-    multiples = [0.3, 1, 3, 10]
+    k = 2.
+    G_CaL_scales = [k, 1./k]
 
     original_gs, g_parameters, model_name = ps.get_original_params(model_number)
     original_gs = np.array(original_gs)
