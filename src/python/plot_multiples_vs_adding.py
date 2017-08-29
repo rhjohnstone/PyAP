@@ -64,9 +64,9 @@ for model_number in xrange(6,7):
         #scaled_gs[1] *= m
         trace = solve_with_params(scaled_gs)
         if i==0:
-            label = r"$\times \frac{"+str(a)+"}{"str(b)+"}$"
+            label = r"$\times {}/{}$".format(a,b)
         elif i==1:
-            label = r"$\times \frac{"+str(b)+"}{"str(a)+"}$"
+            label = r"$\times {}/{}$".format(b,a)
         ax2.plot(times, trace, label=label)
         
     scaled_gs = np.copy(original_gs) * (2-k)
@@ -82,9 +82,10 @@ for model_number in xrange(6,7):
         
     ax2.set_xlabel("Time (ms)")
     ax1.set_xlabel("Time (ms)")
-    ax2.set_ylabel("Membrane voltage (mV)")
+    ax1.set_ylabel("Membrane voltage (mV)")
     #ax1.set_title(model_name)
     ax1.legend()
     ax2.legend()
+    fig.tight_layout()
     plt.show(block=True)
 
