@@ -2,11 +2,12 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import argparse
+import sys
 
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
-requiredNamed.add_argument("--num_traces", type=int, help="number of traces to plot hists of", required=True)
+requiredNamed.add_argument("--num-traces", type=int, help="number of traces to plot hists of", required=True)
 parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=True)
 parser.add_argument("--non-adaptive", action="store_true", help="do not adapt proposal covariance matrix", default=False)
 args, unknown = parser.parse_known_args()
