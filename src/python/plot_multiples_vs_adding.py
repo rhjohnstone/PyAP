@@ -86,6 +86,9 @@ for model_number in xrange(6,7):
     #ax1.set_title(model_name)
     ax1.legend()
     ax2.legend()
+    plt.suptitle('{}'.format(model_name))
     fig.tight_layout()
+    fig.savefig("compare_scales_and_adding.png")
+    fig.savefig("compare_scales_and_adding.pdf")
     plt.show(block=True)
 
