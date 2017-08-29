@@ -55,7 +55,7 @@ def solve_for_voltage_trace(temp_g_params, _ap_model):
         print e.GetShortMessage
         print "temp_g_params:\n", temp_g_params
         print "original_gs:\n", original_gs
-        sys.exit()
+        return np.zeros(len(expt_times))
     
     
 def obj_exp_scaled(temp_test_params, temp_ap_model):
@@ -103,7 +103,7 @@ def run_cmaes(cma_index):
         print "UNSCALED"
         sigma0 = 0.00001
     else:
-        x0 = np.log(x0) / np.log(original_gs)
+        x0 = np.log(x0**2) / np.log(original_gs)
         sigma0 = 0.1
     print "x0:", x0
     print "sigma0:", sigma0
