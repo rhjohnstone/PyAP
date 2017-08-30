@@ -45,7 +45,8 @@ for t in xrange(args.num_traces):
     saved_its, _ = chain.shape
     burn = saved_its/args.burn
     for i in ids:
-        axs[i].hist(chain[burn:, i], bins=40, color=mymap(color_idx[t]), alpha=0.2)
+        col = mymap(color_idx[t])
+        axs[i].hist(chain[burn:, i], bins=40, color=col, edgecolor=col, alpha=0.2)
 
 plt.show(block=True)
 
