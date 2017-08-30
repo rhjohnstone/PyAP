@@ -318,6 +318,8 @@ def do_everything():
     with open(log_file, "w") as outfile:
         outfile.write("Expt: {}\n".format(expt_name))
         outfile.write("Trace: {}\n".format(trace_name))
+        outfile.write("Total iterations: {}\n".format(total_iterations))
+        outfile.write("Saved iterations: {}\n".format(num_saved))
         outfile.write("Time taken: {} s = {} min = {} hr\n".format(int(log_time_taken), round(log_time_taken/60.,1), round(log_time_taken/3600.,1)))
         outfile.write("Final loga: {}\n".format(loga))
         outfile.write("Final acceptance rate: {}\n".format(acceptance))
