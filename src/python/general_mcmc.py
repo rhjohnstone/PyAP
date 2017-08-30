@@ -118,8 +118,7 @@ def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
         theta_cur = np.concatenate((exponential_scaling(initial_unscaled_gs),[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
     else:
         theta_cur = np.concatenate((initial_unscaled_gs,[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
-    mean_estimate = np.abs(theta_cur)
-    cov_estimate = 0.001*np.diag(mean_estimate)
+    cov_estimate = 0.001*np.diag(np.abs(theta_cur))
     print "\ntheta_cur:", theta_cur, "\n"
     log_target_cur = log_target(theta_cur, ap_model, expt_trace)
 
