@@ -13,6 +13,7 @@ requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
 parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
 parser.add_argument("--non-adaptive", action="store_true", help="do not adapt proposal covariance matrix", default=False)
+parser.add_argument("-b", "--burn", type=int, help="what fraction of samples to discard", default=4)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
     parser.print_help()
@@ -46,7 +47,7 @@ except:
     sys.exit("\nCan't find (or load) {}\n".format(mcmc_file))
     
 saved_its, num_params_plus_1 = chain.shape
-burn = saved_its/4
+burn = saved_its/args.burn
 
 for i in xrange(num_gs+1):
     fig = plt.figure()
