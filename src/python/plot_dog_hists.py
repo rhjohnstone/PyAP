@@ -34,7 +34,7 @@ with open(options_file, 'r') as infile:
 
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 
-fig, axs = plt.subplots(5, 3, sharey=True)
+fig, axs = plt.subplots(5, 3, figsize=(9,15))#, sharey=True)
 axs = axs.flatten()
 ids = range(15)
 mymap = mpl.colors.LinearSegmentedColormap.from_list('mycolors',['blue','red'])
@@ -53,11 +53,12 @@ for t in xrange(args.num_traces):
             label = r"$\sigma$"
         col = mymap(color_idx[t])
         axs[i].grid()
-        axs[i].hist(chain[burn:, i], bins=40, normed=True, color=col, edgecolor=col, alpha=0.2)
+        axs[i].hist(chain[burn:, i], bins=40, normed=False, color=col, edgecolor=col, alpha=0.2)
         axs[i].set_yticklabels([])
-        axs[i].set_xlabel(label)
-        labels = axs[i].get_xticklabels()
-        plt.setp(labels, rotation=30)
+        axs[i].set_xticklabels([])
+        #axs[i].set_xlabel(label)
+        #labels = axs[i].get_xticklabels()
+        #plt.setp(labels, rotation=30)
 fig.tight_layout()
 plt.show(block=True)
 
