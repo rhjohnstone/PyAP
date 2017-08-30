@@ -96,7 +96,7 @@ else:
 
 
 def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
-    global loga, acceptance, t
+    global loga, acceptance, t, total_iterations
     #npr.seed(trace_number)
     print "Starting chain"
     start = time.time()
