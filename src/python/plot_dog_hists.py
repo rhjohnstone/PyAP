@@ -32,6 +32,8 @@ with open(options_file, 'r') as infile:
             val = float(val)
         pyap_options[key] = val
 
+original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
+
 fig, axs = plt.subplots(5, 3)
 axs = axs.flatten()
 ids = range(15)
@@ -45,8 +47,15 @@ for t in xrange(args.num_traces):
     saved_its, _ = chain.shape
     burn = saved_its/args.burn
     for i in ids:
+        if i<ids[-1]:
+            label = "${}$".format(g_parameters[i])
+        else:
+            label = r"$\sigma$"
         col = mymap(color_idx[t])
+        axs[i].grid()
         axs[i].hist(chain[burn:, i], bins=40, color=col, edgecolor=col, alpha=0.2)
-
+        axs[i].yaxis.set_major_locator(plt.NullLocator())
+        axs[i].set_xlabel(label)
+fig.tight_layout()
 plt.show(block=True)
 
