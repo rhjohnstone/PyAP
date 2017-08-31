@@ -137,11 +137,11 @@ ax.set_title(model_name)
 ax.grid()
 for i in xrange(num_expts):
     expt_trace = solve_for_voltage_trace(all_expt_params[i, :], ap_model) + noise_sigma*npr.randn(len(expt_times))
-    np.savetxt(traces_dir+expt_name+"trace_{}.csv".format(i), np.vstack((expt_times, expt_trace)).T)
+    np.savetxt(traces_dir+expt_name+"_trace_{}.csv".format(i), np.vstack((expt_times, expt_trace)).T, delimiter=',')
     ax.plot(expt_times, expt_trace)
 fig.tight_layout()
-fig.savefig(expt_dir+"synthetic_expt_traces.png")
-fig.savefig(expt_dir+"synthetic_expt_traces.pdf")
+fig.savefig(expt_dir+"{}_synthetic_expt_traces.png".format(model_name))
+fig.savefig(expt_dir+"{}_synthetic_expt_traces.pdf".format(model_name))
 plt.close()
 
 
