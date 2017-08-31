@@ -8,6 +8,7 @@ import time
 import pyap_setup as ps
 import sys
 import os
+import argparse
 
 
 def solve_for_voltage_trace(temp_g_params, _ap_model):
@@ -20,6 +21,11 @@ def solve_for_voltage_trace(temp_g_params, _ap_model):
         print "original_gs:\n", original_gs
         return np.zeros(len(expt_times))
 
+
+parser = argparse.ArgumentParser()
+requiredNamed = parser.add_argument_group('required arguments')
+requiredNamed.add_argument("-m", "--model", type=int, help="AP model number", required=True)
+args, unknown = parser.parse_known_args()
 
 # 1. Hodgkin Huxley
 # 2. Beeler Reuter
@@ -41,20 +47,26 @@ npr.seed(python_seed)
 protocol = 1
 solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
 
-model = 4
+model = args.model
 
 if model==1:
     label="hodgkin_huxley"
+    expt_params_normal_sd = 0.15
 elif model==2:
     label = "beeler_reuter"
+    expt_params_normal_sd = 0.15
 elif model==3:
     label = "luo_rudy"
+    expt_params_normal_sd = 0.15
 elif model==4:
     label = "ten_tusscher"
+    expt_params_normal_sd = 0.2
 elif model==5:
     label = "ohara"
+    expt_params_normal_sd = 0.2
 elif model==6:
     label = "davies"
+    expt_params_normal_sd = 0.2
 
 
 expt_name = "synthetic_{}".format(label)
@@ -89,7 +101,7 @@ num_gs = len(original_gs)
 #expt_params[np.where(expt_params<0.)] = 0.
 
 expt_params_mean = original_gs
-expt_params_normal_sd = 0.2
+
 num_expts = 32
 
 all_expt_params = (1. + expt_params_normal_sd*npr.randn(num_expts, num_gs)) * original_gs
