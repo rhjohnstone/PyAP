@@ -58,13 +58,12 @@ elif model==6:
 
 
 expt_name = "synthetic_{}".format(label)
-trace_name = "synthetic_{}".format(label)
-traces_dir = "../workspace/PyAP/src/python/input/{}/traces/".format(expt_name)
+expt_dir = "../workspace/PyAP/src/python/input/{}/".format(expt_name)
+traces_dir = "{}traces/".format(expt_dir)
 if not os.path.exists(traces_dir):
     os.makedirs(traces_dir)
-trace_file = traces_dir+"{}.csv".format(trace_name)
-options_file = "../workspace/PyAP/src/python/input/{}/PyAP_options.txt".format(expt_name)
-
+options_file = "{}PyAP_options.txt".format(expt_dir)
+expt_params_file = "{}expt_params.txt".format(expt_dir)
 
 noise_sigma = 0.25
 
@@ -90,11 +89,18 @@ num_gs = len(original_gs)
 #expt_params[np.where(expt_params<0.)] = 0.
 
 expt_params_mean = original_gs
-expt_params_normal_sd = 0.1
+expt_params_normal_sd = 0.2
 num_expts = 32
 
 all_expt_params = (1. + expt_params_normal_sd*npr.randn(num_expts, num_gs)) * original_gs
 print all_expt_params
+
+with open(expt_params_file, "w") as outfile:
+    outfile.write("# synthetic data experimental parameter values\n")
+    outfile.write("# {}\n".format(model_name))
+    outfile.write("# {} sets of parameter values\n".format(num_expts))
+    outfile.write("# standard deviation for Normally-generated parameters: {}\n".format(expt_params_normal_sd))
+    np.savetxt(outfile, all_expt_params)
 
 expt_times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
 
@@ -113,6 +119,7 @@ ax = fig.add_subplot(111)
 
 for i in xrange(num_expts):
     expt_trace = solve_for_voltage_trace(all_expt_params[i, :], ap_model) + noise_sigma*npr.randn(len(expt_times))
+    np.savetxt(traces_dir+expt_name+"trace_{}.csv".format(i), np.vstack((expt_times, expt_trace)).T)
     ax.plot(expt_times, expt_trace)
 
 fig.tight_layout()
