@@ -13,6 +13,7 @@ requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
 parser.add_argument("-i", "--iterations", type=int, help="total MCMC iterations", default=500000)
 parser.add_argument("-s", "--seed", type=int, help="Python random seed", default=0)
+parser.add_argument("--cheat", action="store_true", help="for synthetic data: start MCMC from parameter values used to generate data", default=False)
 parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
 parser.add_argument("--non-adaptive", action="store_true", help="do not adapt proposal covariance matrix", default=False)
 args, unknown = parser.parse_known_args()
@@ -100,20 +101,25 @@ def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
     #npr.seed(trace_number)
     print "Starting chain"
     start = time.time()
-    cmaes_unscaled = False  # only doing MCMC to CMA-ES fits done with exp scaling
-    cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, trace_name, cmaes_unscaled)
-    try:
-        cmaes_results = np.loadtxt(cmaes_best_fits_file)
-        ndim = cmaes_results.ndim
-        if ndim == 1:
-            best_gs = cmaes_results[:-1]
-        else:
-            best_index = np.argmin(cmaes_results[:,-1])
-            best_gs = cmaes_results[best_index,:-1]
-        initial_unscaled_gs = np.log(best_gs) / log_gs
-    except Exception, e:
-        print "\n",e,"\n"
-        initial_unscaled_gs = np.ones(num_params-1)
+    if not args.cheat:
+        cmaes_unscaled = False  # only doing MCMC to CMA-ES fits done with exp scaling
+        cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, trace_name, cmaes_unscaled)
+        try:
+            cmaes_results = np.loadtxt(cmaes_best_fits_file)
+            ndim = cmaes_results.ndim
+            if ndim == 1:
+                best_gs = cmaes_results[:-1]
+            else:
+                best_index = np.argmin(cmaes_results[:,-1])
+                best_gs = cmaes_results[best_index,:-1]
+            initial_unscaled_gs = np.log(best_gs) / log_gs
+        except Exception, e:
+            print "\n",e,"\n"
+            initial_unscaled_gs = np.ones(num_params-1)
+    else:
+        trace_number = int(trace_path.split(".")[-2].split("_")[-1])
+        cheat_params_file = '/'.join( split_trace_path[:5] ) + "/expt_params.txt"
+        initial_unscaled_gs = np.loadtxt(cheat_params_file)[trace_number, :]
     if args.unscaled:
         theta_cur = np.concatenate((exponential_scaling(initial_unscaled_gs),[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
     else:
@@ -192,19 +198,25 @@ def do_mcmc_non_adaptive(ap_model, expt_trace, temperature):#, theta0):
     #npr.seed(trace_number)
     print "Starting chain"
     start = time.time()
-    cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, trace_name)
-    try:
-        cmaes_results = np.loadtxt(cmaes_best_fits_file)
-        ndim = cmaes_results.ndim
-        if ndim == 1:
-            best_gs = cmaes_results[:-1]
-        else:
-            best_index = np.argmin(cmaes_results[:,-1])
-            best_gs = cmaes_results[best_index,:-1]
-        initial_unscaled_gs = np.log(best_gs) / log_gs
-    except Exception, e:
-        print "\n",e,"\n"
-        initial_unscaled_gs = np.ones(num_params-1)
+    if not args.cheat:
+        cmaes_unscaled = False  # only doing MCMC to CMA-ES fits done with exp scaling
+        cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, trace_name, cmaes_unscaled)
+        try:
+            cmaes_results = np.loadtxt(cmaes_best_fits_file)
+            ndim = cmaes_results.ndim
+            if ndim == 1:
+                best_gs = cmaes_results[:-1]
+            else:
+                best_index = np.argmin(cmaes_results[:,-1])
+                best_gs = cmaes_results[best_index,:-1]
+            initial_unscaled_gs = np.log(best_gs) / log_gs
+        except Exception, e:
+            print "\n",e,"\n"
+            initial_unscaled_gs = np.ones(num_params-1)
+    else:
+        trace_number = int(trace_path.split(".")[-2].split("_")[-1])
+        cheat_params_file = '/'.join( split_trace_path[:5] ) + "/expt_params.txt"
+        initial_unscaled_gs = np.loadtxt(cheat_params_file)[trace_number, :]
     if args.unscaled:
         theta_cur = np.concatenate((exponential_scaling(initial_unscaled_gs),[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
     else:
