@@ -60,13 +60,13 @@ elif model==3:
     expt_params_normal_sd = 0.1
 elif model==4:
     label = "ten_tusscher"
-    expt_params_normal_sd = 0.2
+    expt_params_normal_sd = 0.3
 elif model==5:
     label = "ohara"
     expt_params_normal_sd = 0.2
 elif model==6:
     label = "davies"
-    expt_params_normal_sd = 0.2
+    expt_params_normal_sd = 0.11
 
 
 expt_name = "synthetic_{}".format(label)
@@ -142,6 +142,6 @@ for i in xrange(num_expts):
 fig.tight_layout()
 fig.savefig(expt_dir+"synthetic_expt_traces.png")
 fig.savefig(expt_dir+"synthetic_expt_traces.pdf")
-plt.show()
+plt.close()
 
 
