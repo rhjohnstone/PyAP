@@ -78,6 +78,9 @@ first_trace_number = int(split_trace_name[-1])  # need a specific-ish format cur
 trace_numbers = range(first_trace_number, first_trace_number+args.num_traces)
 print trace_numbers
 
+protocol = 1
+solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
+
 
 best_fits_params = np.zeros((args.num_traces, num_gs))
 expt_traces = []
