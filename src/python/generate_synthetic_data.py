@@ -96,7 +96,7 @@ num_expts = 32
 all_expt_params = (1. + expt_params_normal_sd*npr.randn(num_expts, num_gs)) * original_gs
 print all_expt_params
 
-times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
+expt_times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
 
 ap_model = ap_simulator.APSimulator()
 ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
@@ -112,8 +112,8 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 
 for i in xrange(num_expts):
-    expt_trace = solve_for_voltage_trace(all_expt_params[i, :], ap_model) + noise_sigma*npr.randn(len(times))
-    ax.plot(times, expt_trace)
+    expt_trace = solve_for_voltage_trace(all_expt_params[i, :], ap_model) + noise_sigma*npr.randn(len(expt_times))
+    ax.plot(expt_times, expt_trace)
 
 fig.tight_layout()
 plt.show()
