@@ -119,7 +119,8 @@ def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
     else:
         trace_number = int(trace_path.split(".")[-2].split("_")[-1])
         cheat_params_file = '/'.join( split_trace_path[:5] ) + "/expt_params.txt"
-        initial_unscaled_gs = np.loadtxt(cheat_params_file)[trace_number, :]
+        expt_gs = np.loadtxt(cheat_params_file)[trace_number, :]
+        initial_unscaled_gs = np.log(expt_gs) / log_gs
     if args.unscaled:
         theta_cur = np.concatenate((exponential_scaling(initial_unscaled_gs),[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
     else:
@@ -216,7 +217,8 @@ def do_mcmc_non_adaptive(ap_model, expt_trace, temperature):#, theta0):
     else:
         trace_number = int(trace_path.split(".")[-2].split("_")[-1])
         cheat_params_file = '/'.join( split_trace_path[:5] ) + "/expt_params.txt"
-        initial_unscaled_gs = np.loadtxt(cheat_params_file)[trace_number, :]
+        expt_gs = np.loadtxt(cheat_params_file)[trace_number, :]
+        initial_unscaled_gs = np.log(expt_gs) / log_gs
     if args.unscaled:
         theta_cur = np.concatenate((exponential_scaling(initial_unscaled_gs),[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
     else:
