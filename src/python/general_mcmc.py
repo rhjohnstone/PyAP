@@ -296,17 +296,20 @@ def do_everything():
     solve_timestep = expt_times[1] - expt_times[0]
 
     ap_model = ap_simulator.APSimulator()
-    ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
-    ap_model.DefineSolveTimes(solve_start, solve_end, solve_timestep)
-    ap_model.DefineModel(pyap_options["model_number"])
+    if (data_clamp_on < data_clamp_off):
+        ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
+        ap_model.DefineModel(pyap_options["model_number"])
+        ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
+        ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
+    else:
+        ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
+        ap_model.DefineModel(pyap_options["model_number"])
+    ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
     ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
     ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
     ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
     ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
     ap_model.SetNumberOfSolves(pyap_options["num_solves"])
-    if (data_clamp_on < data_clamp_off):
-        ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
-        ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
 
     temperature = 1
     mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled, args.non_adaptive)
