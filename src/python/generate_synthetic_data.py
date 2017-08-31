@@ -9,6 +9,18 @@ import pyap_setup as ps
 import sys
 import os
 
+
+def solve_for_voltage_trace(temp_g_params, _ap_model):
+    _ap_model.SetToModelInitialConditions()
+    try:
+        return _ap_model.SolveForVoltageTraceWithParams(temp_g_params)
+    except ap_simulator.CPPException, e:
+        print e.GetShortMessage
+        print "temp_g_params:\n", temp_g_params
+        print "original_gs:\n", original_gs
+        return np.zeros(len(expt_times))
+
+
 # 1. Hodgkin Huxley
 # 2. Beeler Reuter
 # 3. Luo Rudy
@@ -16,9 +28,6 @@ import os
 # 5. O'Hara Rudy
 # 6. Davies (canine)
 # 7. Paci (SC-CM ventricular)
-# 8. Gokhale 2017 ex293
-# 9. Davies (canine) linearised by RJ
-# 10. Paci linearised by RJ
 
 #fig = plt.figure()
 #ax = fig.add_subplot(111)
@@ -31,10 +40,25 @@ npr.seed(python_seed)
 
 protocol = 1
 solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
-solve_end = 100  # just for HH
 
-expt_name = "synthetic_HH"
-trace_name = "synthetic_HH"
+model = 4
+
+if model==1:
+    label="hodgkin_huxley"
+elif model==2:
+    label = "beeler_reuter"
+elif model==3:
+    label = "luo_rudy"
+elif model==4:
+    label = "ten_tusscher"
+elif model==5:
+    label = "ohara"
+elif model==6:
+    label = "davies"
+
+
+expt_name = "synthetic_{}".format(label)
+trace_name = "synthetic_{}".format(label)
 traces_dir = "../workspace/PyAP/src/python/input/{}/traces/".format(expt_name)
 if not os.path.exists(traces_dir):
     os.makedirs(traces_dir)
@@ -45,7 +69,7 @@ options_file = "../workspace/PyAP/src/python/input/{}/PyAP_options.txt".format(e
 noise_sigma = 0.25
 
 
-pyap_options = { "model_number":1,
+pyap_options = { "model_number":model,
                  "num_solves":1,
                  "extra_K_conc":5.4,
                  "intra_K_conc":130,
@@ -60,34 +84,38 @@ with open(options_file, "w") as outfile:
         outfile.write('{} {}\n'.format(option, pyap_options[option]))
 
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
+num_gs = len(original_gs)
 
 #expt_params = original_gs * (1. + 0.1*npr.randn(len(original_gs)))
 #expt_params[np.where(expt_params<0.)] = 0.
 
-expt_params = original_gs
+expt_params_mean = original_gs
+expt_params_normal_sd = 0.1
+num_expts = 32
+
+all_expt_params = (1. + expt_params_normal_sd*npr.randn(num_expts, num_gs)) * original_gs
+print all_expt_params
 
 times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
 
 ap_model = ap_simulator.APSimulator()
 ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
-ap_model.DefineSolveTimes(solve_start, solve_end, solve_timestep)
 ap_model.DefineModel(pyap_options["model_number"])
+ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
 ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
 ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
 ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
 ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
 ap_model.SetNumberOfSolves(pyap_options["num_solves"])
-try:
-    print "Going to try to solve with params"
-    true_trace = ap_model.SolveForVoltageTraceWithParams(expt_params)
-except ap_simulator.CPPException as e:
-    print e.GetMessage
-    sys.exit()
-    
-true_trace += noise_sigma*npr.randn(len(true_trace))
-np.savetxt(trace_file, np.vstack((times, true_trace)).T, delimiter=',')
 
-plt.plot(times, true_trace)
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+for i in xrange(num_expts):
+    expt_trace = solve_for_voltage_trace(all_expt_params[i, :], ap_model) + noise_sigma*npr.randn(len(times))
+    ax.plot(times, expt_trace)
+
+fig.tight_layout()
 plt.show()
 
 
