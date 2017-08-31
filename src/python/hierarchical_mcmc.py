@@ -103,9 +103,9 @@ for i, t in enumerate(trace_numbers):
         all_best_fits = np.loadtxt(cmaes_file)
         best_index = np.argmin(all_best_fits[:, -1])
         best_params = all_best_fits[best_index, :-1]
-        best_fits_params[i, :] = npcopy(best_params)
     else:
-        best_fits_params[i, :] = np.loadtxt('/'.join( split_trace_path[:5] ) + "/expt_params.txt")[t, :]
+        best_params = np.loadtxt('/'.join( split_trace_path[:5] ) + "/expt_params.txt")[t, :]
+    best_fits_params[i, :] = npcopy(best_params)
     temp_ap_model = ap_simulator.APSimulator()
     if (data_clamp_on < data_clamp_off):
         temp_ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
