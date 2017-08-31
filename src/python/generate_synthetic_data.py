@@ -57,7 +57,7 @@ elif model==2:
     expt_params_normal_sd = 0.15
 elif model==3:
     label = "luo_rudy"
-    expt_params_normal_sd = 0.15
+    expt_params_normal_sd = 0.1
 elif model==4:
     label = "ten_tusscher"
     expt_params_normal_sd = 0.2
@@ -107,6 +107,9 @@ num_expts = 32
 all_expt_params = (1. + expt_params_normal_sd*npr.randn(num_expts, num_gs)) * original_gs
 print all_expt_params
 
+if np.any(all_expt_params<0):
+    sys.exit("Some negative parameter values generated.\n")
+
 with open(expt_params_file, "w") as outfile:
     outfile.write("# synthetic data experimental parameter values\n")
     outfile.write("# {}\n".format(model_name))
@@ -126,9 +129,12 @@ ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
 ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
 ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 
-fig = plt.figure()
+fig = plt.figure(figsize=(4,4))
 ax = fig.add_subplot(111)
-
+ax.set_xlabel('Time (ms)')
+ax.set_ylabel('Membrane voltage (mV)')
+ax.set_title(model_name)
+ax.grid()
 for i in xrange(num_expts):
     expt_trace = solve_for_voltage_trace(all_expt_params[i, :], ap_model) + noise_sigma*npr.randn(len(expt_times))
     np.savetxt(traces_dir+expt_name+"trace_{}.csv".format(i), np.vstack((expt_times, expt_trace)).T)
