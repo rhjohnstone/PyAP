@@ -5,8 +5,19 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import sys
 import argparse
+import ap_simulator
 
-# Already discarded burn-in when saving MCMC file, so no need to discard here
+
+def solve_for_voltage_trace(temp_g_params, _ap_model):
+    _ap_model.SetToModelInitialConditions()
+    try:
+        return _ap_model.SolveForVoltageTraceWithParams(temp_g_params)
+    except ap_simulator.CPPException, e:
+        print e.GetShortMessage
+        print "temp_g_params:\n", temp_g_params
+        print "original_gs:\n", original_gs
+        return np.zeros(len(expt_times))
+
 
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
@@ -38,6 +49,23 @@ with open(options_file, 'r') as infile:
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
 
+expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
+ap_model = ap_simulator.APSimulator()
+if (data_clamp_on < data_clamp_off):
+    ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
+    ap_model.DefineModel(pyap_options["model_number"])
+    ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
+    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
+else:
+    ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
+    ap_model.DefineModel(pyap_options["model_number"])
+ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
+ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
+ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
+ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
+ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
+ap_model.SetNumberOfSolves(pyap_options["num_solves"])
+
 labels = g_parameters+[r"\sigma"]
 
 mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled, args.non_adaptive)
@@ -48,6 +76,18 @@ except:
     
 saved_its, num_params_plus_1 = chain.shape
 burn = saved_its/args.burn
+
+best_target_index = np.argmax(chain[burn:, -1])
+best_fit_gs = chain[burn+best_target_index, :-2]
+figg = plt.figure(figsize=(4,4))
+axx = figg.add_subplot(111)
+axx.plot(expt_times, expt_trace, color='red', label='Expt')
+axx.plot(expt_times, solve_for_voltage_trace(best_fit_gs, ap_model), color='blue', label='Best MCMC fit')
+axx.set_xlabel('Time (ms)')
+axx.set_ylabel('Membrane voltage (mV)')
+figg.tight_layout()
+figg.savefig(png+"best_mcmc_fit.png")
+figg.savefig(png+"best_mcmc_fit.pdf")
 
 for i in xrange(num_gs+1):
     fig = plt.figure()
