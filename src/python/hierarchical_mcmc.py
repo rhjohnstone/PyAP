@@ -84,7 +84,12 @@ expt_traces = []
 ap_models = []
 temp_test_traces_cur = []
 for i, t in enumerate(trace_numbers):
-    temp_trace_path = "{}_{}.csv".format(trace_path[:-8], t)
+    if (0 <= t <= 9):
+        temp_trace_path = "{}_{}.csv".format(trace_path[:-6], t)
+    elif (10 <= t <= 99):
+        temp_trace_path = "{}_{}.csv".format(trace_path[:-7], t)
+    elif (100 <= t <= 999):
+        temp_trace_path = "{}_{}.csv".format(trace_path[:-8], t)
     temp_times, temp_trace = np.loadtxt(temp_trace_path,delimiter=',').T
     if i==0:
         expt_times = temp_times
