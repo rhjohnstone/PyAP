@@ -24,7 +24,7 @@ def solve_for_voltage_trace(temp_g_params, ap_model_index):
     except:
         print "Failed to solve"
         print "temp_g_params:", temp_g_params
-        sys.exit()
+        return np.zeros(len(expt_times))
         
 
 def solve_star(temp_g_params_and_ap_model_index):
@@ -40,6 +40,7 @@ requiredNamed.add_argument("--data-file", type=str, help="first csv file from wh
 requiredNamed.add_argument("--num-traces", type=int, help="number of traces to fit to, including the one specified as argument", required=True)
 requiredNamed.add_argument("-i", "--iterations", type=int, help="total MCMC iterations", required=True)
 parser.add_argument("-nc", "--num-cores", type=int, help="number of cores to parallelise solving expt traces", default=1)
+parser.add_argument("--cheat", action="store_true", help="for synthetic data: start MCMC from parameter values used to generate data", default=False)
 #parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
@@ -71,6 +72,7 @@ num_gs = len(original_gs)
 #num_processors = multiprocessing.cpu_count()
 #num_processes = min(num_processors-1,args.num_traces) # counts available cores and makes one fewer process
 
+
 split_trace_name = trace_name.split("_")
 first_trace_number = int(split_trace_name[-1])  # need a specific-ish format currently
 trace_numbers = range(first_trace_number, first_trace_number+args.num_traces)
@@ -87,12 +89,15 @@ for i, t in enumerate(trace_numbers):
     if i==0:
         expt_times = temp_times
     expt_traces.append(npcopy(temp_trace))
-    temp_trace_name = trace_name[:-3]+str(t)
-    cmaes_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, temp_trace_name)
-    all_best_fits = np.loadtxt(cmaes_file)
-    best_index = np.argmin(all_best_fits[:, -1])
-    best_params = all_best_fits[best_index, :-1]
-    best_fits_params[i, :] = npcopy(best_params)
+    if not args.cheat:
+        temp_trace_name = trace_name[:-3]+str(t)
+        cmaes_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, temp_trace_name)
+        all_best_fits = np.loadtxt(cmaes_file)
+        best_index = np.argmin(all_best_fits[:, -1])
+        best_params = all_best_fits[best_index, :-1]
+        best_fits_params[i, :] = npcopy(best_params)
+    else:
+        best_fits_params[i, :] = np.loadtxt('/'.join( split_trace_path[:5] ) + "/expt_params.txt")[t, :]
     temp_ap_model = ap_simulator.APSimulator()
     if (data_clamp_on < data_clamp_off):
         temp_ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
@@ -112,7 +117,7 @@ for i, t in enumerate(trace_numbers):
     temp_test_traces_cur.append(npcopy(solve_for_voltage_trace(best_params, i)))
 expt_traces = np.array(expt_traces)
 temp_test_traces_cur = np.array(temp_test_traces_cur)
-#print best_fits_params
+print best_fits_params
 #print expt_traces
 #print ap_models
 
