@@ -129,7 +129,7 @@ ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
 ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
 ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 
-fig = plt.figure(figsize=(4,4))
+fig = plt.figure(figsize=(5,4))
 ax = fig.add_subplot(111)
 ax.set_xlabel('Time (ms)')
 ax.set_ylabel('Membrane voltage (mV)')
@@ -139,8 +139,9 @@ for i in xrange(num_expts):
     expt_trace = solve_for_voltage_trace(all_expt_params[i, :], ap_model) + noise_sigma*npr.randn(len(expt_times))
     np.savetxt(traces_dir+expt_name+"trace_{}.csv".format(i), np.vstack((expt_times, expt_trace)).T)
     ax.plot(expt_times, expt_trace)
-
 fig.tight_layout()
+fig.savefig(expt_dir+"synthetic_expt_traces.png")
+fig.savefig(expt_dir+"synthetic_expt_traces.pdf")
 plt.show()
 
 
