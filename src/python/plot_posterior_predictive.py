@@ -14,7 +14,7 @@ import argparse
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
-requiredNamed.add_argument("--num-traces", type=int, help="number of traces to fit to, including the one specified as argument", required=True)
+#requiredNamed.add_argument("--num-traces", type=int, help="number of traces to fit to, including the one specified as argument", required=True)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
     parser.print_help()
@@ -67,7 +67,7 @@ protocol = 1
 N_e = args.num_traces
 
 parallel = True
-mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, args.num_traces, parallel)
+
 
 
 
@@ -78,31 +78,31 @@ scale_for_generating_expt_params = 0.1
 top_theta = original_gs
 top_sigma_squared = (scale_for_generating_expt_params * original_gs)**2
 
-chain = np.loadtxt(mcmc_file,usecols=range(num_gs))
-saved_its, _ = chain.shape
-burn = saved_its/4
-length = saved_its - burn
-
-num_pts = 501
-x_range = np.linspace(0.5*original_gs[0],1.5*original_gs[0],num_pts)
-sum_pdf = np.zeros(len(x_range))
-sum_pdf10 = np.zeros(len(x_range))
-true_pdf = st.norm.pdf(x_range,top_theta[0],np.sqrt(top_sigma_squared[0])) # not sure if there should be a square
+norm_pdf = st.norm.pdf
 
 fig = plt.figure(figsize=(5,4))
 ax = fig.add_subplot(111)
+ax.grid()
+num_pts = 501
+x_range = np.linspace(0.5*original_gs[0],1.5*original_gs[0],num_pts)
+true_pdf = st.norm.pdf(x_range,top_theta[0],np.sqrt(top_sigma_squared[0])) # not sure if there should be a square
 ax.plot(x_range,true_pdf,label='True',color=colors[0],lw=3)
+for N_e in [2,4,8,16]:
+    mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
+    chain = np.loadtxt(mcmc_file,usecols=range(num_gs))
+    saved_its, _ = chain.shape
+    burn = saved_its/4
+    length = saved_its - burn
+
+    sum_pdf = np.zeros(len(x_range))
 
 
-num_bins = 40
-norm_pdf = st.norm.pdf
+    for i in xrange(burn, saved_its):
+        temp_pdf = norm_pdf(x_range,chain[i,0],np.sqrt(chain[i,1]))
+        sum_pdf += temp_pdf
+    sum_pdf /= length
 
-for i in xrange(burn, saved_its):
-    temp_pdf = norm_pdf(x_range,chain[i,0],np.sqrt(chain[i,1]))
-    sum_pdf += temp_pdf
-sum_pdf /= length
-
-ax.plot(x_range,sum_pdf,label="$N_e = {}$".format(N_e),color=colors[1],lw=3)
+    ax.plot(x_range,sum_pdf,label="$N_e = {}$".format(N_e),color=colors[1],lw=3)
 ax.legend()
 plt.show(block=True)
 sys.exit()
