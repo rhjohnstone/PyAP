@@ -70,9 +70,8 @@ parallel = True
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
 # defined in generate_synthetic_data.py, should abstract(?) this so it's definitely consistent
-scale_for_generating_expt_params = 0.1
 top_theta = original_gs
-top_sigma_squared = (scale_for_generating_expt_params * original_gs)**2
+top_sigma_squared = (expt_params_normal_sd * original_gs)**2
 
 norm_pdf = st.norm.pdf
 
@@ -81,7 +80,7 @@ ax = fig.add_subplot(111)
 ax.grid()
 num_pts = 501
 x_range = np.linspace(0.5*original_gs[0],1.5*original_gs[0],num_pts)
-true_pdf = st.norm.pdf(x_range,top_theta[0],np.sqrt(top_sigma_squared[0])) # not sure if there should be a square
+true_pdf = norm.pdf(x_range,top_theta[0],np.sqrt(top_sigma_squared[0])) # not sure if there should be a square
 ax.plot(x_range,true_pdf,label='True',color=colors[-1],lw=3)
 for j, N_e in enumerate([2,4,8]):
     mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
