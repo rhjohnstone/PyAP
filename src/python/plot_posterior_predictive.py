@@ -95,15 +95,15 @@ ax.plot(x_range,true_pdf,label='True',color=colors[0],lw=3)
 
 
 num_bins = 40
-total_length = 0
 norm_pdf = st.norm.pdf
 
 for i in xrange(burn, saved_its):
     temp_pdf = norm_pdf(x_range,chain[i,0],np.sqrt(chain[i,1]))
     sum_pdf += temp_pdf
-sum_pdf /= total_length
+sum_pdf /= length
 
 ax.plot(x_range,sum_pdf,label="$N_e = {}$".format(N_e),color=colors[1],lw=3)
+ax.legend()
 plt.show(block=True)
 sys.exit()
 
