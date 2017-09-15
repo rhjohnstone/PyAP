@@ -68,11 +68,8 @@ N_e = args.num_traces
 
 parallel = True
 mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, args.num_traces, parallel)
-print mcmc_file
-chain = np.loadtxt(mcmc_file,usecols=[0])
-saved_its = len(chain)
-burn = saved_its/4
-length = saved_its - burn
+
+
 
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
@@ -81,6 +78,10 @@ scale_for_generating_expt_params = 0.1
 top_theta = original_gs
 top_sigma_squared = (scale_for_generating_expt_params * original_gs)**2
 
+chain = np.loadtxt(mcmc_file,usecols=range(num_gs))
+saved_its, _ = chain.shape
+burn = saved_its/4
+length = saved_its - burn
 
 num_pts = 501
 x_range = np.linspace(0.5*original_gs[0],1.5*original_gs[0],num_pts)
