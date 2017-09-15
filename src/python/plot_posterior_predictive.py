@@ -85,9 +85,12 @@ true_pdf = st.norm.pdf(x_range,top_theta[0],np.sqrt(top_sigma_squared[0])) # not
 ax.plot(x_range,true_pdf,label='True',color=colors[-1],lw=3)
 for j, N_e in enumerate([2,4,8]):
     mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
-    chain = np.loadtxt(mcmc_file,usecols=range(num_gs))
+    print "\n", mcmc_file, "\n"
+    chain = np.loadtxt(mcmc_file,usecols=range(2))
+    print chain[0,:]
+    print chain[1,:]
     saved_its, _ = chain.shape
-    burn = saved_its/4
+    burn = saved_its/2
     length = saved_its - burn
 
     sum_pdf = np.zeros(len(x_range))
@@ -99,7 +102,7 @@ for j, N_e in enumerate([2,4,8]):
     sum_pdf /= length
 
     ax.plot(x_range,sum_pdf,label="$N_e = {}$".format(N_e),color=colors[j],lw=3)
-ax.legend()
+ax.legend(loc=2)
 plt.show(block=True)
 sys.exit()
 
