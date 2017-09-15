@@ -38,7 +38,7 @@ data_clamp_on = pyap_options["data_clamp_on"]
 data_clamp_off = pyap_options["data_clamp_off"]
 
 
-colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c']
+colors = ['#ffffb2','#fed976','#feb24c','#fd8d3c','#f03b20','#bd0026']
 
 
 model = pyap_options["model_number"]
@@ -64,12 +64,8 @@ elif model==6:
 
 
 protocol = 1
-N_e = args.num_traces
 
 parallel = True
-
-
-
 
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
@@ -86,8 +82,8 @@ ax.grid()
 num_pts = 501
 x_range = np.linspace(0.5*original_gs[0],1.5*original_gs[0],num_pts)
 true_pdf = st.norm.pdf(x_range,top_theta[0],np.sqrt(top_sigma_squared[0])) # not sure if there should be a square
-ax.plot(x_range,true_pdf,label='True',color=colors[0],lw=3)
-for N_e in [2,4,8,16]:
+ax.plot(x_range,true_pdf,label='True',color=colors[-1],lw=3)
+for j, N_e in enumerate([2,4,8]):
     mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
     chain = np.loadtxt(mcmc_file,usecols=range(num_gs))
     saved_its, _ = chain.shape
@@ -102,7 +98,7 @@ for N_e in [2,4,8,16]:
         sum_pdf += temp_pdf
     sum_pdf /= length
 
-    ax.plot(x_range,sum_pdf,label="$N_e = {}$".format(N_e),color=colors[1],lw=3)
+    ax.plot(x_range,sum_pdf,label="$N_e = {}$".format(N_e),color=colors[j],lw=3)
 ax.legend()
 plt.show(block=True)
 sys.exit()
