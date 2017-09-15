@@ -15,10 +15,6 @@ parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
 requiredNamed.add_argument("--num-traces", type=int, help="number of traces to fit to, including the one specified as argument", required=True)
-requiredNamed.add_argument("-i", "--iterations", type=int, help="total MCMC iterations", required=True)
-parser.add_argument("-nc", "--num-cores", type=int, help="number of cores to parallelise solving expt traces", default=1)
-parser.add_argument("--cheat", action="store_true", help="for synthetic data: start MCMC from parameter values used to generate data", default=False)
-#parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
     parser.print_help()
@@ -48,8 +44,6 @@ data_clamp_off = pyap_options["data_clamp_off"]
 
 colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c']
 
-python_seed = 1
-npr.seed(python_seed)
 
 model = pyap_options["model_number"]
 
