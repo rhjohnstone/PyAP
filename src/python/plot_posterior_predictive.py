@@ -24,10 +24,6 @@ split_trace_path = trace_path.split('/')
 expt_name = split_trace_path[4]
 trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
-
-if args.seed:
-    npr.seed(args.seed)
-
 pyap_options = {}
 with open(options_file, 'r') as infile:
     for line in infile:
