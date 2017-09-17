@@ -160,7 +160,7 @@ old_eta_js[:,0] = starting_mean  # mu
 old_eta_js[:,1] = 1. * args.num_traces  # nu
 old_eta_js[:,3] = 0.5 * (starting_mean + starting_vars)  # beta
 old_eta_js[:,2] = old_eta_js[:,3]/want_modes - 1.  # alpha
-old_eta_js[:,2][old_eta_js[:,2]==0] = 1e-3
+old_eta_js[:,2][old_eta_js[:,2]<=0] = 1e-3
 
 print "old_eta_js:\n", old_eta_js
 
