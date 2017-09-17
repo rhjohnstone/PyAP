@@ -164,7 +164,7 @@ num_pts = len(expt_times)
 
 #sys.exit()
 
-uniform_noise_prior = [0.,20.]
+uniform_noise_prior = [0.,25.]
 
 def new_eta(old_eta,samples): # for sampling from conjugate prior-ed N-IG
     assert(len(old_eta)==4)
@@ -185,7 +185,7 @@ def sample_from_N_IG(eta):
     return sample,sigma_squared
     
 def log_pi_theta_i(theta_i,theta,sigma_squareds,sigma,data_i,test_i):
-    sum_1 = np.sum(((data_i-test_i)/sigma)**2)
+    sum_1 = np.sum((data_i-test_i)**2)/sigma**2
     sum_2 = np.sum(((theta_i-theta)**2)/sigma_squareds)
     return -0.5 * (sum_1 + sum_2)
     
@@ -503,6 +503,7 @@ def do_mcmc_parallel():
             print "sigma_acceptance =", sigma_acceptance
     pool.close()
     pool.join()
+    MCMC = MCMC[burn:, :]
     return MCMC, logas, sigma_loga, acceptances, sigma_acceptance
 
 

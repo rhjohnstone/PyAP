@@ -37,6 +37,8 @@ with open(options_file, 'r') as infile:
 data_clamp_on = pyap_options["data_clamp_on"]
 data_clamp_off = pyap_options["data_clamp_off"]
 
+true_params = np.loadtxt("projects/PyAP/python/input/{}/expt_params.txt".format(expt_name))
+
 
 colors = ['#ffffb2','#fed976','#feb24c','#fd8d3c','#f03b20','#bd0026']
 
@@ -80,7 +82,7 @@ ax = fig.add_subplot(111)
 ax.grid()
 num_pts = 501
 x_range = np.linspace(0.5*original_gs[0],1.5*original_gs[0],num_pts)
-true_pdf = norm.pdf(x_range,top_theta[0],np.sqrt(top_sigma_squared[0])) # not sure if there should be a square
+true_pdf = norm_pdf(x_range,top_theta[0],np.sqrt(top_sigma_squared[0])) # not sure if there should be a square
 ax.plot(x_range,true_pdf,label='True',color=colors[-1],lw=3)
 for j, N_e in enumerate([2,4,8]):
     mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
@@ -101,7 +103,12 @@ for j, N_e in enumerate([2,4,8]):
     sum_pdf /= length
 
     ax.plot(x_range,sum_pdf,label="$N_e = {}$".format(N_e),color=colors[j],lw=3)
+    
 ax.legend(loc=2)
+
+for i in xrange(args.num_traces):
+    ax.axvline(true_params[i, 0], color='blue')
+
 plt.show(block=True)
 sys.exit()
 
