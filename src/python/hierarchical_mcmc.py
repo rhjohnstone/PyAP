@@ -152,11 +152,15 @@ else:
 
 mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, args.num_traces, parallel)
 
+# want mode = beta/(alpha+1) = 0.1G^2, say
+want_modes = 0.1*original_gs**2
+
 old_eta_js = np.zeros((num_gs,4))
-old_eta_js[:,0] = starting_mean
-old_eta_js[:,1] = 1. * args.num_traces
-old_eta_js[:,2] = 0.5 * args.num_traces
-old_eta_js[:,3] = 0.5 * args.num_traces * starting_vars
+old_eta_js[:,0] = starting_mean  # mu
+old_eta_js[:,1] = 1. * args.num_traces  # nu
+old_eta_js[:,3] = 0.5 * (starting_mean + starting_vars)  # beta
+old_eta_js[:,2] = old_eta_js[:,3]/want_modes - 1.  # alpha
+old_eta_js[:,2][old_eta_js[:,2]==0] = 1e-3
 
 print "old_eta_js:\n", old_eta_js
 
