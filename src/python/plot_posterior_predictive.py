@@ -127,7 +127,7 @@ for which_g in xrange(0,1):
     ax2.set_xlabel(g_labels[which_g])
     ax.set_ylabel("Probability density")
     #ax.legend(loc=2, fontsize=12)
-    ax2.legend(loc="upper left", bbox_to_anchor=(1,0.5), fontsize=12)
+    ax2.legend(loc='center left', bbox_to_anchor=(1, 0.5),prop={'size':10})
 
     #for i in xrange(max(how_many_traces)):
     #    ax.axvline(true_params[i, which_g], color='blue')
