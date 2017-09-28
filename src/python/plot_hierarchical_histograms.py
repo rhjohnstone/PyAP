@@ -71,7 +71,7 @@ parallel = True
     
 which_g = 0
     
-N_e = 2
+N_e = args.num_traces
 mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
 chain = np.loadtxt(mcmc_file)
 saved_its, d = chain.shape
@@ -86,6 +86,8 @@ for i in xrange(num_gs):
     for n in xrange(N_e):
         idx = (2+n)*num_gs + i
         ax.hist(chain[:, idx], normed=True, bins=40, color='blue', edgecolor=None, alpha=0.8)
+    plt.xticks(rotation=30)
+    fig.tight_layout()
 
 plt.show(block=True)
 
