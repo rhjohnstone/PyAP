@@ -84,7 +84,7 @@ num_pts = 501
 
 #which_g = 0
 
-for which_g in xrange(num_gs):
+for which_g in xrange(0,1):
 
     fig, (ax,ax2) = plt.subplots(1,2,figsize=(7,3.5), sharex=True, sharey=True)
     ax.grid()
@@ -126,8 +126,8 @@ for which_g in xrange(num_gs):
     ax.set_xlabel(g_labels[which_g])
     ax2.set_xlabel(g_labels[which_g])
     ax.set_ylabel("Probability density")
-    ax.legend(loc=2, fontsize=12)
-    ax2.legend(loc=2, fontsize=12)
+    #ax.legend(loc=2, fontsize=12)
+    ax2.legend(loc=(1.04,0), fontsize=12)
 
     #for i in xrange(max(how_many_traces)):
     #    ax.axvline(true_params[i, which_g], color='blue')
