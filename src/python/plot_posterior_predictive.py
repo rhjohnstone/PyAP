@@ -107,7 +107,9 @@ for j, N_e in enumerate(how_many_traces):
 
     ax.plot(x_range,sum_pdf,label="$N_e = {}$".format(N_e),color=colors[j],lw=3)
     
-ax.legend(loc=2)
+ax.set_xlabel(ps.g_parameters[which_g])
+ax.set_ylabel("Probability density")
+ax.legend(loc=2, fontsize=12)
 
 #for i in xrange(max(how_many_traces)):
 #    ax.axvline(true_params[i, which_g], color='blue')
