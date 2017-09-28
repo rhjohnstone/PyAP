@@ -81,18 +81,20 @@ saved_its, d = chain.shape
 chain = chain[saved_its/2:, :]
 T, d = chain.shape
 for i in xrange(num_gs):
-    fig, (ax,ax2) = plt.subplots(2,1,figsize=(6,10), sharex=True,sharey=True)
+    fig, (ax2,ax) = plt.subplots(1,2,figsize=(10,5), sharex=True,sharey=True)
     ax.grid()
     ax2.grid()
     ax2.set_xlabel(g_labels[i])
-    ax.set_ylabel("Normalised frequency")
+    ax.set_xlabel(g_labels[i])
     ax2.set_ylabel("Normalised frequency")
+    ax2.set_title('Single-level')
+    ax.set_title('Hierarchical')
     for n in xrange(N_e):
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
         
         single_trace_name = trace_name[:-1]+str(n)
-        mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, unscaled=True, non_adaptive=False)
+        mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, single_trace_name, unscaled=True, non_adaptive=False)
         single_chain = np.loadtxt(mcmc_file, usecols=[i])
         
         ax2.hist(single_chain[single_chain.shape[0]/2:], normed=True, bins=40, color=colour, edgecolor=colour, alpha=0.8)
@@ -100,6 +102,7 @@ for i in xrange(num_gs):
 
         ax.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=colour, alpha=0.8)
         ax.axvline(expt_params[n, i], color='red')
+        ax2.axvline(expt_params[n, i], color='red')
     plt.xticks(rotation=30)
     fig.tight_layout()
 
