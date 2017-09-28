@@ -132,6 +132,7 @@ for which_g in xrange(0,1):
     #for i in xrange(max(how_many_traces)):
     #    ax.axvline(true_params[i, which_g], color='blue')
     fig.tight_layout()
+    fig.savefig("hello.png", bbox_inches="tight")
 plt.show(block=True)
 
 
