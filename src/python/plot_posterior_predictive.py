@@ -86,7 +86,7 @@ num_pts = 501
 
 for which_g in xrange(0,1):
 
-    fig, (ax,ax2) = plt.subplots(1,2,figsize=(7,3.5), sharex=True, sharey=True, axisbg=(230,230,230))
+    fig, (ax,ax2) = plt.subplots(1,2,figsize=(7,3.5), sharex=True, sharey=True)
     ax.grid()
     ax2.grid()
     
@@ -132,7 +132,7 @@ for which_g in xrange(0,1):
     #for i in xrange(max(how_many_traces)):
     #    ax.axvline(true_params[i, which_g], color='blue')
     fig.tight_layout()
-    fig.savefig("{}_posterior_predictive_and_mle_{}.png".format(expt_name, g_parameters[which_g]), bbox_inches="tight")
+    fig.savefig("{}_posterior_predictive_and_mle_{}.png".format(expt_name, g_parameters[which_g]), bbox_inches="tight", facecolor=(230,230,230))
 plt.close()
 
 
