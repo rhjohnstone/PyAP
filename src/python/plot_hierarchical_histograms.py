@@ -67,25 +67,26 @@ parallel = True
     ax.hist(chain[burn:, idx], bins=40, color='blue', edgecolor='blue')"""
     #fig.savefig(png_dir+figname)
     #plt.close()
-    
-    
-which_g = 0
+
     
 N_e = args.num_traces
+
+color_idx = np.linspace(0, 1, N_e)
 mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
 chain = np.loadtxt(mcmc_file)
 saved_its, d = chain.shape
 chain = chain[saved_its/2:, :]
 T, d = chain.shape
 for i in xrange(num_gs):
-    fig = plt.figure(figsize=(4,3))
+    fig = plt.figure(figsize=(6,6))
     ax = fig.add_subplot(111)
     ax.grid()
     ax.set_xlabel(g_labels[i])
     ax.set_ylabel("Normalised frequency")
     for n in xrange(N_e):
         idx = (2+n)*num_gs + i
-        ax.hist(chain[:, idx], normed=True, bins=40, color='blue', edgecolor=None, alpha=0.8)
+        colour = plt.cm.winter(color_idx[n])
+        ax.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=colour, alpha=0.8)
     plt.xticks(rotation=30)
     fig.tight_layout()
 
