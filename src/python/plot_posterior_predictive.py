@@ -75,14 +75,19 @@ num_gs = len(original_gs)
 top_theta = original_gs
 top_sigma_squared = (expt_params_normal_sd * original_gs)**2
 
+g_labels = ["${}$".format(g) for g in g_parameters]
+
 norm_pdf = st.norm.pdf
+sqrt = np.sqrt
+
+num_pts = 501
 
 which_g = 0
 
-fig = plt.figure(figsize=(5,4))
+fig, (ax,ax2) = plt.subplots(figsize=(5,4), sharex=True, sharey=True)
 ax = fig.add_subplot(111)
 ax.grid()
-num_pts = 501
+
 x_range = np.linspace(0.5*original_gs[which_g],1.5*original_gs[which_g],num_pts)
 true_pdf = norm_pdf(x_range,top_theta[which_g],np.sqrt(top_sigma_squared[which_g])) # not sure if there should be a square
 ax.plot(x_range,true_pdf,label='True',color=colors[-1],lw=3)
@@ -90,30 +95,37 @@ how_many_traces = [2,4,8,16,32]
 for j, N_e in enumerate(how_many_traces):
     mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
     print "\n", mcmc_file, "\n"
-    chain = np.loadtxt(mcmc_file,usecols=[which_g, num_gs+which_g])
+    chain = np.loadtxt(mcmc_file,usecols=range(which_g, (2+N_e)*num_gs, num_gs))
     print chain[0,:]
     print chain[1,:]
     saved_its, _ = chain.shape
     burn = saved_its/2
     length = saved_its - burn
+    chain = chain[burn:, :]
 
     sum_pdf = np.zeros(len(x_range))
 
 
-    for i in xrange(burn, saved_its):
-        temp_pdf = norm_pdf(x_range,chain[i,0],np.sqrt(chain[i,1]))
+    for i in xrange(length):
+        temp_pdf = norm_pdf(x_range,chain[i,0],sqrt(chain[i,1]))
         sum_pdf += temp_pdf/length
     #sum_pdf /= length
 
     ax.plot(x_range,sum_pdf,label="$N_e = {}$".format(N_e),color=colors[j],lw=3)
     
-ax.set_xlabel(ps.g_parameters[which_g])
+    expt_chains = chain[:, 2:]
+    expt_means = np.mean(expt_chains, axis=0)
+    loc1, scale1 = st.norm.fit(expt_means)
+    ax2.plot(x_range, norm.pdf(x_range, loc1, scale1, color=colors[j], lw=3,label="$N_e = {}$".format(N_e)))
+    
+ax.set_xlabel(g_labels[which_g])
 ax.set_ylabel("Probability density")
 ax.legend(loc=2, fontsize=12)
+ax2.legend(loc=2, fontsize=12)
 
 #for i in xrange(max(how_many_traces)):
 #    ax.axvline(true_params[i, which_g], color='blue')
-
+fig.tight_layout()
 plt.show(block=True)
 
 
