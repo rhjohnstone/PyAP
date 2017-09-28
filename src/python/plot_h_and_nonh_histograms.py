@@ -92,8 +92,8 @@ for i in xrange(num_gs):
         colour = plt.cm.winter(color_idx[n])
         
         single_trace_name = trace_name[:-1]+str(n)
-        single_level = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, unscaled=True, non_adaptive=False)
-        single_chain = np.loadtxt(single_level,usecols=[i])
+        mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, unscaled=True, non_adaptive=False)
+        single_chain = np.loadtxt(mcmc_file, usecols=[i])
         
         ax2.hist(single_chain[single_chain.shape[0]/2:], normed=True, bins=40, color=colour, edgecolor=colour, alpha=0.8)
     
