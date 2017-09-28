@@ -77,17 +77,20 @@ top_sigma_squared = (expt_params_normal_sd * original_gs)**2
 
 norm_pdf = st.norm.pdf
 
+which_g = 0
+
 fig = plt.figure(figsize=(5,4))
 ax = fig.add_subplot(111)
 ax.grid()
 num_pts = 501
-x_range = np.linspace(0.5*original_gs[0],1.5*original_gs[0],num_pts)
-true_pdf = norm_pdf(x_range,top_theta[0],np.sqrt(top_sigma_squared[0])) # not sure if there should be a square
+x_range = np.linspace(0.5*original_gs[which_g],1.5*original_gs[which_g],num_pts)
+true_pdf = norm_pdf(x_range,top_theta[which_g],np.sqrt(top_sigma_squared[which_g])) # not sure if there should be a square
 ax.plot(x_range,true_pdf,label='True',color=colors[-1],lw=3)
-for j, N_e in enumerate([2,4,8]):
+how_many_traces = [2,4,8,16,32]
+for j, N_e in enumerate(how_many_traces):
     mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
     print "\n", mcmc_file, "\n"
-    chain = np.loadtxt(mcmc_file,usecols=range(2))
+    chain = np.loadtxt(mcmc_file,usecols=[which_g, num_gs+which_g])
     print chain[0,:]
     print chain[1,:]
     saved_its, _ = chain.shape
@@ -99,89 +102,19 @@ for j, N_e in enumerate([2,4,8]):
 
     for i in xrange(burn, saved_its):
         temp_pdf = norm_pdf(x_range,chain[i,0],np.sqrt(chain[i,1]))
-        sum_pdf += temp_pdf
-    sum_pdf /= length
+        sum_pdf += temp_pdf/length
+    #sum_pdf /= length
 
     ax.plot(x_range,sum_pdf,label="$N_e = {}$".format(N_e),color=colors[j],lw=3)
     
 ax.legend(loc=2)
 
-for i in xrange(args.num_traces):
-    ax.axvline(true_params[i, 0], color='blue')
+#for i in xrange(max(how_many_traces)):
+#    ax.axvline(true_params[i, which_g], color='blue')
 
 plt.show(block=True)
-sys.exit()
-
-N_e = 5
-directory = "../output/hierarchical/synthetic/m"+str(model)+"/p"+str(protocol)+"/post_cmaes/"+str(N_e)+"_expts/"
-if not os.path.exists(directory):
-    os.makedirs(directory)
-chain_dir = directory + "chain/"
-if not os.path.exists(chain_dir):
-    os.makedirs(chain_dir)
-
-chain_segs = os.listdir(chain_dir)
-chain_segs.sort()
-
-total_length = 0
-norm_pdf = st.norm.pdf
-for j,just_file in enumerate(chain_segs):
-    output_file = chain_dir+just_file
-    MCMC = np.loadtxt(output_file,usecols=[0,num_params])
-    end = MCMC.shape[0]
-    if j==0:
-        burn = end/2
-    else:
-        burn = 0
-    length = end-burn
-    total_length += length
-    for i in range(length):
-        temp_pdf = norm_pdf(x_range,MCMC[burn+i,0],np.sqrt(MCMC[burn+i,1]))
-        sum_pdf10 += temp_pdf
-sum_pdf10 /= total_length
-
-ax.plot(x_range,sum_pdf10,label="$N_e = {}$".format(N_e),color=colors[2],lw=3)
-
-N_e = 10
-directory = "../output/hierarchical/synthetic/m"+str(model)+"/p"+str(protocol)+"/post_cmaes/"+str(N_e)+"_expts/"
-if not os.path.exists(directory):
-    os.makedirs(directory)
-chain_dir = directory + "chain/"
-if not os.path.exists(chain_dir):
-    os.makedirs(chain_dir)
-
-chain_segs = os.listdir(chain_dir)
-chain_segs.sort()
-
-total_length = 0
-norm_pdf = st.norm.pdf
-for j,just_file in enumerate(chain_segs):
-    output_file = chain_dir+just_file
-    MCMC = np.loadtxt(output_file,usecols=[0,num_params])
-    end = MCMC.shape[0]
-    if j==0:
-        burn = end/2
-    else:
-        burn = 0
-    length = end-burn
-    total_length += length
-    for i in range(length):
-        temp_pdf = norm_pdf(x_range,MCMC[burn+i,0],np.sqrt(MCMC[burn+i,1]))
-        sum_pdf10 += temp_pdf
-sum_pdf10 /= total_length
-
-ax.plot(x_range,sum_pdf10,label="$N_e = {}$".format(N_e),color=colors[3],lw=3)
 
 
 
 
-ax.set_ylabel('Probability density')
-ax.set_xlabel(r'$G_{Na}$')
-ax.set_xlim(2000,5500)
-ax.set_ylim(0,0.008)
-plt.legend()
-fig.tight_layout()
-fig.savefig(directory+str(N_e)+'_G_Na_expts_inferred_and_true.eps')
-plt.close()
 
-print "\nDone!\n"
