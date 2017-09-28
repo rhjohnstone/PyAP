@@ -83,9 +83,7 @@ T, d = chain.shape
 for i in xrange(num_gs):
     fig, (ax2,ax) = plt.subplots(1,2,figsize=(10,5), sharex=True,sharey=True)
     ax.grid()
-    plt.xticks(rotation=30)
     ax2.grid()
-    plt.xticks(rotation=30)
     ax2.set_xlabel(g_labels[i])
     ax.set_xlabel(g_labels[i])
     ax2.set_ylabel("Normalised frequency")
@@ -103,8 +101,18 @@ for i in xrange(num_gs):
     
 
         ax.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=colour, alpha=0.8)
-        ax.axvline(expt_params[n, i], color='red')
-        ax2.axvline(expt_params[n, i], color='red')
+        
+    ax2.set_ylim(0, ax2.get_ylim()[1])
+    line = ax.scatter(expt_params[n, i], 0, marker='x', c='red', zorder=10)
+    line.set_clip_on(False)
+    
+    line = ax2.scatter(expt_params[n, i], 0, marker='x', c='red', zorder=10)
+    line.set_clip_on(False)
+        
+    for tick in ax2.get_xticklabels():
+        tick.set_rotation(30)
+    for tick in ax.get_xticklabels():
+        tick.set_rotation(30)
     fig.tight_layout()
 
 plt.show(block=True)
