@@ -84,7 +84,7 @@ num_pts = 501
 
 which_g = 0
 
-fig, (ax,ax2) = plt.subplots(1,2,figsize=(5,4), sharex=True, sharey=True)
+fig, (ax,ax2) = plt.subplots(1,2,figsize=(8,4), sharex=True, sharey=True)
 ax.grid()
 ax2.grid()
 
