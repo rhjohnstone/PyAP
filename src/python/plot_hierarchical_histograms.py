@@ -25,6 +25,7 @@ split_trace_path = trace_path.split('/')
 expt_name = split_trace_path[4]
 trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
+expt_params_file = '/'.join( split_trace_path[:5] ) + "expt_params.txt"
 
 split_trace_name = trace_name.split("_")
 first_trace_number = int(split_trace_name[-1])
@@ -71,6 +72,8 @@ parallel = True
     
 N_e = args.num_traces
 
+expt_params = np.loadtxt(expt_params_file)[:N_e,:]
+
 color_idx = np.linspace(0, 1, N_e)
 mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
 chain = np.loadtxt(mcmc_file)
@@ -78,7 +81,7 @@ saved_its, d = chain.shape
 chain = chain[saved_its/2:, :]
 T, d = chain.shape
 for i in xrange(num_gs):
-    fig = plt.figure(figsize=(6,6))
+    fig = plt.figure(figsize=(8,6))
     ax = fig.add_subplot(111)
     ax.grid()
     ax.set_xlabel(g_labels[i])
@@ -87,6 +90,7 @@ for i in xrange(num_gs):
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
         ax.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=colour, alpha=0.8)
+        ax.axvline(expt_params[n, i], color='red')
     plt.xticks(rotation=30)
     fig.tight_layout()
 
