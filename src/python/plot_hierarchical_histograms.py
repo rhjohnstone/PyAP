@@ -13,10 +13,7 @@ import itertools as it
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
-requiredNamed.add_argument("--num-traces", type=int, help="number of traces to fit to, including the one specified as argument", required=True)
 
-parser.add_argument("-nc", "--num-cores", type=int, help="number of cores to parallelise solving expt traces", default=1)
-#parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
     parser.print_help()
@@ -52,10 +49,6 @@ g_labels = ["${}$".format(g) for g in g_parameters]
 parallel = True
 
 
-
-trace_numbers = range(first_trace_number, first_trace_number+args.num_traces)
-
-
 """for n, i in it.product(range(2), range(num_gs)):
     print n, i
     fig = plt.figure()
@@ -74,29 +67,24 @@ trace_numbers = range(first_trace_number, first_trace_number+args.num_traces)
     #fig.savefig(png_dir+figname)
     #plt.close()
     
-how_many_traces = [2,4]#,4,8]
-for j, N_e in enumerate(how_many_traces):
-    mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
-    print t, i
+    
+which_g = 0
+    
+N_e = 2
+mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
+chain = np.loadtxt(mcmc_file)
+saved_its, d = chain.shape
+chain = chain[saved_its/2:, :]
+T, d = chain.shape
+for i in xrange(num_gs):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.grid()
     ax.set_xlabel(g_labels[i])
     ax.set_ylabel("Normalised frequency")
-    idx = (2+t)*num_gs + i
-    ax.hist(chain[burn:, idx], bins=40, color='blue', edgecolor='blue')
-    #fig.savefig(png_dir+"trace_{}_{}.png".format(t, g_parameters[i]))
-    #plt.close()
-
-print "sigma"
-fig = plt.figure()
-ax = fig.add_subplot(111)
-ax.grid()
-ax.set_xlabel(r"\sigma")
-ax.set_ylabel("Normalised frequency")
-ax.hist(chain[burn:, -1], bins=40, color='blue', edgecolor='blue')
-#fig.savefig(png_dir+"trace_{}_noise_sigma.png".format(n))
-#plt.close()
+    for n in xrange(N_e):
+        idx = (2+n)*num_gs + which_g
+        ax.hist(chain[:, idx], bins=40, color='blue', edgecolor=None, alpha=0.8)
 
 plt.show(block=True)
 
