@@ -13,6 +13,7 @@ import itertools as it
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
+requiredNamed.add_argument("-n", "--num-traces", type=int, help="which hMCMC to use", required=True)
 
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
@@ -77,14 +78,14 @@ saved_its, d = chain.shape
 chain = chain[saved_its/2:, :]
 T, d = chain.shape
 for i in xrange(num_gs):
-    fig = plt.figure()
+    fig = plt.figure(figsize=(4,3))
     ax = fig.add_subplot(111)
     ax.grid()
     ax.set_xlabel(g_labels[i])
     ax.set_ylabel("Normalised frequency")
     for n in xrange(N_e):
-        idx = (2+n)*num_gs + which_g
-        ax.hist(chain[:, idx], bins=40, color='blue', edgecolor=None, alpha=0.8)
+        idx = (2+n)*num_gs + i
+        ax.hist(chain[:, idx], normed=True, bins=40, color='blue', edgecolor=None, alpha=0.8)
 
 plt.show(block=True)
 
