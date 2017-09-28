@@ -25,7 +25,7 @@ split_trace_path = trace_path.split('/')
 expt_name = split_trace_path[4]
 trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
-expt_params_file = '/'.join( split_trace_path[:5] ) + "expt_params.txt"
+expt_params_file = '/'.join( split_trace_path[:5] ) + "/expt_params.txt"
 
 split_trace_name = trace_name.split("_")
 first_trace_number = int(split_trace_name[-1])
