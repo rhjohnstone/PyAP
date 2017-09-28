@@ -88,7 +88,9 @@ for which_g in xrange(0,1):
 
     fig, (ax,ax2) = plt.subplots(1,2,figsize=(7,3.5), sharex=True, sharey=True)
     ax.grid()
+    plt.gca().set_facecolor((230,230,230))
     ax2.grid()
+    plt.gca().set_facecolor((230,230,230))
     
     x_range = np.linspace(0.5*original_gs[which_g],1.5*original_gs[which_g],num_pts)
     true_pdf = norm_pdf(x_range,top_theta[which_g],np.sqrt(top_sigma_squared[which_g])) # not sure if there should be a square
@@ -132,7 +134,7 @@ for which_g in xrange(0,1):
     #for i in xrange(max(how_many_traces)):
     #    ax.axvline(true_params[i, which_g], color='blue')
     fig.tight_layout()
-    fig.savefig("{}_posterior_predictive_and_mle_{}.png".format(expt_name, g_parameters[which_g]), bbox_inches="tight", facecolor=(230,230,230))
+    fig.savefig("{}_posterior_predictive_and_mle_{}.png".format(expt_name, g_parameters[which_g]), bbox_inches="tight")
 plt.close()
 
 
