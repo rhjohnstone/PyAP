@@ -91,6 +91,9 @@ ax2.grid()
 x_range = np.linspace(0.5*original_gs[which_g],1.5*original_gs[which_g],num_pts)
 true_pdf = norm_pdf(x_range,top_theta[which_g],np.sqrt(top_sigma_squared[which_g])) # not sure if there should be a square
 ax.plot(x_range,true_pdf,label='True',color=colors[-1],lw=3)
+ax2.plot(x_range,true_pdf,label='True',color=colors[-1],lw=3)
+ax.set_title('Posterior predictive')
+ax2.set_title('Maximum likelihood')
 how_many_traces = [2,4,8,16,32]
 for j, N_e in enumerate(how_many_traces):
     mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
@@ -116,9 +119,10 @@ for j, N_e in enumerate(how_many_traces):
     expt_chains = chain[:, 2:]
     expt_means = np.mean(expt_chains, axis=0)
     loc1, scale1 = st.norm.fit(expt_means)
-    ax2.plot(x_range, norm.pdf(x_range, loc1, scale1, color=colors[j], lw=3,label="$N_e = {}$".format(N_e)))
+    ax2.plot(x_range, norm_pdf(x_range, loc1, scale1), color=colors[j], lw=3,label="$N_e = {}$".format(N_e))
     
 ax.set_xlabel(g_labels[which_g])
+ax2.set_xlabel(g_labels[which_g])
 ax.set_ylabel("Probability density")
 ax.legend(loc=2, fontsize=12)
 ax2.legend(loc=2, fontsize=12)
