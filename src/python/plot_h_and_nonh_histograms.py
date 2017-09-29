@@ -14,6 +14,7 @@ parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
 requiredNamed.add_argument("-n", "--num-traces", type=int, help="which hMCMC to use", required=True)
+requiredNamed.add_argument("-s", "--series", action="store_true", help="plot parallel hMCMC", default=False)
 
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
@@ -48,7 +49,8 @@ num_gs = len(original_gs)
 
 g_labels = ["${}$".format(g) for g in g_parameters]
 
-parallel = True
+parallel = not args.series
+print parallel
 
 
 """for n, i in it.product(range(2), range(num_gs)):

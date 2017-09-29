@@ -99,7 +99,7 @@ for i, t in enumerate(trace_numbers):
     expt_traces.append(npcopy(temp_trace))
     if not args.cheat:
         temp_trace_name = trace_name[:-3]+str(t)
-        cmaes_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, temp_trace_name)
+        cmaes_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, temp_trace_name, unscaled=False)
         all_best_fits = np.loadtxt(cmaes_file)
         best_index = np.argmin(all_best_fits[:, -1])
         best_params = all_best_fits[best_index, :-1]
@@ -376,7 +376,7 @@ def do_mcmc_series():
             print "acceptances =", acceptances
             print "sigma_loga =", sigma_loga
             print "sigma_acceptance =", sigma_acceptance
-    return MCMC, logas, sigma_loga, acceptances, sigma_acceptance
+    return MCMC[burn:,:], logas, sigma_loga, acceptances, sigma_acceptance
     
 
 def do_mcmc_parallel():

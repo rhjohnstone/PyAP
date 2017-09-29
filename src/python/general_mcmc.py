@@ -141,7 +141,7 @@ def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
     acceptance = 0.    
 
     status_when = total_iterations / 100
-    adapt_when = 500*num_params
+    adapt_when = 100*num_params
 
     t = 1
     s = 1
