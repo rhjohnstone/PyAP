@@ -125,7 +125,6 @@ for which_g in xrange(num_gs):
     ax2.set_xlabel(g_labels[which_g])
     ax.set_ylabel("Probability density")
     #ax.legend(loc=2, fontsize=12)
-    ax2.legend(loc='center left', bbox_to_anchor=(1, 0.5),prop={'size':10})
 
     #for i in xrange(max(how_many_traces)):
     #    ax.axvline(true_params[i, which_g], color='blue')
@@ -134,6 +133,8 @@ for which_g in xrange(num_gs):
     plt.xticks(rotation=30)
     ax2.plot(x_range,true_pdf,label='True',color=colors[-1],lw=3)
     plt.xticks(rotation=30)
+    
+    ax2.legend(loc='center left', bbox_to_anchor=(1, 0.5),prop={'size':10})
     
     fig.tight_layout()
     fig.savefig("{}_posterior_predictive_and_mle_{}.png".format(expt_name, g_parameters[which_g]), bbox_inches="tight")
