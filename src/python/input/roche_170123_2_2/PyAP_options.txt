@@ -1,4 +1,4 @@
-model_number 10
+model_number 7
 num_solves 2
 extra_K_conc 4
 intra_K_conc 125
