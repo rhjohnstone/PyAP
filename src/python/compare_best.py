@@ -62,10 +62,17 @@ print "best:", best_params
 true_params = np.loadtxt(expt_params_file)[trace_number]
 print "true:", true_params
 
+
+
+protocol = 1
+solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
+original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
+num_params = len(original_gs)+1  # include sigma
+
 num_pts = 11
 lls = np.zeros(num_pts)
-points = np.zeros((num_pts, len(true_params)))
-for j in xrange(len(true_params)):
+points = np.zeros((num_pts, num_params))
+for j in xrange(num_params):
     points[:, j] = np.linspace(best_params[j], true_params[j], num_pts)
 print points
 
