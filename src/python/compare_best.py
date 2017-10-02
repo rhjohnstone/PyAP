@@ -22,9 +22,9 @@ split_trace_path = trace_path.split('/')
 expt_name = split_trace_path[4]
 trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
+expt_params_file = '/'.join( split_trace_path[:5] ) + "/expt_params.txt"
 
-if args.seed:
-    npr.seed(args.seed)
+trace_number = int(trace_name.split('_')[-1])
 
 pyap_options = {}
 with open(options_file, 'r') as infile:
@@ -42,7 +42,10 @@ data_clamp_off = pyap_options["data_clamp_off"]
 mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled, args.non_adaptive)
 
 chain = np.loadtxt(mcmc_file)
-best_idx = np.argax(chain[:,-1])
+best_idx = np.argmax(chain[:,-1])
 print "Best index:", best_idx
 best_params = chain[best_idx, :-1]
-print best_params
+print "best:", best_params
+
+true_params = np.loadtxt(expt_params_file)[trace_number]
+print "true:", true_params
