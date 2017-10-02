@@ -7,6 +7,7 @@ import numpy.random as npr
 import time
 import multiprocessing as mp
 import argparse
+import matplotlib.pyplot as plt
 
 
 def solve_for_voltage_trace(temp_g_params):
@@ -59,7 +60,7 @@ print "Best index:", best_idx
 best_params = chain[best_idx, :-1]
 print "best:", best_params
 
-true_params = np.loadtxt(expt_params_file)[trace_number]
+true_params = np.concatenate((np.loadtxt(expt_params_file)[trace_number], [0.25]))
 print "true:", true_params
 
 
@@ -69,7 +70,7 @@ solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, s
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_params = len(original_gs)+1  # include sigma
 
-num_pts = 11
+num_pts = 101
 lls = np.zeros(num_pts)
 points = np.zeros((num_pts, num_params))
 for j in xrange(num_params):
@@ -105,6 +106,9 @@ for i in xrange(num_pts):
 
 
 plt.plot(lls)
+plt.axvline(0, color='red', label='best')
+plt.axvline(num_pts, color='green', label='best')
+plt.legend()
 plt.show(block=True)
 
 
