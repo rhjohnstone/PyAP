@@ -49,3 +49,10 @@ print "best:", best_params
 
 true_params = np.loadtxt(expt_params_file)[trace_number]
 print "true:", true_params
+
+num_pts = 11
+points = np.zeros((num_pts, len(true_params)))
+for j in xrange(len(true_params)):
+    points[:, j] = np.linspace(best_params[j], true_params[j], num_pts)
+print points
+
