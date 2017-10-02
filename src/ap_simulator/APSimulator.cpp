@@ -20,7 +20,7 @@
 #include "ten_tusscher_model_2004_epiCvode.hpp"
 #include "ohara_rudy_2011_endoCvode.hpp"
 #include "davies_isap_2012CvodeDataClamp.hpp"
-//#include "paci_hyttinen_aaltosetala_severi_ventricularVersionCvodeDataClamp.hpp"
+#include "paci_hyttinen_aaltosetala_severi_ventricularVersionCvodeDataClamp.hpp"
 //#include "gokhale_ex293_2017Cvode.hpp"
 
 APSimulator::APSimulator()
@@ -140,7 +140,7 @@ void APSimulator::DefineModel(unsigned model_number)
         mParameterMetanames.push_back("membrane_persistent_sodium_current_conductance");                  // 0.011
         std::cerr << "Defined mpModel as Davies with DC" << std::endl << std::flush;
     }
-    /*else if ( model_number == 7u ) // Paci ventricular
+    else if ( model_number == 7u ) // Paci ventricular
     {
         mpModel.reset(new Cellpaci_hyttinen_aaltosetala_severi_ventricularVersionFromCellMLCvodeDataClamp(p_solver, mpStimulus));
         mParameterMetanames.push_back("membrane_fast_sodium_current_conductance");                                            // 3671.2302
@@ -156,7 +156,7 @@ void APSimulator::DefineModel(unsigned model_number)
         mParameterMetanames.push_back("membrane_background_sodium_current_conductance");                                      // 0.9
         mParameterMetanames.push_back("membrane_hyperpolarisation_activated_funny_current_potassium_component_conductance");  // 30.10312
     }
-    else if ( model_number == 8u ) // Gokhale 2017
+    /*else if ( model_number == 8u ) // Gokhale 2017
     {
         mpModel.reset(new Cellgokhale_ex293_2017FromCellMLCvode(p_solver, mpStimulus));
         mParameterMetanames.push_back("transfected_sodium_current_conductance");  // 90.34
@@ -165,22 +165,6 @@ void APSimulator::DefineModel(unsigned model_number)
         mParameterMetanames.push_back("endogenous_potassium_current_conductance");  // 0.1332
         mParameterMetanames.push_back("transfected_sodium_fast_component_contribution");  // 0.9
         mParameterMetanames.push_back("transfected_potassium_fast_component_contribution");  // 0.75
-    }*/
-    /*else if ( model_number == 10u ) // Paci ventricular LINEARISED by RJ
-    {
-        mpModel.reset(new Cellpaci_hyttinen_aaltosetala_severi_ventricularVersion_linearisedFromCellMLCvodeDataClamp(p_solver, mpStimulus));
-        mParameterMetanames.push_back("membrane_fast_sodium_current_conductance");                                            // 3671.2302
-        mParameterMetanames.push_back("membrane_L_type_calcium_current_conductance");                                         // 8.635702e-5
-        mParameterMetanames.push_back("membrane_inward_rectifier_potassium_current_conductance");                             // 28.1492
-        mParameterMetanames.push_back("membrane_slow_delayed_rectifier_potassium_current_conductance");                       // 2.041
-        mParameterMetanames.push_back("membrane_rapid_delayed_rectifier_potassium_current_conductance");                      // 29.8667
-        mParameterMetanames.push_back("membrane_calcium_pump_current_conductance");                                           // 0.4125
-        mParameterMetanames.push_back("membrane_sodium_calcium_exchanger_current_conductance");                               // 4900
-        mParameterMetanames.push_back("membrane_background_calcium_current_conductance");                                     // 0.69264
-        mParameterMetanames.push_back("membrane_sodium_potassium_pump_current_permeability");                                 // 1.841424
-        mParameterMetanames.push_back("membrane_transient_outward_current_conductance");                                      // 29.9038
-        mParameterMetanames.push_back("membrane_background_sodium_current_conductance");                                      // 0.9
-        mParameterMetanames.push_back("membrane_hyperpolarisation_activated_funny_current_potassium_component_conductance");  // 30.10312
     }*/
     mpModel->SetMaxSteps(10000);
 }
