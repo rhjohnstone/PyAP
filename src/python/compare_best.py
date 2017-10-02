@@ -8,6 +8,18 @@ import time
 import multiprocessing as mp
 import argparse
 
+
+def solve_for_voltage_trace(temp_g_params):
+    ap_model.SetToModelInitialConditions()
+    return ap_model.SolveForVoltageTraceWithParams(temp_g_params)
+
+
+def log_likelihood(params):
+    temp_g_params, temp_sigma = params[:-1], params[-1]
+    temp_trace = solve_for_voltage_trace(temp_g_params)
+    return -len(temp_trace)*np.log(temp_sigma) - np.sum((temp_trace-expt_trace)**2)/(2*temp_sigma**2)
+
+
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
@@ -51,8 +63,44 @@ true_params = np.loadtxt(expt_params_file)[trace_number]
 print "true:", true_params
 
 num_pts = 11
+lls = np.zeros(num_pts)
 points = np.zeros((num_pts, len(true_params)))
 for j in xrange(len(true_params)):
     points[:, j] = np.linspace(best_params[j], true_params[j], num_pts)
 print points
+
+try:
+    expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
+except:
+    sys.exit( "\n\nCan't find (or load) {}\n\n".format(trace_path) )
+
+solve_start, solve_end = expt_times[[0,-1]]
+solve_timestep = expt_times[1] - expt_times[0]
+
+ap_model = ap_simulator.APSimulator()
+if (data_clamp_on < data_clamp_off):
+    ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
+    ap_model.DefineModel(pyap_options["model_number"])
+    ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
+    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
+else:
+    ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
+    ap_model.DefineModel(pyap_options["model_number"])
+ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
+ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
+ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
+ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
+ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
+ap_model.SetNumberOfSolves(pyap_options["num_solves"])
+
+for i in xrange(num_pts):
+    lls[i] = log_likelihood(points[i, :])
+
+
+plt.plot(lls)
+plt.show(block=True)
+
+
+
+
 
