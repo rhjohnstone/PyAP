@@ -67,6 +67,9 @@ elif model==5:
 elif model==6:
     label = "davies"
     expt_params_normal_sd = 0.11
+elif model==7:
+    label = "paci"
+    expt_params_normal_sd = 0.1
 
 
 expt_name = "synthetic_{}".format(label)
@@ -141,7 +144,7 @@ for i in xrange(num_expts):
     ax.plot(expt_times, expt_trace)
 fig.tight_layout()
 fig.savefig(expt_dir+"{}_synthetic_expt_traces.png".format(model_name))
-fig.savefig(expt_dir+"{}_synthetic_expt_traces.pdf".format(model_name))
-plt.close()
+#fig.savefig(expt_dir+"{}_synthetic_expt_traces.pdf".format(model_name))
+plt.show(block=True)
 
 
