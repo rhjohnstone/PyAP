@@ -166,7 +166,7 @@ void APSimulator::DefineModel(unsigned model_number)
         mParameterMetanames.push_back("transfected_sodium_fast_component_contribution");  // 0.9
         mParameterMetanames.push_back("transfected_potassium_fast_component_contribution");  // 0.75
     }*/
-    mpModel->SetMaxSteps(10000);
+    mpModel->SetMaxSteps(5000);
     double rel_tol = 1e-8;
     double abs_tol = 1e-10;
     mpModel->SetTolerances(rel_tol, abs_tol);
