@@ -70,7 +70,7 @@ solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, s
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_params = len(original_gs)+1  # include sigma
 
-num_pts = 101
+num_pts = 1000
 lls = np.zeros(num_pts)
 points = np.zeros((num_pts, num_params))
 for j in xrange(num_params):
@@ -106,8 +106,8 @@ for i in xrange(num_pts):
 
 
 plt.plot(lls)
-plt.axvline(0, color='red', label='best')
-plt.axvline(num_pts, color='green', label='best')
+plt.axvline(0, color='red', label='best', lw=3)
+plt.axvline(num_pts-1, color='green', label='true', lw=3)
 plt.legend()
 plt.show(block=True)
 
