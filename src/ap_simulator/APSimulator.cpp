@@ -36,10 +36,7 @@ APSimulator::APSimulator()
       mDataClampOn(0),
       mDataClampOff(0)
 {
-    std::cerr << "*** INSIDE CONSTRUCTOR (only defining solver tolerances here) ***" << std::endl << std::flush;
-    double rel_tol = 1e-8;
-    double abs_tol = 1e-10;
-    SetTolerances(rel_tol, abs_tol);
+    std::cerr << "*** INSIDE CONSTRUCTOR (nothing should happen here) ***" << std::endl << std::flush;
 }
 
 APSimulator::~APSimulator()
@@ -170,6 +167,9 @@ void APSimulator::DefineModel(unsigned model_number)
         mParameterMetanames.push_back("transfected_potassium_fast_component_contribution");  // 0.75
     }*/
     mpModel->SetMaxSteps(10000);
+    double rel_tol = 1e-8;
+    double abs_tol = 1e-10;
+    mpModel->SetTolerances(rel_tol, abs_tol);
 }
 
 void APSimulator::UseDataClamp(double data_clamp_on, double data_clamp_off)
