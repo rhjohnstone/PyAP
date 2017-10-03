@@ -115,6 +115,7 @@ if np.any(all_expt_params<0):
 
 with open(expt_params_file, "w") as outfile:
     outfile.write("# synthetic data experimental parameter values\n")
+    outfile.write("# generated with solver tolerances 1e-10, 1e-12\n")
     outfile.write("# {}\n".format(model_name))
     outfile.write("# {} sets of parameter values\n".format(num_expts))
     outfile.write("# standard deviation for Normally-generated parameters: {}\n".format(expt_params_normal_sd))
@@ -131,6 +132,7 @@ ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
 ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
 ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
 ap_model.SetNumberOfSolves(pyap_options["num_solves"])
+ap_model.SetTolerances(1e-10, 1e-12)
 
 fig = plt.figure(figsize=(5,4))
 ax = fig.add_subplot(111)
