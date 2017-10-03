@@ -158,9 +158,8 @@ want_modes = 0.1*original_gs**2
 old_eta_js = np.zeros((num_gs,4))
 old_eta_js[:,0] = starting_mean  # mu
 old_eta_js[:,1] = 1. * args.num_traces  # nu
+old_eta_js[:,2] = 0.5 * args.num_traces  # alpha
 old_eta_js[:,3] = 0.5 * (starting_mean**2 + starting_vars)  # beta
-old_eta_js[:,2] = old_eta_js[:,3]/want_modes - 1.  # alpha
-old_eta_js[:,2][old_eta_js[:,2]<=0] = 1e-3
 
 print "old_eta_js:\n", old_eta_js
 
@@ -182,10 +181,11 @@ def new_eta(old_eta,samples): # for sampling from conjugate prior-ed N-IG
     return new_mu,new_nu,new_alpha,new_beta
     
 randn = npr.randn
+sqrt = np.sqrt
 def sample_from_N_IG(eta):
     mu, nu, alpha, beta = eta
     sigma_squared = invgamma.rvs(alpha,scale=beta)
-    sample = mu + np.sqrt(sigma_squared/nu)*randn()
+    sample = mu + sqrt(sigma_squared/nu)*randn()
     return sample,sigma_squared
     
 def log_pi_theta_i(theta_i,theta,sigma_squareds,sigma,data_i,test_i):
@@ -202,7 +202,7 @@ def log_pi_sigma(expt_datas,test_datas,sigma,Ne,num_pts):
         return -Ne*num_pts*np.log(sigma) - np.sum((expt_datas-test_datas)**2) / (2*sigma**2)
         
 def compute_initial_sigma(expt_datas,test_datas,Ne,num_pts):
-    return np.sqrt(np.sum((expt_datas-test_datas)**2) / (Ne*num_pts))
+    return sqrt(np.sum((expt_datas-test_datas)**2) / (Ne*num_pts))
         
     
 top_theta_cur = npcopy(starting_mean)
