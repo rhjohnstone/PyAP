@@ -92,8 +92,8 @@ axx.plot(expt_times, solve_for_voltage_trace(best_fit_gs, ap_model), color='blue
 axx.set_xlabel('Time (ms)')
 axx.set_ylabel('Membrane voltage (mV)')
 figg.tight_layout()
-figg.savefig(png+"best_mcmc_fit.png")
-figg.savefig(png+"best_mcmc_fit.pdf")
+figg.savefig(png_dir+"best_mcmc_fit.png")
+figg.savefig(png_dir+"best_mcmc_fit.pdf")
 
 for i in xrange(num_gs+1):
     fig = plt.figure()
