@@ -83,14 +83,14 @@ except:
 saved_its, num_params_plus_1 = chain.shape
 burn = saved_its/args.burn
 
-best_all = chain[np.argmax(chain[:,-1]),:]
+best_all = chain[burn+np.argmax(chain[burn:,-1]),:]
 best_params = best_all[:-1]
 best_ll = best_all[-1]
+best_fit_gs = best_params[:-1]
 
-best_target_index = np.argmax(chain[burn:, -1])
-best_fit_gs = chain[burn+best_target_index, :-2]
 figg = plt.figure(figsize=(4,4))
 axx = figg.add_subplot(111)
+axx.grid()
 axx.plot(expt_times, expt_trace, color='red', label='Expt')
 axx.plot(expt_times, solve_for_voltage_trace(best_fit_gs, ap_model), color='blue', label='Best MCMC fit')
 axx.set_xlabel('Time (ms)')
