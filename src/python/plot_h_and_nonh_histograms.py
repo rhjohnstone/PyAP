@@ -77,7 +77,7 @@ N_e = args.num_traces
 expt_params = np.loadtxt(expt_params_file)[:N_e,:]
 
 color_idx = np.linspace(0, 1, N_e)
-mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
+mcmc_file, log_file, hpng_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
 chain = np.loadtxt(mcmc_file)
 saved_its, d = chain.shape
 chain = chain[saved_its/2:, :]
@@ -117,7 +117,7 @@ for i in xrange(num_gs):
     for tick in ax.get_xticklabels():
         tick.set_rotation(30)
     fig.tight_layout()
-    fig.savefig(png_dir+"{}_h_and_nonh_{}_traces_{}.png".format(expt_name, N_e, g_parameters[i]))
+    fig.savefig(hpng_dir+"{}_h_and_nonh_{}_traces_{}.png".format(expt_name, N_e, g_parameters[i]))
 
     plt.close()
 
