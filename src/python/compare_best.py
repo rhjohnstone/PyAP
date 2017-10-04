@@ -59,10 +59,12 @@ best_idx = np.argmax(chain[:,-1])
 print "Best index:", best_idx
 best_params = chain[best_idx, :-1]"""
 
-best_params = np.array([  9.93699070e+01,   8.71228491e-05,   2.56609157e-03,   1.50567124e-01,
-   5.33947762e-02,   1.42294579e-03,   1.05740016e-03,   2.59690047e+01,
-   2.08352354e-02,   1.28487507e-08,   7.70465562e-10,   1.05590032e-03,
-   6.17794919e-03,   2.47998237e-01])
+best_params = np.array([  9.93691193e+01,   8.73592563e-05,   2.54699743e-03,   1.51319231e-01,
+   5.32600004e-02,   1.61116185e-03,   1.07445324e-03,   2.46801212e+01,
+   2.11477010e-02,   5.73068132e-09,   8.57302566e-10,   1.74340157e-02,
+   5.96320573e-03,   2.51272811e-01])
+best_ll = 2.22433870e+03
+
 print "best:", best_params
 
 true_params = np.concatenate((np.loadtxt(expt_params_file)[trace_number], [0.25]))
@@ -75,7 +77,7 @@ solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, s
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_params = len(original_gs)+1  # include sigma
 
-num_pts = 1001
+num_pts = 101
 lls = np.zeros(num_pts)
 points = np.zeros((num_pts, num_params))
 for j in xrange(num_params):
@@ -118,7 +120,7 @@ axs = axs.flatten()
 for j, a in enumerate(range(4,8)):
     axs[j].grid()
     axs[j].set_ylabel("log-likelihood")
-    axs[j].set_title(r"$10^{-"+str(a)+"}, 10^{-"+str(a+2)+"}$")
+    axs[j].set_title(r"$\left(10^{-"+str(a)+"}, 10^{-"+str(a+2)+r"}\right)$")
     ap_model.SetTolerances(10**-a, 10**-(a+2))
     for i in xrange(num_pts):
         lls[i] = log_likelihood(points[i, :])

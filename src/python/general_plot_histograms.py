@@ -46,6 +46,9 @@ with open(options_file, 'r') as infile:
             val = float(val)
         pyap_options[key] = val
 
+data_clamp_on = pyap_options["data_clamp_on"]
+data_clamp_off = pyap_options["data_clamp_off"]
+
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
 
