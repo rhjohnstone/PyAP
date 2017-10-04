@@ -93,6 +93,8 @@ for i in xrange(num_gs):
         ax.axvline(expt_params[n, i], color='red')
     plt.xticks(rotation=30)
     fig.tight_layout()
+    fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
+    plt.close()
 
-plt.show(block=True)
+#plt.show(block=True)
 

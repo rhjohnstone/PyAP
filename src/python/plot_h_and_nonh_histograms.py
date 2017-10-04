@@ -117,7 +117,7 @@ for i in xrange(num_gs):
     for tick in ax.get_xticklabels():
         tick.set_rotation(30)
     fig.tight_layout()
-    fig.savefig("{}_h_and_nonh_{}_traces_{}.png".format(expt_name, N_e, g_parameters[i]))
+    fig.savefig(png_dir+"{}_h_and_nonh_{}_traces_{}.png".format(expt_name, N_e, g_parameters[i]))
 
     plt.close()
 
