@@ -49,6 +49,9 @@ with open(options_file, 'r') as infile:
 data_clamp_on = pyap_options["data_clamp_on"]
 data_clamp_off = pyap_options["data_clamp_off"]
 
+protocol = 1
+solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
+
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
 
