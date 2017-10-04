@@ -83,6 +83,10 @@ except:
 saved_its, num_params_plus_1 = chain.shape
 burn = saved_its/args.burn
 
+best_all = chain[np.argmax(chain[:,-1]),:]
+best_params = best_all[:-1]
+best_ll = best_all[-1]
+
 best_target_index = np.argmax(chain[burn:, -1])
 best_fit_gs = chain[burn+best_target_index, :-2]
 figg = plt.figure(figsize=(4,4))
@@ -107,6 +111,7 @@ for i in xrange(num_gs+1):
         ax.set_xlabel(r"$\sigma$")
         savelabel = png_dir+'sigma_marginal.png'
     ax.hist(chain[burn:,i], normed=True, bins=40, color='blue', edgecolor='blue')
+    ax.axvline(best_params[i], color='red', lw=2)
     fig.tight_layout()
     fig.savefig(savelabel)
     plt.close()
