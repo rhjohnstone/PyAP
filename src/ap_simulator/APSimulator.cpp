@@ -21,6 +21,7 @@
 #include "ohara_rudy_2011_endoCvode.hpp"
 #include "davies_isap_2012CvodeDataClamp.hpp"
 #include "paci_hyttinen_aaltosetala_severi_ventricularVersionCvodeDataClamp.hpp"
+#include "decker_2009CvodeDataClamp.hpp"
 //#include "gokhale_ex293_2017Cvode.hpp"
 
 APSimulator::APSimulator()
@@ -156,6 +157,24 @@ void APSimulator::DefineModel(unsigned model_number)
         mParameterMetanames.push_back("membrane_background_sodium_current_conductance");                                      // 0.9
         mParameterMetanames.push_back("membrane_hyperpolarisation_activated_funny_current_potassium_component_conductance");  // 30.10312
     }
+    else if ( model_number == 9u ) // Decker 2009 canine
+    {
+        mpModel.reset(new Celldecker_2009FromCellMLCvodeDataClamp(p_solver, mpStimulus));
+        mParameterMetanames.push_back("membrane_fast_sodium_current_conductance");                        // 9.075 d
+        mParameterMetanames.push_back("membrane_L_type_calcium_current_conductance");                     // 0.00015552 d
+        mParameterMetanames.push_back("membrane_inward_rectifier_potassium_current_conductance");         // 0.5 d
+        mParameterMetanames.push_back("membrane_potassium_pump_current_conductance");                     // 0.00276 d
+        mParameterMetanames.push_back("membrane_slow_delayed_rectifier_potassium_current_conductance");   // 0.0826 d
+        mParameterMetanames.push_back("membrane_rapid_delayed_rectifier_potassium_current_conductance");  // 0.0138542 d
+        mParameterMetanames.push_back("membrane_calcium_pump_current_conductance");                       // 0.0575 d
+        mParameterMetanames.push_back("membrane_background_calcium_current_conductance");                 // 1.99508e-7 d
+        mParameterMetanames.push_back("membrane_sodium_calcium_exchanger_current_conductance");           // 4.5 d
+        mParameterMetanames.push_back("membrane_sodium_potassium_pump_current_permeability");             // 1.4 d
+        mParameterMetanames.push_back("membrane_transient_outward_current_conductance");                  // 0.497458 d
+        mParameterMetanames.push_back("membrane_transient_outward_chloride_current_conductance");         // 9e-7 d
+        mParameterMetanames.push_back("membrane_background_chloride_current_conductance");                // 0.000225 d
+        mParameterMetanames.push_back("membrane_persistent_sodium_current_conductance");                  // 0.0065 d
+        std::cerr << "Defined mpModel as Davies with DC" << std::endl << std::flush;
     /*else if ( model_number == 8u ) // Gokhale 2017
     {
         mpModel.reset(new Cellgokhale_ex293_2017FromCellMLCvode(p_solver, mpStimulus));

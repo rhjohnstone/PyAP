@@ -6,9 +6,10 @@ CHOICE OF CELL MODEL
 # 3. Luo Rudy
 # 4. ten Tusscher
 # 5. O'Hara Rudy
-# 6. Davies (canine)
+# 6. Davies (canine) 2012
 # 7. Paci (SC-CM ventricular)
 # 8. Gokhale 2017 ex293
+# 9. Decker (canine) 2009
 
 """
 
@@ -131,6 +132,15 @@ def get_original_params(model):
         original_gs = [90.34, 6.609, 0.6976, 0.1332, 0.9, 0.75]
         g_parameters = ['G_{Na}', 'G_{K1}', 'G_{Na,wt}', 'G_{K1,wt}'
                         'd', 'f']
+    elif (model==9): # Decker canine 2009
+        model_name = "Decker 2009 canine"
+        original_gs = [9.075, 0.00015552, 0.5, 0.00276,
+                       0.0826, 0.0138542, 0.0575, 1.99508e-7,
+                       4.5, 1.4, 0.497458, 9e-7, 0.000225, 0.0065]
+        g_parameters = ['G_{Na}', 'G_{CaL}', 'G_{K1}', 'G_{pK}',
+                        'G_{Ks}', 'G_{Kr}', 'G_{pCa}', 'G_{bCa}',
+                        'k_{NaCa}', 'P_{NaK}', 'G_{to1}', 'G_{to2}',
+                        'G_{bCl}', 'G_{NaL}']
     original_gs = np.array(original_gs)
     return original_gs, g_parameters, model_name
     
