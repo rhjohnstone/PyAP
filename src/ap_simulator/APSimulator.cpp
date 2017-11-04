@@ -174,7 +174,7 @@ void APSimulator::DefineModel(unsigned model_number)
         mParameterMetanames.push_back("membrane_transient_outward_chloride_current_conductance");         // 9e-7 d
         mParameterMetanames.push_back("membrane_background_chloride_current_conductance");                // 0.000225 d
         mParameterMetanames.push_back("membrane_persistent_sodium_current_conductance");                  // 0.0065 d
-        std::cerr << "Defined mpModel as Davies with DC" << std::endl << std::flush;
+        std::cerr << "Defined mpModel as Decker with DC" << std::endl << std::flush;
     }
     /*else if ( model_number == 8u ) // Gokhale 2017
     {
