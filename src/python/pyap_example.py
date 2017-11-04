@@ -45,7 +45,11 @@ for model_number in xrange(3,4):
     expt_trace = ap.SolveForVoltageTraceWithParams(original_gs)
     print "expt_trace original_gs done"
     
-    plt.plot(times, expt_trace)
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.grid()
+    ax.plot(times, expt_trace)
+    ax.set_title(model_name)
     plt.show(block=True)
     sys.exit()
     
