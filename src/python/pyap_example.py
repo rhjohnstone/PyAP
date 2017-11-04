@@ -45,6 +45,10 @@ for model_number in xrange(3,4):
     expt_trace = ap.SolveForVoltageTraceWithParams(original_gs)
     print "expt_trace original_gs done"
     
+    plt.plot(times, expt_trace)
+    plt.show(block=True)
+    sys.exit()
+    
     p_size = 0.05
     perturbations = [p_size*np.ones(len(original_gs)), -p_size*np.ones(len(original_gs))]
     sosses = []
