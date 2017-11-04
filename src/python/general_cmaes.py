@@ -137,6 +137,8 @@ def run_cmaes(cma_index):
 # 9. Davies (canine) linearised by RJ
 # 10. Paci linearised by RJ
 
+phi = 1.61803398875
+
 all_time_start = time.time()
 
 num_cores = args.num_cores  # make 16 for ARCUS-B!!
@@ -190,15 +192,15 @@ best_fit_index = np.argmin(best_boths[:,-1])
 best_params = best_boths[best_fit_index,:-1]
 print "best_params:\n", best_params
 best_f = best_boths[best_fit_index,-1]
-fig = plt.figure(figsize=(4,3))
+fig = plt.figure(figsize=(phi*4,4))
 ax = fig.add_subplot(111)
 ax.grid()
 ax.set_title(model_name)
 ax.set_xlabel('Time (ms)')
 ax.set_ylabel('Membrane voltage (mV)')
-ax.plot(expt_times, expt_trace, label="Expt")
-ax.plot(expt_times, solve_for_voltage_trace(best_params, ap_model), label="Best f = {}".format(round(best_f,2)))
-ax.legend()
+ax.plot(expt_times, expt_trace, label=trace_name)
+ax.plot(expt_times, solve_for_voltage_trace(best_params, ap_model), label="Best f = {}".format(int(best_f)))
+ax.legend(fontsize=12)
 fig.tight_layout()
 fig.savefig(best_fit_png)
 fig.savefig(best_fit_svg)
