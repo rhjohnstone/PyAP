@@ -190,10 +190,10 @@ best_fit_index = np.argmin(best_boths[:,-1])
 best_params = best_boths[best_fit_index,:-1]
 print "best_params:\n", best_params
 best_f = best_boths[best_fit_index,-1]
-fig = plt.figure()
+fig = plt.figure(figsize=(4,3))
 ax = fig.add_subplot(111)
 ax.grid()
-ax.set_title(trace_name)
+ax.set_title(model_name)
 ax.set_xlabel('Time (ms)')
 ax.set_ylabel('Membrane voltage (mV)')
 ax.plot(expt_times, expt_trace, label="Expt")
