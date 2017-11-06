@@ -68,7 +68,7 @@ def log_target_exp_scaled(temp_unscaled_params, ap_model, expt_trace):
         return -len(expt_trace)*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2) + np.dot(temp_unscaled_gs, log_gs)
 
 
-def log_target_unscaled(temp_params, ap_model, expt_trace):
+def log_target_unscaled(temp_params, ap_model, expt_trace, temperature):
     """Log target distribution with improper semi-infinite prior"""
     if np.any(temp_params < 0):
         return -np.inf
@@ -81,7 +81,7 @@ def log_target_unscaled(temp_params, ap_model, expt_trace):
             print "temp_gs:\n", temp_gs
             print "original_gs:\n", original_gs
             return -np.inf
-        return -len(expt_trace)*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2)
+        return temperature * (-pi_bit - num_pts*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2))
 
     
 def compute_initial_sigma(temp_unscaled_gs, ap_model, expt_trace):
@@ -301,10 +301,14 @@ num_params = len(original_gs)+1  # include sigma
 
 
 def do_everything():
+    global pi_bit, num_pts
     try:
         expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
     except:
         sys.exit( "\n\nCan't find (or load) {}\n\n".format(trace_path) )
+    
+    num_pts = len(expt_trace)
+    pi_bit = 0.5 * num_pts * np.log(2 * np.pi)
     
     solve_start, solve_end = expt_times[[0,-1]]
     solve_timestep = expt_times[1] - expt_times[0]
@@ -326,7 +330,7 @@ def do_everything():
     ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 
     temperature = 1
-    mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled, args.non_adaptive)
+    mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled, args.non_adaptive, temperature)
     log_start_time = time.time()
     chain = do_mcmc(ap_model, expt_trace, temperature)
     log_time_taken = time.time() - log_start_time
