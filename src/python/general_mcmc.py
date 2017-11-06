@@ -169,7 +169,7 @@ def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
             chain[t/thinning,:] = np.concatenate((theta_cur, [log_target_cur]))
         if t % status_when == 0:
             #pass
-            print t/status_when, "/", total_iterations/status_when
+            print "{} / {} - temperature {}".format(t/status_when, total_iterations/status_when, temperature)
             print "acceptance =", acceptance
             time_taken_so_far = time.time()-start
             estimated_time_left = int(total_iterations*time_taken_so_far/t - time_taken_so_far)
