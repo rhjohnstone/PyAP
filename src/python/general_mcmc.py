@@ -354,7 +354,7 @@ if args.num_cores==1:
         do_everything(T)
 elif args.num_cores > 1:
     pool = mp.Pool(args.num_cores)
-    everything = pool.map_async(do_everything, temps).get(99999)
+    everything = pool.map_async(do_everything, temperatures).get(99999)
     pool.close()
     pool.join()
 
