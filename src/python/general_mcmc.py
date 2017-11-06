@@ -26,8 +26,6 @@ expt_name = split_trace_path[4]
 trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 
-if args.seed:
-    npr.seed(args.seed)
 
 pyap_options = {}
 with open(options_file, 'r') as infile:
@@ -97,6 +95,7 @@ else:
 
 
 def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
+    npr.seed(int(1000*temperature)+args.seed)
     #npr.seed(trace_number)
     print "Starting chain"
     start = time.time()
