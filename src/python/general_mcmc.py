@@ -77,7 +77,7 @@ def log_target_unscaled(temp_params, ap_model, expt_trace, temperature):
         try:
             test_trace = solve_for_voltage_trace(temp_gs, ap_model)
         except:
-            print "Failed to solve at iteration", t
+            #print "Failed to solve at iteration", t
             print "temp_gs:\n", temp_gs
             print "original_gs:\n", original_gs
             return -np.inf
@@ -97,7 +97,6 @@ else:
 
 
 def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
-    global loga, acceptance, t, total_iterations, num_saved
     #npr.seed(trace_number)
     print "Starting chain"
     start = time.time()
@@ -191,11 +190,11 @@ def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
     #chain = chain[burn:, :]
     if not args.unscaled:
         chain[:,:-2] = original_gs**chain[:,:-2]  # return params scaled back into G-space
-    return chain
+    return chain, loga, acceptance
 
 
 def do_mcmc_non_adaptive(ap_model, expt_trace, temperature):#, theta0):
-    global loga, acceptance
+    global  acceptance
     #npr.seed(trace_number)
     print "Starting chain"
     start = time.time()
@@ -284,7 +283,7 @@ def do_mcmc_non_adaptive(ap_model, expt_trace, temperature):#, theta0):
     #chain = chain[burn:, :]
     if not args.unscaled:
         chain[:,:-2] = original_gs**chain[:,:-2]  # return params scaled back into G-space
-    return chain
+    return chain, loga
 
 
 if args.non_adaptive:
@@ -332,17 +331,17 @@ def do_everything():
     temperature = 1
     mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled, args.non_adaptive, temperature)
     log_start_time = time.time()
-    chain = do_mcmc(ap_model, expt_trace, temperature)
+    chain, final_loga, final_acceptance = do_mcmc(ap_model, expt_trace, temperature)
+    num_saved = chain.shape[0]
     log_time_taken = time.time() - log_start_time
     np.savetxt(mcmc_file, chain)
     with open(log_file, "w") as outfile:
         outfile.write("Expt: {}\n".format(expt_name))
         outfile.write("Trace: {}\n".format(trace_name))
-        outfile.write("Total iterations: {}\n".format(total_iterations))
         outfile.write("Saved iterations: {}\n".format(num_saved))
         outfile.write("Time taken: {} s = {} min = {} hr\n".format(int(log_time_taken), round(log_time_taken/60.,1), round(log_time_taken/3600.,1)))
-        outfile.write("Final loga: {}\n".format(loga))
-        outfile.write("Final acceptance rate: {}\n".format(acceptance))
+        outfile.write("Final loga: {}\n".format(final_loga))
+        outfile.write("Final acceptance rate: {}\n".format(final_acceptance))
     print "\nSaved MCMC output at {}\n".format(mcmc_file)
     return None
 
