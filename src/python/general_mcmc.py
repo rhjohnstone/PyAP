@@ -13,6 +13,7 @@ requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
 parser.add_argument("-i", "--iterations", type=int, help="total MCMC iterations", default=500000)
 parser.add_argument("-s", "--seed", type=int, help="Python random seed", default=0)
+parser.add_argument("--num-cores", type=int, help="number of cores for multiprocessing", default=1)
 parser.add_argument("--cheat", action="store_true", help="for synthetic data: start MCMC from parameter values used to generate data", default=False)
 parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=True)
 parser.add_argument("--non-adaptive", action="store_true", help="do not adapt proposal covariance matrix", default=False)
@@ -345,7 +346,14 @@ def do_everything(temperature):
     return None
 
 temps = [0.8, 1]
-for x in temps:
-    do_everything(x)
 
+
+if args.num_cores==1:
+    for x in temps:
+        do_everything(x)
+elif args.num_cores > 1:
+    pool = mp.Pool(args.num_cores)
+    everything = pool.map_async(do_everything, temps).get(99999)
+    pool.close()
+    pool.join()
 
