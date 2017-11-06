@@ -58,7 +58,7 @@ def mcmc_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscal
     else:
         first_bit = os.path.expanduser("~/PyAP_output/")
     mcmc_dir = first_bit+"{}/{}/{}/model_{}/{}/".format(expt_name, scale_bit, adaptive_bit, model_number, trace_name)
-    txt_dir, png_dir = mcmc_dir+"chains/temperature_{}".format(temperature), mcmc_dir+"figs/png/"
+    txt_dir, png_dir = mcmc_dir+"chains/temperature_{}/".format(temperature), mcmc_dir+"figs/png/"
     for d in [txt_dir, png_dir]:
         if not os.path.exists(d):
             os.makedirs(d)
