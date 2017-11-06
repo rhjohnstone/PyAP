@@ -14,7 +14,7 @@ requiredNamed.add_argument("--data-file", type=str, help="csv file from which to
 parser.add_argument("-i", "--iterations", type=int, help="total MCMC iterations", default=500000)
 parser.add_argument("-s", "--seed", type=int, help="Python random seed", default=0)
 parser.add_argument("--cheat", action="store_true", help="for synthetic data: start MCMC from parameter values used to generate data", default=False)
-parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
+parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=True)
 parser.add_argument("--non-adaptive", action="store_true", help="do not adapt proposal covariance matrix", default=False)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
@@ -127,7 +127,7 @@ def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
         theta_cur = np.concatenate((initial_unscaled_gs,[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
     cov_estimate = 0.001*np.diag(np.abs(theta_cur))
     print "\ntheta_cur:", theta_cur, "\n"
-    log_target_cur = log_target(theta_cur, ap_model, expt_trace)
+    log_target_cur = log_target(theta_cur, ap_model, expt_trace, temperature)
 
     total_iterations = args.iterations
     thinning = 5
@@ -157,7 +157,7 @@ def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
             print "loga:", loga
             print "cov_estimate:", cov_estimate
             sys.exit()"""
-        log_target_star = log_target(theta_star, ap_model, expt_trace)
+        log_target_star = log_target(theta_star, ap_model, expt_trace, temperature)
         u = npr.rand()
         if np.log(u) < log_target_star - log_target_cur:
             accepted = 1
@@ -225,7 +225,7 @@ def do_mcmc_non_adaptive(ap_model, expt_trace, temperature):#, theta0):
         theta_cur = np.concatenate((initial_unscaled_gs,[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
     cov_estimate = 0.01*np.diag(np.abs(theta_cur))
     print "\ntheta_cur:", theta_cur, "\n"
-    log_target_cur = log_target(theta_cur, ap_model, expt_trace)
+    log_target_cur = log_target(theta_cur, ap_model, expt_trace, temperature)
 
     total_iterations = args.iterations
     thinning = 5
@@ -255,7 +255,7 @@ def do_mcmc_non_adaptive(ap_model, expt_trace, temperature):#, theta0):
             print "loga:", loga
             print "cov_estimate:", cov_estimate
             sys.exit()"""
-        log_target_star = log_target(theta_star, ap_model, expt_trace)
+        log_target_star = log_target(theta_star, ap_model, expt_trace, temperature)
         u = npr.rand()
         if np.log(u) < log_target_star - log_target_cur:
             accepted = 1
