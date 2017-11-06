@@ -190,7 +190,7 @@ def do_mcmc_adaptive(ap_model, expt_trace, temperature):#, theta0):
     #chain = chain[burn:, :]
     if not args.unscaled:
         chain[:,:-2] = original_gs**chain[:,:-2]  # return params scaled back into G-space
-    return chain, loga, acceptance
+    return chain[burn:,:], loga, acceptance
 
 
 def do_mcmc_non_adaptive(ap_model, expt_trace, temperature):#, theta0):
