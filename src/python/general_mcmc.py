@@ -299,7 +299,7 @@ log_gs = np.log(original_gs)
 num_params = len(original_gs)+1  # include sigma
 
 
-def do_everything():
+def do_everything(temperature):
     global pi_bit, num_pts
     try:
         expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
@@ -328,7 +328,7 @@ def do_everything():
     ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
     ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 
-    temperature = 1
+
     mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled, args.non_adaptive, temperature)
     log_start_time = time.time()
     chain, final_loga, final_acceptance = do_mcmc(ap_model, expt_trace, temperature)
@@ -345,6 +345,8 @@ def do_everything():
     print "\nSaved MCMC output at {}\n".format(mcmc_file)
     return None
 
-do_everything()
+temps = [0.8, 1]
+for x in temps:
+    do_everything(x)
 
 
