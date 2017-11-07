@@ -69,7 +69,7 @@ def log_target_exp_scaled(temp_unscaled_params, ap_model, expt_trace):
 
 def log_target_unscaled(temp_params, ap_model, expt_trace, temperature):
     """Log target distribution with improper semi-infinite prior"""
-    if np.any(temp_params < 0):
+    if np.any(temp_params < 0) or np.any(temp_params > uniform_upper_bounds):
         return -np.inf
     else:
         temp_gs, temp_sigma = temp_params[:-1], temp_params[-1]
@@ -222,6 +222,9 @@ def do_mcmc_non_adaptive(ap_model, expt_trace, temperature):#, theta0):
         theta_cur = np.concatenate((exponential_scaling(initial_unscaled_gs),[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
     else:
         theta_cur = np.concatenate((initial_unscaled_gs,[compute_initial_sigma(initial_unscaled_gs, ap_model, expt_trace)]))
+    
+    theta_cur[theta_cur > uniform_upper_bounds] = uniform_upper_bounds[theta_cur > uniform_upper_bounds]
+    
     cov_estimate = 0.01*np.diag(np.abs(theta_cur))
     print "\ntheta_cur:", theta_cur, "\n"
     log_target_cur = log_target(theta_cur, ap_model, expt_trace, temperature)
@@ -297,6 +300,9 @@ solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, s
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 log_gs = np.log(original_gs)
 num_params = len(original_gs)+1  # include sigma
+
+uniform_upper_bounds = np.concatenate((10*original_gs, [25.]))  # include a sigma upper bound
+# will use 0 as lower bounds for all
 
 
 def do_everything(temperature):
