@@ -72,15 +72,18 @@ def log_target_unscaled(temp_params, ap_model, expt_trace, temperature):
     if np.any(temp_params < 0) or np.any(temp_params > uniform_upper_bounds):
         return -np.inf
     else:
-        temp_gs, temp_sigma = temp_params[:-1], temp_params[-1]
-        try:
-            test_trace = solve_for_voltage_trace(temp_gs, ap_model)
-        except:
-            #print "Failed to solve at iteration", t
-            print "temp_gs:\n", temp_gs
-            print "original_gs:\n", original_gs
-            return -np.inf
-        return temperature * (-pi_bit - num_pts*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2))
+        if temperature==0:
+            return 0
+        else:
+            temp_gs, temp_sigma = temp_params[:-1], temp_params[-1]
+            try:
+                test_trace = solve_for_voltage_trace(temp_gs, ap_model)
+            except:
+                #print "Failed to solve at iteration", t
+                print "temp_gs:\n", temp_gs
+                print "original_gs:\n", original_gs
+                return -np.inf
+            return temperature * (-pi_bit - num_pts*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2))
 
     
 def compute_initial_sigma(temp_unscaled_gs, ap_model, expt_trace):
