@@ -1,5 +1,5 @@
 model_number 6
-num_solves 2
+num_solves 1
 extra_K_conc 5.4
 intra_K_conc 130
 extra_Na_conc 140
