@@ -383,6 +383,11 @@ bool APSimulator::RunToSteadyState()
     return result;
 }
 
+void APSimulator::SetVoltage(double v)
+{
+    mpModel->SetStateVariable("membrane_voltage", v);
+}
+
 /*void APSimulator::ArchiveStateVariables()
 {
     boost::filesystem::path arch_dir;

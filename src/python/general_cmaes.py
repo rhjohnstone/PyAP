@@ -49,6 +49,7 @@ def exponential_scaling(unscaled_params):
 
 def solve_for_voltage_trace(temp_g_params, _ap_model):
     _ap_model.SetToModelInitialConditions()
+    _ap_model.SetVoltage(expt_trace[0])
     try:
         return _ap_model.SolveForVoltageTraceWithParams(temp_g_params)
     except ap_simulator.CPPException, e:
@@ -60,8 +61,11 @@ def solve_for_voltage_trace(temp_g_params, _ap_model):
     
 def obj_exp_scaled(temp_test_params, temp_ap_model):
     scaled_params = exponential_scaling(temp_test_params)
-    temp_test_trace = solve_for_voltage_trace(scaled_params, temp_ap_model)
-    return np.sum((temp_test_trace-expt_trace)**2)
+    if np.any(scaled_params > uniform_upper_bounds):
+        return 1e12
+    else:
+        temp_test_trace = solve_for_voltage_trace(scaled_params, temp_ap_model)
+        return np.sum((temp_test_trace-expt_trace)**2)
     
     
 def obj_unscaled(temp_test_params, temp_ap_model):
@@ -151,6 +155,8 @@ if pyap_options["model_number"] == 1:
     solve_end = 100  # just for HH
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_params = len(original_gs)
+
+uniform_upper_bounds = 10*original_gs  # don't need a sigma here for CMA-ES
 
 how_many_cmaes_runs = args.num_runs
 cmaes_indices = range(how_many_cmaes_runs)

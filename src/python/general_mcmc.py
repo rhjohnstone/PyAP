@@ -46,8 +46,9 @@ def exponential_scaling(unscaled_params):
     return original_gs ** unscaled_params
 
 
-def solve_for_voltage_trace(temp_g_params, ap_model):
+def solve_for_voltage_trace(temp_g_params, ap_model, expt_trace):
     ap_model.SetToModelInitialConditions()
+    ap_model.SetVoltage(expt_trace[0])
     return ap_model.SolveForVoltageTraceWithParams(temp_g_params)
 
 
@@ -58,7 +59,7 @@ def log_target_exp_scaled(temp_unscaled_params, ap_model, expt_trace):
     else:
         temp_gs = exponential_scaling(temp_unscaled_gs)
         try:
-            test_trace = solve_for_voltage_trace(temp_gs, ap_model)
+            test_trace = solve_for_voltage_trace(temp_gs, ap_model, expt_trace)
         except:
             print "Failed to solve at iteration", t
             print "temp_gs:\n", temp_gs
@@ -77,7 +78,7 @@ def log_target_unscaled(temp_params, ap_model, expt_trace, temperature):
         else:
             temp_gs, temp_sigma = temp_params[:-1], temp_params[-1]
             try:
-                test_trace = solve_for_voltage_trace(temp_gs, ap_model)
+                test_trace = solve_for_voltage_trace(temp_gs, ap_model, expt_trace)
             except:
                 #print "Failed to solve at iteration", t
                 print "temp_gs:\n", temp_gs
@@ -88,7 +89,7 @@ def log_target_unscaled(temp_params, ap_model, expt_trace, temperature):
     
 def compute_initial_sigma(temp_unscaled_gs, ap_model, expt_trace):
     temp_gs = exponential_scaling(temp_unscaled_gs)
-    test_trace = solve_for_voltage_trace(temp_gs, ap_model)
+    test_trace = solve_for_voltage_trace(temp_gs, ap_model, expt_trace)
     return np.sqrt(np.sum((test_trace-expt_trace)**2)/len(expt_trace))
     
     
@@ -305,7 +306,7 @@ original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["mod
 log_gs = np.log(original_gs)
 num_params = len(original_gs)+1  # include sigma
 
-uniform_upper_bounds = np.concatenate((10*original_gs, [25.]))  # include a sigma upper bound
+uniform_upper_bounds = np.concatenate((10*original_gs, [2.5]))  # include a sigma upper bound
 # will use 0 as lower bounds for all
 
 

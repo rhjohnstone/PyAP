@@ -48,6 +48,7 @@ public:
     void SetToModelInitialConditions();
     void UseDataClamp(double data_clamp_on, double data_clamp_off);
     void SetExperimentalTraceAndTimesForDataClamp(const std::vector<double>& expt_times, const std::vector<double>& expt_trace);
+    void SetVoltage(double v);
 };
 
 
