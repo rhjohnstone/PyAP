@@ -356,16 +356,19 @@ def do_everything(temperature):
     print "\nSaved MCMC output at {}\n".format(mcmc_file)
     return None
 
-n = 40
-c = 3
-temperatures = (np.arange(n+1.)/n)**c
+#n = 40
+#c = 3
+#temperatures = (np.arange(n+1.)/n)**c
+
+temperatures = [1]
 
 if args.num_cores==1:
     for T in temperatures:
         do_everything(T)
 elif args.num_cores > 1:
-    pool = mp.Pool(args.num_cores)
-    everything = pool.map_async(do_everything, temperatures).get(99999)
-    pool.close()
-    pool.join()
+    sys.exit("Only use one core for now, for T=1")
+    #pool = mp.Pool(args.num_cores)
+    #everything = pool.map_async(do_everything, temperatures).get(99999)
+    #pool.close()
+    #pool.join()
 
