@@ -18,7 +18,8 @@ def solve_for_voltage_trace(temp_g_params):
 
 def log_likelihood(params):
     temp_g_params, temp_sigma = params[:-1], params[-1]
-    print "temp_sigma:", temp_sigma
+    print "temp_g_params:", temp_g_params
+    print original_gs
     temp_trace = solve_for_voltage_trace(temp_g_params)
     return -len(temp_trace)*np.log(temp_sigma) - np.sum((temp_trace-expt_trace)**2)/(2*temp_sigma**2)
 
@@ -72,6 +73,7 @@ elif model==7:
     label = "paci"
     expt_params_normal_sd = 0.1
 
+print label
 
 expt_name = "synthetic_{}".format(label)
 expt_dir = "../workspace/PyAP/src/python/input/{}/".format(expt_name)
