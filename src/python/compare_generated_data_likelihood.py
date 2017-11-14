@@ -19,6 +19,7 @@ def solve_for_voltage_trace(temp_g_params):
 def log_likelihood(params):
     temp_g_params, temp_sigma = params[:-1], params[-1]
     print "temp_g_params:", temp_g_params
+    print "temp_sigma =", temp_sigma
     print original_gs
     temp_trace = solve_for_voltage_trace(temp_g_params)
     return -len(temp_trace)*np.log(temp_sigma) - np.sum((temp_trace-expt_trace)**2)/(2*temp_sigma**2)
