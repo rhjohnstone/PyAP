@@ -126,7 +126,7 @@ ap_model.SetTolerances(1e-10, 1e-12)
 
 i = 0
 params = all_expt_params[i, :]
-expt_trace = solve_for_voltage_trace(params, ap_model) + noise_sigma*npr.randn(len(expt_times))
+expt_trace = solve_for_voltage_trace(params) + noise_sigma*npr.randn(len(expt_times))
 print log_likelihood(params)
 
 """fig = plt.figure(figsize=(5,4))
