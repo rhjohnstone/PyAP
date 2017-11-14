@@ -145,7 +145,8 @@ best_ll_trace = solve_for_voltage_trace(best_params[:-1])
 print log_likelihood(best_params)
 
 true_gs_with_best_sigma = np.concatenate((g_params, [best_params[-1]]))
-print "ll with real_gs and best sigma:", log_likelihood(true_gs_with_best_sigma)
+print "\ntrue_gs_with_best_sigma:", true_gs_with_best_sigma
+print "ll with real_gs and best sigma:", log_likelihood(true_gs_with_best_sigma), "\n"
 
 fig = plt.figure(figsize=(5,4))
 ax = fig.add_subplot(111)
