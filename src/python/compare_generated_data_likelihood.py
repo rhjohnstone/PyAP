@@ -20,7 +20,6 @@ def log_likelihood(params):
     temp_g_params, temp_sigma = params[:-1], params[-1]
     print "temp_g_params:", temp_g_params
     print "temp_sigma =", temp_sigma
-    print original_gs
     temp_trace = solve_for_voltage_trace(temp_g_params)
     return -len(temp_trace)*np.log(temp_sigma) - np.sum((temp_trace-expt_trace)**2)/(2*temp_sigma**2)
 
@@ -135,6 +134,12 @@ expt_trace = solve_for_voltage_trace(g_params) + noise_sigma*npr.randn(len(expt_
 true_params = np.concatenate((g_params, [noise_sigma]))
 print "true_params:", true_params
 print log_likelihood(true_params)
+
+best_params = np.array([  9.93691193e+01,   8.73592563e-05,   2.54699743e-03,   1.51319231e-01,
+   5.32600004e-02,   1.61116185e-03,   1.07445324e-03,   2.46801212e+01,
+   2.11477010e-02,   5.73068132e-09,   8.57302566e-10,   1.74340157e-02,
+   5.96320573e-03,   2.51272811e-01])
+print log_likelihood(best_params)
 
 """fig = plt.figure(figsize=(5,4))
 ax = fig.add_subplot(111)
