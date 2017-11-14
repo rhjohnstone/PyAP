@@ -74,7 +74,8 @@ ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 
 labels = g_parameters+[r"\sigma"]
 
-mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled, args.non_adaptive)
+temperature = 1
+mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled, args.non_adaptive, temperature)
 try:
     chain = np.loadtxt(mcmc_file)
 except:
@@ -186,6 +187,5 @@ plt.setp(hidden_labels, visible=False)
 
 matrix_fig.tight_layout()
 matrix_fig.savefig(png_dir+'scatterplot_matrix.png')
-#matrix_fig.savefig(images_dir+"{}_{}_scatterplot_matrix.pdf".format(drug,channel))
 plt.close()
 
