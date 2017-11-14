@@ -125,7 +125,7 @@ ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 ap_model.SetTolerances(1e-10, 1e-12)
 
 i = 0
-params = all_expt_params[i, :]
+params = np.concatenate((all_expt_params[i, :], [noise_sigma]))
 expt_trace = solve_for_voltage_trace(params) + noise_sigma*npr.randn(len(expt_times))
 print log_likelihood(params)
 
