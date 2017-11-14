@@ -128,11 +128,12 @@ ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 ap_model.SetTolerances(1e-10, 1e-12)
 
 i = 0
-params = all_expt_params[i, :]
-print "params:", params
-expt_trace = solve_for_voltage_trace(params) + noise_sigma*npr.randn(len(expt_times))
-print "original_gs:", original_gs
-print log_likelihood(original_gs)
+g_params = all_expt_params[i, :]
+print "g_params:", g_params
+expt_trace = solve_for_voltage_trace(g_params) + noise_sigma*npr.randn(len(expt_times))
+true_params = np.concatenate((g_params, [noise_sigma]))
+print "true_params:", true_params
+print log_likelihood(true_params)
 
 """fig = plt.figure(figsize=(5,4))
 ax = fig.add_subplot(111)
