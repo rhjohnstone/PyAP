@@ -22,7 +22,7 @@ def solve_for_voltage_trace(temp_g_params, _ap_model):
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
-parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
+parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=True)
 parser.add_argument("--non-adaptive", action="store_true", help="do not adapt proposal covariance matrix", default=False)
 parser.add_argument("-b", "--burn", type=int, help="what fraction of samples to discard", default=4)
 args, unknown = parser.parse_known_args()
