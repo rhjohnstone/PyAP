@@ -131,7 +131,8 @@ i = 0
 params = all_expt_params[i, :]
 print "params:", params
 expt_trace = solve_for_voltage_trace(params) + noise_sigma*npr.randn(len(expt_times))
-print log_likelihood(params)
+print "original_gs:", original_gs
+print log_likelihood(original_gs)
 
 """fig = plt.figure(figsize=(5,4))
 ax = fig.add_subplot(111)
