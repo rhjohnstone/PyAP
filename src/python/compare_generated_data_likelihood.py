@@ -106,6 +106,7 @@ expt_params_mean = original_gs
 
 num_expts = 32
 
+
 all_expt_params = (1. + expt_params_normal_sd*npr.randn(num_expts, num_gs)) * original_gs
 print all_expt_params
 
@@ -131,7 +132,8 @@ i = 0
 g_params = all_expt_params[i, :]
 print "g_params:", g_params
 real_bit = solve_for_voltage_trace(g_params)
-expt_trace = real_bit + noise_sigma*npr.randn(len(expt_times))
+for _ in xrange(10):
+    expt_trace = real_bit + noise_sigma*npr.randn(len(expt_times))
 true_params = np.concatenate((g_params, [noise_sigma]))
 print "true_params:", true_params
 print log_likelihood(true_params)
