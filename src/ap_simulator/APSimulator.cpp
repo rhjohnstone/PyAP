@@ -16,9 +16,9 @@
 
 #include "hodgkin_huxley_squid_axon_model_1952_modifiedCvode.hpp"
 #include "beeler_reuter_model_1977Cvode.hpp"
-#include "luo_rudy_1991Cvode.hpp"
-#include "ten_tusscher_model_2004_epiCvode.hpp"
-#include "ohara_rudy_2011_endoCvode.hpp"
+#include "luo_rudy_1991CvodeDataClamp.hpp"
+#include "ten_tusscher_model_2004_epiCvodeDataClamp.hpp"
+#include "ohara_rudy_2011_endoCvodeDataClamp.hpp"
 #include "davies_isap_2012CvodeDataClamp.hpp"
 #include "paci_hyttinen_aaltosetala_severi_ventricularVersionCvodeDataClamp.hpp"
 #include "decker_2009CvodeDataClamp.hpp"
@@ -81,7 +81,7 @@ void APSimulator::DefineModel(unsigned model_number)
     }
     else if ( model_number == 3u )
     {
-        mpModel.reset(new Cellluo_rudy_1991FromCellMLCvode(p_solver, mpStimulus));
+        mpModel.reset(new Cellluo_rudy_1991FromCellMLCvodeDataClamp(p_solver, mpStimulus));
         mParameterMetanames.push_back("membrane_fast_sodium_current_conductance");                  // 23
         mParameterMetanames.push_back("membrane_delayed_rectifier_potassium_current_conductance");  // 0.282
         mParameterMetanames.push_back("membrane_inward_rectifier_potassium_current_conductance");   // 0.6047
@@ -91,7 +91,7 @@ void APSimulator::DefineModel(unsigned model_number)
     }
     else if ( model_number == 4u )
     {
-        mpModel.reset(new Cellten_tusscher_model_2004_epiFromCellMLCvode(p_solver, mpStimulus));
+        mpModel.reset(new Cellten_tusscher_model_2004_epiFromCellMLCvodeDataClamp(p_solver, mpStimulus));
         mParameterMetanames.push_back("membrane_fast_sodium_current_conductance");                        // 14.838
         mParameterMetanames.push_back("membrane_L_type_calcium_current_conductance");                     // 0.000175
         mParameterMetanames.push_back("membrane_inward_rectifier_potassium_current_conductance");         // 5.405
@@ -107,7 +107,7 @@ void APSimulator::DefineModel(unsigned model_number)
     }
     else if ( model_number == 5u )
     {
-        mpModel.reset(new Cellohara_rudy_2011_endoFromCellMLCvode(p_solver, mpStimulus));
+        mpModel.reset(new Cellohara_rudy_2011_endoFromCellMLCvodeDataClamp(p_solver, mpStimulus));
         mParameterMetanames.push_back("membrane_fast_sodium_current_conductance");                        // 75
         mParameterMetanames.push_back("membrane_L_type_calcium_current_conductance");                     // 0.0001
         mParameterMetanames.push_back("membrane_background_potassium_current_conductance");               // 0.003
