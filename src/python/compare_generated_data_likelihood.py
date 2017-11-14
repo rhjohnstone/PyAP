@@ -130,7 +130,8 @@ ap_model.SetTolerances(1e-10, 1e-12)
 i = 0
 g_params = all_expt_params[i, :]
 print "g_params:", g_params
-expt_trace = solve_for_voltage_trace(g_params) + noise_sigma*npr.randn(len(expt_times))
+real_bit = solve_for_voltage_trace(g_params)
+expt_trace = real_bit + noise_sigma*npr.randn(len(expt_times))
 true_params = np.concatenate((g_params, [noise_sigma]))
 print "true_params:", true_params
 print log_likelihood(true_params)
@@ -139,21 +140,21 @@ best_params = np.array([  9.93691193e+01,   8.73592563e-05,   2.54699743e-03,   
    5.32600004e-02,   1.61116185e-03,   1.07445324e-03,   2.46801212e+01,
    2.11477010e-02,   5.73068132e-09,   8.57302566e-10,   1.74340157e-02,
    5.96320573e-03,   2.51272811e-01])
+best_ll_trace = solve_for_voltage_trace(best_params[:-1])
 print log_likelihood(best_params)
 
-"""fig = plt.figure(figsize=(5,4))
+fig = plt.figure(figsize=(5,4))
 ax = fig.add_subplot(111)
 ax.set_xlabel('Time (ms)')
 ax.set_ylabel('Membrane voltage (mV)')
 ax.set_title(model_name)
 ax.grid()
-for i in xrange(num_expts):
-    expt_trace = solve_for_voltage_trace(all_expt_params[i, :], ap_model) + noise_sigma*npr.randn(len(expt_times))
-    np.savetxt(traces_dir+expt_name+"_trace_{}.csv".format(i), np.vstack((expt_times, expt_trace)).T, delimiter=',')
-    ax.plot(expt_times, expt_trace)
+ax.plot(expt_times, expt_trace, label='expt')
+ax.plot(real_bit, expt_trace, label='real')
+ax.plot(expt_times, best_ll_trace, label='best ll')
 fig.tight_layout()
-fig.savefig(expt_dir+"{}_synthetic_expt_traces.png".format(model_name))
+#fig.savefig(expt_dir+"{}_synthetic_expt_traces.png".format(model_name))
 #fig.savefig(expt_dir+"{}_synthetic_expt_traces.pdf".format(model_name))
-plt.show(block=True)"""
+plt.show(block=True)
 
 
