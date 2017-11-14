@@ -136,7 +136,7 @@ for _ in xrange(10):
     expt_trace = real_bit + noise_sigma*npr.randn(len(expt_times))
 true_params = np.concatenate((g_params, [noise_sigma]))
 print "true_params:", true_params
-print log_likelihood(true_params)
+print "log_likelihood(true_params) =", log_likelihood(true_params)
 
 
 best_params = np.array([  9.93691193e+01,   8.73592563e-05,   2.54699743e-03,   1.51319231e-01,
@@ -144,7 +144,7 @@ best_params = np.array([  9.93691193e+01,   8.73592563e-05,   2.54699743e-03,   
    2.11477010e-02,   5.73068132e-09,   8.57302566e-10,   1.74340157e-02,
    5.96320573e-03,   2.51272811e-01])
 best_ll_trace = solve_for_voltage_trace(best_params[:-1])
-print log_likelihood(best_params)
+print "log_likelihood(best_params) =", log_likelihood(best_params)
 
 true_gs_with_best_sigma = np.concatenate((g_params, [best_params[-1]]))
 print "\ntrue_gs_with_best_sigma:", true_gs_with_best_sigma
