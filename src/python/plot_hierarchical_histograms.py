@@ -80,7 +80,23 @@ chain = np.loadtxt(mcmc_file)
 saved_its, d = chain.shape
 chain = chain[saved_its/2:, :]
 T, d = chain.shape
+
+
 for i in xrange(num_gs):
+    fig = plt.figure(figsize=(8,6))
+    ax = fig.add_subplot(111)
+    ax.grid()
+    ax.set_xlabel(r"$\hat{"+g_labels[i]+"}$")
+    ax.set_ylabel("Normalised frequency")
+    ax.hist(chain[:, i], normed=True, bins=40, color='blue', edgecolor='blue')
+    ax.axvline(original_gs[i], color='red')
+    plt.xticks(rotation=30)
+    fig.tight_layout()
+    fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
+    plt.close()
+    
+    
+"""for i in xrange(num_gs):
     fig = plt.figure(figsize=(8,6))
     ax = fig.add_subplot(111)
     ax.grid()
@@ -94,7 +110,7 @@ for i in xrange(num_gs):
     plt.xticks(rotation=30)
     fig.tight_layout()
     fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
-    plt.close()
+    plt.close()"""
 
 #plt.show(block=True)
 
