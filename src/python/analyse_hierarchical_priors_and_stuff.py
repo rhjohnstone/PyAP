@@ -154,15 +154,16 @@ old_eta_js = np.zeros((num_gs,4))
 old_eta_js[:,0] = starting_mean  # mu
 old_eta_js[:,1] = 1. * args.num_traces  # nu
 old_eta_js[:,2] = 0.5 * args.num_traces  # alpha
-old_eta_js[:,3] = 0.5 * (starting_mean**2 + starting_vars)  # beta
+old_eta_js[:,3] = 0.2*original_gs*(old_eta_js[:,2]+1)  # beta
+#old_eta_js[:,3] = 0.5 * (starting_mean**2 + starting_vars)  # beta
 
 print "old_eta_js:\n", old_eta_js
 
 num_prior_pts = 201
 for i in xrange(num_gs):
-    alpha, beta = old_eta_js[i, [2,2]]
+    alpha, beta = old_eta_js[i, [2,3]]
     print g_parameters[i], "alpha = {}, beta = {}, original = {}".format(alpha, beta, original_gs[i])
-    x = np.linspace(0, 5*original_gs[i], num_prior_pts)
+    x = np.linspace(0, 3*original_gs[i], num_prior_pts)
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_title(g_parameters[i])
