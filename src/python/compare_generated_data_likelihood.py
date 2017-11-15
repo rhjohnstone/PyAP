@@ -132,7 +132,7 @@ i = 0
 g_params = all_expt_params[i, :]
 print "g_params:", g_params
 real_bit = solve_for_voltage_trace(g_params)
-for _ in xrange(10):
+for _ in xrange(1):
     expt_trace = real_bit + noise_sigma*npr.randn(len(expt_times))
 true_params = np.concatenate((g_params, [noise_sigma]))
 print "true_params:", true_params
