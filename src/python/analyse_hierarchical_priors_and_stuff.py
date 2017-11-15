@@ -159,11 +159,12 @@ old_eta_js[:,3] = (0.2*original_gs)**2 * (old_eta_js[:,2]+1)  # beta
 
 print "old_eta_js:\n", old_eta_js
 
-num_prior_pts = 201
+num_prior_pts = 1001
 for i in xrange(num_gs):
     alpha, beta = old_eta_js[i, [2,3]]
     print g_parameters[i], "alpha = {}, beta = {}, original = {}".format(alpha, beta, original_gs[i])
-    x = np.linspace(0, 2*(0.2*original_gs[i])**2, num_prior_pts)
+    mode = (0.2*original_gs[i])**2
+    x = np.linspace(0.9*mode, 1.1*mode, num_prior_pts)
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_title(g_parameters[i])
