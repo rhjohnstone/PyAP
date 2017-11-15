@@ -148,7 +148,7 @@ else:
 mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, args.num_traces, parallel)
 
 # want mode = beta/(alpha+1) = 0.1G^2, say
-want_modes = 0.1*original_gs**2
+want_modes = 0.2*original_gs**2  # 0.2 just for O'Hara
 
 old_eta_js = np.zeros((num_gs,4))
 old_eta_js[:,0] = starting_mean  # mu
@@ -163,12 +163,12 @@ num_prior_pts = 1001
 for i in xrange(num_gs):
     alpha, beta = old_eta_js[i, [2,3]]
     mode = (0.2*original_gs[i])**2
-    print g_parameters[i], "alpha = {}, beta = {}, original = {}, mode = ".format(alpha, beta, original_gs[i], mode)
+    print g_parameters[i], "alpha = {}, beta = {}, original = {}, mode = {}".format(alpha, beta, original_gs[i], mode)
     x = np.linspace(0.9*mode, 1.1*mode, num_prior_pts)
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_title(g_parameters[i])
-    ax.plot(x, invgamma.pdf(x, alpha, beta), lw=2, label="invgamma")
+    ax.plot(x, invgamma.pdf(x, alpha, scale=beta), lw=2, label="invgamma")
     plt.show(block=True)
 sys.exit()
 
