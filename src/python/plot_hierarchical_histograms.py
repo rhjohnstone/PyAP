@@ -86,31 +86,19 @@ for i in xrange(num_gs):
     fig = plt.figure(figsize=(8,6))
     ax = fig.add_subplot(111)
     ax.grid()
-    ax.set_xlabel("top "+g_labels[i])
-    ax.set_ylabel("Normalised frequency")
-    ax.hist(chain[:, i], normed=True, bins=40, color='blue', edgecolor='blue')
-    ax.axvline(original_gs[i], color='red')
-    plt.xticks(rotation=30)
-    fig.tight_layout()
-    #fig.savefig(png_dir+"{}_{}_traces_hierarchical_top_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
-    plt.show()
-    
-    
-"""for i in xrange(num_gs):
-    fig = plt.figure(figsize=(8,6))
-    ax = fig.add_subplot(111)
-    ax.grid()
     ax.set_xlabel(g_labels[i])
     ax.set_ylabel("Normalised frequency")
+    ax.hist(chain[:, i], normed=True, bins=40, color='black', edgecolor='black')
+    ax.axvline(original_gs[i], color='blue')
     for n in xrange(N_e):
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
-        ax.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=colour, alpha=0.8)
+        ax.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=colour, alpha=0.4)
         ax.axvline(expt_params[n, i], color='red')
     plt.xticks(rotation=30)
     fig.tight_layout()
-    fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
-    plt.close()"""
+    #fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
+    plt.show(block=True)
 
 #plt.show(block=True)
 
