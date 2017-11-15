@@ -162,8 +162,8 @@ print "old_eta_js:\n", old_eta_js
 num_prior_pts = 1001
 for i in xrange(num_gs):
     alpha, beta = old_eta_js[i, [2,3]]
-    print g_parameters[i], "alpha = {}, beta = {}, original = {}".format(alpha, beta, original_gs[i])
     mode = (0.2*original_gs[i])**2
+    print g_parameters[i], "alpha = {}, beta = {}, original = {}, mode = ".format(alpha, beta, original_gs[i], mode)
     x = np.linspace(0.9*mode, 1.1*mode, num_prior_pts)
     fig = plt.figure()
     ax = fig.add_subplot(111)
