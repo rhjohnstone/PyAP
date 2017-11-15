@@ -38,7 +38,6 @@ parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
 requiredNamed.add_argument("--num-traces", type=int, help="number of traces to fit to, including the one specified as argument", required=True)
-requiredNamed.add_argument("-i", "--iterations", type=int, help="total MCMC iterations", required=True)
 parser.add_argument("-nc", "--num-cores", type=int, help="number of cores to parallelise solving expt traces", default=1)
 parser.add_argument("--cheat", action="store_true", help="for synthetic data: start MCMC from parameter values used to generate data", default=False)
 #parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
@@ -68,10 +67,6 @@ data_clamp_off = pyap_options["data_clamp_off"]
         
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
-
-#num_processors = multiprocessing.cpu_count()
-#num_processes = min(num_processors-1,args.num_traces) # counts available cores and makes one fewer process
-
 
 split_trace_name = trace_name.split("_")
 first_trace_number = int(split_trace_name[-1])  # need a specific-ish format currently
@@ -165,10 +160,13 @@ print "old_eta_js:\n", old_eta_js
 
 num_prior_pts = 201
 for i in xrange(num_gs):
+    alpha, beta = old_eta_js[i, [2,2]]
+    print g_parameters[i], "alpha = {}, beta = {}".format(alpha, beta)
     x = np.linspace(0, 5*original_gs[i], num_prior_pts)
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.plot(x, invgamma.pdf(x, old_eta_js[i, 2], scale=old_eta_js[i, 3]), lw=2, label="invgamma")
+    ax.set_title(g_parameters[i])
+    ax.plot(x, invgamma.pdf(x, alpha, beta), lw=2, label="invgamma")
     plt.show(block=True)
 sys.exit()
 
