@@ -73,6 +73,6 @@ df.index.rename('Parameter', inplace=True)
 stacked = df.stack().reset_index()
 stacked.rename(columns={'level_1': 'Trace', 0: 'Normalised difference vector component'}, inplace=True)
 
-sns.swarmplot(data=stacked, x='Parameter', y='Normalised difference vector component')
+sns.stripplot(data=stacked, x='Parameter', y='Normalised difference vector component', jitter=True)
 plt.show()
 
