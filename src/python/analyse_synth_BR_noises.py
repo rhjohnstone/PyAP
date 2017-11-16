@@ -11,15 +11,22 @@ model_number = 5
 original_gs, g_parameters, model_name = ps.get_original_params(model_number)
 parameters = g_parameters + ["sigma"]
 true_sigma = 0.25
-true_params = np.concatenate((original_gs, [true_sigma]))
 num_params = len(true_params)
 #expt_name = "synth_BR_different_noises"
 expt_name = "synthetic_ohara"
+expt_dir = "../workspace/PyAP/src/python/input/{}/".format(expt_name)
+traces_dir = "{}traces/".format(expt_dir)
+if not os.path.exists(traces_dir):
+    os.makedirs(traces_dir)
+options_file = "{}PyAP_options.txt".format(expt_dir)
+expt_params_file = "{}expt_params.txt".format(expt_dir)
 unscaled = True
 num_traces = 32
 non_adaptive = False
 temperature = 1
 normalised_differences = []
+
+all_true_gs = np.loadtxt(expt_params_file)
 
 for t in xrange(num_traces):
     print "Trace", t
@@ -32,6 +39,7 @@ for t in xrange(num_traces):
         continue
     best_ll_idx = np.argmax(mcmc[:, -1])
     best_params = mcmc[best_ll_idx, :-1]
+    true_params = np.concatenate((all_true_gs[t, :], [true_sigma]))
     diff_vector = best_params - true_params
     normalied_diff_vector = diff_vector/true_params
     normalised_differences.append(normalied_diff_vector)
