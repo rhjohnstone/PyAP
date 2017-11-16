@@ -32,5 +32,6 @@ for t in xrange(num_traces):
     print "normalied_diff_vector =", normalied_diff_vector, "\n"
     normalised_differences[t, :] = normalied_diff_vector
     
-print normalised_differences
+data = {g_parameters[i] : normalised_differences[:, i] for i in xrange(num_gs)}
+print data
 
