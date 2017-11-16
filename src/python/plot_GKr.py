@@ -96,11 +96,7 @@ def update(n):
     
     single_trace_name = trace_name[:-1]+str(n)
     mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, single_trace_name, unscaled=True, non_adaptive=False, temperature=1)
-    try:
-        single_chain = np.loadtxt(mcmc_file, usecols=[i, -1])
-    except:
-        plt.close()
-        continue
+    single_chain = np.loadtxt(mcmc_file, usecols=[i, -1])
     
     best_ll_idx = np.argmax(single_chain[:,-1])
     best_ll_param = single_chain[best_ll_idx, 0]
