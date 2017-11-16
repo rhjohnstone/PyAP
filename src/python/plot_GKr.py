@@ -79,25 +79,30 @@ expt_params = np.loadtxt(expt_params_file)[:N_e,:]
 i = 4
 
 for n in xrange(N_e):
-    fig = plt.figure()
+    fig = plt.figure(figsize=(4,3))
     ax = fig.add_subplot(111)
     ax.grid()
     ax.set_xlabel(g_labels[i])
-    ax.set_title('Trace {}'.format(N_e))
+    ax.set_title('Trace {}'.format(n))
     idx = (2+n)*num_gs + i
     
     single_trace_name = trace_name[:-1]+str(n)
     mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, single_trace_name, unscaled=True, non_adaptive=False, temperature=1)
     try:
-        single_chain = np.loadtxt(mcmc_file, usecols=[i])
+        single_chain = np.loadtxt(mcmc_file, usecols=[i, -1])
     except:
         plt.close()
         continue
     
-    ax.hist(single_chain[single_chain.shape[0]/2:], normed=True, bins=40, color='blue', edgecolor='blue')
+    best_ll_idx = np.argmax(single_chain[:,-1])
+    best_ll_param = single_chain[best_ll_idx, 0]
+    ax.hist(single_chain[:, 0], normed=True, bins=40, color='blue', edgecolor='blue')
+    ax.axvline(best_ll_param, color='green', label='MPD')
 
-    line = ax.scatter(expt_params[n, i], 0, marker='x', c='red', zorder=10)
+    line = ax.scatter(expt_params[n, i], 0, marker='x', c='red', zorder=10, label='True')
     line.set_clip_on(False)
 
+    ax.legend()
+    fig.tight_layout()
     plt.show(block=True)
 
