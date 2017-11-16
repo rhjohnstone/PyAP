@@ -4,6 +4,7 @@ import numpy as np
 import sys
 import numpy.random as npr
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 import itertools as it
 
 
@@ -80,11 +81,16 @@ i = 4
 
 colours = ['#1b9e77','#d95f02','#7570b3']
 
-for n in xrange(N_e):
-    fig = plt.figure(figsize=(4,3))
-    ax = fig.add_subplot(111)
-    ax.grid()
-    ax.set_xlabel(g_labels[i])
+fig, ax = plt.subplots()
+fig.set_tight_layout(True)
+ax.grid()
+ax.set_xlabel(g_labels[i])
+
+def update(n):
+    label = 'timestep {0}'.format(i)
+    print(label)
+    ax.cla()
+    
     ax.set_title('Trace {}'.format(n))
     idx = (2+n)*num_gs + i
     
@@ -104,6 +110,13 @@ for n in xrange(N_e):
     ax.axvline(expt_params[n, i], color=colours[2], lw=3, label='True')
 
     ax.legend()
-    fig.tight_layout()
-    plt.show(block=True)
+    
+    return ax
+    
+anim = FuncAnimation(fig, update, frames=np.arange(0, 10), interval=200)
+try:
+    anim.save('GKr.gif', dpi=80, writer='imagemagick')
+except:
+    pass
+plt.show(block=True)
 
