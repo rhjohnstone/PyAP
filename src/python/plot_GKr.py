@@ -88,7 +88,11 @@ for n in xrange(N_e):
     
     single_trace_name = trace_name[:-1]+str(n)
     mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, single_trace_name, unscaled=True, non_adaptive=False, temperature=1)
-    single_chain = np.loadtxt(mcmc_file, usecols=[i])
+    try:
+        single_chain = np.loadtxt(mcmc_file, usecols=[i])
+    except:
+        plt.close()
+        continue
     
     ax.hist(single_chain[single_chain.shape[0]/2:], normed=True, bins=40, color='blue', edgecolor='blue')
 
