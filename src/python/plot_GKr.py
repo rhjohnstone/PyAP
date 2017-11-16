@@ -107,9 +107,9 @@ def update(n):
 
     ax.legend()
     
-    return ax
+    #return ax
     
-anim = FuncAnimation(fig, update, frames=np.arange(1, 32), interval=200)
+anim = FuncAnimation(fig, update, frames=np.arange(1, 32), interval=500)
 try:
     anim.save('GKr.gif', dpi=80, writer='imagemagick')
 except:
