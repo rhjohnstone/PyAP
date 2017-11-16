@@ -16,8 +16,6 @@ num_params = len(original_gs)+1
 expt_name = "synthetic_ohara"
 expt_dir = "../workspace/PyAP/src/python/input/{}/".format(expt_name)
 traces_dir = "{}traces/".format(expt_dir)
-if not os.path.exists(traces_dir):
-    os.makedirs(traces_dir)
 options_file = "{}PyAP_options.txt".format(expt_dir)
 expt_params_file = "{}expt_params.txt".format(expt_dir)
 unscaled = True
