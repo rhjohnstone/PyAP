@@ -12,7 +12,11 @@ num_gs = len(original_gs)
 expt_name = "synth_BR_different_noises"
 unscaled = False
 
-for t in xrange(32)
+num_traces = 32
+
+normalised_differences = np.zeros((num_traces, num_gs))
+
+for t in xrange(num_traces):
     print "Trace", t
     trace_name = "synth_BR_different_noises_trace_{}".format(t)
     cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(model_number, expt_name, trace_name, unscaled)
@@ -26,4 +30,7 @@ for t in xrange(32)
 
     normalied_diff_vector = diff_vector/original_gs
     print "normalied_diff_vector =", normalied_diff_vector, "\n"
+    normalised_differences[t, :] = normalied_diff_vector
+    
+print normalised_differences
 
