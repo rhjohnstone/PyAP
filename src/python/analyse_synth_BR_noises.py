@@ -16,5 +16,11 @@ cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(model
 all_fits = np.loadtxt(cmaes_best_fits_file)
 best_fit_idx = np.argmin(all_fits[:, -1])
 best_params = all_fits[best_fit_idx, :-1]
-print best_params
+print "best_params =", best_params
+
+diff_vector = best_params - original_gs
+print "diff_vector =", diff_vector
+
+normalied_diff_vector = diff_vector/original_gs
+print "normalied_diff_vector =", normalied_diff_vector
 
