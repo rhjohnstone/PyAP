@@ -78,6 +78,8 @@ expt_params = np.loadtxt(expt_params_file)[:N_e,:]
 
 i = 4
 
+colours = ['#1b9e77','#d95f02','#7570b3']
+
 for n in xrange(N_e):
     fig = plt.figure(figsize=(4,3))
     ax = fig.add_subplot(111)
@@ -97,10 +99,9 @@ for n in xrange(N_e):
     best_ll_idx = np.argmax(single_chain[:,-1])
     best_ll_param = single_chain[best_ll_idx, 0]
     ax.hist(single_chain[:, 0], normed=True, bins=40, color='blue', edgecolor='blue')
-    ax.axvline(best_ll_param, color='green', label='MPD')
+    ax.axvline(best_ll_param, color=colours[0], lw=2, label='MPD')
 
-    line = ax.scatter(expt_params[n, i], 0, marker='x', c='red', zorder=10, label='True')
-    line.set_clip_on(False)
+    ax.axvline(expt_params[n, i], color=colours[1], lw=2, label='True')
 
     ax.legend()
     fig.tight_layout()
