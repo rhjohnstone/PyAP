@@ -9,25 +9,29 @@ array = np.array
 
 model_number = 5
 original_gs, g_parameters, model_name = ps.get_original_params(model_number)
-num_gs = len(original_gs)
+true_sigma = 0.25
+true_params = np.concatenate((original_gs, [true_sigma]))
+num_params = len(true_params)
 #expt_name = "synth_BR_different_noises"
 expt_name = "synthetic_ohara"
-unscaled = False
+unscaled = True
 num_traces = 32
-normalised_differences = np.zeros((num_traces, num_gs))
+temperature = 1
+normalised_differences = np.zeros((num_traces, num_params))
 
 for t in xrange(num_traces):
     print "Trace", t
     trace_name = "{}_trace_{}".format(expt_name, t)
-    cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(model_number, expt_name, trace_name, unscaled)
+    mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscaled, non_adaptive, temperature)
     try:
-        all_fits = np.loadtxt(cmaes_best_fits_file)
+        mcmc = np.loadtxt(mcmc_file)
     except:
+        print "Can't load trace", t
         continue
-    best_fit_idx = np.argmin(all_fits[:, -1])
-    best_params = all_fits[best_fit_idx, :-1]
-    diff_vector = best_params - original_gs
-    normalied_diff_vector = diff_vector/original_gs
+    best_ll_idx = np.argmax(mcmc[:, -1])
+    best_params = mcmc[best_ll_idx, :-1]
+    diff_vector = best_params - true_params
+    normalied_diff_vector = diff_vector/true_params
     normalised_differences[t, :] = normalied_diff_vector
     
 data = {g_parameters[i] : normalised_differences[:, i] for i in xrange(num_gs)}
