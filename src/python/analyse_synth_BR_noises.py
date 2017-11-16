@@ -9,6 +9,7 @@ array = np.array
 
 model_number = 5
 original_gs, g_parameters, model_name = ps.get_original_params(model_number)
+parameters = g_parameters + ["sigma"]
 true_sigma = 0.25
 true_params = np.concatenate((original_gs, [true_sigma]))
 num_params = len(true_params)
@@ -16,8 +17,9 @@ num_params = len(true_params)
 expt_name = "synthetic_ohara"
 unscaled = True
 num_traces = 32
+non_adaptive = False
 temperature = 1
-normalised_differences = np.zeros((num_traces, num_params))
+normalised_differences = []
 
 for t in xrange(num_traces):
     print "Trace", t
@@ -32,9 +34,12 @@ for t in xrange(num_traces):
     best_params = mcmc[best_ll_idx, :-1]
     diff_vector = best_params - true_params
     normalied_diff_vector = diff_vector/true_params
-    normalised_differences[t, :] = normalied_diff_vector
+    normalised_differences.append(normalied_diff_vector)
+
+num_saved = len(normalised_differences)
+normalised_differences = np.array(normalised_differences)
     
-data = {g_parameters[i] : normalised_differences[:, i] for i in xrange(num_gs)}
+data = {parameters[i] : normalised_differences[:, i] for i in xrange(num_params)}
 
 """data = {'G_{CaL}': array([ 0.08151781, -0.07135147,  0.02393881, -0.01293104, -0.02390832,
        -0.01028615, -0.04942092, -0.02065425, -0.04786993, -0.01294899,
