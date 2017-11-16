@@ -87,7 +87,7 @@ ax.grid()
 ax.set_xlabel(g_labels[i])
 
 def update(n):
-    label = 'timestep {0}'.format(i)
+    label = 'timestep {0}'.format(n)
     print(label)
     ax.cla()
     
@@ -109,7 +109,7 @@ def update(n):
     
     return ax
     
-anim = FuncAnimation(fig, update, frames=np.arange(0, 10), interval=200)
+anim = FuncAnimation(fig, update, frames=np.arange(1, 32), interval=200)
 try:
     anim.save('GKr.gif', dpi=80, writer='imagemagick')
 except:
