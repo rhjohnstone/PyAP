@@ -41,6 +41,7 @@ requiredNamed.add_argument("--num-traces", type=int, help="number of traces to f
 requiredNamed.add_argument("-i", "--iterations", type=int, help="total MCMC iterations", required=True)
 parser.add_argument("-nc", "--num-cores", type=int, help="number of cores to parallelise solving expt traces", default=1)
 parser.add_argument("--cheat", action="store_true", help="for synthetic data: start MCMC from parameter values used to generate data", default=False)
+parser.add_argument("--different", action="store_true", help="use different initial guess for some params", default=False)
 #parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
@@ -126,6 +127,12 @@ for i, t in enumerate(trace_numbers):
 expt_traces = np.array(expt_traces)
 temp_test_traces_cur = np.array(temp_test_traces_cur)
 print best_fits_params
+
+if args.different: # 9,10,11
+    for j in [9,10,11]:
+        best_fits_params[:, j] = 10 * original_gs[j] * npr.rand(args.num_traces)
+print best_fits_params
+sys.exit()
 #print expt_traces
 #print ap_models
 
@@ -169,7 +176,7 @@ num_pts = len(expt_times)
 
 uniform_noise_prior = [0.,25.]
 
-def new_eta(old_eta,samples): # for sampling from conjugate prior-ed N-IG
+def new_eta(old_eta, samples): # for sampling from conjugate prior-ed N-IG
     assert(len(old_eta)==4)
     x_bar = np.mean(samples)
     num_samples = len(samples)
@@ -178,15 +185,15 @@ def new_eta(old_eta,samples): # for sampling from conjugate prior-ed N-IG
     new_nu = nu + num_samples
     new_alpha = alpha + 0.5*num_samples
     new_beta = beta + 0.5*np.sum((samples-x_bar)**2) + 0.5*((num_samples*nu)/(nu+num_samples))*(x_bar-mu)**2
-    return new_mu,new_nu,new_alpha,new_beta
+    return new_mu, new_nu, new_alpha, new_beta
     
 randn = npr.randn
 sqrt = np.sqrt
 def sample_from_N_IG(eta):
     mu, nu, alpha, beta = eta
-    sigma_squared = invgamma.rvs(alpha,scale=beta)
-    sample = mu + sqrt(sigma_squared/nu)*randn()
-    return sample,sigma_squared
+    sigma_squared_sample = invgamma.rvs(alpha,scale=beta)
+    sample = mu + sqrt(sigma_squared_sample/nu)*randn()
+    return sample, sigma_squared_sample
     
 def log_pi_theta_i(theta_i,theta,sigma_squareds,sigma,data_i,test_i):
     sum_1 = np.sum((data_i-test_i)**2)/sigma**2
@@ -309,7 +316,7 @@ def do_mcmc_series():
     print "About to start MCMC\n"
     while (t <= MCMC_iterations):
         for j in range(num_gs):
-            temp_eta = new_eta(old_eta_js[j],theta_is_cur[:,j])
+            temp_eta = new_eta(old_eta_js[j], theta_is_cur[:,j])
             while True:
                 temp_top_theta_cur, temp_top_sigma_squared_cur = sample_from_N_IG(temp_eta)
                 if (temp_top_theta_cur > 0):
