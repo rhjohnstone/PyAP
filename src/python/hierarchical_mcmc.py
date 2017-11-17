@@ -95,10 +95,11 @@ for i, t in enumerate(trace_numbers):
     elif (100 <= first_trace_number <= 999):
         temp_trace_path = "{}_{}.csv".format(trace_path[:-8], t)
     temp_times, temp_trace = np.loadtxt(temp_trace_path,delimiter=',').T
-    if i==0 and not args.different:
-        expt_times = temp_times
-    elif i==0 and args.different:
-        expt_times = temp_times[::2]
+    if i==0:
+        if not args.different:
+            expt_times = temp_times
+        elif args.different:
+            expt_times = temp_times[::2]
     if not args.different:
         expt_traces.append(npcopy(temp_trace))
     elif args.different:
@@ -111,6 +112,9 @@ for i, t in enumerate(trace_numbers):
         best_params = all_best_fits[best_index, :-1]
     else:
         best_params = np.loadtxt('/'.join( split_trace_path[:5] ) + "/expt_params.txt")[t, :]
+        if args.different: # 9,10,11
+            for j in [9,10,11]:
+                best_fits_params[j] = 10 * original_gs[j] * npr.rand()
     best_fits_params[i, :] = npcopy(best_params)
     temp_ap_model = ap_simulator.APSimulator()
     if (data_clamp_on < data_clamp_off):
@@ -132,9 +136,7 @@ for i, t in enumerate(trace_numbers):
 expt_traces = np.array(expt_traces)
 temp_test_traces_cur = np.array(temp_test_traces_cur)
 
-if args.different: # 9,10,11
-    for j in [9,10,11]:
-        best_fits_params[:, j] = 10 * original_gs[j] * npr.rand(args.num_traces)
+
 print "best_fit_params:\n", best_fits_params
 
 starting_points = npcopy(best_fits_params)
