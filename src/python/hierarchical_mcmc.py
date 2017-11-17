@@ -166,6 +166,8 @@ else:
 
 mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, args.num_traces, parallel)
 
+initial_it_file = log_file[:-4]+"_initial_iteration.txt"
+
 # want mode = beta/(alpha+1) = 0.1G^2, say
 want_modes = 0.1*original_gs**2
 
@@ -290,7 +292,7 @@ def do_mcmc_series():
     MCMC = np.zeros((num_saved_its, (2+args.num_traces)*num_gs+1))
     MCMC[0, :] = np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatten(),[noise_sigma_cur]))
     print "\n", MCMC, "\n"
-
+    np.savetxt(initial_it_file, MCMC[0, :])
 
     covariances = []
     for i in range(args.num_traces):
@@ -415,6 +417,7 @@ def do_mcmc_parallel():
     MCMC = np.zeros((num_saved_its, (2+args.num_traces)*num_gs+1))
     MCMC[0, :] = np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatten(),[noise_sigma_cur]))
     print "\n", MCMC, "\n"
+    np.savetxt(initial_it_file, MCMC[0, :])
 
     covariances = []
     for i in range(args.num_traces):
