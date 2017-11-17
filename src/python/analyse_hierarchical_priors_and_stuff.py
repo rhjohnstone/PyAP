@@ -171,7 +171,7 @@ for i in xrange(num_gs):
     ax.plot(x, invgamma.pdf(x, alpha, scale=beta), lw=2, label="invgamma")
     #plt.show(block=True)
     plt.close()
-sys.exit()
+#sys.exit()
 
 num_pts = len(expt_times)
 
@@ -179,7 +179,7 @@ num_pts = len(expt_times)
 
 uniform_noise_prior = [0.,25.]
 
-def new_eta(old_eta,samples): # for sampling from conjugate prior-ed N-IG
+def new_eta(old_eta, samples): # for sampling from conjugate prior-ed N-IG
     assert(len(old_eta)==4)
     x_bar = np.mean(samples)
     num_samples = len(samples)
@@ -250,8 +250,8 @@ print "noise_sigma_cur:\n", noise_sigma_cur
 
 print "\n"
 for i in xrange(num_gs):
-    updated_eta = new_eta(old_eta[i,:], samples[:, i])
-    print "old eta:", old_eta
+    updated_eta = new_eta(old_eta_js[i,:], samples[:, i])
+    print "old eta:", old_eta_js
     print "new eta:", updated_eta, "\n"
 
 
