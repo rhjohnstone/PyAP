@@ -84,13 +84,14 @@ T, d = chain.shape
 
 for i in xrange(num_gs):
     fig = plt.figure(figsize=(8,6))
-    ax = fig.add_subplot(111)
-    ax2 = ax.twinx()
+    ax2 = fig.add_subplot(111)
+    ax = ax2.twinx()
     ax.grid()
     ax.set_xlabel(g_labels[i])
     ax.set_ylabel("Normalised frequency")
-    ax2.hist(chain[:, i], normed=True, bins=40, color='black', edgecolor='black')
-    ax2.axvline(original_gs[i], color='blue')
+    ax2.hist(chain[:, i], normed=True, bins=40, color='black', edgecolor='black', label='top')
+    ax2.axvline(original_gs[i], color='green', lw=2, label='true top')
+    ax2.legend()
     for n in xrange(N_e):
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
