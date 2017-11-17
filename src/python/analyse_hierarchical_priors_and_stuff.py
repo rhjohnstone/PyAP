@@ -254,5 +254,13 @@ for i in xrange(num_gs):
     print g_parameters[i]
     print "old eta:", old_eta_js[i,:]
     print "new eta:", updated_eta, "\n"
-
+    alpha, beta = old_eta_js[i, [2,3]]
+    mode = (0.2*original_gs[i])**2
+    print g_parameters[i], "alpha = {}, beta = {}, original = {}, mode = {}".format(alpha, beta, original_gs[i], mode)
+    x = np.linspace(0.9*mode, 1.1*mode, num_prior_pts)
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_title(g_parameters[i])
+    ax.plot(x, invgamma.pdf(x, updated_eta[2], scale=updated_eta[3]), lw=2, label="invgamma")
+    plt.show(block=True)
 
