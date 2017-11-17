@@ -258,11 +258,9 @@ for i in xrange(num_gs):
     mode = (0.2*original_gs[i])**2
     print g_parameters[i], "alpha = {}, beta = {}, original = {}, mode = {}".format(alpha, beta, original_gs[i], mode)
     x = np.linspace(0., 2*mode, num_prior_pts)
-    fig = plt.figure()
-    ax1 = fig.add_subplot(121)
+    fig, (ax1, ax2) = plt.subplots(1, 2, sharex=True, sharey=True)
     ax1.grid()
     ax1.plot(x, invgamma.pdf(x, alpha, scale=beta), lw=2, label="old eta")
-    ax2 = fig.add_subplot(122, sharex=ax1, sharey=ax1)
     ax2.grid()
     ax2.set_title(g_parameters[i])
     ax2.plot(x, invgamma.pdf(x, updated_eta[2], scale=updated_eta[3]), lw=2, label="new eta")
