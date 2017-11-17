@@ -250,8 +250,9 @@ print "noise_sigma_cur:\n", noise_sigma_cur
 
 print "\n"
 for i in xrange(num_gs):
-    updated_eta = new_eta(old_eta_js[i,:], samples[:, i])
-    print "old eta:", old_eta_js
+    updated_eta = new_eta(old_eta_js[i,:], theta_is_cur[:, i])
+    print g_parameters[i]
+    print "old eta:", old_eta_js[i,:]
     print "new eta:", updated_eta, "\n"
 
 
