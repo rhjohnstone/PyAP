@@ -169,7 +169,8 @@ for i in xrange(num_gs):
     ax = fig.add_subplot(111)
     ax.set_title(g_parameters[i])
     ax.plot(x, invgamma.pdf(x, alpha, scale=beta), lw=2, label="invgamma")
-    plt.show(block=True)
+    #plt.show(block=True)
+    plt.close()
 sys.exit()
 
 num_pts = len(expt_times)
@@ -247,6 +248,10 @@ noise_sigma_cur = compute_initial_sigma(expt_traces,temp_test_traces_cur,args.nu
 
 print "noise_sigma_cur:\n", noise_sigma_cur
 
-
+print "\n"
+for i in xrange(num_gs):
+    updated_eta = new_eta(old_eta[i,:], samples[:, i])
+    print "old eta:", old_eta
+    print "new eta:", updated_eta, "\n"
 
 
