@@ -98,7 +98,7 @@ for i, t in enumerate(trace_numbers):
     if i==0 and not args.different:
         expt_times = temp_times
     elif i==0 and args.different:
-        expt_times = expt_times[::2]
+        expt_times = temp_times[::2]
     if not args.different:
         expt_traces.append(npcopy(temp_trace))
     elif args.different:
