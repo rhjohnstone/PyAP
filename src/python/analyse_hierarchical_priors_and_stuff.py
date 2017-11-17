@@ -159,7 +159,7 @@ old_eta_js[:,3] = (0.2*original_gs)**2 * (old_eta_js[:,2]+1)  # beta
 
 print "old_eta_js:\n", old_eta_js
 
-num_prior_pts = 1001
+num_prior_pts = 10001
 for i in xrange(num_gs):
     alpha, beta = old_eta_js[i, [2,3]]
     mode = (0.2*original_gs[i])**2
@@ -257,7 +257,7 @@ for i in xrange(num_gs):
     alpha, beta = old_eta_js[i, [2,3]]
     mode = (0.2*original_gs[i])**2
     print g_parameters[i], "alpha = {}, beta = {}, original = {}, mode = {}".format(alpha, beta, original_gs[i], mode)
-    x = np.linspace(0.9*mode, 1.1*mode, num_prior_pts)
+    x = np.linspace(0., 2*mode, num_prior_pts)
     fig = plt.figure()
     ax1 = fig.add_subplot(121)
     ax1.grid()
@@ -268,5 +268,6 @@ for i in xrange(num_gs):
     ax2.plot(x, invgamma.pdf(x, updated_eta[2], scale=updated_eta[3]), lw=2, label="new eta")
     ax1.legend()
     ax2.legend()
+    fig.tight_layout()
     plt.show(block=True)
 
