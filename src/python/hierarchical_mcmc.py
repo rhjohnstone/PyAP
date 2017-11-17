@@ -131,18 +131,11 @@ for i, t in enumerate(trace_numbers):
     temp_test_traces_cur.append(npcopy(solve_for_voltage_trace(best_params, i)))
 expt_traces = np.array(expt_traces)
 temp_test_traces_cur = np.array(temp_test_traces_cur)
-print best_fits_params
 
 if args.different: # 9,10,11
     for j in [9,10,11]:
         best_fits_params[:, j] = 10 * original_gs[j] * npr.rand(args.num_traces)
-print best_fits_params
-sys.exit()
-#print expt_traces
-#print ap_models
-
-#sys.exit()
-
+print "best_fit_params:\n", best_fits_params
 
 starting_points = npcopy(best_fits_params)
 
