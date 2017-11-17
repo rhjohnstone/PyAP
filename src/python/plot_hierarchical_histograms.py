@@ -95,7 +95,7 @@ for i in xrange(num_gs):
     for n in xrange(N_e):
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
-        ax.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=colour, alpha=0.4)
+        ax.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=colour, alpha=2./N_e)
         ax.axvline(expt_params[n, i], color='red')
     plt.xticks(rotation=30)
     fig.tight_layout()
