@@ -87,9 +87,9 @@ best_fits_params = np.zeros((args.num_traces, num_gs))
 expt_traces = []
 ap_models = []
 temp_test_traces_cur = []
-fig = plt.figure()
-ax = fig.add_subplot(111)
-ax.grid()
+#fig = plt.figure()
+#ax = fig.add_subplot(111)
+#ax.grid()
 for i, t in enumerate(trace_numbers):
     if (0 <= first_trace_number <= 9):
         temp_trace_path = "{}_{}.csv".format(trace_path[:-6], t)
@@ -140,8 +140,10 @@ for i, t in enumerate(trace_numbers):
 expt_traces = np.array(expt_traces)
 temp_test_traces_cur = np.array(temp_test_traces_cur)
 
-fig.tight_layout()
-plt.show()
+print "len(expt_times) =", len(expt_times)
+print [len(et) for et in expt_traces]
+#fig.tight_layout()
+#plt.show()
 print "best_fit_params:\n", best_fits_params
 
 starting_points = npcopy(best_fits_params)
