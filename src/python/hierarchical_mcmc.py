@@ -95,9 +95,14 @@ for i, t in enumerate(trace_numbers):
     elif (100 <= first_trace_number <= 999):
         temp_trace_path = "{}_{}.csv".format(trace_path[:-8], t)
     temp_times, temp_trace = np.loadtxt(temp_trace_path,delimiter=',').T
-    if i==0:
+    if i==0 and not args.different:
         expt_times = temp_times
-    expt_traces.append(npcopy(temp_trace))
+    elif i==0 and args.different:
+        expt_times = expt_times[::2]
+    if not args.different:
+        expt_traces.append(npcopy(temp_trace))
+    elif args.different:
+        expt_traces.append(npcopy(temp_trace[::2]))
     if not args.cheat:
         temp_trace_name = trace_name[:-3]+str(t)
         cmaes_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, temp_trace_name, unscaled=False)
