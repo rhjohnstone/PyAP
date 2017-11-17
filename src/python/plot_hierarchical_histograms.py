@@ -104,7 +104,8 @@ for i in xrange(num_gs):
     fig = plt.figure(figsize=(8,6))
     ax = fig.add_subplot(111)
     ax.grid()
-    ax.set_xlabel(r"$\sigma_{"+g_labels[i]+"}^2$")
+    label = r"\sigma_{"+g_labels[i]+"}^2"
+    ax.set_xlabel("${}$".format(label))
     ax.set_ylabel("Normalised frequency")
     ax.hist(chain[:, num_gs+i], normed=True, bins=40, color='blue', edgecolor='blue')
     ax.axvline((0.2*original_gs[i])**2, color='blue')  # just for synthetic OH atm
