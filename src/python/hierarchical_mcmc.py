@@ -87,6 +87,9 @@ best_fits_params = np.zeros((args.num_traces, num_gs))
 expt_traces = []
 ap_models = []
 temp_test_traces_cur = []
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.grid()
 for i, t in enumerate(trace_numbers):
     if (0 <= first_trace_number <= 9):
         temp_trace_path = "{}_{}.csv".format(trace_path[:-6], t)
@@ -104,6 +107,7 @@ for i, t in enumerate(trace_numbers):
         expt_traces.append(npcopy(temp_trace))
     elif args.different:
         expt_traces.append(npcopy(temp_trace[::2]))
+    ax.plot(expt_times, expt_traces[i])
     if not args.cheat:
         temp_trace_name = trace_name[:-3]+str(t)
         cmaes_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, temp_trace_name, unscaled=False)
@@ -136,7 +140,8 @@ for i, t in enumerate(trace_numbers):
 expt_traces = np.array(expt_traces)
 temp_test_traces_cur = np.array(temp_test_traces_cur)
 
-
+fig.tight_layout()
+plt.show()
 print "best_fit_params:\n", best_fits_params
 
 starting_points = npcopy(best_fits_params)
