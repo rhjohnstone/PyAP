@@ -107,7 +107,7 @@ for i, t in enumerate(trace_numbers):
         expt_traces.append(npcopy(temp_trace))
     elif args.different:
         expt_traces.append(npcopy(temp_trace[::2]))
-    ax.plot(expt_times, expt_traces[i])
+    #ax.plot(expt_times, expt_traces[i])
     if not args.cheat:
         temp_trace_name = trace_name[:-3]+str(t)
         cmaes_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, temp_trace_name, unscaled=False)
