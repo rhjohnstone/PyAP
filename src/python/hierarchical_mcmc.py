@@ -114,7 +114,7 @@ for i, t in enumerate(trace_numbers):
         best_params = np.loadtxt('/'.join( split_trace_path[:5] ) + "/expt_params.txt")[t, :]
         if args.different: # 9,10,11
             for j in [9,10,11]:
-                best_fits_params[j] = 10 * original_gs[j] * npr.rand()
+                best_params[j] = 10 * original_gs[j] * npr.rand()
     best_fits_params[i, :] = npcopy(best_params)
     temp_ap_model = ap_simulator.APSimulator()
     if (data_clamp_on < data_clamp_off):
