@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
 requiredNamed.add_argument("-n", "--num-traces", type=int, help="which hMCMC to use", required=True)
-requiredNamed.add_argument("-s", "--series", action="store_true", help="plot serially-run hMCMC", default=False)
+parser.add_argument("-s", "--series", action="store_true", help="plot serially-run hMCMC", default=False)
 
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
@@ -99,10 +99,10 @@ for i in xrange(num_gs):
         mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, single_trace_name, unscaled=True, non_adaptive=False, temperature=1)
         single_chain = np.loadtxt(mcmc_file, usecols=[i])
         
-        ax2.hist(single_chain[single_chain.shape[0]/2:], normed=True, bins=40, color=colour, edgecolor=colour, alpha=0.8)
+        ax2.hist(single_chain[single_chain.shape[0]/2:], normed=True, bins=40, color=colour, edgecolor=colour, alpha=4./N_e)
     
 
-        ax.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=colour, alpha=0.8)
+        ax.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=colour, alpha=4./N_e)
         
     
         line = ax.scatter(expt_params[n, i], 0, marker='x', c='red', zorder=10)
