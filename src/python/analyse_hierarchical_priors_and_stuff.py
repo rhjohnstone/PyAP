@@ -160,19 +160,8 @@ old_eta_js[:,3] = 25 * original_gs**2 * (old_eta_js[:,2]+1.)  # beta
 
 print "old_eta_js:\n", old_eta_js
 
-num_prior_pts = 10001
-for i in xrange(num_gs):
-    alpha, beta = old_eta_js[i, [2,3]]
-    mode = (0.2*original_gs[i])**2
-    print g_parameters[i], "alpha = {}, beta = {}, original = {}, mode = {}".format(alpha, beta, original_gs[i], mode)
-    x = np.linspace(0, 50*original_gs[i], num_prior_pts)
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.set_title(g_parameters[i])
-    ax.plot(x, invgamma.pdf(x, alpha, scale=beta), lw=2, label="invgamma")
-    #plt.show(block=True)
-    plt.close()
-#sys.exit()
+
+
 
 num_pts = len(expt_times)
 
@@ -260,6 +249,7 @@ else:
     initial_theta_is = theta_is_cur
 
 print "\n"
+num_prior_pts = 10001
 for i in xrange(num_gs):
     updated_eta = new_eta(old_eta_js[i,:], initial_theta_is[:, i])
     print g_parameters[i]
