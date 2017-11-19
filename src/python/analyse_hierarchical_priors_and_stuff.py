@@ -7,6 +7,7 @@ import numpy.random as npr
 import time
 import matplotlib.pyplot as plt
 from scipy.stats import invgamma
+from scipy.stats import norm
 
 start = time.time()
 
@@ -255,6 +256,7 @@ if args.different:
     initial_theta_is = initial_it[2*num_gs:-1].reshape((args.num_traces, num_gs))
     initial_sigma = initial_it[-1]
 else:
+    initial_top_gs = top_theta_cur
     initial_theta_is = theta_is_cur
 
 print "\n"
@@ -267,7 +269,7 @@ for i in xrange(num_gs):
     mode = (0.2*original_gs[i])**2
     print "alpha = {}, beta = {}, original = {}, mode = {}\n".format(alpha, beta, original_gs[i], mode)
     x = np.linspace(0., 2*mode, num_prior_pts)
-    if i in [9,10,11]:
+    if args.different and i in [9,10,11]:
         x = np.linspace(0., 100*mode, num_prior_pts)
     fig, (ax1, ax2) = plt.subplots(1, 2, sharex=True, sharey=True)
     ax1.grid()
@@ -279,5 +281,16 @@ for i in xrange(num_gs):
     ax1.legend()
     ax2.legend()
     fig.tight_layout()
+    fig2, (ax3, ax4) = plt.subplots(1, 2, sharex=True, sharey=True)
+    ax3.grid()
+    ax4.grid()
+    old_mode = beta/(alpha+1.)
+    new_mode = updated_eta[3] / (updated_eta[2]+1.)
+    x = np.linspace(0, 2*original_gs[i], num_prior_pts)
+    ax3.plot(x, norm.pdf(x, loc=old_eta_js[i,0], scale=np.sqrt(old_mode/old_eta_js[i,1])))
+    ax3.plot(x, norm.pdf(x, loc=updated_eta[0], scale=np.sqrt(new_mode/updated_eta[1])))
+    fig2.tight_layout()
+    
+    
     plt.show(block=True)
 
