@@ -259,8 +259,6 @@ for i in xrange(num_gs):
     mode = (0.2*original_gs[i])**2
     print "alpha = {}, beta = {}, original = {}, mode = {}\n".format(alpha, beta, original_gs[i], mode)
     x = np.linspace(0., 50*original_gs[i]**2, num_prior_pts)
-    if args.different and i in [9,10,11]:
-        x = np.linspace(0., 100*mode, num_prior_pts)
     fig, (ax1, ax2) = plt.subplots(1,2)
     ax1.grid()
     ax2.grid()
