@@ -5,7 +5,6 @@ import numpy as np
 import sys
 import numpy.random as npr
 import time
-import multiprocessing as mp
 import matplotlib.pyplot as plt
 from scipy.stats import invgamma
 
@@ -252,7 +251,7 @@ print "noise_sigma_cur:\n", noise_sigma_cur
 initial_it = np.loadtxt(initial_it_file)
 initial_top_gs = initial_it[:num_gs]
 initial_top_sigma_sqs = initial_it[num_gs:2*num_gs]
-initial_theta_is = initial_it[2*num_gs:-1].reshape((N_e, num_gs))
+initial_theta_is = initial_it[2*num_gs:-1].reshape((args.num_traces, num_gs))
 initial_sigma = initial_it[-1]
 
 print "\n"
