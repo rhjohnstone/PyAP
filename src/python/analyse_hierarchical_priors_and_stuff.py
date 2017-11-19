@@ -155,7 +155,7 @@ old_eta_js = np.zeros((num_gs,4))
 old_eta_js[:,0] = starting_mean  # mu
 old_eta_js[:,1] = 1. * args.num_traces  # nu
 old_eta_js[:,2] = 0.5 * args.num_traces  # alpha
-old_eta_js[:,3] = (0.2*original_gs)**2 * (old_eta_js[:,2]+1)  # beta
+old_eta_js[:,3] = 25 * original_gs**2 * (old_eta_js[:,2]+1.)  # beta
 #old_eta_js[:,3] = 0.5 * (starting_mean**2 + starting_vars)  # beta
 
 print "old_eta_js:\n", old_eta_js
@@ -283,7 +283,7 @@ for i in xrange(num_gs):
     x = np.linspace(0, 2*original_gs[i], num_prior_pts)
     ax2.plot(x, norm.pdf(x, loc=old_eta_js[i,0], scale=np.sqrt(old_mode/old_eta_js[i,1])), lw=2, label="old")
     ax2.plot(x, norm.pdf(x, loc=updated_eta[0], scale=np.sqrt(new_mode/updated_eta[1])), lw=2, label="new")
-    ax2.set_xlabel('top '+g_labels[i])
+    ax2.set_xlabel('top '+g_parameters[i])
     ax2.legend()
     fig.tight_layout()
     
