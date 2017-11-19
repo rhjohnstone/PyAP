@@ -39,7 +39,7 @@ requiredNamed.add_argument("--data-file", type=str, help="first csv file from wh
 requiredNamed.add_argument("--num-traces", type=int, help="number of traces to fit to, including the one specified as argument", required=True)
 parser.add_argument("-nc", "--num-cores", type=int, help="number of cores to parallelise solving expt traces", default=1)
 parser.add_argument("--cheat", action="store_true", help="for synthetic data: start MCMC from parameter values used to generate data", default=False)
-#parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
+parser.add_argument("--different", action="store_true", help="different ICs for small params", default=False)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
     parser.print_help()
@@ -248,21 +248,24 @@ noise_sigma_cur = compute_initial_sigma(expt_traces,temp_test_traces_cur,args.nu
 
 print "noise_sigma_cur:\n", noise_sigma_cur
 
-initial_it = np.loadtxt(initial_it_file)
-initial_top_gs = initial_it[:num_gs]
-initial_top_sigma_sqs = initial_it[num_gs:2*num_gs]
-initial_theta_is = initial_it[2*num_gs:-1].reshape((args.num_traces, num_gs))
-initial_sigma = initial_it[-1]
+if args.different:
+    initial_it = np.loadtxt(initial_it_file)
+    initial_top_gs = initial_it[:num_gs]
+    initial_top_sigma_sqs = initial_it[num_gs:2*num_gs]
+    initial_theta_is = initial_it[2*num_gs:-1].reshape((args.num_traces, num_gs))
+    initial_sigma = initial_it[-1]
+else:
+    initial_theta_is = theta_is_cur
 
 print "\n"
 for i in xrange(num_gs):
     updated_eta = new_eta(old_eta_js[i,:], initial_theta_is[:, i])
     print g_parameters[i]
     print "old eta:", old_eta_js[i,:]
-    print "new eta:", updated_eta, "\n"
+    print "new eta:", updated_eta
     alpha, beta = old_eta_js[i, [2,3]]
     mode = (0.2*original_gs[i])**2
-    print g_parameters[i], "alpha = {}, beta = {}, original = {}, mode = {}".format(alpha, beta, original_gs[i], mode)
+    print "alpha = {}, beta = {}, original = {}, mode = {}\n".format(alpha, beta, original_gs[i], mode)
     x = np.linspace(0., 2*mode, num_prior_pts)
     if i in [9,10,11]:
         x = np.linspace(0., 100*mode, num_prior_pts)
@@ -270,6 +273,7 @@ for i in xrange(num_gs):
     ax1.grid()
     ax1.plot(x, invgamma.pdf(x, alpha, scale=beta), lw=2, label="old eta")
     ax2.grid()
+    ax1.set_title(g_parameters[i])
     ax2.set_title(g_parameters[i])
     ax2.plot(x, invgamma.pdf(x, updated_eta[2], scale=updated_eta[3]), lw=2, label="first new eta")
     ax1.legend()
