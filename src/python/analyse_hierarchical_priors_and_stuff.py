@@ -146,6 +146,7 @@ else:
     parallel = False
 
 mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, args.num_traces, parallel)
+initial_it_file = log_file[:-4]+"_initial_iteration.txt"
 
 # want mode = beta/(alpha+1) = 0.1G^2, say
 want_modes = 0.2*original_gs**2  # 0.2 just for O'Hara
@@ -248,9 +249,15 @@ noise_sigma_cur = compute_initial_sigma(expt_traces,temp_test_traces_cur,args.nu
 
 print "noise_sigma_cur:\n", noise_sigma_cur
 
+initial_it = np.loadtxt(initial_it_file)
+initial_top_gs = initial_it[:num_gs]
+initial_top_sigma_sqs = initial_it[num_gs:2*num_gs]
+initial_theta_is = initial_it[2*num_gs:-1].reshape((N_e, num_gs))
+initial_sigma = initial_it[-1]
+
 print "\n"
 for i in xrange(num_gs):
-    updated_eta = new_eta(old_eta_js[i,:], theta_is_cur[:, i])
+    updated_eta = new_eta(old_eta_js[i,:], initial_theta_is[:, i])
     print g_parameters[i]
     print "old eta:", old_eta_js[i,:]
     print "new eta:", updated_eta, "\n"
@@ -263,7 +270,7 @@ for i in xrange(num_gs):
     ax1.plot(x, invgamma.pdf(x, alpha, scale=beta), lw=2, label="old eta")
     ax2.grid()
     ax2.set_title(g_parameters[i])
-    ax2.plot(x, invgamma.pdf(x, updated_eta[2], scale=updated_eta[3]), lw=2, label="new eta")
+    ax2.plot(x, invgamma.pdf(x, updated_eta[2], scale=updated_eta[3]), lw=2, label="first new eta")
     ax1.legend()
     ax2.legend()
     fig.tight_layout()
