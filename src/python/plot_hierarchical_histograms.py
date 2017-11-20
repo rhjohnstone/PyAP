@@ -28,6 +28,7 @@ parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
 requiredNamed.add_argument("-n", "--num-traces", type=int, help="which hMCMC to use", required=True)
+parser.add_argument("--different", action="store_true", help="use different initial guess for some params", default=False)
 
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
