@@ -135,19 +135,21 @@ for i in xrange(num_gs):
     axpp = ax2.twinx()
     axpp.grid()
     xlim = ax2.get_xlim()
-    x = np.linspace(xlim[0], xlim[1], num_pts)
+    x = np.linspace(0.8*xlim[0], 1.2*xlim[1], num_pts)
     post_y = np.zeros(num_pts)
     prior_y = np.zeros(num_pts)
     for t in xrange(T):
         post_y += norm.pdf(x, loc=chain[t,i], scale=np.sqrt(chain[t,num_gs+i]))/(1.-norm.cdf(0, loc=chain[t,i], scale=np.sqrt(chain[t,num_gs+i])))  # scale for truncating at 0
         mean_sample, s2_sample = sample_from_N_IG(old_eta_js[i, :])
-        prior_y += norm.pdf(x, loc=mean_sample, scale=np.sqrt(s2_sample))/(1.-norm.pdf(0, loc=mean_sample, scale=np.sqrt(s2_sample)))  # scale for truncating at 0
+        prior_y += norm.pdf(x, loc=mean_sample, scale=np.sqrt(s2_sample))/(1.-norm.cdf(0, loc=mean_sample, scale=np.sqrt(s2_sample)))  # scale for truncating at 0
     post_y /= T
     prior_y /= T
     axpp.plot(x, post_y, lw=2, color=cs[0], label='Post. pred.')
     axpp.plot(x, prior_y, lw=2, color=cs[1], label='Prior pred.')
+    ylim = axpp.get_ylim()
+    axpp.set_ylim(0, ylim[1])
     axpp.set_ylabel('Probability density')
-    
+    axpp.legend()
     axpp.set_yticks(np.linspace(axpp.get_yticks()[0],axpp.get_yticks()[-1],len(ax2.get_yticks())))
 
 
