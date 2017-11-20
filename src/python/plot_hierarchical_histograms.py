@@ -6,10 +6,23 @@ import numpy.random as npr
 import matplotlib.pyplot as plt
 import itertools as it
 from scipy.stats import norm
+from scipy.stats import invgamma
 
 
 #python_seed = 1
 #npr.seed(python_seed)
+
+randn = npr.randn
+sqrt = np.sqrt
+def sample_from_N_IG(eta):
+    mu, nu, alpha, beta = eta
+    sigma_squared_sample = invgamma.rvs(alpha,scale=beta)
+    sample = mu + sqrt(sigma_squared_sample/nu)*randn()
+    return sample, sigma_squared_sample
+
+
+
+
 
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
@@ -82,6 +95,28 @@ saved_its, d = chain.shape
 chain = chain[saved_its/2:, :]
 T, d = chain.shape
 
+best_fits_params = np.zeros((args.num_traces, num_gs))
+for i in xrange(args.num_traces):
+    best_params = np.loadtxt('/'.join( split_trace_path[:5] ) + "/expt_params.txt")[i, :]
+    if args.different: # 9,10,11
+        for j in [9,10,11]:
+            best_params[j] = 10 * original_gs[j] * npr.rand()
+    best_fits_params[i, :] = npcopy(best_params)
+starting_points = npcopy(best_fits_params)
+starting_mean = np.mean(starting_points,axis=0)
+starting_vars = np.var(starting_points,axis=0)
+
+old_eta_js = np.zeros((num_gs,4))
+old_eta_js[:,0] = starting_mean  # mu
+old_eta_js[:,1] = 1. * args.num_traces  # nu
+old_eta_js[:,2] = 0.5 * args.num_traces  # alpha
+#old_eta_js[:,3] = 25 * original_gs**2 * (old_eta_js[:,2]+1.)  # beta
+old_eta_js[:,3] = 0.5 * (starting_mean**2 + starting_vars)  # beta
+
+print old_eta_js
+sys.exit()
+
+cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 201
 for i in xrange(num_gs):
     fig = plt.figure(figsize=(8,6))
@@ -101,12 +136,17 @@ for i in xrange(num_gs):
     axpp.grid()
     xlim = ax2.get_xlim()
     x = np.linspace(xlim[0], xlim[1], num_pts)
-    y = np.zeros(num_pts)
+    post_y = np.zeros(num_pts)
+    prior_y = np.zeros(num_pts)
     for t in xrange(T):
-        y += norm.pdf(x, loc=chain[t,i], scale=np.sqrt(chain[t,num_gs+i]))/(1.-norm.cdf(0, loc=chain[t,i], scale=np.sqrt(chain[t,num_gs+i])))  # scale for truncating at 0
-    y /= T
-    axpp.plot(x, y, lw=2, color='red')
-    axpp.set_ylabel('Posterior predictive')
+        post_y += norm.pdf(x, loc=chain[t,i], scale=np.sqrt(chain[t,num_gs+i]))/(1.-norm.cdf(0, loc=chain[t,i], scale=np.sqrt(chain[t,num_gs+i])))  # scale for truncating at 0
+        mean_sample, s2_sample = sample_from_N_IG(old_eta_js[i, :])
+    post_y /= T
+    axpp.plot(x, post_y, lw=2, color=cs[0], label='Post. pred.')
+    axpp.set_ylabel('Probability density')
+    
+    axpp.set_yticks(np.linspace(axpp.get_yticks()[0],axpp.get_yticks()[-1],len(ax2.get_yticks())))
+
 
     fig.tight_layout()
     fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
