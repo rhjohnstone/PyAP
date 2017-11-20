@@ -115,7 +115,6 @@ old_eta_js[:,2] = 0.5 * args.num_traces  # alpha
 old_eta_js[:,3] = 0.5 * (starting_mean**2 + starting_vars)  # beta
 
 print old_eta_js
-sys.exit()
 
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 201
@@ -142,8 +141,10 @@ for i in xrange(num_gs):
     for t in xrange(T):
         post_y += norm.pdf(x, loc=chain[t,i], scale=np.sqrt(chain[t,num_gs+i]))/(1.-norm.cdf(0, loc=chain[t,i], scale=np.sqrt(chain[t,num_gs+i])))  # scale for truncating at 0
         mean_sample, s2_sample = sample_from_N_IG(old_eta_js[i, :])
+        prior_y += norm.pdf(x, loc=mean_sample, scale=np.sqrt(s2_sample))/(1.-norm.pdf(0, loc=mean_sample, scale=np.sqrt(s2_sample)))  # scale for truncating at 0
     post_y /= T
     axpp.plot(x, post_y, lw=2, color=cs[0], label='Post. pred.')
+    axpp.plot(x, prior_y, lw=2, color=cs[1], label='Prior pred.')
     axpp.set_ylabel('Probability density')
     
     axpp.set_yticks(np.linspace(axpp.get_yticks()[0],axpp.get_yticks()[-1],len(ax2.get_yticks())))
