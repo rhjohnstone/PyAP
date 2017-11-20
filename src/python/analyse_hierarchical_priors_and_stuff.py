@@ -249,7 +249,23 @@ else:
     initial_theta_is = theta_is_cur
 
 print "\n"
-num_prior_pts = 10001
+num_prior_pts = 1001
+num_samples = 500
+
+for i in xrange(num_gs):
+    G_sample, s2_sample = sample_from_N_IG(old_eta_js[i,:])
+    x = np.linspace(0, 2*original_gs[i], num_prior_pts)
+    y = np.zeros(num_prior_pts)
+    for j in xrange(num_samples):
+        y += norm.pdf(x, loc=old_eta_js[i,0], scale=np.sqrt(s2_sample/old_eta_js[i,2]))/(1.-norm.cdf(0, loc=old_eta_js[i,0], scale=np.sqrt(s2_sample/old_eta_js[i,2])))
+    y /= num_samples
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.plot(x, y, lw=2)
+    plt.show(block=True)
+sys.exit()
+
+
 for i in xrange(num_gs):
     updated_eta = new_eta(old_eta_js[i,:], initial_theta_is[:, i])
     print g_parameters[i]
