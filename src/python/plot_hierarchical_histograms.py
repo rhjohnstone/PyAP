@@ -143,6 +143,7 @@ for i in xrange(num_gs):
         mean_sample, s2_sample = sample_from_N_IG(old_eta_js[i, :])
         prior_y += norm.pdf(x, loc=mean_sample, scale=np.sqrt(s2_sample))/(1.-norm.pdf(0, loc=mean_sample, scale=np.sqrt(s2_sample)))  # scale for truncating at 0
     post_y /= T
+    prior_y /= T
     axpp.plot(x, post_y, lw=2, color=cs[0], label='Post. pred.')
     axpp.plot(x, prior_y, lw=2, color=cs[1], label='Prior pred.')
     axpp.set_ylabel('Probability density')
