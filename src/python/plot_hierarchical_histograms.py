@@ -5,6 +5,7 @@ import sys
 import numpy.random as npr
 import matplotlib.pyplot as plt
 import itertools as it
+from scipy.stats import norm
 
 
 #python_seed = 1
@@ -81,22 +82,30 @@ saved_its, d = chain.shape
 chain = chain[saved_its/2:, :]
 T, d = chain.shape
 
-
+num_pts = 201
 for i in xrange(num_gs):
     fig = plt.figure(figsize=(8,6))
     ax2 = fig.add_subplot(111)
     ax2.grid()
     ax2.set_xlabel(g_labels[i])
     ax2.set_ylabel("Normalised frequency")
-    ax2.hist(chain[:, i], normed=True, bins=40, color='black', edgecolor='black', label='top')
-    ax2.axvline(original_gs[i], color='green', lw=2, label='true top')
-    ax2.legend()
+    #ax2.axvline(original_gs[i], color='green', lw=2, label='true top')
     for n in xrange(N_e):
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
         ax2.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=None, alpha=2./N_e)
-        ax2.axvline(expt_params[n, i], color='red', lw=2)
+        #ax2.axvline(expt_params[n, i], color='red', lw=2)
     plt.xticks(rotation=30)
+    
+    xlim = ax2.get_xlim()
+    x = np.linspace(xlim[0], xlim[1], num_pts)
+    y = np.zeros(num_pts)
+    for t in xrange(T):
+        y += norm.pdf(x, loc=chain[t,i], scale=np.sqrt(chain[t,num_gs+i]))
+    y /= T
+    ax2.plot(x, y, lw=2, color='red', label="post. pred.")
+    ax2.legend()   
+
     fig.tight_layout()
     fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
     plt.close()
