@@ -102,8 +102,8 @@ for i in xrange(args.num_traces):
     if args.different: # 9,10,11
         for j in [9,10,11]:
             best_params[j] = 10 * original_gs[j] * npr.rand()
-    best_fits_params[i, :] = npcopy(best_params)
-starting_points = npcopy(best_fits_params)
+    best_fits_params[i, :] = np.copy(best_params)
+starting_points = np.copy(best_fits_params)
 starting_mean = np.mean(starting_points,axis=0)
 starting_vars = np.var(starting_points,axis=0)
 
