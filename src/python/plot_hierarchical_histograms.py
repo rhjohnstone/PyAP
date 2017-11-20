@@ -97,14 +97,16 @@ for i in xrange(num_gs):
         #ax2.axvline(expt_params[n, i], color='red', lw=2)
     plt.xticks(rotation=30)
     
+    axpp = ax2.twinx()
+    axpp.grid()
     xlim = ax2.get_xlim()
     x = np.linspace(xlim[0], xlim[1], num_pts)
     y = np.zeros(num_pts)
     for t in xrange(T):
-        y += norm.pdf(x, loc=chain[t,i], scale=np.sqrt(chain[t,num_gs+i]))
+        y += norm.pdf(x, loc=chain[t,i], scale=np.sqrt(chain[t,num_gs+i]))/(1.-norm.cdf(0, loc=chain[t,i], scale=np.sqrt(chain[t,num_gs+i])))  # scale for truncating at 0
     y /= T
-    ax2.plot(x, y, lw=2, color='red', label="post. pred.")
-    ax2.legend()   
+    axpp.plot(x, y, lw=2, color='red')
+    axpp.set_ylabel('Posterior predictive')
 
     fig.tight_layout()
     fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
