@@ -111,8 +111,8 @@ old_eta_js = np.zeros((num_gs,4))
 old_eta_js[:,0] = starting_mean  # mu
 old_eta_js[:,1] = 1. * args.num_traces  # nu
 old_eta_js[:,2] = 0.5 * args.num_traces  # alpha
-#old_eta_js[:,3] = 25 * original_gs**2 * (old_eta_js[:,2]+1.)  # beta
-old_eta_js[:,3] = 0.5 * (starting_mean**2 + starting_vars)  # beta
+old_eta_js[:,3] = 25 * original_gs**2 * (old_eta_js[:,2]+1.)  # beta
+#old_eta_js[:,3] = 0.5 * (starting_mean**2 + starting_vars)  # beta
 
 print old_eta_js
 
