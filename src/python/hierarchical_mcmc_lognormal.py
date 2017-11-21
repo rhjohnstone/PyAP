@@ -106,14 +106,8 @@ for i, t in enumerate(trace_numbers):
         temp_trace_path = "{}_{}.csv".format(trace_path[:-8], t)
     temp_times, temp_trace = np.loadtxt(temp_trace_path,delimiter=',').T
     if i==0:
-        if not args.different:
-            expt_times = temp_times
-        elif args.different:
-            expt_times = temp_times[::2]
-    if not args.different:
-        expt_traces.append(npcopy(temp_trace))
-    elif args.different:
-        expt_traces.append(npcopy(temp_trace[::2]))
+        expt_times = temp_times
+    expt_traces.append(npcopy(temp_trace))
     #ax.plot(expt_times, expt_traces[i])
     if not args.cheat:
         temp_trace_name = trace_name[:-3]+str(t)
