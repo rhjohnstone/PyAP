@@ -20,6 +20,7 @@ exp = np.exp
 sqrt = np.sqrt
 npsum = np.sum
 nplog = np.log
+nprrandn = npr.randn
 
 def solve_for_voltage_trace(temp_g_params, ap_model_index):
     ap_models[ap_model_index].SetToModelInitialConditions()
@@ -344,12 +345,9 @@ def do_mcmc_parallel():
                 logas[i] = temp_loga
             acceptances[i] = (t*acceptances[i] + accepted)/(t+1.)
         # noise sigma
-        while True:
-            noise_sigma_star = noise_sigma_cur + exp(sigma_loga)*sigma_proposal_scale*randn()
-            if (uniform_noise_prior[0] < noise_sigma_star < uniform_noise_prior[1]):
-                break
-        sigma_target_star = log_pi_sigma(expt_traces,temp_test_traces_cur,noise_sigma_star,N_e,num_pts)
-        sigma_target_cur = log_pi_sigma(expt_traces,temp_test_traces_cur,noise_sigma_cur,N_e,num_pts)
+        noise_sigma_star = noise_sigma_cur + exp(sigma_loga)*sigma_proposal_scale*nprrandn()
+        sigma_target_star = log_pi_sigma(expt_traces, temp_test_traces_cur, noise_sigma_star)
+        sigma_target_cur = log_pi_sigma(expt_traces, temp_test_traces_cur, noise_sigma_cur)
         u = npr.rand()
         if (np.log(u) < sigma_target_star - sigma_target_cur):
             noise_sigma_cur = noise_sigma_star
