@@ -9,6 +9,7 @@ import multiprocessing as mp
 import matplotlib.pyplot as plt
 from scipy.stats import gamma
 from scipy.stats import norm
+from multiprocessing import Pool
 
 start = time.time()
 
@@ -240,8 +241,7 @@ sigma_proposal_scale = 1.
 print "\n\n", g_is_cur, "\n\n"
 
 
-from multiprocessing import Pool
-global noise_sigma_cur
+
 
 print "\nPARALLEL\n"
 
