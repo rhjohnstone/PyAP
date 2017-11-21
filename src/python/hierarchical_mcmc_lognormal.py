@@ -157,10 +157,6 @@ starting_points = npcopy(best_fits_params)
 
 
 starting_mean = np.mean(starting_points,axis=0)
-if N_e == 1:
-    starting_vars = 0.1*np.ones(len(starting_mean))
-else:
-    starting_vars = np.var(starting_points,axis=0)
     
 print "starting_mean:\n",starting_mean
     
@@ -196,9 +192,9 @@ def update_normal_hyperparams(old_hypers, nu_hat, samples):
     return new_s, new_t
 
 
-def sample_from_updated_top_g_normal(new_s, new_t):
-    g_hat_sample = norm.rvs(loc=new_s, scale=sqrt(new_t))
-    return g_hat_sample
+def sample_from_updated_top_mu_normal(new_s, new_t):
+    mu_sample = norm.rvs(loc=new_s, scale=sqrt(new_t))
+    return mu_sample
 
 
 def update_gamma_hyperparams(old_hypers, g_hat, samples):
@@ -208,9 +204,9 @@ def update_gamma_hyperparams(old_hypers, g_hat, samples):
     return new_alpha, new_beta
 
 
-def sample_from_updated_top_nu_gamma(new_alpha, new_beta):
-    nu_hat_sample = gamma.rvs(new_alpha, scale=1./new_beta)
-    return nu_hat_sample
+def sample_from_updated_top_tau_gamma(new_alpha, new_beta):
+    tau_sample = gamma.rvs(new_alpha, scale=1./new_beta)
+    return tau_sample
 
 
 num_pts = len(expt_times)
@@ -237,12 +233,16 @@ def log_pi_sigma(expt_datas, test_datas, sigma):
 def compute_initial_sigma(expt_datas, test_datas):
     return sqrt(npsum((expt_datas-test_datas)**2) / (N_e*num_pts))
 
-    
-mus_cur = npcopy(starting_mean)
-taus_cur = npcopy(1./starting_vars)
+
+s = 0.2
+mu = np.log(original_gs) - s**2/2
+tau = np.ones(num_gs)/np.sqrt(s)
+
+
+mus_cur = npcopy(mu)
+taus_cur = npcopy(tau)
 g_is_cur = npcopy(starting_points)
 
-mus_cur[mus_cur<=0] = 1e-3
 taus_cur[taus_cur<=0] = 1e-3
 g_is_cur[g_is_cur<=0] = 1e-3
 
@@ -307,16 +307,13 @@ def do_mcmc_parallel():
     while (t <= MCMC_iterations):
         for j in xrange(num_gs):
             # sample from g_hat conditional
-            new_s, new_t = update_normal_hyperparams(normal_hyperparams[j,:], taus_cur[j], g_is_cur[:,j])
-            while True:  # ensuring positive
-                temp_g_hat_cur = sample_from_updated_top_g_normal(new_s, new_t)
-                if (temp_g_hat_cur > 0):
-                    break
-            mus_cur[j] = temp_mus_cur
+            new_s, new_lamb = update_normal_hyperparams(normal_hyperparams[j,:], taus_cur[j], g_is_cur[:,j])
+            temp_mu_cur = sample_from_updated_top_mu_normal(new_s, new_lamb)
+            mus_cur[j] = temp_mu_cur
             # sample from nu_hat conditional
-            new_alpha, new_beta = update_gamma_hyperparams(gamma_hyperparams[j,:], temp_mus_cur, g_is_cur[:,j])
-            temp_nu_hat_cur = sample_from_updated_top_nu_gamma(new_alpha, new_beta)  # already positive
-            taus_cur[j] = temp_nu_hat_cur
+            new_alpha, new_beta = update_gamma_hyperparams(gamma_hyperparams[j,:], temp_mu_cur, g_is_cur[:,j])
+            temp_tau_cur = sample_from_updated_top_tau_gamma(new_alpha, new_beta)  # already positive
+            taus_cur[j] = temp_tau_cur
                     
 
         # theta i's for each experiment
