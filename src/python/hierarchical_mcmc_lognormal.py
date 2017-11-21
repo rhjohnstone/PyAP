@@ -234,7 +234,7 @@ g_is_cur[g_is_cur<=0] = 1e-3
 noise_sigma_cur = 0.5
 
 cov_proposal_scale = 0.0001
-sigma_proposal_scale = 0.1
+sigma_proposal_scale = 1.
 
 
 print "\n\n", g_is_cur, "\n\n"
