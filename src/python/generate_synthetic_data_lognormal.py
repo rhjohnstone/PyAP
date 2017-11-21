@@ -1,4 +1,4 @@
-#   import ap_simulator
+import ap_simulator
 import numpy as np
 import numpy.random as npr
 #import matplotlib
@@ -71,6 +71,8 @@ elif model==6:
 elif model==7:
     label = "paci"
     expt_params_normal_sd = 0.1
+
+noise_sigma = 0.25
 
 
 expt_name = "synthetic_{}_lognormal".format(label)
