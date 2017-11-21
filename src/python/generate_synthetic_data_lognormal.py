@@ -73,7 +73,7 @@ elif model==7:
     label = "paci"
     expt_params_normal_sd = 0.1
 
-noise_sigma = 0.25
+noise_sigma = 1.
 
 
 expt_name = "synthetic_{}_lognormal".format(label)
@@ -124,8 +124,10 @@ with open(expt_params_file, "w") as outfile:
     outfile.write("# generated with solver tolerances 1e-10, 1e-12\n")
     outfile.write("# {}\n".format(model_name))
     outfile.write("# {} sets of parameter values\n".format(num_expts))
-    outfile.write("# standard deviation for Normally-generated parameters: {}\n".format(expt_params_normal_sd))
-    #np.savetxt(outfile, all_expt_params)
+    outfile.write("# s for log-normally-generated parameters: {}\n".format(s))
+    outfile.write("# scale chosen so that mean is original_gs\n")
+    outfile.write("# noise_sigma: {}\n".format(noise_sigma))
+    np.savetxt(outfile, all_expt_params)
 
 expt_times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
 
@@ -151,7 +153,7 @@ for i in xrange(num_expts):
     np.savetxt(traces_dir+expt_name+"_trace_{}.csv".format(i), np.vstack((expt_times, expt_trace)).T, delimiter=',')
     ax.plot(expt_times, expt_trace)
 fig.tight_layout()
-#fig.savefig(expt_dir+"{}_synthetic_expt_traces.png".format(model_name))
+fig.savefig(expt_dir+"{}_synthetic_expt_traces.png".format(model_name))
 #fig.savefig(expt_dir+"{}_synthetic_expt_traces.pdf".format(model_name))
 plt.show(block=True)
 
