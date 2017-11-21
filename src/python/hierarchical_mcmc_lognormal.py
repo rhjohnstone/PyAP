@@ -23,13 +23,15 @@ nplog = np.log
 nprrandn = npr.randn
 
 def solve_for_voltage_trace(temp_g_params, ap_model_index):
+    if np.any(temp_g_params<0):
+        return np.zeros(num_pts)
     ap_models[ap_model_index].SetToModelInitialConditions()
     try:
         return ap_models[ap_model_index].SolveForVoltageTraceWithParams(temp_g_params)
     except:
         print "Failed to solve"
         print "temp_g_params:", temp_g_params
-        return np.zeros(len(expt_times))
+        return np.zeros(num_pts)
         
 
 def solve_star(temp_g_params_and_ap_model_index):
@@ -256,7 +258,6 @@ print "noise_sigma_cur:", noise_sigma_cur
 
 MCMC = np.zeros((num_saved_its, (2+N_e)*num_gs+1))
 MCMC[0, :] = np.concatenate((mus_cur, taus_cur, g_is_cur.flatten(), [noise_sigma_cur]))
-print "\n", MCMC, "\n"
 np.savetxt(initial_it_file, MCMC[0, :])
 
 covariances = []
@@ -305,11 +306,7 @@ while (t <= MCMC_iterations):
     
     for i in xrange(N_e):
         g_is_stars[i, :] = multivariate_normal(g_is_cur[i, :], exp(logas[i])*covariances[i])
-        """while True:
-            g_is_star = multivariate_normal(g_is_cur[i, :],exp(logas[i])*covariances[i])
-            if (np.all(g_is_star>=0)):
-                g_is_stars[i, :] = g_is_star
-                break"""
+        
                 
     g_is_stars_and_ap_model_index = zip(g_is_stars, range(N_e))
     
