@@ -85,7 +85,6 @@ num_gs = len(original_gs)
 split_trace_name = trace_name.split("_")
 first_trace_number = int(split_trace_name[-1])  # need a specific-ish format currently
 trace_numbers = range(first_trace_number, first_trace_number+N_e)
-print trace_numbers
 
 protocol = 1
 solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
@@ -142,25 +141,14 @@ for i, t in enumerate(trace_numbers):
 expt_traces = np.array(expt_traces)
 temp_test_traces_cur = np.array(temp_test_traces_cur)
 
-print "len(expt_times) =", len(expt_times)
-print [len(et) for et in expt_traces]
-#fig.tight_layout()
-#plt.show()
-print "best_fit_params:\n", best_fits_params
 
 starting_points = npcopy(best_fits_params)
 
 
 starting_mean = np.mean(starting_points,axis=0)
-    
-print "starting_mean:\n",starting_mean
-    
-print "starting_points:\n", starting_points
 
-if args.num_cores>1:
-    parallel = True
-else:
-    parallel = False
+
+parallel = True
 
 mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
 
@@ -247,139 +235,133 @@ cov_proposal_scale = 0.0001
 sigma_proposal_scale = 0.1
 
 
-def do_mcmc_parallel():
-    from multiprocessing import Pool
-    global noise_sigma_cur
+print "\n\n", g_is_cur, "\n\n"
+
+
+from multiprocessing import Pool
+global noise_sigma_cur
+
+print "\nPARALLEL\n"
+
+thinning = 5
+MCMC_iterations = args.iterations
+num_saved_its = MCMC_iterations / thinning + 1
+burn = num_saved_its / 4
+when_to_adapt = 100*num_gs
+
+status_when = MCMC_iterations / 100
+
+print "mus_cur:", mus_cur
+print "noise_sigma_cur:", noise_sigma_cur
+
+MCMC = np.zeros((num_saved_its, (2+N_e)*num_gs+1))
+MCMC[0, :] = np.concatenate((mus_cur, taus_cur, g_is_cur.flatten(), [noise_sigma_cur]))
+print "\n", MCMC, "\n"
+np.savetxt(initial_it_file, MCMC[0, :])
+
+covariances = []
+for i in range(N_e):
+    covariances.append(cov_proposal_scale*np.diag(g_is_cur[i,:]))
+print "covariances:\n", covariances, "\n"
+
+means = npcopy(g_is_cur)
+print "means:\n", means, "\n"
+
+logas = [0.]*N_e
+acceptances = [0.]*N_e
+sigma_loga = 0.
+sigma_acceptance = 0.
+
+#if t > 1000*number_of_parameters:
+def update_covariance_matrix(t, thetaCur, mean_estimate, cov_estimate, loga, accepted):
+    s = t - when_to_adapt
+    gamma_s = 1/(s+1)**0.6
+    temp_covariance_bit = np.array([thetaCur-mean_estimate])
+    new_cov_estimate = (1-gamma_s) * cov_estimate + gamma_s * dot(np.transpose(temp_covariance_bit),temp_covariance_bit)
+    new_mean_estimate = (1-gamma_s) * mean_estimate + gamma_s * thetaCur
+    new_loga = loga + gamma_s*(accepted-0.25)
+    return new_cov_estimate, new_mean_estimate, new_loga
     
-    print "\nPARALLEL\n"
 
-    thinning = 5
-    MCMC_iterations = args.iterations
-    num_saved_its = MCMC_iterations / thinning + 1
-    burn = num_saved_its / 4
-    when_to_adapt = 100*num_gs
+adapt_started = True
+g_is_stars = np.zeros((N_e, num_gs))
 
-    status_when = MCMC_iterations / 100
+pool = Pool(args.num_cores)
+t = 1
+print "About to start MCMC\n"
+while (t <= MCMC_iterations):
+    for j in xrange(num_gs):
+        # sample from g_hat conditional
+        new_s, new_lamb = update_normal_hyperparams(normal_hyperparams[j,:], taus_cur[j], g_is_cur[:,j])
+        temp_mu_cur = sample_from_updated_top_mu_normal(new_s, new_lamb)
+        mus_cur[j] = temp_mu_cur
+        # sample from nu_hat conditional
+        new_alpha, new_beta = update_gamma_hyperparams(gamma_hyperparams[j,:], temp_mu_cur, g_is_cur[:,j])
+        temp_tau_cur = sample_from_updated_top_tau_gamma(new_alpha, new_beta)  # already positive
+        taus_cur[j] = temp_tau_cur
+                
+
+    # theta i's for each experiment
     
-    print "mus_cur:", mus_cur
-    print "noise_sigma_cur:", noise_sigma_cur
-
-    MCMC = np.zeros((num_saved_its, (2+N_e)*num_gs+1))
-    MCMC[0, :] = np.concatenate((mus_cur, taus_cur, g_is_cur.flatten(), [noise_sigma_cur]))
-    print "\n", MCMC, "\n"
-    np.savetxt(initial_it_file, MCMC[0, :])
-
-    covariances = []
-    for i in range(N_e):
-        covariances.append(cov_proposal_scale*np.diag(g_is_cur[i,:]))
-    print "covariances:\n", covariances, "\n"
-
-    means = npcopy(g_is_cur)
-    print "means:\n", means, "\n"
-
-    logas = [0.]*N_e
-    acceptances = [0.]*N_e
-    sigma_loga = 0.
-    sigma_acceptance = 0.
-
-    #if t > 1000*number_of_parameters:
-    def update_covariance_matrix(t, thetaCur, mean_estimate, cov_estimate, loga, accepted):
-        s = t - when_to_adapt
-        gamma_s = 1/(s+1)**0.6
-        temp_covariance_bit = np.array([thetaCur-mean_estimate])
-        new_cov_estimate = (1-gamma_s) * cov_estimate + gamma_s * dot(np.transpose(temp_covariance_bit),temp_covariance_bit)
-        new_mean_estimate = (1-gamma_s) * mean_estimate + gamma_s * thetaCur
-        new_loga = loga + gamma_s*(accepted-0.25)
-        return new_cov_estimate, new_mean_estimate, new_loga
-        
-
-    adapt_started = True
-    g_is_stars = np.zeros((N_e, num_gs))
-
-    pool = Pool(args.num_cores)
-    t = 1
-    print "About to start MCMC\n"
-    while (t <= MCMC_iterations):
-        for j in xrange(num_gs):
-            # sample from g_hat conditional
-            new_s, new_lamb = update_normal_hyperparams(normal_hyperparams[j,:], taus_cur[j], g_is_cur[:,j])
-            temp_mu_cur = sample_from_updated_top_mu_normal(new_s, new_lamb)
-            mus_cur[j] = temp_mu_cur
-            # sample from nu_hat conditional
-            new_alpha, new_beta = update_gamma_hyperparams(gamma_hyperparams[j,:], temp_mu_cur, g_is_cur[:,j])
-            temp_tau_cur = sample_from_updated_top_tau_gamma(new_alpha, new_beta)  # already positive
-            taus_cur[j] = temp_tau_cur
-                    
-
-        # theta i's for each experiment
-        
-        for i in xrange(N_e):
-            g_is_stars[i, :] = multivariate_normal(g_is_cur[i, :], exp(logas[i])*covariances[i])
-            """while True:
-                g_is_star = multivariate_normal(g_is_cur[i, :],exp(logas[i])*covariances[i])
-                if (np.all(g_is_star>=0)):
-                    g_is_stars[i, :] = g_is_star
-                    break"""
-                    
-        g_is_stars_and_ap_model_index = zip(g_is_stars, range(N_e))
-        
-        temp_test_traces_star = pool.map_async(solve_star, g_is_stars_and_ap_model_index).get(999)
+    for i in xrange(N_e):
+        g_is_stars[i, :] = multivariate_normal(g_is_cur[i, :], exp(logas[i])*covariances[i])
+        """while True:
+            g_is_star = multivariate_normal(g_is_cur[i, :],exp(logas[i])*covariances[i])
+            if (np.all(g_is_star>=0)):
+                g_is_stars[i, :] = g_is_star
+                break"""
+                
+    g_is_stars_and_ap_model_index = zip(g_is_stars, range(N_e))
+    
+    temp_test_traces_star = pool.map_async(solve_star, g_is_stars_and_ap_model_index).get(999)
 
 
-        for i in xrange(N_e):
-            temp_test_trace_star = temp_test_traces_star[i]
-        
-            target_cur = log_pi_g_i(g_is_cur[i, :], mus_cur, taus_cur, noise_sigma_cur, expt_traces[i], temp_test_traces_cur[i])
-            target_star = log_pi_g_i(g_is_stars[i, :], mus_cur, taus_cur, noise_sigma_cur, expt_traces[i], temp_test_trace_star)
-            u = npr.rand()
-            if (np.log(u) < target_star - target_cur):
-                g_is_cur[i, :] = npcopy(g_is_stars[i, :])
-                temp_test_traces_cur[i] = npcopy(temp_test_trace_star)
-                accepted = 1
-            else:
-                accepted = 0
-            if (t > when_to_adapt):
-                temp_cov, temp_mean, temp_loga = update_covariance_matrix(t, g_is_cur[i, :], means[i], covariances[i], logas[i], accepted)
-                covariances[i] = npcopy(temp_cov)
-                means[i] = npcopy(temp_mean)
-                logas[i] = temp_loga
-            acceptances[i] = (t*acceptances[i] + accepted)/(t+1.)
-        # noise sigma
-        noise_sigma_star = noise_sigma_cur + exp(sigma_loga)*sigma_proposal_scale*nprrandn()
-        sigma_target_star = log_pi_sigma(expt_traces, temp_test_traces_cur, noise_sigma_star)
-        sigma_target_cur = log_pi_sigma(expt_traces, temp_test_traces_cur, noise_sigma_cur)
+    for i in xrange(N_e):
+        temp_test_trace_star = temp_test_traces_star[i]
+    
+        target_cur = log_pi_g_i(g_is_cur[i, :], mus_cur, taus_cur, noise_sigma_cur, expt_traces[i], temp_test_traces_cur[i])
+        target_star = log_pi_g_i(g_is_stars[i, :], mus_cur, taus_cur, noise_sigma_cur, expt_traces[i], temp_test_trace_star)
         u = npr.rand()
-        if (np.log(u) < sigma_target_star - sigma_target_cur):
-            noise_sigma_cur = noise_sigma_star
+        if (np.log(u) < target_star - target_cur):
+            g_is_cur[i, :] = npcopy(g_is_stars[i, :])
+            temp_test_traces_cur[i] = npcopy(temp_test_trace_star)
             accepted = 1
         else:
             accepted = 0
-        sigma_acceptance = (t*sigma_acceptance + accepted)/(t+1)
         if (t > when_to_adapt):
-            r = t - when_to_adapt
-            gamma_r = 1/(r+1)**0.6
-            sigma_loga += gamma_r*(accepted-0.25)
-        if ( t%thinning == 0 ):   
-            MCMC[t/thinning, :] = np.concatenate((mus_cur,taus_cur,g_is_cur.flatten(),[noise_sigma_cur]))
-        t += 1
-        if ( t%status_when==0 ):
-            print t, "iterations"
-            print "logas =", logas
-            print "acceptances =", acceptances
-            print "sigma_loga =", sigma_loga
-            print "sigma_acceptance =", sigma_acceptance
-    pool.close()
-    pool.join()
-    MCMC = MCMC[burn:, :]
-    return MCMC, logas, sigma_loga, acceptances, sigma_acceptance
+            temp_cov, temp_mean, temp_loga = update_covariance_matrix(t, g_is_cur[i, :], means[i], covariances[i], logas[i], accepted)
+            covariances[i] = npcopy(temp_cov)
+            means[i] = npcopy(temp_mean)
+            logas[i] = temp_loga
+        acceptances[i] = (t*acceptances[i] + accepted)/(t+1.)
+    # noise sigma
+    noise_sigma_star = noise_sigma_cur + exp(sigma_loga)*sigma_proposal_scale*nprrandn()
+    sigma_target_star = log_pi_sigma(expt_traces, temp_test_traces_cur, noise_sigma_star)
+    sigma_target_cur = log_pi_sigma(expt_traces, temp_test_traces_cur, noise_sigma_cur)
+    u = npr.rand()
+    if (np.log(u) < sigma_target_star - sigma_target_cur):
+        noise_sigma_cur = noise_sigma_star
+        accepted = 1
+    else:
+        accepted = 0
+    sigma_acceptance = (t*sigma_acceptance + accepted)/(t+1)
+    if (t > when_to_adapt):
+        r = t - when_to_adapt
+        gamma_r = 1/(r+1)**0.6
+        sigma_loga += gamma_r*(accepted-0.25)
+    if ( t%thinning == 0 ):   
+        MCMC[t/thinning, :] = np.concatenate((mus_cur,taus_cur,g_is_cur.flatten(),[noise_sigma_cur]))
+    t += 1
+    if ( t%status_when==0 ):
+        print t, "iterations"
+        print "logas =", logas
+        print "acceptances =", acceptances
+        print "sigma_loga =", sigma_loga
+        print "sigma_acceptance =", sigma_acceptance
+pool.close()
+pool.join()
+MCMC = MCMC[burn:, :]
 
-
-if args.num_cores == 1:
-    do_mcmc = do_mcmc_series
-elif args.num_cores>1:
-    do_mcmc = do_mcmc_parallel
-    
-MCMC, logas, sigma_loga, acceptances, sigma_acceptance = do_mcmc()
 np.savetxt(mcmc_file, MCMC)
         
 tt = time.time()-start
