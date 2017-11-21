@@ -73,7 +73,7 @@ elif model==7:
     label = "paci"
     expt_params_normal_sd = 0.1
 
-noise_sigma = 1.
+noise_sigma = 0.5
 
 
 expt_name = "synthetic_{}_lognormal".format(label)
