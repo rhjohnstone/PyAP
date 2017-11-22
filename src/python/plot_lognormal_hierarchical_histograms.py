@@ -165,7 +165,7 @@ T = args.num_samples
 
 color_idx = np.linspace(0, 1, N_e)
 cs = ['#1b9e77','#d95f02','#7570b3']
-num_pts = 201
+num_pts = 501
 top_colour = 'blue'
 for i in xrange(num_gs):
     #mu_fig = plt.figure(figsize=(8,6))
@@ -186,7 +186,7 @@ for i in xrange(num_gs):
     for n in xrange(N_e):
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
-        ax2.hist(np.log10(chain[:, idx]), normed=True, bins=40, color=colour, edgecolor=None, alpha=2./N_e)
+        #ax2.hist(np.log10(chain[:, idx]), normed=True, bins=40, color=colour, edgecolor=None, alpha=2./N_e)
         temp_min = np.min(chain[:, idx])
         temp_max = np.max(chain[:, idx])
         if temp_min < xmin:
@@ -196,7 +196,7 @@ for i in xrange(num_gs):
         #ax2.axvline(expt_params[n, i], color='red', lw=2)
     plt.xticks(rotation=30)
     
-    x = np.logspace(np.log10(xmin), np.log10(xmax), num_pts)
+    x = np.logspace(np.log10(xmin)-4, np.log10(xmax)+4, num_pts)
     prior_y = np.zeros(num_pts)
     post_y = np.zeros(num_pts)
     for _ in xrange(T):
@@ -212,8 +212,8 @@ for i in xrange(num_gs):
     post_y /= T
     ax3 = ax2.twinx()
     ax3.set_ylabel("Probability density")
-    ax3.plot(np.log10(x), prior_y, lw=2, color=cs[0], label="Prior pred.")
-    ax3.plot(np.log10(x), post_y, lw=2, color=cs[1], label="Post. pred.")
+    ax3.plot(x, prior_y, lw=2, color=cs[0], label="Prior pred.")
+    ax3.plot(x, post_y, lw=2, color=cs[1], label="Post. pred.")
     ax3.legend(loc=2)
     
     
