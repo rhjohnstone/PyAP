@@ -169,7 +169,7 @@ for i in xrange(num_gs):
     fig = plt.figure(figsize=(8,6))
     ax2 = fig.add_subplot(111)
     ax2.grid()
-    ax2.set_xlabel("log($"+g_parameters[i]+"$)")
+    ax2.set_xlabel("log10($"+g_parameters[i]+"$)")
     ax2.set_ylabel("Normalised frequency")
     #ax2.axvline(original_gs[i], color='green', lw=2, label='true top')
     for n in xrange(N_e):
