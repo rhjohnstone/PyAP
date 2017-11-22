@@ -58,6 +58,7 @@ split_trace_path = trace_path.split('/')
 expt_name = split_trace_path[4]
 trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
+expt_params_file = "{}expt_params.txt".format(expt_dir)
 
 pyap_options = {}
 with open(options_file, 'r') as infile:
@@ -75,6 +76,8 @@ data_clamp_off = pyap_options["data_clamp_off"]
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
 
+expt_params = np.loadtxt(expt_params_file)[:N_e, :]
+print "expt_params:\n", expt_params
 
 split_trace_name = trace_name.split("_")
 first_trace_number = int(split_trace_name[-1])  # need a specific-ish format currently
@@ -182,14 +185,14 @@ for i in xrange(num_gs):
     for n in xrange(N_e):
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
-        #ax2.hist(np.log10(chain[:, idx]), normed=True, bins=40, color=colour, edgecolor=None, alpha=2./N_e)
+        ax2.hist(np.log10(chain[:, idx]), normed=True, bins=40, color=colour, edgecolor=None, alpha=2./N_e)
         temp_min = np.min(chain[:, idx])
         temp_max = np.max(chain[:, idx])
         if temp_min < xmin:
             xmin = temp_min
         if temp_max > xmax:
             xmax = temp_max
-        #ax2.axvline(expt_params[n, i], color='red', lw=2)
+        ax2.axvline(np.log(expt_params[n, i]), color='red', lw=2)
     plt.xticks(rotation=30)
     
     x = np.logspace(np.log10(xmin)-4, np.log10(xmax)+4, num_pts)
@@ -211,8 +214,8 @@ for i in xrange(num_gs):
     prior_y /= T
     post_y /= T
     ax2.set_ylabel("Probability density")
-    ax2.plot(x, prior_y, lw=2, color=cs[0], label="Prior pred.")
-    ax2.plot(x, post_y, lw=2, color=cs[1], label="Post. pred.")
+    #ax2.plot(x, prior_y, lw=2, color=cs[0], label="Prior pred.")
+    #ax2.plot(x, post_y, lw=2, color=cs[1], label="Post. pred.")
     ax2.legend(loc=2)
     
     figg, (axx1, axx2) = plt.subplots(1,2)
