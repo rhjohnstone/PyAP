@@ -195,7 +195,7 @@ for i in xrange(num_gs):
         ax2.axvline(np.log10(expt_params[n, i]), color='red', lw=2)
     plt.xticks(rotation=30)
     
-    x = np.logspace(np.log10(xmin)-4, np.log10(xmax)+4, num_pts)
+    x = np.logspace(np.log10(xmin), np.log10(xmax), num_pts)
     prior_y = np.zeros(num_pts)
     post_y = np.zeros(num_pts)
     for _ in xrange(T):
@@ -209,10 +209,11 @@ for i in xrange(num_gs):
         
     prior_y /= T
     post_y /= T
-    ax2.set_ylabel("Probability density")
-    #ax2.plot(x, prior_y, lw=2, color=cs[0], label="Prior pred.")
+    ax3 = ax2.twinx()
+    ax3.set_ylabel("Probability density")
+    ax3.plot(np.log10(x), prior_y, lw=2, color=cs[0], label="Prior pred.")
     #ax2.plot(x, post_y, lw=2, color=cs[1], label="Post. pred.")
-    ax2.legend(loc=2)
+    ax3.legend(loc=2)
     
 
     fig.tight_layout()
