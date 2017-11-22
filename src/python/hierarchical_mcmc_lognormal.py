@@ -157,14 +157,16 @@ mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options[
 
 initial_it_file = log_file[:-4]+"_initial_iteration.txt"
 
+tau_true = 15.
+mu_true = np.log(original_gs) + 1./tau_true
 
 gamma_hyperparams = np.zeros((num_gs,2))
-gamma_hyperparams[:,0] = 10.  # alpha
-gamma_hyperparams[:,1] = 0.25 * np.log(10)**2 * (gamma_hyperparams[:,0]-1.)  # beta
+gamma_hyperparams[:,0] = 25.  # alpha
+gamma_hyperparams[:,1] = (gamma_hyperparams[:,0]-1.)/tau_true  # beta
 
 normal_hyperparams = np.zeros((num_gs,2))
-normal_hyperparams[:,0] = np.log(original_gs) + 0.25 * np.log(10)**2  # s
-normal_hyperparams[:,1] = 4.  # lambda
+normal_hyperparams[:,0] = mu_true + 0.75  # s
+normal_hyperparams[:,1] = 1.5  # lambda
 
 
 def update_normal_hyperparams(old_hypers, tau, samples):
@@ -202,7 +204,7 @@ def log_pi_g_i(g_i, mus, taus, sigma, data_i, test_i):
     if np.any(g_i < 0) or (not (uniform_noise_prior[0] < sigma < uniform_noise_prior[1])):
         return -inf
     else:
-        return -npsum((data_i - test_i)**2)/(2.*sigma**2) - npsum(nplog(g_i)) - npsum(taus*(nplog(g_i)-mus)**2 / 2.)
+        return -npsum((data_i - test_i)**2)/(2.*sigma**2) - npsum(nplog(g_i)) - npsum(taus*(nplog(g_i)-mus)**2) / 2.
 
 
 def log_pi_sigma(expt_datas, test_datas, sigma):

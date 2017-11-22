@@ -32,17 +32,22 @@ num_gs = len(original_gs)
 
 T = 10000
 
+tau_true = 15.
+mu_true = np.log(original_gs) + 1./tau_true
+
 # s
-lamb = 4.
-alpha = 10.
-beta = 0.25 * np.log(10)**2 * (alpha-1.)
+lamb = 1.5
+alpha = 25.
+#beta = 0.25 * np.log(10)**2 * (alpha-1.)
+beta = (alpha-1.)/tau_true
 
 
 num_pts = 201
 
 for i in xrange(num_gs):
     print "{} / {}".format(i+1, num_gs)
-    s = np.log(original_gs[i]) + 0.25 * np.log(10)**2
+    #s = np.log(original_gs[i]) + 1./tau_true + 0.2
+    s = mu_true[i] + 0.75
     print "s =", s
 
     fig = plt.figure(figsize=(phi*fig_y,fig_y))
@@ -54,13 +59,17 @@ for i in xrange(num_gs):
     ax1.plot(x, norm.pdf(x, loc=s, scale=1./np.sqrt(lamb)), lw=2)
     ax1.set_xlabel(r"$\mu$", fontsize=fs)
     ax1.set_ylabel("Prior pdf", fontsize=fs)
+    ax1.axvline(mu_true[i], lw=2, color='red', label='true')
+    ax1.legend()
 
     ax2 = fig.add_subplot(222)
     ax2.grid()
-    x = np.linspace(0, 4, num_pts)
+    x = np.linspace(5, 25, num_pts)
     ax2.plot(x, gamma.pdf(x, alpha, scale=1./beta), lw=2)
     ax2.set_xlabel(r"$\tau$", fontsize=fs)
     ax2.set_ylabel("Prior pdf", fontsize=fs)
+    ax2.axvline(tau_true, lw=2, color='red', label='true')
+    ax2.legend()
 
     xmin = int(np.log10(original_gs[i]))-2
     xmax = xmin+4
