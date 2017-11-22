@@ -58,7 +58,7 @@ split_trace_path = trace_path.split('/')
 expt_name = split_trace_path[4]
 trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
-expt_params_file = "{}expt_params.txt".format(expt_dir)
+expt_params_file = '/'.join( split_trace_path[:5] ) + "/{}expt_params.txt".format(expt_dir)
 
 pyap_options = {}
 with open(options_file, 'r') as infile:
