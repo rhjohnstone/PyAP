@@ -44,6 +44,7 @@ parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
 requiredNamed.add_argument("--num-traces", type=int, help="number of traces to fit to, including the one specified as argument", required=True)
+requiredNamed.add_argument("-T", "--num-samples", type=int, help="number of samples to construct prior and posterior predictive distributions", required=True)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
     parser.print_help()
@@ -160,7 +161,7 @@ tau = np.ones(num_gs)/np.sqrt(s)
 chain = np.loadtxt(mcmc_file)
 saved_its, d = chain.shape
 
-T = 10000
+T = args.num_samples
 
 color_idx = np.linspace(0, 1, N_e)
 cs = ['#1b9e77','#d95f02','#7570b3']
@@ -187,14 +188,22 @@ for i in xrange(num_gs):
     plt.xticks(rotation=30)
     
     x = np.logspace(np.log10(xmin), np.log10(xmax), num_pts)
-    y = np.zeros(num_pts)
-    for T in xrange(T):
+    prior_y = np.zeros(num_pts)
+    post_y = np.zeros(num_pts)
+    for _ in xrange(T):
         mu = norm.rvs(loc=normal_hyperparams[i,0], scale=1./np.sqrt(normal_hyperparams[i,1]))
         tau = gamma.rvs(gamma_hyperparams[i,0], scale=1./gamma_hyperparams[i,1])
-        y += lognorm.pdf(x, s=1./np.sqrt(tau), scale=np.exp(mu))
-    y /= T
+        prior_y += lognorm.pdf(x, s=1./np.sqrt(tau), scale=np.exp(mu))
+        
+        rand_idx = npr.randint(saved_its)
+        mu_sample, tau_sample = chain[rand_idx, [i, num_gs+i]]
+        post_y += lognorm.pdf(x, s=1./np.sqrt(tau_sample), scale=np.exp(mu_sample))
+        
+    prior_y /= T
+    post_y /= T
     ax3 = ax2.twinx()
-    ax3.plot(np.log10(x), y, lw=2, label="Prior pred.")
+    ax3.plot(np.log10(x), prior_y, lw=2, color=cs[0], label="Prior pred.")
+    ax3.plot(np.log10(x), post_y, lw=2, color=cs[1], label="Post. pred.")
     ax3.legend(loc=2)
     
     
