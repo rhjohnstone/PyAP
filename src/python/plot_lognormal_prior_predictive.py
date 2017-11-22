@@ -4,36 +4,45 @@ from scipy.stats import norm, gamma, lognorm
 import pyap_setup as ps
 import sys
 
-def f(v):
-    return v**4 - v**3 - 16
-
 
 fs = 16
 phi = 1.61803398875
 fig_y = 5
 
-model = 5
+model = 2
+
+if model==1:
+    label="hodgkin_huxley"
+elif model==2:
+    label = "beeler_reuter"
+elif model==3:
+    label = "luo_rudy"
+elif model==4:
+    label = "ten_tusscher"
+elif model==5:
+    label = "ohara"
+elif model==6:
+    label = "davies"
+elif model==7:
+    label = "paci"
+    
+    
 original_gs, g_parameters, model_name = ps.get_original_params(model)
 num_gs = len(original_gs)
 
 T = 10000
 
+# s
 lamb = 4.
 alpha = 10.
-#beta = 2
-
-coeffs = [1, -1, 0, 0, -16]
-roots = np.roots(coeffs)
-v = float(roots[0])  # manually ascertained
-
-beta = (alpha-1.)*np.log(v)
+beta = 0.25 * np.log(10)**2 * (alpha-1.)
 
 
 num_pts = 201
 
 for i in xrange(num_gs):
     print "{} / {}".format(i+1, num_gs)
-    s = np.log(original_gs[i]) + beta / (alpha-1.)
+    s = np.log(original_gs[i]) + 0.25 * np.log(10)**2
     print "s =", s
 
     fig = plt.figure(figsize=(phi*fig_y,fig_y))
@@ -71,6 +80,6 @@ for i in xrange(num_gs):
     ax3.set_ylabel("Prior pred. pdf", fontsize=fs-2)
     ax3.legend(loc=2, fontsize=fs-2)
     fig.tight_layout()
-    fig.savefig("/home/ross/Documents/dphil/chapters/inferring-conductances/ohara_prior_preds/ohara_prior_predictive_{}.png".format(g_parameters[i]))
+    fig.savefig("/home/ross/Documents/dphil/chapters/inferring-conductances/{0}_prior_preds/{0}_prior_predictive_{1}.png".format(label, g_parameters[i]))
     plt.close()
 
