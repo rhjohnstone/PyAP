@@ -162,6 +162,7 @@ tau = np.ones(num_gs)/np.sqrt(s)
 chain = np.loadtxt(mcmc_file)
 saved_its, d = chain.shape
 
+color_idx = np.linspace(0, 1, N_e)
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 201
 for i in xrange(num_gs):
