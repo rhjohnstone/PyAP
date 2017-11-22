@@ -1,4 +1,4 @@
-import ap_simulator
+#import ap_simulator
 import pyap_setup as ps
 import argparse
 import numpy as np
@@ -46,11 +46,6 @@ parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
 requiredNamed.add_argument("--num-traces", type=int, help="number of traces to fit to, including the one specified as argument", required=True)
-requiredNamed.add_argument("-i", "--iterations", type=int, help="total MCMC iterations", required=True)
-parser.add_argument("-nc", "--num-cores", type=int, help="number of cores to parallelise solving expt traces", default=1)
-parser.add_argument("--cheat", action="store_true", help="for synthetic data: start MCMC from parameter values used to generate data", default=False)
-parser.add_argument("--different", action="store_true", help="use different initial guess for some params", default=False)
-#parser.add_argument("--unscaled", action="store_true", help="perform MCMC sampling in unscaled 'conductance space'", default=False)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
     parser.print_help()
@@ -81,74 +76,10 @@ data_clamp_off = pyap_options["data_clamp_off"]
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
 
-#num_processors = multiprocessing.cpu_count()
-#num_processes = min(num_processors-1,N_e) # counts available cores and makes one fewer process
-
 
 split_trace_name = trace_name.split("_")
 first_trace_number = int(split_trace_name[-1])  # need a specific-ish format currently
 trace_numbers = range(first_trace_number, first_trace_number+N_e)
-
-protocol = 1
-solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
-
-
-best_fits_params = np.zeros((N_e, num_gs))
-expt_traces = []
-ap_models = []
-temp_test_traces_cur = []
-#fig = plt.figure()
-#ax = fig.add_subplot(111)
-#ax.grid()
-for i, t in enumerate(trace_numbers):
-    if (0 <= first_trace_number <= 9):
-        temp_trace_path = "{}_{}.csv".format(trace_path[:-6], t)
-    elif (10 <= first_trace_number <= 99):
-        temp_trace_path = "{}_{}.csv".format(trace_path[:-7], t)
-    elif (100 <= first_trace_number <= 999):
-        temp_trace_path = "{}_{}.csv".format(trace_path[:-8], t)
-    temp_times, temp_trace = np.loadtxt(temp_trace_path,delimiter=',').T
-    if i==0:
-        expt_times = temp_times
-    expt_traces.append(npcopy(temp_trace))
-    #ax.plot(expt_times, expt_traces[i])
-    if not args.cheat:
-        temp_trace_name = trace_name[:-3]+str(t)
-        cmaes_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, temp_trace_name, unscaled=False)
-        all_best_fits = np.loadtxt(cmaes_file)
-        best_index = np.argmin(all_best_fits[:, -1])
-        best_params = all_best_fits[best_index, :-1]
-    else:
-        best_params = np.loadtxt('/'.join( split_trace_path[:5] ) + "/expt_params.txt")[t, :]
-        if args.different: # 9,10,11
-            for j in [9,10,11]:
-                best_params[j] = 10 * original_gs[j] * npr.rand()
-    best_fits_params[i, :] = npcopy(best_params)
-    temp_ap_model = ap_simulator.APSimulator()
-    if (data_clamp_on < data_clamp_off):
-        temp_ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
-        temp_ap_model.DefineModel(pyap_options["model_number"])
-        temp_ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
-        temp_ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, npcopy(temp_trace))
-    else:
-        temp_ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
-        temp_ap_model.DefineModel(pyap_options["model_number"])
-    temp_ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
-    temp_ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
-    temp_ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
-    temp_ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
-    temp_ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
-    temp_ap_model.SetNumberOfSolves(pyap_options["num_solves"])
-    ap_models.append(temp_ap_model)
-    temp_test_traces_cur.append(npcopy(solve_for_voltage_trace(best_params, i)))
-expt_traces = np.array(expt_traces)
-temp_test_traces_cur = np.array(temp_test_traces_cur)
-
-
-starting_points = npcopy(best_fits_params)
-
-
-starting_mean = np.mean(starting_points,axis=0)
 
 
 parallel = True
@@ -256,7 +187,7 @@ for i in xrange(num_gs):
     fig = plt.figure(figsize=(8,6))
     ax2 = fig.add_subplot(111)
     ax2.grid()
-    ax2.set_xlabel(g_labels[i])
+    ax2.set_xlabel("$"+g_parameters[i]+"$")
     ax2.set_ylabel("Normalised frequency")
     #ax2.axvline(original_gs[i], color='green', lw=2, label='true top')
     for n in xrange(N_e):
