@@ -180,12 +180,12 @@ for i in xrange(num_gs):
     plt.xticks(rotation=30)
     
     xmin, xmax = ax2.get_xlim()
-    x = np.logspace(np.log10(xmin), np.log10(xmax), num_pts)
+    x = np.logspace(xmin, xmax, num_pts)
     y = np.zeros(num_pts)
     for T in xrange(T):
         mu = norm.rvs(loc=normal_hyperparams[i,0], scale=1./np.sqrt(normal_hyperparams[i,1]))
         tau = gamma.rvs(gamma_hyperparams[i,0], scale=1./gamma_hyperparams[i,1])
-        y += lognorm.pdf(x, s=1./np.sqrt(tau), scale=np.exp(mu))
+        y += lognorm.pdf(10**x, s=1./np.sqrt(tau), scale=np.exp(mu))
     y /= T
     ax3 = ax2.twinx()
     ax3.plot(x, y, lw=2, label="Prior pred.")
