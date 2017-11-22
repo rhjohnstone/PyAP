@@ -18,8 +18,8 @@ num_gs = len(original_gs)
 
 T = 10000
 
-lamb = 4
-alpha = 3
+lamb = 4.
+alpha = 10.
 #beta = 2
 
 coeffs = [1, -1, 0, 0, -16]
@@ -48,7 +48,7 @@ for i in xrange(num_gs):
 
     ax2 = fig.add_subplot(222)
     ax2.grid()
-    x = np.linspace(0, 8, num_pts)
+    x = np.linspace(0, 4, num_pts)
     ax2.plot(x, gamma.pdf(x, alpha, scale=1./beta), lw=2)
     ax2.set_xlabel(r"$\tau$", fontsize=fs)
     ax2.set_ylabel("Prior pdf", fontsize=fs)

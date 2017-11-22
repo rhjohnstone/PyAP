@@ -163,7 +163,7 @@ assert(np.isreal(roots[0]))
 v = float(roots[0])  # manually ascertained
 
 gamma_hyperparams = np.zeros((num_gs,2))
-gamma_hyperparams[:,0] = 3.  # alpha
+gamma_hyperparams[:,0] = 10.  # alpha
 gamma_hyperparams[:,1] = (gamma_hyperparams[:,0]-1.)*np.log(v)  # beta
 
 normal_hyperparams = np.zeros((num_gs,2))
@@ -171,10 +171,10 @@ normal_hyperparams[:,0] = np.log(original_gs) + gamma_hyperparams[:,1] / (gamma_
 normal_hyperparams[:,1] = 4.  # lambda
 
 
-def update_normal_hyperparams(old_hypers, nu_hat, samples):
+def update_normal_hyperparams(old_hypers, tau, samples):
     s, t = old_hypers
-    new_s = (nu_hat * npsum(np.log(samples)) + t*s) / (N_e * nu_hat + t)
-    new_t = N_e * nu_hat + t
+    new_s = (tau * npsum(np.log(samples)) + t*s) / (N_e * tau + t)
+    new_t = N_e * tau + t
     return new_s, new_t
 
 
@@ -183,10 +183,10 @@ def sample_from_updated_top_mu_normal(new_s, new_t):
     return mu_sample
 
 
-def update_gamma_hyperparams(old_hypers, g_hat, samples):
+def update_gamma_hyperparams(old_hypers, mu, samples):
     alpha, beta = old_hypers
     new_alpha = alpha + N_e/2.
-    new_beta = beta + 0.5*npsum((np.log(samples)-g_hat)**2)
+    new_beta = beta + 0.5*npsum((np.log(samples)-mu)**2)
     return new_alpha, new_beta
 
 

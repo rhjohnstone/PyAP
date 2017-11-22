@@ -169,9 +169,9 @@ num_pts = 201
 top_colour = 'blue'
 for i in xrange(num_gs):
     mu_fig = plt.figure(figsize=(8,6))
-    mu_ax = fig.add_sibplot(111)
+    mu_ax = mu_fig.add_subplot(111)
     mu_ax.grid()
-    ax2.hist(chain[:, i], normed=True, bins=40, color=top_colour, edgecolor=top_colour)
+    mu_ax.hist(chain[:, i], normed=True, bins=40, color=top_colour, edgecolor=top_colour)
     plt.show()
     
     
