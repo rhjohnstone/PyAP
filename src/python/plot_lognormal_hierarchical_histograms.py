@@ -187,10 +187,9 @@ for i in xrange(num_gs):
         tau = gamma.rvs(gamma_hyperparams[i,0], scale=1./gamma_hyperparams[i,1])
         y += lognorm.pdf(x, s=1./np.sqrt(tau), scale=np.exp(mu))
     y /= T
-    #ax2.set_xscale('log')
-    ax2.plot(x, y, lw=2, label="Prior pred.")
-    #ax2.axvline(original_gs[i], lw=2, color='red', label='model')
-    ax2.legend(loc=2)
+    ax3 = ax2.twinx()
+    ax3.plot(x, y, lw=2, label="Prior pred.")
+    ax3.legend(loc=2)
     
     
     #axpp = ax2.twinx()
