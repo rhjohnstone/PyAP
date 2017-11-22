@@ -42,7 +42,7 @@ args, unknown = parser.parse_known_args()
 #ax.set_xlabel("Time (ms)")
 #ax.set_ylabel("Membrane voltage (mV)")
 
-python_seed = 1
+python_seed = 2
 npr.seed(python_seed)
 
 protocol = 1
@@ -109,10 +109,14 @@ expt_params_mean = original_gs
 
 num_expts = 32
 
-s = 0.2
-mu = np.log(original_gs) - s**2/2
+tau_true = 15.
+mu_true = np.log(original_gs) + 1./tau_true
 
-all_expt_params = np.array([lognorm.rvs(s, scale=np.exp(mu)) for _ in xrange(num_expts)])
+
+s = 1./np.sqrt(tau_true)
+
+print original_gs
+all_expt_params = np.array([lognorm.rvs(s, scale=np.exp(mu_true)) for _ in xrange(num_expts)])
 print all_expt_params
 #sys.exit()
 
@@ -124,7 +128,8 @@ with open(expt_params_file, "w") as outfile:
     outfile.write("# generated with solver tolerances 1e-10, 1e-12\n")
     outfile.write("# {}\n".format(model_name))
     outfile.write("# {} sets of parameter values\n".format(num_expts))
-    outfile.write("# s for log-normally-generated parameters: {}\n".format(s))
+    outfile.write("# mu: {}\n".format(mu_true))
+    outfile.write("# tau: {}\n".format(tau_true))
     outfile.write("# scale chosen so that mean is original_gs\n")
     outfile.write("# noise_sigma: {}\n".format(noise_sigma))
     np.savetxt(outfile, all_expt_params)
