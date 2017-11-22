@@ -162,6 +162,8 @@ tau = np.ones(num_gs)/np.sqrt(s)
 chain = np.loadtxt(mcmc_file)
 saved_its, d = chain.shape
 
+T = 10000
+
 color_idx = np.linspace(0, 1, N_e)
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 201
@@ -178,6 +180,20 @@ for i in xrange(num_gs):
         ax2.hist(np.log10(chain[:, idx]), normed=True, bins=40, color=colour, edgecolor=None, alpha=2./N_e)
         #ax2.axvline(expt_params[n, i], color='red', lw=2)
     plt.xticks(rotation=30)
+    
+    xmin, xmax = ax2.get_xlim()
+    x = np.logspace(np.log10(xmin), np.log10(xmax), num_pts)
+    y = np.zeros(num_pts)
+    for T in xrange(T):
+        mu = norm.rvs(loc=normal_hyperparams[i,0], scale=1./np.sqrt(normal_hyperparams[i,1]))
+        tau = gamma.rvs(gamma_hyperparams[i,0], scale=1./gamma_hyperparams[i,1])
+        y += lognorm.pdf(x, s=1./np.sqrt(tau), scale=np.exp(mu))
+    y /= T
+    #ax2.set_xscale('log')
+    ax2.plot(x, y, lw=2, label="Prior pred.")
+    #ax2.axvline(original_gs[i], lw=2, color='red', label='model')
+    ax2.legend(loc=2)
+    
     
     #axpp = ax2.twinx()
     #axpp.grid()
