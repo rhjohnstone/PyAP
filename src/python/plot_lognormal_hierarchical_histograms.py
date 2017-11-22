@@ -195,7 +195,9 @@ for i in xrange(num_gs):
         ax2.axvline(np.log10(expt_params[n, i]), color='red', lw=2)
     plt.xticks(rotation=30)
     
-    x = np.logspace(np.log10(xmin), np.log10(xmax), num_pts)
+    xmin, xmax = ax2.get_xlim()
+    
+    x = np.logspace(xmin, xmax, num_pts)
     prior_y = np.zeros(num_pts)
     post_y = np.zeros(num_pts)
     for _ in xrange(T):
