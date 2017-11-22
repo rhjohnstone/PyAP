@@ -232,6 +232,9 @@ g_is_cur = npcopy(starting_points)
 taus_cur[taus_cur<=0] = 1e-3
 g_is_cur[g_is_cur<=0] = 1e-3
 
+for i in xrange(N_e):
+    g_is_cur[i, :] = np.exp(mus_cur)
+
 noise_sigma_cur = 0.5
 
 cov_proposal_scale = 0.0001
