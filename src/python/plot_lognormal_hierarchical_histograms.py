@@ -169,13 +169,13 @@ for i in xrange(num_gs):
     fig = plt.figure(figsize=(8,6))
     ax2 = fig.add_subplot(111)
     ax2.grid()
-    ax2.set_xlabel("$"+g_parameters[i]+"$")
+    ax2.set_xlabel("log($"+g_parameters[i]+"$)")
     ax2.set_ylabel("Normalised frequency")
     #ax2.axvline(original_gs[i], color='green', lw=2, label='true top')
     for n in xrange(N_e):
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
-        ax2.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=None, alpha=2./N_e)
+        ax2.hist(np.log(chain[:, idx]), normed=True, bins=40, color=colour, edgecolor=None, alpha=2./N_e)
         #ax2.axvline(expt_params[n, i], color='red', lw=2)
     plt.xticks(rotation=30)
     
