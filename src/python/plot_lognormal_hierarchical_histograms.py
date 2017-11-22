@@ -179,16 +179,17 @@ for i in xrange(num_gs):
         #ax2.axvline(expt_params[n, i], color='red', lw=2)
     plt.xticks(rotation=30)
     
-    xmin, xmax = ax2.get_xlim()
-    x = np.logspace(xmin, xmax, num_pts)
+    xmin = np.min(chain[:, idx])
+    xmax = np.max(chain[:, idx])
+    x = np.logspace(np.log10(xmin), np.log10(xmax), num_pts)
     y = np.zeros(num_pts)
     for T in xrange(T):
         mu = norm.rvs(loc=normal_hyperparams[i,0], scale=1./np.sqrt(normal_hyperparams[i,1]))
         tau = gamma.rvs(gamma_hyperparams[i,0], scale=1./gamma_hyperparams[i,1])
-        y += lognorm.pdf(10**x, s=1./np.sqrt(tau), scale=np.exp(mu))
+        y += lognorm.pdf(x, s=1./np.sqrt(tau), scale=np.exp(mu))
     y /= T
     ax3 = ax2.twinx()
-    ax3.plot(x, y, lw=2, label="Prior pred.")
+    ax3.plot(np.log10(x), y, lw=2, label="Prior pred.")
     ax3.legend(loc=2)
     
     
