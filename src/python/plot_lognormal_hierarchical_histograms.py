@@ -7,9 +7,7 @@ import numpy.random as npr
 import time
 import multiprocessing as mp
 import matplotlib.pyplot as plt
-from scipy.stats import gamma
-from scipy.stats import norm
-from multiprocessing import Pool
+from scipy.stats import gamma, norm, lognorm
 
 start = time.time()
 
