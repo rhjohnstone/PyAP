@@ -199,24 +199,29 @@ for i in xrange(num_gs):
     x = np.logspace(np.log10(xmin)-4, np.log10(xmax)+4, num_pts)
     prior_y = np.zeros(num_pts)
     post_y = np.zeros(num_pts)
+    prior_mus = []
+    post_mus = []
     for _ in xrange(T):
         mu = norm.rvs(loc=normal_hyperparams[i,0], scale=1./np.sqrt(normal_hyperparams[i,1]))
         tau = gamma.rvs(gamma_hyperparams[i,0], scale=1./gamma_hyperparams[i,1])
+        prior_mus.append(mu)
         prior_y += lognorm.pdf(x, s=1./np.sqrt(tau), scale=np.exp(mu))
         
         rand_idx = npr.randint(saved_its)
         mu_sample, tau_sample = chain[rand_idx, [i, num_gs+i]]
+        post_mus.append(mu_sample)
         post_y += lognorm.pdf(x, s=1./np.sqrt(tau_sample), scale=np.exp(mu_sample))
         
     prior_y /= T
     post_y /= T
-    ax3 = ax2.twinx()
-    ax3.set_ylabel("Probability density")
-    ax3.plot(x, prior_y, lw=2, color=cs[0], label="Prior pred.")
-    ax3.plot(x, post_y, lw=2, color=cs[1], label="Post. pred.")
-    ax3.legend(loc=2)
+    ax2.set_ylabel("Probability density")
+    ax2.plot(x, prior_y, lw=2, color=cs[0], label="Prior pred.")
+    ax2.plot(x, post_y, lw=2, color=cs[1], label="Post. pred.")
+    ax2.legend(loc=2)
     
-    
+    figg, (axx1, axx2) = plt.subplots(1,2)
+    axx1.hist(prior_mus)
+    axx2.hist(post_mus)    
     #axpp = ax2.twinx()
     #axpp.grid()
     #xlim = ax2.get_xlim()
