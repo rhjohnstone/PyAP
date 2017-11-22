@@ -166,7 +166,16 @@ T = args.num_samples
 color_idx = np.linspace(0, 1, N_e)
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 201
+top_colour = 'blue'
 for i in xrange(num_gs):
+    mu_fig = plt.figure(figsize=(8,6))
+    mu_ax = fig.add_sibplot(111)
+    mu_ax.grid()
+    ax2.hist(chain[:, i], normed=True, bins=40, color=top_colour, edgecolor=top_colour)
+    plt.show()
+    
+    
+    
     fig = plt.figure(figsize=(8,6))
     ax2 = fig.add_subplot(111)
     ax2.grid()
@@ -189,21 +198,22 @@ for i in xrange(num_gs):
     
     x = np.logspace(np.log10(xmin), np.log10(xmax), num_pts)
     prior_y = np.zeros(num_pts)
-    post_y = np.zeros(num_pts)
+    #post_y = np.zeros(num_pts)
     for _ in xrange(T):
         mu = norm.rvs(loc=normal_hyperparams[i,0], scale=1./np.sqrt(normal_hyperparams[i,1]))
         tau = gamma.rvs(gamma_hyperparams[i,0], scale=1./gamma_hyperparams[i,1])
         prior_y += lognorm.pdf(x, s=1./np.sqrt(tau), scale=np.exp(mu))
         
-        rand_idx = npr.randint(saved_its)
-        mu_sample, tau_sample = chain[rand_idx, [i, num_gs+i]]
-        post_y += lognorm.pdf(x, s=1./np.sqrt(tau_sample), scale=np.exp(mu_sample))
+        #rand_idx = npr.randint(saved_its)
+        #mu_sample, tau_sample = chain[rand_idx, [i, num_gs+i]]
+        #post_y += lognorm.pdf(x, s=1./np.sqrt(tau_sample), scale=np.exp(mu_sample))
         
     prior_y /= T
-    post_y /= T
+    #post_y /= T
     ax3 = ax2.twinx()
+    ax3.set_ylabel("Probability density")
     ax3.plot(np.log10(x), prior_y, lw=2, color=cs[0], label="Prior pred.")
-    ax3.plot(np.log10(x), post_y, lw=2, color=cs[1], label="Post. pred.")
+    #ax3.plot(np.log10(x), post_y, lw=2, color=cs[1], label="Post. pred.")
     ax3.legend(loc=2)
     
     
