@@ -192,23 +192,19 @@ for i in xrange(num_gs):
             xmin = temp_min
         if temp_max > xmax:
             xmax = temp_max
-        ax2.axvline(np.log(expt_params[n, i]), color='red', lw=2)
+        ax2.axvline(np.log10(expt_params[n, i]), color='red', lw=2)
     plt.xticks(rotation=30)
     
     x = np.logspace(np.log10(xmin)-4, np.log10(xmax)+4, num_pts)
     prior_y = np.zeros(num_pts)
     post_y = np.zeros(num_pts)
-    prior_mus = []
-    post_mus = []
     for _ in xrange(T):
         mu = norm.rvs(loc=normal_hyperparams[i,0], scale=1./np.sqrt(normal_hyperparams[i,1]))
         tau = gamma.rvs(gamma_hyperparams[i,0], scale=1./gamma_hyperparams[i,1])
-        prior_mus.append(mu)
         prior_y += lognorm.pdf(x, s=1./np.sqrt(tau), scale=np.exp(mu))
         
         rand_idx = npr.randint(saved_its)
         mu_sample, tau_sample = chain[rand_idx, [i, num_gs+i]]
-        post_mus.append(mu_sample)
         post_y += lognorm.pdf(x, s=1./np.sqrt(tau_sample), scale=np.exp(mu_sample))
         
     prior_y /= T
@@ -218,29 +214,6 @@ for i in xrange(num_gs):
     #ax2.plot(x, post_y, lw=2, color=cs[1], label="Post. pred.")
     ax2.legend(loc=2)
     
-    figg, (axx1, axx2) = plt.subplots(1,2)
-    axx1.hist(prior_mus)
-    axx2.hist(post_mus)    
-    #axpp = ax2.twinx()
-    #axpp.grid()
-    #xlim = ax2.get_xlim()
-    #x = np.linspace(0.8*xlim[0], 1.2*xlim[1], num_pts)
-    #post_y = np.zeros(num_pts)
-    #prior_y = np.zeros(num_pts)
-    #for t in xrange(T):
-    #    post_y += norm.pdf(x, loc=chain[t,i], scale=np.sqrt(chain[t,num_gs+i]))/(1.-norm.cdf(0, loc=chain[t,i], scale=np.sqrt(chain[t,num_gs+i])))  # scale for truncating at 0
-    #    mean_sample, s2_sample = sample_from_N_IG(old_eta_js[i, :])
-    #    prior_y += norm.pdf(x, loc=mean_sample, scale=np.sqrt(s2_sample))/(1.-norm.cdf(0, loc=mean_sample, scale=np.sqrt(s2_sample)))  # scale for truncating at 0
-    #post_y /= T
-    #prior_y /= T
-    #axpp.plot(x, post_y, lw=2, color=cs[0], label='Post. pred.')
-    #axpp.plot(x, prior_y, lw=2, color=cs[1], label='Prior pred.')
-    #ylim = axpp.get_ylim()
-    #axpp.set_ylim(0, ylim[1])
-    #axpp.set_ylabel('Probability density')
-    #axpp.legend()
-    #axpp.set_yticks(np.linspace(axpp.get_yticks()[0],axpp.get_yticks()[-1],len(ax2.get_yticks())))
-
 
     fig.tight_layout()
     #fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
