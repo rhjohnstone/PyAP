@@ -155,24 +155,6 @@ mu = np.log(original_gs) - s**2/2
 tau = np.ones(num_gs)/np.sqrt(s)
 
 
-mus_cur = npcopy(mu)
-taus_cur = npcopy(tau)
-g_is_cur = npcopy(starting_points)
-
-taus_cur[taus_cur<=0] = 1e-3
-g_is_cur[g_is_cur<=0] = 1e-3
-
-noise_sigma_cur = 0.5
-
-cov_proposal_scale = 0.0001
-sigma_proposal_scale = 1.
-
-
-
-
-
-
-
 
 
 
