@@ -126,7 +126,6 @@ def sample_from_updated_top_tau_gamma(new_alpha, new_beta):
     return tau_sample
 
 
-num_pts = len(expt_times)
 
 #sys.exit()
 
