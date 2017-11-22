@@ -157,10 +157,6 @@ mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options[
 
 initial_it_file = log_file[:-4]+"_initial_iteration.txt"
 
-coeffs = [1, -1, 0, 0, -16]
-roots = np.roots(coeffs)
-assert(np.isreal(roots[0]))
-v = float(roots[0])  # manually ascertained
 
 gamma_hyperparams = np.zeros((num_gs,2))
 gamma_hyperparams[:,0] = 10.  # alpha
@@ -232,16 +228,13 @@ g_is_cur = npcopy(starting_points)
 taus_cur[taus_cur<=0] = 1e-3
 g_is_cur[g_is_cur<=0] = 1e-3
 
-for i in xrange(N_e):
-    g_is_cur[i, :] = np.exp(mus_cur)
-
 noise_sigma_cur = 0.5
 
 cov_proposal_scale = 0.0001
 sigma_proposal_scale = 1.
 
 
-print "\n\n", g_is_cur, "\n\n"
+print "\n\ninitial g_is_cur:\n", g_is_cur, "\n\n"
 
 
 
