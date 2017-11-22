@@ -87,17 +87,13 @@ mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options[
 
 initial_it_file = log_file[:-4]+"_initial_iteration.txt"
 
-coeffs = [1, -1, 0, 0, -16]
-roots = np.roots(coeffs)
-assert(np.isreal(roots[0]))
-v = float(roots[0])  # manually ascertained
 
 gamma_hyperparams = np.zeros((num_gs,2))
-gamma_hyperparams[:,0] = 3.  # alpha
-gamma_hyperparams[:,1] = (gamma_hyperparams[:,0]-1.)*np.log(v)  # beta
+gamma_hyperparams[:,0] = 10.  # alpha
+gamma_hyperparams[:,1] = 0.25 * np.log(10)**2 * (gamma_hyperparams[:,0]-1.)  # beta
 
 normal_hyperparams = np.zeros((num_gs,2))
-normal_hyperparams[:,0] = np.log(original_gs) + gamma_hyperparams[:,1] / (gamma_hyperparams[:,0]-1.)  # s
+normal_hyperparams[:,0] = np.log(original_gs) + 0.25 * np.log(10)**2  # s
 normal_hyperparams[:,1] = 4.  # lambda
 
 
