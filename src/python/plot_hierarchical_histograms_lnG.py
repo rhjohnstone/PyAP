@@ -89,6 +89,7 @@ expt_params = np.loadtxt(expt_params_file)[:N_e,:]
 color_idx = np.linspace(0, 1, N_e)
 mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
 chain = np.loadtxt(mcmc_file)
+saved_its, d = chain.shape
 chain = chain[saved_its/2:, :]
 saved_its, d = chain.shape
 
@@ -135,16 +136,17 @@ for i in xrange(num_gs):
     axpp.grid()
     xlim = ax2.get_xlim()
     x = np.linspace(0.8*xlim[0], 1.2*xlim[1], num_pts)
-    #post_y = np.zeros(num_pts)
     prior_y = np.zeros(num_pts)
+    post_y = np.zeros(num_pts)
     for t in xrange(T):
-        #post_y += norm.pdf(x, loc=chain[t,i], scale=np.sqrt(chain[t,num_gs+i]))
         mean_sample, s2_sample = sample_from_N_IG(old_eta_js[i, :])
         prior_y += norm.pdf(x, loc=mean_sample, scale=np.sqrt(s2_sample))
-    #post_y /= T
+        idx = npr.randint(saved_its)
+        post_y += norm.pdf(x, loc=chain[idx,i], scale=np.sqrt(chain[idx,num_gs+i]))
     prior_y /= T
-    #axpp.plot(x, post_y, lw=2, color=cs[0], label='Post. pred.')
-    axpp.plot(x, prior_y, lw=2, color=cs[1], label='Prior pred.')
+    post_y /= T
+    axpp.plot(x, prior_y, lw=2, color=cs[0], label='Prior pred.')
+    axpp.plot(x, post_y, lw=2, color=cs[1], label='Post. pred.')
     ylim = axpp.get_ylim()
     axpp.set_ylim(0, ylim[1])
     axpp.set_ylabel('Probability density')
