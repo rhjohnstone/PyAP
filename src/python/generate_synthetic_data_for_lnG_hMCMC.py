@@ -65,6 +65,11 @@ elif model==6:
     label = "davies"
 elif model==7:
     label = "paci"
+    
+if model==666:
+    cpp_model = 2
+else:
+    cpp_model = model
 
 expt_name = "synthetic_{}_lnG".format(label)
 expt_dir = "../workspace/PyAP/src/python/input/{}/".format(expt_name)
@@ -126,7 +131,7 @@ expt_times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
 
 ap_model = ap_simulator.APSimulator()
 ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
-ap_model.DefineModel(pyap_options["model_number"])
+ap_model.DefineModel(cpp_model)
 ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
 ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
 ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
