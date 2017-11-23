@@ -125,7 +125,9 @@ with open(expt_params_file, "w") as outfile:
     outfile.write("# generated with solver tolerances 1e-10, 1e-12\n")
     outfile.write("# {}\n".format(model_name))
     outfile.write("# {} sets of parameter values\n".format(num_expts))
-    outfile.write("# standard deviation for Normally-generated parameters: {}\n".format(expt_params_normal_sd))
+    outfile.write("# Expt ln(G)s Normally distributed\n")
+    outfile.write("# m_true: {}\n".format(m_true))
+    outfile.write("# sigma2_true: {}\n".format(sigma2_true))
     np.savetxt(outfile, all_expt_params)
 
 expt_times = np.arange(solve_start,solve_end+solve_timestep,solve_timestep)
