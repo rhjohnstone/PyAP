@@ -286,7 +286,7 @@ np.savetxt(initial_it_file, MCMC[0, :])
 
 covariances = []
 for i in range(N_e):
-    covariances.append(cov_proposal_scale*np.diag(theta_is_cur[i,:]))
+    covariances.append(cov_proposal_scale*np.diag(theta_is_cur[i,:]**2))
 print "covariances:\n", covariances, "\n"
 
 means = npcopy(theta_is_cur)
