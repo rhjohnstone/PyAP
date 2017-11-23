@@ -141,6 +141,8 @@ print [len(et) for et in expt_traces]
 #plt.show()
 print "best_fit_params:\n", best_fits_params
 
+best_fits_params[best_fits_params<0] = 1e-5
+
 starting_points = np.log(best_fits_params)
 
 
@@ -224,25 +226,12 @@ sigma_proposal_scale = 0.1
 print "top_theta_cur:\n"
 print top_theta_cur, "\n"
 
-for i in range(len(top_theta_cur)):
-    if (top_theta_cur[i] < 0):
-        top_theta_cur[i] = 0
-print "top_theta_cur:\n"
-print top_theta_cur, "\n"
 
 print "theta_is_cur:\n"
 print theta_is_cur, "\n"
-        
-theta_is_cur[theta_is_cur<0] = 0.
-            
-print "theta_is_cur:\n"
-print theta_is_cur, "\n"
 
 
-theta_is_cur = np.log(theta_is_cur)
-
-
-noise_sigma_cur = compute_initial_sigma(expt_traces,temp_test_traces_cur)
+noise_sigma_cur = compute_initial_sigma(expt_traces, temp_test_traces_cur)
 
 print "noise_sigma_cur:\n", noise_sigma_cur
 
