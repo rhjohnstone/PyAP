@@ -53,26 +53,18 @@ model = args.model
 
 if model==1:
     label="hodgkin_huxley"
-    expt_params_normal_sd = 0.15
-elif model==2:
+elif model==2 or model=666:
     label = "beeler_reuter"
-    expt_params_normal_sd = 0.15
 elif model==3:
     label = "luo_rudy"
-    expt_params_normal_sd = 0.1
 elif model==4:
     label = "ten_tusscher"
-    expt_params_normal_sd = 0.3
 elif model==5:
     label = "ohara"
-    expt_params_normal_sd = 0.2
 elif model==6:
     label = "davies"
-    expt_params_normal_sd = 0.11
 elif model==7:
     label = "paci"
-    expt_params_normal_sd = 0.1
-
 
 expt_name = "synthetic_{}_lnG".format(label)
 expt_dir = "../workspace/PyAP/src/python/input/{}/".format(expt_name)
