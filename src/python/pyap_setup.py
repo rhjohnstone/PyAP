@@ -135,7 +135,7 @@ def get_original_params(model):
         g_parameters = ['G_{Na}', 'G_{K1}', 'G_K', 'G_{CaL}']
     elif (model==666): # Beeler Reuter with null parameter
         model_name = "Beeler Reuter 1977 with null parameter"
-        original_gs = [0.04, 0.0035, 0.008, 9e-4, 3.14]
+        original_gs = [0.04, 0.0035, 0.008, 9e-4, (0.0005/75)*0.04]  # last param to be same relative size as in OH GpCa
         g_parameters = ['G_{Na}', 'G_{K1}', 'G_K', 'G_{CaL}', 'G_{null}']
     elif (model==3): # Luo Rudy
         model_name = "Luo Rudy 1991"
