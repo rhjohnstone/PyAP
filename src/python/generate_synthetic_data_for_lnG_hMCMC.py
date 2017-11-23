@@ -128,7 +128,7 @@ with open(expt_params_file, "w") as outfile:
     outfile.write("# {}\n".format(model_name))
     outfile.write("# {} sets of parameter values\n".format(num_expts))
     outfile.write("# Expt ln(G)s Normally distributed\n")
-    outfile.write("# m_true: {}\n".format(m_true))
+    outfile.write("# m_true: np.log(original_gs)\n")
     outfile.write("# sigma2_true: {}\n".format(sigma2_true))
     np.savetxt(outfile, all_expt_params)
 
