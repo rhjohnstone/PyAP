@@ -15,7 +15,10 @@ from scipy.stats import norm
 def solve_for_voltage_trace(temp_g_params, _ap_model):
     _ap_model.SetToModelInitialConditions()
     try:
-        return _ap_model.SolveForVoltageTraceWithParams(temp_g_params)
+        if model==666:
+            return _ap_model.SolveForVoltageTraceWithParams(temp_g_params[:-1])
+        else:
+            return _ap_model.SolveForVoltageTraceWithParams(temp_g_params)
     except ap_simulator.CPPException, e:
         print e.GetShortMessage
         print "temp_g_params:\n", temp_g_params
