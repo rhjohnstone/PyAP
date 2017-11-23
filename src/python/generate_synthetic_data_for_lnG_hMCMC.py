@@ -74,7 +74,7 @@ elif model==7:
     expt_params_normal_sd = 0.1
 
 
-expt_name = "synthetic_{}".format(label)
+expt_name = "synthetic_{}_lnG".format(label)
 expt_dir = "../workspace/PyAP/src/python/input/{}/".format(expt_name)
 traces_dir = "{}traces/".format(expt_dir)
 if not os.path.exists(traces_dir):
