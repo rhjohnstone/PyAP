@@ -108,6 +108,21 @@ def hierarchical_mcmc_files(model, expt_name, first_trace_name, num_traces, para
     return mcmc_file, log_file, png_dir, pdf_dir
 
 
+def hierarchical_lnG_mcmc_files(model, expt_name, first_trace_name, num_traces, parallel):
+    if arcus_b:
+        first_bit = os.path.expandvars("$DATA/PyAP_output/")
+    else:
+        first_bit = os.path.expanduser("~/PyAP_output/")
+    mcmc_dir = first_bit+"{}/hierarchical_lnG_mcmc_parallel/{}/{}_traces/model_{}/".format(expt_name, first_trace_name, num_traces, model)
+    txt_dir, png_dir, pdf_dir = mcmc_dir+"chain/", mcmc_dir+"figs/png/", mcmc_dir+"figs/pdf/"
+    for d in [txt_dir, png_dir, pdf_dir]:
+        if not os.path.exists(d):
+            os.makedirs(d)
+    mcmc_file = txt_dir+"{}_hMCMC_lnG_{}_with_{}_traces_model_{}.txt".format(expt_name, first_trace_name, num_traces, model)
+    log_file = mcmc_dir+"{}_hMCMC_lnG_{}_with_{}_traces_model_{}.log".format(expt_name, first_trace_name, num_traces, model)
+    return mcmc_file, log_file, png_dir, pdf_dir
+
+
 def get_original_params(model):
     if (model==1): # Hodgkin Huxley
         model_name = "Hodgkin Huxley 1952"
