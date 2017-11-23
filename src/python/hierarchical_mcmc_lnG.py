@@ -17,7 +17,8 @@ multivariate_normal = npr.multivariate_normal
 npcopy = np.copy
 exp = np.exp
 
-def solve_for_voltage_trace(temp_ln_g_params, ap_model_index):
+
+def solve_for_voltage_trace_without_null(temp_ln_g_params, ap_model_index):
     temp_g_params = np.exp(temp_ln_g_params)
     ap_models[ap_model_index].SetToModelInitialConditions()
     try:
@@ -28,8 +29,15 @@ def solve_for_voltage_trace(temp_ln_g_params, ap_model_index):
         return np.zeros(len(expt_times))
         
 
-def solve_star(temp_g_params_and_ap_model_index):
-    return solve_for_voltage_trace(*temp_g_params_and_ap_model_index)
+def solve_for_voltage_trace_with_null(temp_ln_g_params, ap_model_index):
+    temp_g_params = np.exp(temp_ln_g_params[:-1])
+    ap_models[ap_model_index].SetToModelInitialConditions()
+    try:
+        return ap_models[ap_model_index].SolveForVoltageTraceWithParams(temp_g_params)
+    except:
+        print "Failed to solve"
+        print "temp_g_params:", temp_g_params
+        return np.zeros(len(expt_times))
     
 
 python_seed = 1
@@ -67,7 +75,19 @@ with open(options_file, 'r') as infile:
         
 data_clamp_on = pyap_options["data_clamp_on"]
 data_clamp_off = pyap_options["data_clamp_off"]
-        
+
+if (pyap_options["model_number"]==666):
+    cpp_model_number = 2
+    solve_for_voltage_trace = solve_for_voltage_trace_with_null
+else:
+    cpp_model_number = pyap_options["model_number"]
+    solve_for_voltage_trace = solve_for_voltage_trace_without_null
+
+
+def solve_star(temp_g_params_and_ap_model_index):
+    return solve_for_voltage_trace(*temp_g_params_and_ap_model_index)
+
+
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
 
@@ -118,12 +138,12 @@ for i, t in enumerate(trace_numbers):
     temp_ap_model = ap_simulator.APSimulator()
     if (data_clamp_on < data_clamp_off):
         temp_ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
-        temp_ap_model.DefineModel(pyap_options["model_number"])
+        temp_ap_model.DefineModel(cpp_model_number)
         temp_ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
         temp_ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, npcopy(temp_trace))
     else:
         temp_ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
-        temp_ap_model.DefineModel(pyap_options["model_number"])
+        temp_ap_model.DefineModel(cpp_model_number)
     temp_ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
     temp_ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
     temp_ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])

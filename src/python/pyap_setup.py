@@ -10,6 +10,7 @@ CHOICE OF CELL MODEL
 # 7. Paci (SC-CM ventricular)
 # 8. Gokhale 2017 ex293
 # 9. Decker (canine) 2009
+# 666. BR with null parameter (to test hMCMC)
 
 """
 
@@ -132,6 +133,10 @@ def get_original_params(model):
         model_name = "Beeler Reuter 1977"
         original_gs = [0.04, 0.0035, 0.008, 9e-4]
         g_parameters = ['G_{Na}', 'G_{K1}', 'G_K', 'G_{CaL}']
+    elif (model==666): # Beeler Reuter with null parameter
+        model_name = "Beeler Reuter 1977 with null parameter"
+        original_gs = [0.04, 0.0035, 0.008, 9e-4, 3.14]
+        g_parameters = ['G_{Na}', 'G_{K1}', 'G_K', 'G_{CaL}', 'G_{null}']
     elif (model==3): # Luo Rudy
         model_name = "Luo Rudy 1991"
         original_gs = [23, 0.282, 0.6047, 0.09, 0.03921, 0.0183]
