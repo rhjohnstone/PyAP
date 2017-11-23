@@ -163,9 +163,10 @@ for i in xrange(num_gs):
 
 
     fig.tight_layout()
-    #fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
-    plt.show()
+    fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
+    plt.close()
 
+sys.exit()
 for i in xrange(num_gs):
     fig = plt.figure(figsize=(8,6))
     ax = fig.add_subplot(111)
