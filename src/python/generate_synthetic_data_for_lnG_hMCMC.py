@@ -56,8 +56,10 @@ model = args.model
 
 if model==1:
     label="hodgkin_huxley"
-elif model==2 or model==666:
+elif model==2:
     label = "beeler_reuter"
+elif model==666:
+    label = "beeler_reuter_null"
 elif model==3:
     label = "luo_rudy"
 elif model==4:
