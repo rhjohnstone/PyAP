@@ -155,6 +155,7 @@ for i in xrange(num_gs):
     post_y /= T
     axpp.plot(x, prior_y, lw=2, color=cs[0], label='Prior pred.')
     axpp.plot(x, post_y, lw=2, color=cs[1], label='Post. pred.')
+    axpp.plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true), label='True'), color=cs[2])
     ylim = axpp.get_ylim()
     axpp.set_ylim(0, ylim[1])
     axpp.set_ylabel('Probability density')
