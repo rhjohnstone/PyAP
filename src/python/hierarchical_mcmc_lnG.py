@@ -220,7 +220,7 @@ theta_is_cur = npcopy(starting_points)
 #print "theta_is_cur:\n", theta_is_cur
 
 
-cov_proposal_scale = 0.0001
+cov_proposal_scale = 0.01
 sigma_proposal_scale = 0.1
 
 print "top_theta_cur:\n"
@@ -229,6 +229,11 @@ print top_theta_cur, "\n"
 
 print "theta_is_cur:\n"
 print theta_is_cur, "\n"
+
+for i in xrange(N_e):
+    plt.plot(expt_traces[i])
+    plt.plot(temp_test_traces_cur[i])
+plt.show()
 
 
 noise_sigma_cur = compute_initial_sigma(expt_traces, temp_test_traces_cur)
