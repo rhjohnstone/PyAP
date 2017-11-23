@@ -20,14 +20,11 @@ def sample_from_N_IG(eta):
     sample = mu + sqrt(sigma_squared_sample/nu)*randn()
     return sample, sigma_squared_sample
 
-
-
-
-
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
 requiredNamed.add_argument("-n", "--num-traces", type=int, help="which hMCMC to use", required=True)
+requiredNamed.add_argument("-T", "--num-samples", type=int, help="number of samples to plot prior predictive from", required=True)
 parser.add_argument("--different", action="store_true", help="use different initial guess for some params", default=False)
 
 args, unknown = parser.parse_known_args()
@@ -92,9 +89,10 @@ expt_params = np.loadtxt(expt_params_file)[:N_e,:]
 color_idx = np.linspace(0, 1, N_e)
 mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
 chain = np.loadtxt(mcmc_file)
-saved_its, d = chain.shape
 chain = chain[saved_its/2:, :]
-T, d = chain.shape
+saved_its, d = chain.shape
+
+T = args.num_samples
 
 best_fits_params = np.zeros((args.num_traces, num_gs))
 for i in xrange(args.num_traces):
@@ -130,7 +128,7 @@ for i in xrange(num_gs):
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
         ax2.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=None, alpha=2./N_e)
-        ax2.axvline(expt_params[n, i], color='red', lw=2)
+        ax2.axvline(np.log(expt_params[n, i]), color='red', lw=2)
     plt.xticks(rotation=30)
     
     axpp = ax2.twinx()
