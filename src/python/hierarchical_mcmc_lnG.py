@@ -281,7 +281,7 @@ print "noise_sigma_cur:", noise_sigma_cur
 
 MCMC = np.zeros((num_saved_its, (2+N_e)*num_gs+1))
 MCMC[0, :] = np.concatenate((top_theta_cur,top_sigma_squareds_cur,theta_is_cur.flatten(),[noise_sigma_cur]))
-print "\n", MCMC, "\n"
+#print "\n", MCMC, "\n"
 np.savetxt(initial_it_file, MCMC[0, :])
 
 covariances = []
