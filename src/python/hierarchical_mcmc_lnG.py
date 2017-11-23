@@ -230,10 +230,10 @@ print top_theta_cur, "\n"
 print "theta_is_cur:\n"
 print theta_is_cur, "\n"
 
-for i in xrange(N_e):
-    plt.plot(expt_times, expt_traces[i,:])
-    plt.plot(expt_times, temp_test_traces_cur[i,:])
-plt.show()
+#for i in xrange(N_e):
+#    plt.plot(expt_times, expt_traces[i,:])
+#    plt.plot(expt_times, temp_test_traces_cur[i,:])
+#plt.show()
 
 
 noise_sigma_cur = compute_initial_sigma(expt_traces, temp_test_traces_cur)
