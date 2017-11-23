@@ -125,11 +125,19 @@ for i in xrange(num_gs):
     ax2.set_xlabel("log({})".format(g_labels[i]))
     ax2.set_ylabel("Normalised frequency")
     #ax2.axvline(original_gs[i], color='green', lw=2, label='true top')
+    xmin = 1e9
+    xmax = -1e9
     for n in xrange(N_e):
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
         ax2.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=None, alpha=2./N_e)
         ax2.axvline(np.log(expt_params[n, i]), color='red', lw=2)
+        temp_min = np.min(chain[:, idx])
+        temp_max = np.max(chain[:, idx])
+        if temp_min < xmin:
+            xmin = temp_min
+        if temp_max > xmax:
+            xmax = temp_max
     plt.xticks(rotation=30)
     
     axpp = ax2.twinx()
