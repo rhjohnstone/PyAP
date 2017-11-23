@@ -131,7 +131,7 @@ for i, t in enumerate(trace_numbers):
     temp_ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
     temp_ap_model.SetNumberOfSolves(pyap_options["num_solves"])
     ap_models.append(temp_ap_model)
-    temp_test_traces_cur.append(npcopy(solve_for_voltage_trace(best_params, i)))
+    temp_test_traces_cur.append(npcopy(solve_for_voltage_trace(np.log(best_params), i)))
 expt_traces = np.array(expt_traces)
 temp_test_traces_cur = np.array(temp_test_traces_cur)
 
@@ -231,8 +231,8 @@ print "theta_is_cur:\n"
 print theta_is_cur, "\n"
 
 for i in xrange(N_e):
-    plt.plot(expt_traces[i])
-    plt.plot(temp_test_traces_cur[i])
+    plt.plot(expt_times, expt_traces[i,:])
+    plt.plot(expt_times, temp_test_traces_cur[i,:])
 plt.show()
 
 
