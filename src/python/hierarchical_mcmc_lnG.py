@@ -220,7 +220,7 @@ theta_is_cur = npcopy(starting_points)
 #print "theta_is_cur:\n", theta_is_cur
 
 
-cov_proposal_scale = 0.01
+cov_proposal_scale = 0.001
 sigma_proposal_scale = 0.1
 
 print "top_theta_cur:\n"
@@ -359,8 +359,6 @@ pool.close()
 pool.join()
 MCMC = MCMC[burn:, :]
 
-    
-MCMC, logas, sigma_loga, acceptances, sigma_acceptance = do_mcmc()
 np.savetxt(mcmc_file, MCMC)
         
 tt = time.time()-start
