@@ -123,14 +123,14 @@ for i in xrange(num_gs):
     fig = plt.figure(figsize=(8,6))
     ax2 = fig.add_subplot(111)
     ax2.grid()
-    ax2.set_xlabel(g_labels[i])
+    ax2.set_xlabel("log({})".format(g_labels[i]))
     ax2.set_ylabel("Normalised frequency")
     #ax2.axvline(original_gs[i], color='green', lw=2, label='true top')
     for n in xrange(N_e):
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
         ax2.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=None, alpha=2./N_e)
-        #ax2.axvline(expt_params[n, i], color='red', lw=2)
+        ax2.axvline(expt_params[n, i], color='red', lw=2)
     plt.xticks(rotation=30)
     
     axpp = ax2.twinx()
@@ -143,7 +143,7 @@ for i in xrange(num_gs):
         #post_y += norm.pdf(x, loc=chain[t,i], scale=np.sqrt(chain[t,num_gs+i]))
         mean_sample, s2_sample = sample_from_N_IG(old_eta_js[i, :])
         prior_y += norm.pdf(x, loc=mean_sample, scale=np.sqrt(s2_sample))
-    post_y /= T
+    #post_y /= T
     prior_y /= T
     #axpp.plot(x, post_y, lw=2, color=cs[0], label='Post. pred.')
     axpp.plot(x, prior_y, lw=2, color=cs[1], label='Prior pred.')
