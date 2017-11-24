@@ -111,9 +111,12 @@ m_true = np.log(original_gs)
 sigma2_true = 0.04
 
 num_expts = 32
-all_expt_params = np.zeros((num_expts, num_gs))
-for i in xrange(num_expts):
-    all_expt_params[i, :] = norm.rvs(m_true, scale=np.sqrt(sigma2_true))
+
+#all_expt_params = np.zeros((num_expts, num_gs))
+#for i in xrange(num_expts):
+#    all_expt_params[i, :] = norm.rvs(m_true, scale=np.sqrt(sigma2_true))
+    
+all_expt_params = norm.rvs(loc=m_true, scale=np.sqrt(sigma2_true), size=(num_expts, num_gs))
 all_expt_params = np.exp(all_expt_params)
 
 print original_gs, "\n"
