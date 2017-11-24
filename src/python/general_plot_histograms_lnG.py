@@ -35,7 +35,7 @@ trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 params_file = '/'.join( split_trace_path[:5] ) + "/expt_params.txt"
 
-trace_number = trace_name.split("_")[-1]
+trace_number = int(trace_name.split("_")[-1])
 expt_params = np.loadtxt(params_file)[trace_number, :]
 
 pyap_options = {}
