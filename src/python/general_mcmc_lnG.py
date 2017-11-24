@@ -111,7 +111,7 @@ def log_target(temp_params, ap_model, expt_trace):
             test_trace = solve_for_voltage_trace(temp_lnGs, ap_model, expt_trace)
         except:
             #print "Failed to solve at iteration", t
-            print "exp(temp_lnGs):\n", exp(temp_lnGs)
+            print "exp(temp_lnGs):\n", npexp(temp_lnGs)
             print "original_gs:\n", original_gs
             return -np.inf
         return - num_pts*nplog(temp_sigma) - npsum((test_trace-expt_trace)**2)/(2.*temp_sigma**2) - npsum((temp_lnGs-log_gs)**2)/two_omega_sq
