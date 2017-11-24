@@ -5,6 +5,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import sys
 import argparse
+from scipy.stats import norm
 #import ap_simulator
 
 
@@ -95,6 +96,11 @@ figg.tight_layout()
 figg.savefig(png_dir+"best_mcmc_fit.png")
 figg.savefig(png_dir+"best_mcmc_fit.pdf")"""
 
+m_true = np.log(original_gs)
+sigma2_true = 0.04
+
+cs = ['#1b9e77','#d95f02','#7570b3']
+num_prior_pts = 201
 for i in xrange(num_gs+1):
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -106,8 +112,14 @@ for i in xrange(num_gs+1):
     else:
         ax.set_xlabel(r"$\sigma$")
         savelabel = png_dir+'sigma_marginal.png'
-    ax.hist(chain[:,i], normed=True, bins=40, color='blue', edgecolor='blue')
-    ax.axvline(best_params[i], color='red', lw=2)
+    ax.hist(chain[:,i], normed=True, bins=40, color=cs[0], edgecolor=cs[0])
+    xlim = ax.get_xlim()
+    ax2 = ax.twinx()
+    ax2.grid()
+    x = np.linspace(xlim[0], xlim[1], num_prior_pts)
+    ax2.plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label='Prior')
+    ax2.axvline(best_params[i], color=cs[2], lw=2, label="True expt")
+    ax2.legend()
     fig.tight_layout()
     fig.savefig(savelabel)
     plt.close()
