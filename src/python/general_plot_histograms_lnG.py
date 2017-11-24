@@ -120,16 +120,15 @@ for i in xrange(num_gs+1):
         ax.set_xlabel(r"$\sigma$")
         savelabel = png_dir+'sigma_marginal.png'
     ax.hist(chain[:,i], normed=True, bins=40, color=cs[0], edgecolor=cs[0])
-    ax.axvline(best_params[i], color=cs[2], lw=2, label="Best")
-    ax.legend(loc=2)
     if i < num_gs:
-        ax.axvline(expt_params[i], lw=2, color='black', label='Expt')
         xlim = ax.get_xlim()
         xlength = xlim[1]-xlim[0]
         ax2 = ax.twinx()
         ax2.grid()
         x = np.linspace(xlim[0]-0.2*xlength, xlim[1]+0.2*xlength, num_prior_pts)
         ax2.plot(x, norm.pdf(x, loc=prior_mean[i], scale=prior_sd), lw=2, color=cs[1], label='Prior')
+        ax2.axvline(np.log(expt_params[i]), lw=2, color='black', label='Expt')
+        ax2.axvline(best_params[i], color=cs[2], lw=2, label="Best")
         ax2.legend()
     fig.tight_layout()
     fig.savefig(savelabel)
