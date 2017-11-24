@@ -108,7 +108,7 @@ num_gs = len(original_gs)
 #expt_params[np.where(expt_params<0.)] = 0.
 
 m_true = np.log(original_gs)
-sigma2_true = 0.04
+sigma2_true = 0.01
 
 num_expts = 32
 
