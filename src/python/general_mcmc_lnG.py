@@ -81,8 +81,8 @@ def log_target(temp_params, ap_model, expt_trace):
         return - num_pts*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2) - np.sum((temp_lnGs-log_gs)**2)/two_omega_sq
 
     
-def compute_initial_sigma(temp_gs, ap_model, expt_trace):
-    test_trace = solve_for_voltage_trace(temp_gs, ap_model, expt_trace)
+def compute_initial_sigma(temp_lnGs, ap_model, expt_trace):
+    test_trace = solve_for_voltage_trace(temp_lnGs, ap_model, expt_trace)
     
     plt.plot(expt_trace)
     plt.plot(test_trace)
@@ -119,7 +119,7 @@ def do_mcmc_adaptive(ap_model, expt_trace):
         expt_gs = np.loadtxt(cheat_params_file)[trace_number, :]
         initial_gs = expt_gs
     initial_ln_gs = np.log(initial_gs)
-    initial_sigma = compute_initial_sigma(initial_gs, ap_model, expt_trace)
+    initial_sigma = compute_initial_sigma(initial_ln_gs, ap_model, expt_trace)
     if initial_sigma < sigma_uniform_lower:
         temp_sigma = sigma_uniform_lower + 1e-3
     elif initial_sigma > sigma_uniform_upper:
