@@ -100,12 +100,12 @@ m_true = np.log(original_gs)
 sigma2_true = 0.04
 
 prior_mean = np.log(original_gs)
-prior_sd = 0.5*nplog(10)  # s.d. of Normal priors on lnGs
+prior_sd = 0.5*np.log(10)  # s.d. of Normal priors on lnGs
 
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_prior_pts = 201
 for i in xrange(num_gs+1):
-    fig = plt.figure()
+    fig = plt.figure(figsize=(4,3))
     ax = fig.add_subplot(111)
     ax.grid()
     ax.set_ylabel('Marginal density')
@@ -117,12 +117,14 @@ for i in xrange(num_gs+1):
         savelabel = png_dir+'sigma_marginal.png'
     ax.hist(chain[:,i], normed=True, bins=40, color=cs[0], edgecolor=cs[0])
     ax.axvline(best_params[i], color=cs[2], lw=2, label="Best")
+    ax.legend(loc=2)
     if i < num_gs:
         xlim = ax.get_xlim()
         ax2 = ax.twinx()
         ax2.grid()
         x = np.linspace(xlim[0]-1, xlim[1]+1, num_prior_pts)
         ax2.plot(x, norm.pdf(x, loc=prior_mean[i], scale=prior_sd), lw=2, color=cs[1], label='Prior')
+        ax2.axvline(prior_mean[i], lw=2, color=cs[1])
         ax2.legend()
     fig.tight_layout()
     fig.savefig(savelabel)
