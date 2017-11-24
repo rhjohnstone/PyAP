@@ -99,6 +99,9 @@ figg.savefig(png_dir+"best_mcmc_fit.pdf")"""
 m_true = np.log(original_gs)
 sigma2_true = 0.04
 
+prior_mean = np.log(original_gs)
+prior_sd = 0.5*nplog(10)  # s.d. of Normal priors on lnGs
+
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_prior_pts = 201
 for i in xrange(num_gs+1):
@@ -118,8 +121,8 @@ for i in xrange(num_gs+1):
         xlim = ax.get_xlim()
         ax2 = ax.twinx()
         ax2.grid()
-        x = np.linspace(xlim[0]-2, xlim[1]+2, num_prior_pts)
-        ax2.plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label='Prior')
+        x = np.linspace(xlim[0]-1, xlim[1]+1, num_prior_pts)
+        ax2.plot(x, norm.pdf(x, loc=prior_mean[i], scale=prior_sd), lw=2, color=cs[1], label='Prior')
         ax2.legend()
     fig.tight_layout()
     fig.savefig(savelabel)
