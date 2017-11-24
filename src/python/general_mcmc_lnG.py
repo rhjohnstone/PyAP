@@ -129,6 +129,7 @@ def compute_initial_sigma(temp_lnGs, ap_model, expt_trace):
 
 
 def do_mcmc_adaptive(ap_model, expt_trace):
+    initial_it_file = log_file[:-4]+"_initial_iteration.txt"
     npr.seed(args.seed)
     print "Starting chain"
     start = time.time()
@@ -175,6 +176,7 @@ def do_mcmc_adaptive(ap_model, expt_trace):
 
     chain = np.zeros((num_saved, num_params+1))
     chain[0, :] = np.concatenate((theta_cur, [log_target_cur]))
+    np.savetxt(initial_it_file, chain[0, :])
 
     loga = 0.
     acceptance = 0.    
