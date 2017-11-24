@@ -101,7 +101,7 @@ figg.savefig(png_dir+"best_mcmc_fit.png")
 figg.savefig(png_dir+"best_mcmc_fit.pdf")"""
 
 m_true = np.log(original_gs)
-sigma2_true = 0.04
+sigma2_true = 0.01
 
 prior_mean = np.log(original_gs)
 prior_sd = 0.5*np.log(10)  # s.d. of Normal priors on lnGs
