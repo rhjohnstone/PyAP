@@ -68,11 +68,8 @@ def mcmc_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscal
     return mcmc_file, log_file, png_dir
     
     
-def mcmc_lnG_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscaled, non_adaptive):
-    if non_adaptive:
-        adaptive_bit = "non_adaptive_mcmc_lnG"
-    else:
-        adaptive_bit = "adaptive_mcmc_lnG"
+def mcmc_lnG_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscaled):
+    adaptive_bit = "adaptive_mcmc_lnG"
     if arcus_b:
         first_bit = os.path.expandvars("$DATA/PyAP_output/")
     else:

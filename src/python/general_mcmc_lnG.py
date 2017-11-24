@@ -189,12 +189,7 @@ def do_mcmc_adaptive(ap_model, expt_trace):
     return chain[burn:,:], loga, acceptance
 
 
-
-
-if args.non_adaptive:
-    do_mcmc = do_mcmc_non_adaptive
-else:
-    do_mcmc = do_mcmc_adaptive
+do_mcmc = do_mcmc_adaptive
 
 protocol = 1
 solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
@@ -235,7 +230,7 @@ ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
 ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 
 
-mcmc_file, log_file, png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled, args.non_adaptive)
+mcmc_file, log_file, png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled)
 log_start_time = time.time()
 chain, final_loga, final_acceptance = do_mcmc(ap_model, expt_trace)
 num_saved = chain.shape[0]
