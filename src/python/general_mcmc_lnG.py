@@ -83,6 +83,12 @@ def log_target(temp_params, ap_model, expt_trace):
     
 def compute_initial_sigma(temp_gs, ap_model, expt_trace):
     test_trace = solve_for_voltage_trace(temp_gs, ap_model, expt_trace)
+    
+    plt.plot(expt_trace)
+    plt.plot(test_trace)
+    plt.show()
+    sys.exit()
+    
     return np.sqrt(np.sum((test_trace-expt_trace)**2)/len(expt_trace))
     
 
@@ -124,9 +130,6 @@ def do_mcmc_adaptive(ap_model, expt_trace):
             theta_cur[jj] = np.log(10. * original_gs[jj] * npr.rand())
     cov_estimate = 0.001*np.diag(theta_cur**2)
     print "\ntheta_cur:", theta_cur, "\n"
-    plt.plot(expt_trace)
-    plt.show()
-    sys.exit()
     log_target_cur = log_target(theta_cur, ap_model, expt_trace)
 
     total_iterations = args.iterations
