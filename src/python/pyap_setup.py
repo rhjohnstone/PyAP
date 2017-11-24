@@ -79,8 +79,8 @@ def mcmc_lnG_file_log_file_and_figs_dirs(model_number, expt_name, trace_name):
     for d in [txt_dir, png_dir]:
         if not os.path.exists(d):
             os.makedirs(d)
-    mcmc_file = txt_dir+"{}_lnG_model_{}_trace_{}_{}_{}.txt".format(expt_name, model_number, trace_name, scale_bit, adaptive_bit)
-    log_file = mcmc_dir+"{}_lnG_model_{}_trace_{}_{}_{}.log".format(expt_name, model_number, trace_name, scale_bit, adaptive_bit)
+    mcmc_file = txt_dir+"{}_lnG_model_{}_trace_{}_{}.txt".format(expt_name, model_number, trace_name, adaptive_bit)
+    log_file = mcmc_dir+"{}_lnG_model_{}_trace_{}_{}.log".format(expt_name, model_number, trace_name, adaptive_bit)
     return mcmc_file, log_file, png_dir
 
 
