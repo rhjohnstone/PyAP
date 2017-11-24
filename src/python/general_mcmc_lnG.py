@@ -132,7 +132,7 @@ def do_mcmc_adaptive(ap_model, expt_trace):
     if args.different:
         for jj in [9,10,11]:
             theta_cur[jj] = np.log(10. * original_gs[jj] * npr.rand())
-    cov_estimate = 0.001*np.diag(theta_cur**2)
+    cov_estimate = 0.0001*np.diag(theta_cur**2)
     print "\ntheta_cur:", theta_cur, "\n"
     log_target_cur = log_target(theta_cur, ap_model, expt_trace)
 
