@@ -249,7 +249,7 @@ with open(log_file, "w") as outfile:
     outfile.write("Final loga: {}\n".format(final_loga))
     outfile.write("Final acceptance rate: {}\n".format(final_acceptance))
 print "\nSaved MCMC output at {}\n".format(mcmc_file)
-return None
+
 
 
 
