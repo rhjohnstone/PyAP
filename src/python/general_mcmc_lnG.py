@@ -64,7 +64,7 @@ else:
     solve_for_voltage_trace = solve_for_voltage_trace_without_initial_V
 
 
-def log_target_unscaled(temp_params, ap_model, expt_trace):
+def log_target(temp_params, ap_model, expt_trace):
     """Log target distribution with Normal prior for lnGs, uniform for sigma"""
     temp_lnGs, temp_sigma = temp_params[:-1], temp_params[-1]
     if not (sigma_uniform_lower < temp_sigma < sigma_uniform_upper):
@@ -183,9 +183,6 @@ def do_mcmc_adaptive(ap_model, expt_trace):
     # discard burn-in before saving chain, just to save space mostly
     time_taken = int(time.time() - start)
     print "\n\nTime taken: {} s = {} min\n\n".format(time_taken,time_taken/60)
-    #chain = chain[burn:, :]
-    if not args.unscaled:
-        chain[:,:-2] = original_gs**chain[:,:-2]  # return params scaled back into G-space
     return chain[burn:,:], loga, acceptance
 
 
@@ -230,7 +227,7 @@ ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
 ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 
 
-mcmc_file, log_file, png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name, args.unscaled)
+mcmc_file, log_file, png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name)
 log_start_time = time.time()
 chain, final_loga, final_acceptance = do_mcmc(ap_model, expt_trace)
 num_saved = chain.shape[0]
