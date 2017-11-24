@@ -7,6 +7,7 @@ import numpy.random as npr
 import time
 import multiprocessing as mp
 import argparse
+import matplotlib.pyplot as plt
 
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
@@ -123,6 +124,9 @@ def do_mcmc_adaptive(ap_model, expt_trace):
             theta_cur[jj] = np.log(10. * original_gs[jj] * npr.rand())
     cov_estimate = 0.001*np.diag(theta_cur**2)
     print "\ntheta_cur:", theta_cur, "\n"
+    plt.plot(expt_trace)
+    plt.show()
+    sys.exit()
     log_target_cur = log_target(theta_cur, ap_model, expt_trace)
 
     total_iterations = args.iterations
