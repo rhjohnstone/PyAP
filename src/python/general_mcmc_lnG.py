@@ -45,6 +45,13 @@ with open(options_file, 'r') as infile:
 data_clamp_on = pyap_options["data_clamp_on"]
 data_clamp_off = pyap_options["data_clamp_off"]
 
+if (pyap_options["model_number"]==666):
+    cpp_model_number = 2
+    solve_for_voltage_trace = solve_for_voltage_trace_with_null
+else:
+    cpp_model_number = pyap_options["model_number"]
+    solve_for_voltage_trace = solve_for_voltage_trace_without_null
+
 
 sigma_uniform_lower = 1e-3
 sigma_uniform_upper = 25.
@@ -230,12 +237,12 @@ solve_timestep = expt_times[1] - expt_times[0]
 ap_model = ap_simulator.APSimulator()
 if (data_clamp_on < data_clamp_off):
     ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
-    ap_model.DefineModel(pyap_options["model_number"])
+    ap_model.DefineModel(cpp_model_number)
     ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
     ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
 else:
     ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
-    ap_model.DefineModel(pyap_options["model_number"])
+    ap_model.DefineModel(cpp_model_number)
 ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
 ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
 ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
