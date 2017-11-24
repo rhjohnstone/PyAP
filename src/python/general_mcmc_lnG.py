@@ -61,8 +61,10 @@ def solve_for_voltage_trace_without_initial_V(temp_lnG_params, ap_model, expt_tr
 
 if data_clamp_on < data_clamp_off:
     solve_for_voltage_trace = solve_for_voltage_trace_with_initial_V
+    print "Solving after setting V(0) = data(0)"
 else:
     solve_for_voltage_trace = solve_for_voltage_trace_without_initial_V
+    print "Solving without setting V(0) = data(0)"
 
 
 def log_target(temp_params, ap_model, expt_trace):
