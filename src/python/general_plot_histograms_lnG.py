@@ -130,6 +130,7 @@ for i in xrange(num_gs+1):
         ax2.axvline(np.log(expt_params[i]), lw=2, color='black', label='Expt')
         ax2.axvline(best_params[i], color=cs[2], lw=2, label="Best")
         ax2.legend()
+        ax2.set_ylim(0, ax2.get_ylim()[1])
     fig.tight_layout()
     fig.savefig(savelabel)
     plt.close()
