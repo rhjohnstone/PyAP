@@ -9,6 +9,10 @@ import multiprocessing as mp
 import argparse
 import matplotlib.pyplot as plt
 
+npsum = np.sum
+npexp = np.exp
+nplog = np.log
+
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
@@ -44,20 +48,20 @@ data_clamp_off = pyap_options["data_clamp_off"]
 
 sigma_uniform_lower = 1e-3
 sigma_uniform_upper = 25.
-omega = 0.5*np.log(10)  # s.d. of Normal priors on lnGs
+omega = 0.5*nplog(10)  # s.d. of Normal priors on lnGs
 two_omega_sq = 2.*omega**2
 
 
 def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace):
     ap_model.SetToModelInitialConditions()
     ap_model.SetVoltage(expt_trace[0])
-    return ap_model.SolveForVoltageTraceWithParams(np.exp(temp_lnG_params))
+    return ap_model.SolveForVoltageTraceWithParams(npexp(temp_lnG_params))
 
 
 def solve_for_voltage_trace_without_initial_V(temp_lnG_params, ap_model, expt_trace):
     ap_model.SetToModelInitialConditions()
     try:
-        return ap_model.SolveForVoltageTraceWithParams(np.exp(temp_lnG_params))
+        return ap_model.SolveForVoltageTraceWithParams(npexp(temp_lnG_params))
     except:
         print "\n\nFAIL\n\n"
         sys.exit()
@@ -78,13 +82,13 @@ def log_target(temp_params, ap_model, expt_trace):
         return -np.inf
     else:
         try:
-            test_trace = solve_for_voltage_trace(np.exp(temp_lnGs), ap_model, expt_trace)
+            test_trace = solve_for_voltage_trace(temp_lnGs, ap_model, expt_trace)
         except:
             #print "Failed to solve at iteration", t
             print "exp(temp_lnGs):\n", exp(temp_lnGs)
             print "original_gs:\n", original_gs
             return -np.inf
-        return - num_pts*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2) - np.sum((temp_lnGs-log_gs)**2)/two_omega_sq
+        return - num_pts*nplog(temp_sigma) - npsum((test_trace-expt_trace)**2)/(2.*temp_sigma**2) - npsum((temp_lnGs-log_gs)**2)/two_omega_sq
 
     
 def compute_initial_sigma(temp_lnGs, ap_model, expt_trace):
@@ -93,7 +97,7 @@ def compute_initial_sigma(temp_lnGs, ap_model, expt_trace):
     #plt.plot(test_trace)
     #plt.show()
     #sys.exit()
-    return np.sqrt(np.sum((test_trace-expt_trace)**2)/len(expt_trace))
+    return np.sqrt(npsum((test_trace-expt_trace)**2)/len(expt_trace))
     
 
 
@@ -122,7 +126,7 @@ def do_mcmc_adaptive(ap_model, expt_trace):
         cheat_params_file = '/'.join( split_trace_path[:5] ) + "/expt_params.txt"
         expt_gs = np.loadtxt(cheat_params_file)[trace_number, :]
         initial_gs = expt_gs
-    initial_ln_gs = np.log(initial_gs)
+    initial_ln_gs = nplog(initial_gs)
     initial_sigma = compute_initial_sigma(initial_ln_gs, ap_model, expt_trace)
     if initial_sigma < sigma_uniform_lower:
         temp_sigma = sigma_uniform_lower + 1e-3
@@ -131,11 +135,11 @@ def do_mcmc_adaptive(ap_model, expt_trace):
     theta_cur = np.concatenate((initial_ln_gs,[initial_sigma]))
     if args.different:
         for jj in [9,10,11]:
-            theta_cur[jj] = np.log(10. * original_gs[jj] * npr.rand())
+            theta_cur[jj] = nplog(10. * original_gs[jj] * npr.rand())
     cov_estimate = 0.001*np.diag(theta_cur**2)
     print "\ntheta_cur:", theta_cur, "\n"
     print "\noriginal_gs:", original_gs, "\n"
-    print "\nexp(theta_cur):", exp(theta_cur), "\n"
+    print "\nexp(theta_cur):", npexp(theta_cur), "\n"
     log_target_cur = log_target(theta_cur, ap_model, expt_trace)
 
     total_iterations = args.iterations
@@ -155,9 +159,9 @@ def do_mcmc_adaptive(ap_model, expt_trace):
     t = 1
     s = 1
     while t <= total_iterations:
-        theta_star = npr.multivariate_normal(theta_cur, np.exp(loga)*cov_estimate)
+        theta_star = npr.multivariate_normal(theta_cur, npexp(loga)*cov_estimate)
         """try:
-            theta_star = npr.multivariate_normal(theta_cur, np.exp(loga)*cov_estimate)
+            theta_star = npr.multivariate_normal(theta_cur, npexp(loga)*cov_estimate)
         except Warning as e:
             print str(e)
             print "Iteration:", t
@@ -167,7 +171,7 @@ def do_mcmc_adaptive(ap_model, expt_trace):
             sys.exit()"""
         log_target_star = log_target(theta_star, ap_model, expt_trace)
         u = npr.rand()
-        if np.log(u) < log_target_star - log_target_cur:
+        if nplog(u) < log_target_star - log_target_cur:
             accepted = 1
             theta_cur = theta_star
             log_target_cur = log_target_star
@@ -205,7 +209,7 @@ protocol = 1
 solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
 #solve_end = 100  # just for HH
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
-log_gs = np.log(original_gs)
+log_gs = nplog(original_gs)
 num_params = len(original_gs)+1  # include sigma
 
 
@@ -218,7 +222,7 @@ if args.different:
     expt_times = expt_times[::2]
     expt_trace = expt_trace[::2]
 num_pts = len(expt_trace)
-pi_bit = 0.5 * num_pts * np.log(2 * np.pi)
+pi_bit = 0.5 * num_pts * nplog(2 * np.pi)
 
 solve_start, solve_end = expt_times[[0,-1]]
 solve_timestep = expt_times[1] - expt_times[0]
