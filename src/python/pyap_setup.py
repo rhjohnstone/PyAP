@@ -66,6 +66,25 @@ def mcmc_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscal
     mcmc_file = txt_dir+"{}_model_{}_trace_{}_{}_{}_temperature_{}.txt".format(expt_name, model_number, trace_name, scale_bit, adaptive_bit, temperature)
     log_file = mcmc_dir+"{}_model_{}_trace_{}_{}_{}_temperature_{}.log".format(expt_name, model_number, trace_name, scale_bit, adaptive_bit, temperature)
     return mcmc_file, log_file, png_dir
+    
+    
+def mcmc_lnG_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscaled, non_adaptive, temperature):
+    if non_adaptive:
+        adaptive_bit = "non_adaptive_mcmc_lnG"
+    else:
+        adaptive_bit = "adaptive_mcmc_lnG"
+    if arcus_b:
+        first_bit = os.path.expandvars("$DATA/PyAP_output/")
+    else:
+        first_bit = os.path.expanduser("~/PyAP_output/")
+    mcmc_dir = first_bit+"{}/{}/model_{}/{}/temperature_{}/".format(expt_name, adaptive_bit, model_number, trace_name, temperature)
+    txt_dir, png_dir = mcmc_dir+"chains/", mcmc_dir+"figs/png/"
+    for d in [txt_dir, png_dir]:
+        if not os.path.exists(d):
+            os.makedirs(d)
+    mcmc_file = txt_dir+"{}_lnG_model_{}_trace_{}_{}_{}_temperature_{}.txt".format(expt_name, model_number, trace_name, scale_bit, adaptive_bit, temperature)
+    log_file = mcmc_dir+"{}_lnG_model_{}_trace_{}_{}_{}_temperature_{}.log".format(expt_name, model_number, trace_name, scale_bit, adaptive_bit, temperature)
+    return mcmc_file, log_file, png_dir
 
 
 def old_mcmc_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscaled, non_adaptive):
@@ -199,93 +218,4 @@ def get_protocol_details(protocol): # pre-defined protocols
         stimulus_start_time = 20
     return solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time
     
-    
-def synthetic_nonhierarchical_chain_file_and_figs_dir(model,protocol,python_seed): # synthetic data
-    # keeping it outside of Chaste build folder, in case that gets wiped in a clean build, or something
-    output_dir = os.path.expanduser('projects/RossJ/python/output/synthetic/nonhierarchical/model_{}/protocol_{}/python_seed_{}/'.format(model,protocol,python_seed))
-    chain_dir = output_dir + 'chain/'
-    figs_dir = output_dir + 'figures/'
-    for d in [chain_dir,figs_dir]:
-        if not os.path.exists(d):
-            os.makedirs(d)
-    chain_file = chain_dir + 'model_{}_protocol_{}_python_seed_{}_synthetic_nonhierarchical_mcmc.txt'.format(model,protocol,python_seed)
-    return chain_file, figs_dir
-    
-    
-def synthetic_hierarchical_chain_file_and_figs_dir(model,protocol,num_expts,python_seed): # synthetic data
-    # keeping it outside of Chaste build folder, in case that gets wiped in a clean build, or something
-    output_dir = os.path.expanduser('~/RossJ_output/synthetic/hierarchical/model_{}/protocol_{}/num_expts_{}/python_seed_{}/'.format(model,protocol,num_expts,python_seed))
-    chain_dir = output_dir + 'chain/'
-    figs_dir = output_dir + 'figures/'
-    for d in [chain_dir,figs_dir]:
-        if not os.path.exists(d):
-            os.makedirs(d)
-    chain_file = chain_dir + 'model_{}_protocol_{}_num_expts_{}_python_seed_{}_synthetic_hierarchical_mcmc.txt'.format(model,protocol,num_expts,python_seed)
-    info_file = output_dir + 'model_{}_protocol_{}_num_expts_{}_python_seed_{}_synthetic_hierarchical_info.txt'.format(model,protocol,num_expts,python_seed)
-    return chain_file, figs_dir, info_file
-    
-
-def dog_trace_path(trace_number):
-    return "projects/PyAP/python/input/dog_teun_csv/dog_AP_trace_{}.csv".format(trace_number)
-    
-
-def roche_trace_path(trace_number):
-    return "projects/PyAP/python/input/roche_170123_2_2_csv/Trace_2_2_{}_1.csv".format(trace_number)
-
-
-def dog_cmaes_path(model_number, trace_number):
-    if arcus_b:
-        cmaes_dir = os.path.expandvars("$DATA/PyAP_output/dog_teun/cmaes/model_{}/".format(model_number))
-    else:
-        cmaes_dir = "projects/PyAP/python/output/dog_teun/cmaes/model_{}/".format(model_number)
-    if not os.path.exists(cmaes_dir):
-        os.makedirs(cmaes_dir)
-    return cmaes_dir, cmaes_dir+"dog_model_{}_trace_{}_cmaes_best_fit.txt".format(model_number, trace_number)
-
-
-def dog_data_clamp_unscaled_mcmc_file(model_number, trace_number):
-    if arcus_b:
-        mcmc_dir = os.path.expandvars("$DATA/PyAP_output/dog_teun/adaptive_mcmc/unscaled/model_{}/trace_{}/".format(model_number, trace_number))
-    else:
-        mcmc_dir = "projects/PyAP/python/output/dog_teun/adaptive_mcmc/unscaled/model_{}/trace_{}/".format(model_number, trace_number)
-    if not os.path.exists(mcmc_dir):
-        os.makedirs(mcmc_dir)
-    return mcmc_dir, mcmc_dir+"dog_model_{}_trace_{}_adaptive_mcmc_unscaled.txt".format(model_number, trace_number)
-
-
-def dog_data_clamp_exp_scaled_mcmc_file(model_number, trace_number):
-    if arcus_b:
-        mcmc_dir = os.path.expandvars("$DATA/PyAP_output/dog_teun/adaptive_mcmc/exp_scaled/model_{}/trace_{}/".format(model_number, trace_number))
-    else:
-        mcmc_dir = "projects/PyAP/python/output/dog_teun/adaptive_mcmc/exp_scaled/model_{}/trace_{}/".format(model_number, trace_number)
-    if not os.path.exists(mcmc_dir):
-        os.makedirs(mcmc_dir)
-    return mcmc_dir, mcmc_dir+"dog_model_{}_trace_{}_adaptive_mcmc_exp_scaled.txt".format(model_number, trace_number)
-
-
-def roche_cmaes_path(model_number, trace_number):
-    if arcus_b:
-        cmaes_dir = os.path.expandvars("$DATA/PyAP_output/roche_170123_2_2/cmaes/model_{}/".format(model_number))
-    else:
-        cmaes_dir = "projects/PyAP/python/output/roche_170123_2_2/cmaes/model_{}/".format(model_number)
-    if not os.path.exists(cmaes_dir):
-        os.makedirs(cmaes_dir)
-    return cmaes_dir, cmaes_dir+"roche_170123_2_2_model_{}_trace_{}_cmaes_best_fit.txt".format(model_number, trace_number)
-
-
-def roche_data_clamp_exp_scaled_mcmc_file(model_number, trace_number):
-    if arcus_b:
-        mcmc_dir = os.path.expandvars("$DATA/PyAP_output/roche_170123_2_2/adaptive_mcmc/exp_scaled/model_{}/trace_{}/".format(model_number, trace_number))
-    else:
-        mcmc_dir = "projects/PyAP/python/output/roche_170123_2_2/adaptive_mcmc/exp_scaled/model_{}/trace_{}/".format(model_number, trace_number)
-    if not os.path.exists(mcmc_dir):
-        os.makedirs(mcmc_dir)
-    return mcmc_dir, mcmc_dir+"roche_170123_2_2_model_{}_trace_{}_adaptive_mcmc_exp_scaled.txt".format(model_number, trace_number)
-
-
-
-
-
-
-
 
