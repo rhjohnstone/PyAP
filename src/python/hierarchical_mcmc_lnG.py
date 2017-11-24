@@ -198,7 +198,7 @@ num_pts = len(expt_times)
 
 #sys.exit()
 
-uniform_noise_prior = [0.,25.]
+uniform_noise_prior = [1e-3,25.]
 
 def new_eta(old_eta, samples): # for sampling from conjugate prior-ed N-IG
     x_bar = np.mean(samples)

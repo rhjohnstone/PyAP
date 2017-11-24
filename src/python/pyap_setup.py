@@ -68,7 +68,7 @@ def mcmc_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscal
     return mcmc_file, log_file, png_dir
     
     
-def mcmc_lnG_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscaled, non_adaptive, temperature):
+def mcmc_lnG_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscaled, non_adaptive):
     if non_adaptive:
         adaptive_bit = "non_adaptive_mcmc_lnG"
     else:
@@ -77,13 +77,13 @@ def mcmc_lnG_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, un
         first_bit = os.path.expandvars("$DATA/PyAP_output/")
     else:
         first_bit = os.path.expanduser("~/PyAP_output/")
-    mcmc_dir = first_bit+"{}/{}/model_{}/{}/temperature_{}/".format(expt_name, adaptive_bit, model_number, trace_name, temperature)
+    mcmc_dir = first_bit+"{}/{}/model_{}/{}/".format(expt_name, adaptive_bit, model_number, trace_name)
     txt_dir, png_dir = mcmc_dir+"chains/", mcmc_dir+"figs/png/"
     for d in [txt_dir, png_dir]:
         if not os.path.exists(d):
             os.makedirs(d)
-    mcmc_file = txt_dir+"{}_lnG_model_{}_trace_{}_{}_{}_temperature_{}.txt".format(expt_name, model_number, trace_name, scale_bit, adaptive_bit, temperature)
-    log_file = mcmc_dir+"{}_lnG_model_{}_trace_{}_{}_{}_temperature_{}.log".format(expt_name, model_number, trace_name, scale_bit, adaptive_bit, temperature)
+    mcmc_file = txt_dir+"{}_lnG_model_{}_trace_{}_{}_{}.txt".format(expt_name, model_number, trace_name, scale_bit, adaptive_bit)
+    log_file = mcmc_dir+"{}_lnG_model_{}_trace_{}_{}_{}.log".format(expt_name, model_number, trace_name, scale_bit, adaptive_bit)
     return mcmc_file, log_file, png_dir
 
 
