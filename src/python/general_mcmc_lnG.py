@@ -45,13 +45,6 @@ with open(options_file, 'r') as infile:
 data_clamp_on = pyap_options["data_clamp_on"]
 data_clamp_off = pyap_options["data_clamp_off"]
 
-if (pyap_options["model_number"]==666):
-    cpp_model_number = 2
-    solve_for_voltage_trace = solve_for_voltage_trace_with_null
-else:
-    cpp_model_number = pyap_options["model_number"]
-    solve_for_voltage_trace = solve_for_voltage_trace_without_null
-
 
 sigma_uniform_lower = 1e-3
 sigma_uniform_upper = 25.
@@ -72,14 +65,40 @@ def solve_for_voltage_trace_without_initial_V(temp_lnG_params, ap_model, expt_tr
     except:
         print "\n\nFAIL\n\n"
         sys.exit()
+
+
+def solve_for_voltage_trace_with_null(temp_lnG_params, ap_model, expt_trace):
+    ap_model.SetToModelInitialConditions()
+    try:
+        return ap_model.SolveForVoltageTraceWithParams(npexp(temp_lnG_params[:-1]))
+    except:
+        print "\n\nFAIL\n\n"
+        sys.exit()
+
+
+def solve_for_voltage_trace_without_null(temp_lnG_params, ap_model, expt_trace):
+    ap_model.SetToModelInitialConditions()
+    try:
+        return ap_model.SolveForVoltageTraceWithParams(npexp(temp_lnG_params))
+    except:
+        print "\n\nFAIL\n\n"
+        sys.exit()
+
+
+if (pyap_options["model_number"]==666):
+    cpp_model_number = 2
+    solve_for_voltage_trace = solve_for_voltage_trace_with_null
+else:
+    cpp_model_number = pyap_options["model_number"]
+    solve_for_voltage_trace = solve_for_voltage_trace_without_null
     
 
-if data_clamp_on < data_clamp_off:
+'''if data_clamp_on < data_clamp_off:
     solve_for_voltage_trace = solve_for_voltage_trace_with_initial_V
     print "Solving after setting V(0) = data(0)"
 else:
     solve_for_voltage_trace = solve_for_voltage_trace_without_initial_V
-    print "Solving without setting V(0) = data(0)"
+    print "Solving without setting V(0) = data(0)"'''
 
 
 def log_target(temp_params, ap_model, expt_trace):
