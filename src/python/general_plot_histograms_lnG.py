@@ -112,7 +112,7 @@ for i in xrange(num_gs+1):
     fig = plt.figure(figsize=(5,4))
     ax = fig.add_subplot(111)
     ax.grid()
-    ax.set_ylabel('Marginal density')
+    ax.set_ylabel('Normalised frequency')
     if i < num_gs:
         ax.set_xlabel("$"+g_parameters[i]+"$")
         savelabel = png_dir+g_parameters[i]+'_marginal.png'
@@ -131,6 +131,7 @@ for i in xrange(num_gs+1):
         ax2.axvline(best_params[i], color=cs[2], lw=2, label="Best")
         ax2.legend()
         ax2.set_ylim(0, ax2.get_ylim()[1])
+        ax2.set_ylabel('Probability density')
     fig.tight_layout()
     fig.savefig(savelabel)
     plt.close()
