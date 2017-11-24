@@ -107,7 +107,7 @@ starting_mean = np.mean(starting_points,axis=0)
 starting_vars = np.var(starting_points,axis=0)
 
 m_true = np.log(original_gs)
-sigma2_true = 0.04
+sigma2_true = 0.01
 
 mu = m_true
 alpha = 4.*np.ones(num_gs)
