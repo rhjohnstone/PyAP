@@ -56,7 +56,11 @@ def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace
 
 def solve_for_voltage_trace_without_initial_V(temp_lnG_params, ap_model, expt_trace):
     ap_model.SetToModelInitialConditions()
-    return ap_model.SolveForVoltageTraceWithParams(np.exp(temp_lnG_params))
+    try:
+        return ap_model.SolveForVoltageTraceWithParams(np.exp(temp_lnG_params))
+    except:
+        print "\n\nFAIL\n\n"
+        sys.exit()
     
 
 if data_clamp_on < data_clamp_off:
