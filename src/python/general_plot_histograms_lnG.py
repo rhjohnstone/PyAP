@@ -105,7 +105,7 @@ prior_sd = 0.5*np.log(10)  # s.d. of Normal priors on lnGs
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_prior_pts = 201
 for i in xrange(num_gs+1):
-    fig = plt.figure(figsize=(4,3))
+    fig = plt.figure(figsize=(5,4))
     ax = fig.add_subplot(111)
     ax.grid()
     ax.set_ylabel('Marginal density')
@@ -120,9 +120,10 @@ for i in xrange(num_gs+1):
     ax.legend(loc=2)
     if i < num_gs:
         xlim = ax.get_xlim()
+        xlength = xlim[1]-xlim[0]
         ax2 = ax.twinx()
         ax2.grid()
-        x = np.linspace(xlim[0]-1, xlim[1]+1, num_prior_pts)
+        x = np.linspace(xlim[0]-0.2*xlength, xlim[1]+0.2*xlength, num_prior_pts)
         ax2.plot(x, norm.pdf(x, loc=prior_mean[i], scale=prior_sd), lw=2, color=cs[1], label='Prior')
         ax2.axvline(prior_mean[i], lw=2, color=cs[1])
         ax2.legend()
