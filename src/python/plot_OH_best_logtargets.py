@@ -33,7 +33,9 @@ def log_target(temp_params, ap_model, expt_trace):
 
 long_mcmc_best = [4.47540408283, -9.26912635885, -5.82717934, -1.70409472553, -2.99804276085, -5.87576855368, -6.95420558863, 3.09218137611, -3.89167278528, -17.2057808491, -22.0638029403, -7.14859640155, -5.20561556468, 0.481639397543]
 
-
+short_mcmc_best = [   4.48813071,   -9.34123603,   -5.99523698,   -1.73526831,   -2.99857,
+   -6.01817209,   -6.96651497,    3.16362293,   -3.90765501,  -17.39934705,
+  -21.77327425,   -7.55260966,   -5.1123394,     0.48752789]
 
 abs_tol = args.rel_tol+2
 
@@ -70,6 +72,10 @@ print "best log-target from long MCMC:", log_target(long_mcmc_best, ap, expt_tra
 ap.SetToModelInitialConditions()
 best_long_mcmc_ap = ap.SolveForVoltageTraceWithParams(np.exp(long_mcmc_best[:-1]))
 
+print "best log-target from short MCMC:", log_target(short_mcmc_best, ap, expt_trace)
+ap.SetToModelInitialConditions()
+best_short_mcmc_ap = ap.SolveForVoltageTraceWithParams(np.exp(short_mcmc_best[:-1]))
+
 ap.SetToModelInitialConditions()
 true_trace = ap.SolveForVoltageTraceWithParams(expt_params)
 print "log-target from true params:", log_target(np.concatenate((np.log(expt_params),[true_noise_sd])), ap, expt_trace)
@@ -84,9 +90,10 @@ ax = fig.add_subplot(111)
 ax.set_xlabel("log($G_{pCa}$)")
 ax.set_ylabel('Approx. log-target')
 ax.grid()
-ax.plot(expt_times, expt_trace, lw=2, color=cs[0])
-ax.plot(expt_times, true_trace, lw=2, color=cs[1])
-ax.plot(expt_times, best_long_mcmc_ap, lw=2, color=cs[2])
+ax.plot(expt_times, expt_trace, lw=2, color=cs'black')
+ax.plot(expt_times, true_trace, lw=2, color=cs[1], label='true')
+ax.plot(expt_times, best_long_mcmc_ap, lw=2, color=cs[2], label='long')
+ax.plot(expt_times, best_short_mcmc_ap, lw=2, color=cs[2], label='short')
 plt.show()
 sys.exit()
 
