@@ -59,8 +59,11 @@ print "approx_likelihood(true_trace) =", approx_likelihood(true_trace)
 G_pCa = expt_params[11]
 num_samples = 101
 
+xmin = 0.1
+xmax = 10
+
 y = np.zeros(num_samples)
-x = np.linspace(0, 10, num_samples)
+x = np.linspace(xmin, xmax, num_samples)
 temp_params = np.copy(expt_params)
 for i, scale in enumerate(x):
     temp_params[11] = scale*G_pCa
@@ -69,8 +72,8 @@ for i, scale in enumerate(x):
     y[i] = approx_likelihood(temp_trace)
 
 z = np.zeros(num_samples)
-wmin = np.log(0.1)
-wmax = np.log(10)
+wmin = np.log(xmin)
+wmax = np.log(xmax)
 w = np.logspace(wmin, wmax, num_samples, base=np.exp(1))
 print w
 temp_params = np.copy(expt_params)
@@ -85,14 +88,15 @@ ax1.set_xlabel("$G_{pCa} / G_{pCa,true}$")
 ax1.set_ylabel('Approx. log-likelihood')
 ax1.grid()
 ax1.plot(x,y)
+ax2.set_xlim(xmin, xmax)
 ax1.axvline(1, lw=2, color='green')
 
 ax2.set_xlabel(r"$\log (G_{pCa} / G_{pCa,true})$")
 ax2.grid()
 ax2.plot(w, z)
 ax2.set_xscale('log', base=np.exp(1))
-ax2.set_scale(0, 10)
-ax2.axvline(0, lw=2, color='green')
+ax2.set_xlim(xmin, xmax)
+ax2.axvline(1, lw=2, color='green')
 
 plt.show()
 
