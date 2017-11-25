@@ -132,7 +132,7 @@ def run_cmaes(cma_index):
         es.tell(X, [log_target(x, ap_model, expt_trace) for x in X])
         es.disp()
     res = es.result()
-    answer = np.concatenate((res[0],[res[1]]))
+    answer = np.concatenate((npexp(res[0]),[res[1]]))
     time_taken = time.time()-start
     print "\n\nTime taken by one CMA-ES run: {} s\n\n".format(round(time_taken))
     return answer
