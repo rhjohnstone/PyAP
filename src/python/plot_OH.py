@@ -71,6 +71,8 @@ ax.set_xlabel(g_parameters[11])
 ax.set_ylabel('approx_likelihood')
 ax.grid()
 ax.plot(x,y)
+ax.axvline(G_pCa, lw=2, color='green', label='Expt')
+ax.legend()
 plt.show()
 
 
