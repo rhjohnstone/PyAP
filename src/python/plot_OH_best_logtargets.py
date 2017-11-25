@@ -48,7 +48,7 @@ expt_times, expt_trace = np.loadtxt(expt_file, delimiter=',').T
 solve_start = expt_times[0]
 solve_end = expt_times[-1]
 solve_timestep = expt_times[1] - expt_times[0]
-num_data_pts = len(expt_trace)
+num_pts = len(expt_trace)
 
 original_gs, g_parameters, model_name = ps.get_original_params(model_number)
 original_gs = np.array(original_gs)
@@ -78,8 +78,6 @@ param_idx = args.param_idx
 print "\n{}\n".format(g_parameters[param_idx])
 
 
-num_samples = args.num_pts
-    
 cs = ['#1b9e77','#d95f02','#7570b3']
 
     
