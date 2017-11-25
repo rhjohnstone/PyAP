@@ -29,7 +29,7 @@ def log_target(temp_params, ap_model, expt_trace):
     else:
         ap_model.SetToModelInitialConditions()
         temp_trace = ap.SolveForVoltageTraceWithParams(np.exp(temp_lnGs))
-        return -num_pts*np.log(temp_sigma) - np.sum((test_trace-expt_trace)**2)/(2.*temp_sigma**2) - np.sum((temp_lnGs-log_gs)**2)/two_omega_sq
+        return -num_pts*np.log(temp_sigma) - np.sum((temp_trace-expt_trace)**2)/(2.*temp_sigma**2) - np.sum((temp_lnGs-log_gs)**2)/two_omega_sq
 
 long_mcmc_best = [4.47540408283, -9.26912635885, -5.82717934, -1.70409472553, -2.99804276085, -5.87576855368, -6.95420558863, 3.09218137611, -3.89167278528, -17.2057808491, -22.0638029403, -7.14859640155, -5.20561556468, 0.481639397543]
 
