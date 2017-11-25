@@ -134,8 +134,7 @@ def do_mcmc_adaptive(ap_model, expt_trace):
     print "Starting chain"
     start = time.time()
     if not args.cheat:
-        cmaes_unscaled = False  # only doing MCMC to CMA-ES fits done with exp scaling
-        cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files(pyap_options["model_number"], expt_name, trace_name, cmaes_unscaled)
+        cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files_lnG(pyap_options["model_number"], expt_name, trace_name)
         try:
             cmaes_results = np.loadtxt(cmaes_best_fits_file)
             ndim = cmaes_results.ndim
