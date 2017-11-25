@@ -55,7 +55,27 @@ true_trace = ap.SolveForVoltageTraceWithParams(expt_params)
 print "sos(model_trace) =", sos(model_trace)
 print "sos(true_trace) =", sos(true_trace)
 
+G_pCa = expt_params[11]
+num_samples = 1001
+y = np.zeros(num_samples)
+x = linspace(0, 10*G_pCa, num_samples)
+temp_params = np.copy(expt_params)
+for i, g in enumerate(x):
+    temp_params[11] = g
+    ap.SetToModelInitialConditions()
+    temp_trace = ap.SolveForVoltageTraceWithParams(temp_params)
+    y[i] = sos(temp_trace)
+    
 fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_xlabel(g_parameters[11])
+ax.set_ylabel('SOS')
+ax.grid()
+ax.plot(x,y)
+plt.show()
+
+
+"""fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.set_xlabel('Time (ms)')
 ax.set_ylabel('Membrane voltage (mV)')
@@ -65,6 +85,6 @@ ax.plot(expt_times, model_trace, lw=2, label='Model')
 ax.plot(expt_times, true_trace, lw=2, label='True')
 ax.set_title(model_name)
 ax.legend()
-plt.show(block=True)
+plt.show(block=True)"""
     
     
