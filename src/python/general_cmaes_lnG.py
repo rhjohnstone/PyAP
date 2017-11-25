@@ -13,17 +13,17 @@ import shutil
 import os
 import argparse
 
-sigma_uniform_lower = 1e-3
-sigma_uniform_upper = 25.
-true_noise_sd = 0.5
-omega = 0.5*nplog(10)  # s.d. of Normal priors on lnGs
-two_omega_sq = 2.*omega**2
-
 npexp = np.exp
 nplog = np.log
 npinf = np.inf
 npsum = np.sum
 npsqrt = np.sqrt
+
+sigma_uniform_lower = 1e-3
+sigma_uniform_upper = 25.
+true_noise_sd = 0.5
+omega = 0.5*nplog(10)  # s.d. of Normal priors on lnGs
+two_omega_sq = 2.*omega**2
         
 
 parser = argparse.ArgumentParser()
