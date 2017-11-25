@@ -128,7 +128,7 @@ def run_cmaes(cma_index):
         X = es.ask()
         #for q in X:
         #    print X
-        es.tell(X, [log_target(x, ap_model, expt_trace) for x in X])
+        es.tell(X, [-log_target(x, ap_model, expt_trace) for x in X])
         es.disp()
     res = es.result()
     answer = np.concatenate((npexp(res[0]),[res[1]]))
