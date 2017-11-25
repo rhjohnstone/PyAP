@@ -10,8 +10,8 @@ import argparse
 
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
-requiredNamed.add_argument("--xmin", type=float, help="min scale for GpCa", required=True)
-requiredNamed.add_argument("--xmax", type=float, help="max scale for GpCa", required=True)
+#requiredNamed.add_argument("--xmin", type=float, help="min scale for GpCa", required=True)
+#requiredNamed.add_argument("--xmax", type=float, help="max scale for GpCa", required=True)
 requiredNamed.add_argument("-n", "--num-pts", type=int, help="number of points to plot", required=True)
 parser.add_argument("--rel-tol", type=int, help="rel tol exponent", default=7)
 args, unknown = parser.parse_known_args()
@@ -73,10 +73,10 @@ print "approx_likelihood(true_trace) =", true_aprox_ll
 G_pCa = expt_params[11]
 
 num_samples = args.num_pts
-xmin = args.xmin
-xmax = args.xmax
+#xmin = args.xmin
+#xmax = args.xmax
 
-y = np.zeros(num_samples)
+"""y = np.zeros(num_samples)
 x = np.linspace(xmin, xmax, num_samples)
 temp_params = np.copy(expt_params)
 for i, scale in enumerate(x):
@@ -94,12 +94,32 @@ for i, scale in enumerate(w):
     temp_params[11] = scale * G_pCa
     ap.SetToModelInitialConditions()
     temp_trace = ap.SolveForVoltageTraceWithParams(temp_params)
-    z[i] = approx_likelihood(temp_trace)
+    z[i] = approx_likelihood(temp_trace)"""
+    
+cs = ['#1b9e77','#d95f02','#7570b3']
 
+x = np.linspace(-9, -5.5, num_samples)
+y = np.zeros(num_samples)
+temp_params = np.copy(expt_params)
+for i, log_param in enumerate(x):
+    temp_params[11] = np.exp(log_param)
+    ap.SetToModelInitialConditions()
+    temp_trace = ap.SolveForVoltageTraceWithParams(temp_params)
+    y[i] = approx_likelihood(temp_trace)
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_xlabel("log($G_{pCa}$)")
+ax.set_ylabel('Approx. log-likelihood')
+ax.grid()
+ax.plot(x, y, lw=2, color=cs[0])
+ax.set_xlim(xmin, xmax)
+ax.axvline(np.log(G_pCa, lw=2, color=cs[1])
+plt.show()
+sys.exit()
 
 phi = 1.61803398875
 fig_y = 4
-cs = ['#1b9e77','#d95f02','#7570b3']
+
 
 fig, (ax1, ax2) = plt.subplots(1, 2, sharey=True, figsize=(phi*fig_y, fig_y))
 ax1.set_xlabel("$G_{pCa} / G_{pCa,true}$")
