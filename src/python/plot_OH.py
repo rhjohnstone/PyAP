@@ -58,7 +58,7 @@ print "sos(true_trace) =", sos(true_trace)
 G_pCa = expt_params[11]
 num_samples = 1001
 y = np.zeros(num_samples)
-x = linspace(0, 10*G_pCa, num_samples)
+x = np.linspace(0, 10*G_pCa, num_samples)
 temp_params = np.copy(expt_params)
 for i, g in enumerate(x):
     temp_params[11] = g
