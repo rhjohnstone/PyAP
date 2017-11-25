@@ -74,8 +74,6 @@ ap.SetToModelInitialConditions()
 true_trace = ap.SolveForVoltageTraceWithParams(expt_params)
 print "log-target from true params:", log_target(np.concatenate((np.log(expt_params),[true_noise_sd])), ap, expt_trace)
 
-param_idx = args.param_idx
-print "\n{}\n".format(g_parameters[param_idx])
 
 
 cs = ['#1b9e77','#d95f02','#7570b3']
