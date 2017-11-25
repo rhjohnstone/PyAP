@@ -164,6 +164,7 @@ if pyap_options["model_number"] == 1:
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
 num_params = num_gs + 1
+log_gs = nplog(original_gs)
 
 how_many_cmaes_runs = args.num_runs
 cmaes_indices = range(how_many_cmaes_runs)
