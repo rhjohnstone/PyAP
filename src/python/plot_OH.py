@@ -113,7 +113,7 @@ ax.set_ylabel('Approx. log-likelihood')
 ax.grid()
 ax.plot(x, y, lw=2, color=cs[0])
 ax.set_xlim(xmin, xmax)
-ax.axvline(np.log(G_pCa, lw=2, color=cs[1])
+ax.axvline(np.log(G_pCa), lw=2, color=cs[1])
 plt.show()
 sys.exit()
 
