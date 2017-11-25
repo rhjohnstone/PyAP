@@ -6,7 +6,14 @@ import pyap_setup as ps
 import sys
 import itertools as it
 import numpy.random as npr
+import argparse
 
+parser = argparse.ArgumentParser()
+requiredNamed = parser.add_argument_group('required arguments')
+requiredNamed.add_argument("--xmin", type=float, help="min scale for GpCa", required=True)
+requiredNamed.add_argument("--xmax", type=float, help="min scale for GpCa", required=True)
+requiredNamed.add_argument("-n", "--num-pts", type=int, help="number of points to plot", required=True)
+args, unknown = parser.parse_known_args()
 
 
 true_noise_sd = 0.5
@@ -59,10 +66,10 @@ print "approx_likelihood(model_trace) =", approx_likelihood(model_trace)
 print "approx_likelihood(true_trace) =", true_aprox_ll
 
 G_pCa = expt_params[11]
-num_samples = 1001
 
-xmin = 0.01
-xmax = 100
+num_samples = args.num_pts
+xmin = args.xmin
+xmax = args.xmax
 
 y = np.zeros(num_samples)
 x = np.linspace(xmin, xmax, num_samples)
