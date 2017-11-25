@@ -57,7 +57,7 @@ ap = ap_simulator.APSimulator()
 ap.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
 ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
 ap.DefineModel(model_number)
-ap_model.SetTolerances(10**-args.rel_tol, 10**-abs_tol)
+ap.SetTolerances(10**-args.rel_tol, 10**-abs_tol)
 
 ap.SetToModelInitialConditions()
 model_trace = ap.SolveForVoltageTraceWithParams(original_gs)
