@@ -7,6 +7,8 @@ import sys
 import itertools as it
 import numpy.random as npr
 
+
+
 true_noise_sd = 0.5
 two_sigma_sq = 2.*true_noise_sd**2
     
@@ -55,24 +57,24 @@ print "approx_likelihood(model_trace) =", approx_likelihood(model_trace)
 print "approx_likelihood(true_trace) =", approx_likelihood(true_trace)
 
 G_pCa = expt_params[11]
-num_samples = 1001
+num_samples = 101
 y = np.zeros(num_samples)
-x = np.linspace(0, 10*G_pCa, num_samples)
+x = np.linspace(0, 10, num_samples)
 temp_params = np.copy(expt_params)
-for i, g in enumerate(x):
-    temp_params[11] = g
+for i, scale in enumerate(x):
+    temp_params[11] = scale*G_pCa
     ap.SetToModelInitialConditions()
     temp_trace = ap.SolveForVoltageTraceWithParams(temp_params)
     y[i] = approx_likelihood(temp_trace)
     
 fig = plt.figure()
-ax = fig.add_subplot(111)
-ax.set_xlabel(g_parameters[11])
-ax.set_ylabel('approx_likelihood')
-ax.grid()
-ax.plot(x,y)
-ax.axvline(G_pCa, lw=2, color='green', label='Expt')
-ax.legend()
+ax1 = fig.add_subplot(121)
+ax1.set_xlabel("$G_{pCa} / G_{pCa,true}$")
+ax1.set_ylabel('Approx. log-likelihood')
+ax1.grid()
+ax1.plot(x,y)
+ax1.axvline(G_pCa, lw=2, color='green', label='Expt')
+ax1.legend()
 plt.show()
 
 
