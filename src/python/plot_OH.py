@@ -53,8 +53,10 @@ model_trace = ap.SolveForVoltageTraceWithParams(original_gs)
 ap.SetToModelInitialConditions()
 true_trace = ap.SolveForVoltageTraceWithParams(expt_params)
 
+true_aprox_ll = approx_likelihood(true_trace)
+
 print "approx_likelihood(model_trace) =", approx_likelihood(model_trace)
-print "approx_likelihood(true_trace) =", approx_likelihood(true_trace)
+print "approx_likelihood(true_trace) =", true_aprox_ll
 
 G_pCa = expt_params[11]
 num_samples = 101
@@ -82,21 +84,27 @@ for i, scale in enumerate(w):
     ap.SetToModelInitialConditions()
     temp_trace = ap.SolveForVoltageTraceWithParams(temp_params)
     z[i] = approx_likelihood(temp_trace)
-    
+
+
+
+cs = ['#1b9e77','#d95f02','#7570b3']
+
 fig, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
 ax1.set_xlabel("$G_{pCa} / G_{pCa,true}$")
 ax1.set_ylabel('Approx. log-likelihood')
 ax1.grid()
-ax1.plot(x,y)
-ax2.set_xlim(xmin, xmax)
-ax1.axvline(1, lw=2, color='green')
+ax1.plot(x, y, lw=2, color=cs[0])
+ax1.set_xlim(xmin, xmax)
+ax1.axvline(1, lw=2, color=cs[1])
+ax1.axhline(true_aprox_ll, color=cs[2])
 
 ax2.set_xlabel(r"$\log (G_{pCa} / G_{pCa,true})$")
 ax2.grid()
-ax2.plot(w, z)
+ax2.plot(w, z, lw=2, color=cs[0])
 ax2.set_xscale('log', base=np.exp(1))
 ax2.set_xlim(xmin, xmax)
-ax2.axvline(1, lw=2, color='green')
+ax2.axvline(1, lw=2, color=cs[1])
+ax2.axhline(true_aprox_ll, color=cs[2])
 
 plt.show()
 
