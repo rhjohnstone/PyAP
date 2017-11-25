@@ -122,8 +122,6 @@ def run_cmaes(cma_index):
     sigma0 = 0.1
     print "x0:", x0
     print "sigma0:", sigma0
-    obj0 = obj(x0, ap_model)
-    print "obj0:", round(obj0, 2)
     es = cma.CMAEvolutionStrategy(x0, sigma0)#, options)
     while not es.stop():
         X = es.ask()
