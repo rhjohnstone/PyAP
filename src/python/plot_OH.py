@@ -112,7 +112,7 @@ for i, scale in enumerate(w):
     
 cs = ['#1b9e77','#d95f02','#7570b3']
 
-x = np.linspace(-9, -5.5, num_samples)
+x = np.linspace(np.log(expt_param)-2, np.log(expt_param)+2, num_samples)
 y = np.zeros(num_samples)
 temp_params = np.copy(expt_params)
 for i, log_param in enumerate(x):
