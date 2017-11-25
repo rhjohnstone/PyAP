@@ -114,7 +114,7 @@ for i in xrange(num_gs+1):
     ax.grid()
     ax.set_ylabel('Normalised frequency')
     if i < num_gs:
-        ax.set_xlabel("$"+g_parameters[i]+"$")
+        ax.set_xlabel("log(${}$)".format(g_parameters[i]))
         savelabel = png_dir+g_parameters[i]+'_marginal.png'
     else:
         ax.set_xlabel(r"$\sigma$")
