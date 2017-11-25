@@ -89,8 +89,9 @@ ax1.axvline(1, lw=2, color='green')
 
 ax2.set_xlabel(r"$\log (G_{pCa} / G_{pCa,true})$")
 ax2.grid()
-ax2.plot(w,z)
+ax2.plot(w, z)
 ax2.set_xscale('log', base=np.exp(1))
+ax2.set_scale(0, 10)
 ax2.axvline(0, lw=2, color='green')
 
 plt.show()
