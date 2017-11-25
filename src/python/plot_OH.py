@@ -105,6 +105,10 @@ for i, scale in enumerate(w):
     
 cs = ['#1b9e77','#d95f02','#7570b3']
 
+ap_fig = plt.figure()
+ap_ax = ap_fig.add_subplot(111)
+
+
 x = np.linspace(-9, -5.5, num_samples)
 y = np.zeros(num_samples)
 temp_params = np.copy(expt_params)
@@ -112,6 +116,7 @@ for i, log_param in enumerate(x):
     temp_params[11] = np.exp(log_param)
     ap.SetToModelInitialConditions()
     temp_trace = ap.SolveForVoltageTraceWithParams(temp_params)
+    ap_ax.plot(expt_times, temp_trace, alpha=0.1)
     #y[i] = approx_likelihood(temp_trace)
     y[i] = full_log_target(temp_params[11], temp_trace)
 fig = plt.figure()
