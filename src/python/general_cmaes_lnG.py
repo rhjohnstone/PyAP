@@ -66,7 +66,7 @@ def solve_for_voltage_trace_without_initial_V(temp_lnG_params, ap_model, expt_tr
         return ap_model.SolveForVoltageTraceWithParams(npexp(temp_lnG_params))
     except:
         print "\n\nFAIL\n\n"
-        sys.exit()
+        return np.zeros(num_pts)
 
 
 if data_clamp_on < data_clamp_off:
@@ -87,7 +87,8 @@ def log_target(temp_params, ap_model, expt_trace):
             test_trace = solve_for_voltage_trace(temp_lnGs, ap_model, expt_trace)
             return -num_pts*nplog(temp_sigma) - npsum((test_trace-expt_trace)**2)/(2.*temp_sigma**2) - npsum((temp_lnGs-log_gs)**2)/two_omega_sq
 
-        except:
+        except Exception as e:
+            print e
             #print "Failed to solve at iteration", t
             print "exp(temp_lnGs):\n", npexp(temp_lnGs)
             print "original_gs:\n", original_gs
