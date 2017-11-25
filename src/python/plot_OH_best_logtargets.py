@@ -11,6 +11,7 @@ import argparse
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 parser.add_argument("--rel-tol", type=int, help="rel tol exponent", default=7)
+parser.add_argument("-t", "--trace", type=int, help="expt trace", default=0)
 args, unknown = parser.parse_known_args()
 
 
@@ -40,7 +41,7 @@ model_number = 5
 
 solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time = ps.get_protocol_details(protocol)
 
-expt_file = "projects/PyAP/python/input/synthetic_ohara_lnG/traces/synthetic_ohara_lnG_trace_{}.csv".format(args.trace)
+expt_file = "projects/PyAP/python/input/synthetic_ohara_lnG/traces/synthetic_ohara_lnG_trace_0.csv".format(args.trace)
 expt_times, expt_trace = np.loadtxt(expt_file, delimiter=',').T
 solve_start = expt_times[0]
 solve_end = expt_times[-1]
