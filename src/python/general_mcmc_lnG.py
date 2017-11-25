@@ -126,8 +126,6 @@ def compute_initial_sigma(temp_lnGs, ap_model, expt_trace):
     return np.sqrt(npsum((test_trace-expt_trace)**2)/len(expt_trace))
     
 
-
-
 def do_mcmc_adaptive(ap_model, expt_trace):
     initial_it_file = log_file[:-4]+"_initial_iteration.txt"
     npr.seed(args.seed)
@@ -135,6 +133,7 @@ def do_mcmc_adaptive(ap_model, expt_trace):
     start = time.time()
     if not args.cheat:
         cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files_lnG(pyap_options["model_number"], expt_name, trace_name)
+        print "cmaes file:\n", cmaes_best_fits_file
         try:
             cmaes_results = np.loadtxt(cmaes_best_fits_file)
             ndim = cmaes_results.ndim
@@ -144,6 +143,7 @@ def do_mcmc_adaptive(ap_model, expt_trace):
                 best_index = np.argmin(cmaes_results[:,-1])
                 best_gs = cmaes_results[best_index,:-1]
             initial_gs = best_gs
+            print "initial_gs from cmaes:\n", initial_gs
         except Exception, e:
             print "\n",e,"\n"
             initial_gs = original_gs
