@@ -69,8 +69,8 @@ for i, scale in enumerate(x):
     y[i] = approx_likelihood(temp_trace)
 
 z = np.zeros(num_samples)
-wmin = int(np.log(0.1))
-wmax = int(np.log(10))+1
+wmin = np.log(0.1)
+wmax = np.log(10)
 w = np.logspace(wmin, wmax, num_samples, base=np.exp(1))
 print w
 temp_params = np.copy(expt_params)
