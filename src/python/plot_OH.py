@@ -69,12 +69,12 @@ for i, scale in enumerate(x):
     y[i] = approx_likelihood(temp_trace)
 
 z = np.zeros(num_samples)
-wmin = int(np.log10(0.1*G_pCa))
-wmax = int(np.log10(10*G_pCa))+1
-w = np.logspace(wmin, wmax, num_samples)
+wmin = int(np.log(0.1))
+wmax = int(np.log(10))+1
+w = np.logspace(wmin, wmax, num_samples, base=np.exp(1))
 temp_params = np.copy(expt_params)
 for i, logscale in enumerate(w):
-    temp_params[11] = 10**logscale * G_pCa
+    temp_params[11] = np.exp(logscale) * G_pCa
     ap.SetToModelInitialConditions()
     temp_trace = ap.SolveForVoltageTraceWithParams(temp_params)
     z[i] = approx_likelihood(temp_trace)
@@ -86,7 +86,7 @@ ax1.grid()
 ax1.plot(x,y)
 ax1.axvline(1, lw=2, color='green')
 
-ax2.set_xlabel(r"$\log_{10} (G_{pCa} / G_{pCa,true})$")
+ax2.set_xlabel(r"$\log (G_{pCa} / G_{pCa,true})$")
 ax2.grid()
 ax2.plot(w,z)
 ax2.axvline(0, lw=2, color='green')
