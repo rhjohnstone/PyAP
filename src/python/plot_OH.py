@@ -7,12 +7,11 @@ import sys
 import itertools as it
 import numpy.random as npr
 
-
-def example_likelihood_function(trace):
-    return np.sum(trace**2)
+true_noise_sd = 0.5
+two_sigma_sq = 2.*true_noise_sd**2
     
-def sos(test_trace):
-    return np.sum((expt_trace-test_trace)**2)
+def approx_likelihood(test_trace):
+    return -np.log(true_noise_sd) - np.sum((expt_trace-test_trace)**2)/two_sigma_sq
 
 
 # 1. Hodgkin Huxley
@@ -52,8 +51,8 @@ model_trace = ap.SolveForVoltageTraceWithParams(original_gs)
 ap.SetToModelInitialConditions()
 true_trace = ap.SolveForVoltageTraceWithParams(expt_params)
 
-print "sos(model_trace) =", sos(model_trace)
-print "sos(true_trace) =", sos(true_trace)
+print "approx_likelihood(model_trace) =", approx_likelihood(model_trace)
+print "approx_likelihood(true_trace) =", approx_likelihood(true_trace)
 
 G_pCa = expt_params[11]
 num_samples = 1001
@@ -64,12 +63,12 @@ for i, g in enumerate(x):
     temp_params[11] = g
     ap.SetToModelInitialConditions()
     temp_trace = ap.SolveForVoltageTraceWithParams(temp_params)
-    y[i] = sos(temp_trace)
+    y[i] = approx_likelihood(temp_trace)
     
 fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.set_xlabel(g_parameters[11])
-ax.set_ylabel('SOS')
+ax.set_ylabel('approx_likelihood')
 ax.grid()
 ax.plot(x,y)
 plt.show()
