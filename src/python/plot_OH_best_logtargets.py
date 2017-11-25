@@ -14,6 +14,8 @@ parser.add_argument("--rel-tol", type=int, help="rel tol exponent", default=7)
 parser.add_argument("-t", "--trace", type=int, help="expt trace", default=0)
 args, unknown = parser.parse_known_args()
 
+sigma_uniform_lower = 1e-3
+sigma_uniform_upper = 25.
 
 true_noise_sd = 0.5
 two_sigma_sq = 2.*true_noise_sd**2
