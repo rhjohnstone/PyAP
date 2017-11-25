@@ -155,6 +155,7 @@ all_time_start = time.time()
 num_cores = args.num_cores  # make 16 for ARCUS-B!!
 
 expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
+num_pts = len(expt_trace)
 
 protocol = 1
 solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
