@@ -50,12 +50,10 @@ ap.SetToModelInitialConditions()
 model_trace = ap.SolveForVoltageTraceWithParams(original_gs)
 
 ap.SetToModelInitialConditions()
-model_trace_2 = ap.SolveForVoltageTraceWithParams(original_gs)
-
-print "SOS between two solves of same parameters:", np.sum((model_trace_2-model_trace)**2)
-
-ap.SetToModelInitialConditions()
 true_trace = ap.SolveForVoltageTraceWithParams(expt_params)
+
+print "sos(model_trace) =", sos(model_trace)
+print "sos(true_trace) =", sos(true_trace)
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
