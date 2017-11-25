@@ -19,9 +19,15 @@ args, unknown = parser.parse_known_args()
 
 true_noise_sd = 0.5
 two_sigma_sq = 2.*true_noise_sd**2
+omega = 0.5*nplog(10)  # s.d. of Normal priors on lnGs
+two_omega_sq = 2.*omega**2
     
 def approx_likelihood(test_trace):
     return -num_data_pts*np.log(true_noise_sd) - np.sum((expt_trace-test_trace)**2)/two_sigma_sq
+    
+def full_log_target(param, test_trace):
+    ll = approx_likelihood(test_trace)
+    return ll - (param-original_gs[11])**2 / two_omega_sq
 
 
 # 1. Hodgkin Huxley
@@ -106,11 +112,12 @@ for i, log_param in enumerate(x):
     temp_params[11] = np.exp(log_param)
     ap.SetToModelInitialConditions()
     temp_trace = ap.SolveForVoltageTraceWithParams(temp_params)
-    y[i] = approx_likelihood(temp_trace)
+    #y[i] = approx_likelihood(temp_trace)
+    y[i] = full_log_target(temp_params[11], temp_trace)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.set_xlabel("log($G_{pCa}$)")
-ax.set_ylabel('Approx. log-likelihood')
+ax.set_ylabel('Approx. log-target')
 ax.grid()
 ax.plot(x, y, lw=2, color=cs[0])
 ax.axvline(np.log(G_pCa), lw=2, color=cs[1])
