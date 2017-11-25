@@ -133,7 +133,7 @@ def run_cmaes(cma_index):
     res = es.result()
     answer = np.concatenate((npexp(res[0]),[res[1]]))
     time_taken = time.time()-start
-    print "\n\nTime taken by one CMA-ES run: {} s\n\n".format(round(time_taken))
+    print "\n\nTime taken by this CMA-ES run: {} s\n\n".format(round(time_taken))
     return answer
 
 
@@ -184,6 +184,8 @@ else:
         best_boths.append(run_cmaes(ci))
 best_boths = np.array(best_boths)
 np.savetxt(cmaes_best_fits_file, best_boths)
+
+"""
 ap_model = ap_simulator.APSimulator()
 if (data_clamp_on < data_clamp_off):
     ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
@@ -221,6 +223,8 @@ fig.savefig(best_fit_svg)
 best_fit_pdf = best_fit_png[:-3]+"pdf"
 fig.savefig(best_fit_pdf)
 plt.close()
+"""
+
 trace_time_taken = time.time()-trace_start_time
 print "\n\n{}, time taken: {} s = {} min\n\n".format(trace_name, round(trace_time_taken), round(trace_time_taken/60.))
 
