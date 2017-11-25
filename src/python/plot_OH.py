@@ -86,10 +86,11 @@ for i, scale in enumerate(w):
     z[i] = approx_likelihood(temp_trace)
 
 
-
+phi = 1.61803398875
+fig_y = 4
 cs = ['#1b9e77','#d95f02','#7570b3']
 
-fig, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
+fig, (ax1, ax2) = plt.subplots(1, 2, sharey=True, figsize=(phi*fig_y, fig_y))
 ax1.set_xlabel("$G_{pCa} / G_{pCa,true}$")
 ax1.set_ylabel('Approx. log-likelihood')
 ax1.grid()
@@ -97,6 +98,7 @@ ax1.plot(x, y, lw=2, color=cs[0])
 ax1.set_xlim(xmin, xmax)
 ax1.axvline(1, lw=2, color=cs[1])
 ax1.axhline(true_aprox_ll, color=cs[2])
+ax1.set_xticks(list(ax1.get_xticks()) + [xmin])
 
 ax2.set_xlabel(r"$\log (G_{pCa} / G_{pCa,true})$")
 ax2.grid()
