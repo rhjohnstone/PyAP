@@ -13,6 +13,7 @@ requiredNamed = parser.add_argument_group('required arguments')
 #requiredNamed.add_argument("--xmin", type=float, help="min scale for GpCa", required=True)
 #requiredNamed.add_argument("--xmax", type=float, help="max scale for GpCa", required=True)
 requiredNamed.add_argument("-n", "--num-pts", type=int, help="number of points to plot", required=True)
+requiredNamed.add_argument("-p", "--param-idx", type=int, help="index of parameter to vary, starting from 0", required=True)
 parser.add_argument("--rel-tol", type=int, help="rel tol exponent", default=7)
 args, unknown = parser.parse_known_args()
 
@@ -77,7 +78,8 @@ true_aprox_ll = approx_likelihood(true_trace)
 print "approx_likelihood(model_trace) =", approx_likelihood(model_trace)
 print "approx_likelihood(true_trace) =", true_aprox_ll
 
-param_idx = 11
+param_idx = args.param_idx
+print "\n{}\n".format(g_parameters[param_idx])
 
 expt_param = expt_params[param_idx]
 
