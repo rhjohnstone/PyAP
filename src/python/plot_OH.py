@@ -59,10 +59,10 @@ print "approx_likelihood(model_trace) =", approx_likelihood(model_trace)
 print "approx_likelihood(true_trace) =", true_aprox_ll
 
 G_pCa = expt_params[11]
-num_samples = 101
+num_samples = 1001
 
-xmin = 0.1
-xmax = 10
+xmin = 0.01
+xmax = 100
 
 y = np.zeros(num_samples)
 x = np.linspace(xmin, xmax, num_samples)
@@ -99,7 +99,7 @@ ax1.axvline(1, lw=2, color=cs[1])
 ax1.axhline(true_aprox_ll, color=cs[2])
 ax1.set_xticks([xmin] + list(ax1.get_xticks())[1:])
 
-ax2.set_xlabel(r"$\log (G_{pCa} / G_{pCa,true})$")
+ax2.set_xlabel(r"$\log_{10} (G_{pCa} / G_{pCa,true})$")
 ax2.grid()
 ax2.plot(w, z, lw=2, color=cs[0])
 ax2.set_xscale('log')
