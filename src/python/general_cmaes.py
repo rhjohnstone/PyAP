@@ -49,7 +49,8 @@ def exponential_scaling(unscaled_params):
 
 def solve_for_voltage_trace(temp_g_params, _ap_model):
     _ap_model.SetToModelInitialConditions()
-    _ap_model.SetVoltage(expt_trace[0])
+    if data_clamp_on < data_clamp_off:
+        _ap_model.SetVoltage(expt_trace[0])
     try:
         return _ap_model.SolveForVoltageTraceWithParams(temp_g_params)
     except ap_simulator.CPPException, e:
