@@ -13,6 +13,7 @@ requiredNamed = parser.add_argument_group('required arguments')
 #requiredNamed.add_argument("--xmin", type=float, help="min scale for GpCa", required=True)
 #requiredNamed.add_argument("--xmax", type=float, help="max scale for GpCa", required=True)
 requiredNamed.add_argument("-n", "--num-pts", type=int, help="number of points to plot", required=True)
+requiredNamed.add_argument("-t", "--trace", type=int, help="number of expt trace", required=True)
 requiredNamed.add_argument("-p", "--param-idx", type=int, help="index of parameter to vary, starting from 0", required=True)
 parser.add_argument("--rel-tol", type=int, help="rel tol exponent", default=7)
 args, unknown = parser.parse_known_args()
@@ -48,7 +49,7 @@ model_number = 5
 
 solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time = ps.get_protocol_details(protocol)
 
-expt_file = "projects/PyAP/python/input/synthetic_ohara_lnG/traces/synthetic_ohara_lnG_trace_0.csv"
+expt_file = "projects/PyAP/python/input/synthetic_ohara_lnG/traces/synthetic_ohara_lnG_trace_{}.csv".format(args.trace)
 expt_times, expt_trace = np.loadtxt(expt_file, delimiter=',').T
 solve_start = expt_times[0]
 solve_end = expt_times[-1]
@@ -59,7 +60,7 @@ original_gs, g_parameters, model_name = ps.get_original_params(model_number)
 original_gs = np.array(original_gs)
 
 params_file = "projects/PyAP/python/input/synthetic_ohara_lnG/expt_params.txt"
-expt_params = np.loadtxt(params_file)[0,:]
+expt_params = np.loadtxt(params_file)[args.trace,:]
 
 ap = ap_simulator.APSimulator()
 ap.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
@@ -112,7 +113,7 @@ for i, scale in enumerate(w):
     
 cs = ['#1b9e77','#d95f02','#7570b3']
 
-x = np.linspace(np.log(expt_param)-2, np.log(expt_param)+2, num_samples)
+x = np.linspace(np.log(expt_param)-2, np.log(expt_param)+1, num_samples)
 y = np.zeros(num_samples)
 temp_params = np.copy(expt_params)
 for i, log_param in enumerate(x):
