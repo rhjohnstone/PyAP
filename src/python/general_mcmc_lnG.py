@@ -138,22 +138,24 @@ def do_mcmc_adaptive(ap_model, expt_trace):
             cmaes_results = np.loadtxt(cmaes_best_fits_file)
             ndim = cmaes_results.ndim
             if ndim == 1:
-                best_gs = cmaes_results[:-1]
+                best_gs_sigma = cmaes_results[:-1]
             else:
                 best_index = np.argmin(cmaes_results[:,-1])
-                best_gs = cmaes_results[best_index,:-1]
-            initial_gs = best_gs
+                best_gs_sigma = cmaes_results[best_index,:-1]
+            initial_gs = best_gs_sigma[:-1]
+            initial_sigma = best_gs_sigma[-1]
             print "initial_gs from cmaes:\n", initial_gs
         except Exception, e:
             print "\n",e,"\n"
             initial_gs = original_gs
+            initial_sigma = 0.5
     else:
         trace_number = int(trace_path.split(".")[-2].split("_")[-1])
         cheat_params_file = '/'.join( split_trace_path[:5] ) + "/expt_params.txt"
         expt_gs = np.loadtxt(cheat_params_file)[trace_number, :]
         initial_gs = expt_gs
+        initial_sigma = 0.5
     initial_ln_gs = nplog(initial_gs)
-    initial_sigma = compute_initial_sigma(initial_ln_gs, ap_model, expt_trace)
     if initial_sigma < sigma_uniform_lower:
         temp_sigma = sigma_uniform_lower + 1e-3
     elif initial_sigma > sigma_uniform_upper:
