@@ -77,7 +77,12 @@ true_aprox_ll = approx_likelihood(true_trace)
 print "approx_likelihood(model_trace) =", approx_likelihood(model_trace)
 print "approx_likelihood(true_trace) =", true_aprox_ll
 
-G_pCa = expt_params[11]
+param_idx = 11
+
+expt_param = expt_params[param_idx]
+
+true_label = g_parameters[param_idx][:-1]+",true}"
+print true_label
 
 num_samples = args.num_pts
 #xmin = args.xmin
@@ -87,7 +92,7 @@ num_samples = args.num_pts
 x = np.linspace(xmin, xmax, num_samples)
 temp_params = np.copy(expt_params)
 for i, scale in enumerate(x):
-    temp_params[11] = scale*G_pCa
+    temp_params[11] = scale*expt_param
     ap.SetToModelInitialConditions()
     temp_trace = ap.SolveForVoltageTraceWithParams(temp_params)
     y[i] = approx_likelihood(temp_trace)
@@ -98,34 +103,29 @@ wmax = np.log10(xmax)
 w = np.logspace(wmin, wmax, num_samples)
 temp_params = np.copy(expt_params)
 for i, scale in enumerate(w):
-    temp_params[11] = scale * G_pCa
+    temp_params[11] = scale * expt_param
     ap.SetToModelInitialConditions()
     temp_trace = ap.SolveForVoltageTraceWithParams(temp_params)
     z[i] = approx_likelihood(temp_trace)"""
     
 cs = ['#1b9e77','#d95f02','#7570b3']
 
-ap_fig = plt.figure()
-ap_ax = ap_fig.add_subplot(111)
-
-
 x = np.linspace(-9, -5.5, num_samples)
 y = np.zeros(num_samples)
 temp_params = np.copy(expt_params)
 for i, log_param in enumerate(x):
-    temp_params[11] = np.exp(log_param)
+    temp_params[param_idx] = np.exp(log_param)
     ap.SetToModelInitialConditions()
     temp_trace = ap.SolveForVoltageTraceWithParams(temp_params)
-    ap_ax.plot(expt_times, temp_trace, alpha=0.1)
     #y[i] = approx_likelihood(temp_trace)
-    y[i] = full_log_target(temp_params[11], temp_trace)
+    y[i] = full_log_target(temp_params[param_idx], temp_trace)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.set_xlabel("log($G_{pCa}$)")
 ax.set_ylabel('Approx. log-target')
 ax.grid()
 ax.plot(x, y, lw=2, color=cs[0])
-ax.axvline(np.log(G_pCa), lw=2, color=cs[1])
+ax.axvline(np.log(expt_param), lw=2, color=cs[1])
 plt.show()
 sys.exit()
 
@@ -134,7 +134,7 @@ fig_y = 4
 
 
 fig, (ax1, ax2) = plt.subplots(1, 2, sharey=True, figsize=(phi*fig_y, fig_y))
-ax1.set_xlabel("$G_{pCa} / G_{pCa,true}$")
+ax1.set_xlabel(r"${} / {}$".format(g_parameters[param_idx],true_label))
 ax1.set_ylabel('Approx. log-likelihood')
 ax1.grid()
 ax1.plot(x, y, lw=2, color=cs[0])
@@ -143,7 +143,7 @@ ax1.axvline(1, lw=2, color=cs[1])
 ax1.axhline(true_aprox_ll, color=cs[2])
 ax1.set_xticks([xmin] + list(ax1.get_xticks())[1:])
 
-ax2.set_xlabel(r"$\log_{10} (G_{pCa} / G_{pCa,true})$")
+ax2.set_xlabel(r"$\log_{10} ({} / {})$".format(g_parameters[param_idx],true_label))
 ax2.grid()
 ax2.plot(w, z, lw=2, color=cs[0])
 ax2.set_xscale('log')
