@@ -21,7 +21,7 @@ true_noise_sd = 0.5
 two_sigma_sq = 2.*true_noise_sd**2
     
 def approx_likelihood(test_trace):
-    return -np.log(true_noise_sd) - np.sum((expt_trace-test_trace)**2)/two_sigma_sq
+    return -num_data_pts*np.log(true_noise_sd) - np.sum((expt_trace-test_trace)**2)/two_sigma_sq
 
 
 # 1. Hodgkin Huxley
@@ -46,6 +46,7 @@ expt_times, expt_trace = np.loadtxt(expt_file, delimiter=',').T
 solve_start = expt_times[0]
 solve_end = expt_times[-1]
 solve_timestep = expt_times[1] - expt_times[0]
+num_data_pts = len(expt_trace)
 
 original_gs, g_parameters, model_name = ps.get_original_params(model_number)
 original_gs = np.array(original_gs)
@@ -112,7 +113,6 @@ ax.set_xlabel("log($G_{pCa}$)")
 ax.set_ylabel('Approx. log-likelihood')
 ax.grid()
 ax.plot(x, y, lw=2, color=cs[0])
-ax.set_xlim(xmin, xmax)
 ax.axvline(np.log(G_pCa), lw=2, color=cs[1])
 plt.show()
 sys.exit()
