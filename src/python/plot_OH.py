@@ -11,8 +11,9 @@ import argparse
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--xmin", type=float, help="min scale for GpCa", required=True)
-requiredNamed.add_argument("--xmax", type=float, help="min scale for GpCa", required=True)
+requiredNamed.add_argument("--xmax", type=float, help="max scale for GpCa", required=True)
 requiredNamed.add_argument("-n", "--num-pts", type=int, help="number of points to plot", required=True)
+parser.add_argument("--rel-tol", type=int, help="rel tol exponent", default=7)
 args, unknown = parser.parse_known_args()
 
 
@@ -31,6 +32,9 @@ def approx_likelihood(test_trace):
 # 6. Davies (canine)
 # 7. Paci (SC-CM ventricular) (not available atm)
 # 8. Gokhale 2017 ex293 (not available atm)
+
+abs_tol = args.rel_tol+2
+ap_model.SetTolerances(1e-args.rel_tol, 1e-abs_tol)
 
 protocol = 1
 model_number = 5
