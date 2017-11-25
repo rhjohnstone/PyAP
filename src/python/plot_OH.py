@@ -64,6 +64,7 @@ x = np.linspace(0, 10, num_samples)
 temp_params = np.copy(expt_params)
 for i, scale in enumerate(x):
     temp_params[11] = scale*G_pCa
+    print temp_params
     ap.SetToModelInitialConditions()
     temp_trace = ap.SolveForVoltageTraceWithParams(temp_params)
     y[i] = approx_likelihood(temp_trace)
@@ -75,6 +76,7 @@ w = np.logspace(wmin, wmax, num_samples, base=np.exp(1))
 temp_params = np.copy(expt_params)
 for i, logscale in enumerate(w):
     temp_params[11] = np.exp(logscale) * G_pCa
+    print temp_params[11]
     ap.SetToModelInitialConditions()
     temp_trace = ap.SolveForVoltageTraceWithParams(temp_params)
     z[i] = approx_likelihood(temp_trace)
