@@ -118,7 +118,7 @@ def run_cmaes(cma_index):
     #npr.seed(cma_index)
     #opts['seed'] = cma_index
     #options = {'seed':cma_index}
-    x0 = np.concatenate((nplog(original_gs), [true_noise_sd]))  + 0.5*np.randn(num_params)
+    x0 = np.concatenate((nplog(original_gs), [true_noise_sd]))  + 0.5*npr.randn(num_params)
     sigma0 = 0.1
     print "x0:", x0
     print "sigma0:", sigma0
