@@ -1,0 +1,72 @@
+import ap_simulator
+import numpy as np
+import matplotlib.pyplot as plt
+import time
+import pyap_setup as ps
+import sys
+import itertools as it
+import numpy.random as npr
+
+
+def example_likelihood_function(trace):
+    return np.sum(trace**2)
+    
+def sos(test_trace):
+    return np.sum((expt_trace-test_trace)**2)
+
+
+# 1. Hodgkin Huxley
+# 2. Beeler Reuter
+# 3. Luo Rudy
+# 4. ten Tusscher
+# 5. O'Hara Rudy
+# 6. Davies (canine)
+# 7. Paci (SC-CM ventricular) (not available atm)
+# 8. Gokhale 2017 ex293 (not available atm)
+
+protocol = 1
+model_number = 5
+
+solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time = ps.get_protocol_details(protocol)
+
+expt_file = "projects/PyAP/python/input/synthetic_ohara_lnG/traces/synthetic_ohara_lnG_trace_0.csv"
+expt_times, expt_trace = np.loadtxt(expt_file, delimiter=',').T
+solve_start = expt_times[0]
+solve_end = expt_times[-1]
+solve_timestep = expt_times[1] - expt_times[0]
+
+original_gs, g_parameters, model_name = ps.get_original_params(model_number)
+original_gs = np.array(original_gs)
+
+params_file = "projects/PyAP/python/input/synthetic_ohara_lnG/expt_params.txt"
+expt_params = np.loadtxt(params_file)[0,:]
+
+ap = ap_simulator.APSimulator()
+ap.DefineStimulus(stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time)
+ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
+ap.DefineModel(model_number)
+
+ap.SetToModelInitialConditions()
+model_trace = ap.SolveForVoltageTraceWithParams(original_gs)
+
+ap.SetToModelInitialConditions()
+model_trace_2 = ap.SolveForVoltageTraceWithParams(original_gs)
+
+print "SOS between two solves of same parameters:", np.sum((model_trace_2-model_trace)**2)
+
+ap.SetToModelInitialConditions()
+true_trace = ap.SolveForVoltageTraceWithParams(expt_params)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_xlabel('Time (ms)')
+ax.set_ylabel('Membrane voltage (mV)')
+ax.grid()
+ax.plot(expt_times, expt_trace, lw=2, label='Expt')
+ax.plot(expt_times, model_trace, lw=2, label='Model')
+ax.plot(expt_times, true_trace, lw=2, label='True')
+ax.set_title(model_name)
+ax.legend()
+plt.show(block=True)
+    
+    

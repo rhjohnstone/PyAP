@@ -131,7 +131,7 @@ for i in xrange(num_gs):
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
         ax2.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=None, alpha=2./N_e)
-        ax2.axvline(np.log(expt_params[n, i]), color='red', lw=2)
+        ax2.axvline(np.log(expt_params[n, i]), color='red', lw=2, label='Expt')
         temp_min = np.min(chain[:, idx])
         temp_max = np.max(chain[:, idx])
         #if temp_min < xmin:
