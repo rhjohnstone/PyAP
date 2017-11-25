@@ -97,8 +97,7 @@ ax1.plot(x, y, lw=2, color=cs[0])
 ax1.set_xlim(xmin, xmax)
 ax1.axvline(1, lw=2, color=cs[1])
 ax1.axhline(true_aprox_ll, color=cs[2])
-ax1.set_xlim(xmin, xmax)
-ax1.set_xticks(list(ax1.get_xticks()) + [xmin])
+#ax1.set_xticks(list(ax1.get_xticks()) + [xmin])
 
 ax2.set_xlabel(r"$\log (G_{pCa} / G_{pCa,true})$")
 ax2.grid()
@@ -109,6 +108,7 @@ ax2.axvline(1, lw=2, color=cs[1])
 ax2.axhline(true_aprox_ll, color=cs[2])
 ax2.set_xlim(xmin, xmax)
 
+fig.tight_layout()
 plt.show()
 
 
