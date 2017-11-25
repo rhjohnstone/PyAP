@@ -34,7 +34,7 @@ def approx_likelihood(test_trace):
 # 8. Gokhale 2017 ex293 (not available atm)
 
 abs_tol = args.rel_tol+2
-ap_model.SetTolerances(1e-args.rel_tol, 1e-abs_tol)
+ap_model.SetTolerances(10**-args.rel_tol, 10**-abs_tol)
 
 protocol = 1
 model_number = 5
