@@ -77,7 +77,6 @@ z = np.zeros(num_samples)
 wmin = np.log(xmin)
 wmax = np.log(xmax)
 w = np.logspace(wmin, wmax, num_samples, base=np.exp(1))
-print w
 temp_params = np.copy(expt_params)
 for i, scale in enumerate(w):
     temp_params[11] = scale * G_pCa
@@ -98,6 +97,7 @@ ax1.plot(x, y, lw=2, color=cs[0])
 ax1.set_xlim(xmin, xmax)
 ax1.axvline(1, lw=2, color=cs[1])
 ax1.axhline(true_aprox_ll, color=cs[2])
+ax1.set_xlim(xmin, xmax)
 ax1.set_xticks(list(ax1.get_xticks()) + [xmin])
 
 ax2.set_xlabel(r"$\log (G_{pCa} / G_{pCa,true})$")
@@ -107,6 +107,7 @@ ax2.set_xscale('log', base=np.exp(1))
 ax2.set_xlim(xmin, xmax)
 ax2.axvline(1, lw=2, color=cs[1])
 ax2.axhline(true_aprox_ll, color=cs[2])
+ax2.set_xlim(xmin, xmax)
 
 plt.show()
 
