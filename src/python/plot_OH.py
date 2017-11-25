@@ -19,7 +19,7 @@ args, unknown = parser.parse_known_args()
 
 true_noise_sd = 0.5
 two_sigma_sq = 2.*true_noise_sd**2
-omega = 0.5*nplog(10)  # s.d. of Normal priors on lnGs
+omega = 0.5*np.log(10)  # s.d. of Normal priors on lnGs
 two_omega_sq = 2.*omega**2
     
 def approx_likelihood(test_trace):
