@@ -28,7 +28,7 @@ def approx_likelihood(test_trace):
     
 def full_log_target(param, test_trace):
     ll = approx_likelihood(test_trace)
-    return ll - (np.log(param)-np.log(original_gs[11]))**2 / two_omega_sq
+    return ll - (np.log(param)-np.log(original_gs[param_idx]))**2 / two_omega_sq
 
 
 # 1. Hodgkin Huxley
