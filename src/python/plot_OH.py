@@ -79,20 +79,17 @@ for i, logscale in enumerate(w):
     temp_trace = ap.SolveForVoltageTraceWithParams(temp_params)
     z[i] = approx_likelihood(temp_trace)
     
-fig (ax1, ax2) = plt.subplots(1, 2, sharey=True)
+fig, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
 ax1.set_xlabel("$G_{pCa} / G_{pCa,true}$")
 ax1.set_ylabel('Approx. log-likelihood')
 ax1.grid()
 ax1.plot(x,y)
-ax1.axvline(G_pCa, lw=2, color='green', label='Expt')
-ax1.legend()
+ax1.axvline(1, lw=2, color='green')
 
-ax2.set_xlabel(r"$\log_10 {G_{pCa} / G_{pCa,true}}$")
-ax2.set_ylabel('Approx. log-likelihood')
+ax2.set_xlabel(r"$\log_{10} (G_{pCa} / G_{pCa,true})$")
 ax2.grid()
 ax2.plot(w,z)
-ax2.axvline(np.log10(G_pCa), lw=2, color='green', label='Expt')
-ax2.legend()
+ax2.axvline(0, lw=2, color='green')
 
 plt.show()
 
