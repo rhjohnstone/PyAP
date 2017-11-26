@@ -184,6 +184,8 @@ while count < 2:
                 if mincounts < colormin:
                     colormin = mincounts
             axes[ij].xaxis.grid()
+            axes[ij].tick_params(axis='both', which='major', labelsize=10)
+            axes[ij].tick_params(axis='both', which='minor', labelsize=8)
             if (i!=j):
                 axes[ij].yaxis.grid()
             if i!=num_params-1:
