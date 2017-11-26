@@ -186,11 +186,11 @@ while count < 2:
             axes[ij].xaxis.grid()
             axes[ij].tick_params(axis='both', which='major', labelsize=10)
             axes[ij].tick_params(axis='both', which='minor', labelsize=8)
-            num_ticks = 4
+            num_ticks = 3
             start, end = axes[ij].get_xlim()
-            axes[ij].xaxis.set_ticks(np.linspace(start, end, num_ticks))
+            axes[ij].xaxis.set_ticks(np.linspace(start, end, num_ticks+2)[1:-1])
             start, end = axes[ij].get_ylim()
-            axes[ij].yaxis.set_ticks(np.linspace(start, end, num_ticks))
+            axes[ij].yaxis.set_ticks(np.linspace(start, end, num_ticks+2)[1:-1])
             if (i!=j):
                 axes[ij].yaxis.grid()
             if i!=num_params-1:
