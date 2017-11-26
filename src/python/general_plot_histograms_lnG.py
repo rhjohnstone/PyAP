@@ -157,7 +157,7 @@ count = 0
 num_params = num_gs+1
 while count < 2:
     axes = {}
-    matrix_fig = plt.figure(figsize=(3*num_params,3*num_params))
+    matrix_fig = plt.figure(figsize=(2*num_params,2*num_params))
     for i in range(num_params):
         for j in range(i+1):
             ij = str(i)+str(j)
@@ -193,9 +193,9 @@ while count < 2:
             if i==j==0:
                 hidden_labels.append(axes[ij].get_yticklabels())
             if i==num_params-1:
-                axes[str(i)+str(j)].set_xlabel("$"+labels[j]+"$")
+                axes[str(i)+str(j)].set_xlabel("log($"+labels[j]+"$)")
             if j==0 and i>0:
-                axes[str(i)+str(j)].set_ylabel("$"+labels[i]+"$")
+                axes[str(i)+str(j)].set_ylabel("log($"+labels[i]+"$)")
                 
             plt.xticks(rotation=30)
     norm = matplotlib.colors.Normalize(vmin=colormin,vmax=colormax)
