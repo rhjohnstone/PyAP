@@ -3,6 +3,8 @@ import argparse
 import numpy as np
 import sys
 import numpy.random as npr
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import itertools as it
 from scipy.stats import norm
@@ -130,7 +132,8 @@ for i in xrange(num_gs):
     for n in xrange(N_e):
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
-        ax2.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=None, alpha=2./N_e)
+        c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=2./N_e)
+        ax2.hist(chain[:, idx], normed=True, bins=40, color=c, edgecolor=c)
         ax2.axvline(np.log(expt_params[n, i]), color='red', lw=2, label='Expt')
         temp_min = np.min(chain[:, idx])
         temp_max = np.max(chain[:, idx])
