@@ -23,6 +23,7 @@ from scipy.stats import norm
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
+parser.add_argument("--real", action="store_true", help="plotting real data, so don't look for experimental parameter file", default=False)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
     parser.print_help()
@@ -36,7 +37,8 @@ options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 params_file = '/'.join( split_trace_path[:5] ) + "/expt_params.txt"
 
 trace_number = int(trace_name.split("_")[-1])
-expt_params = np.loadtxt(params_file)[trace_number, :]
+if not args.real:
+    expt_params = np.loadtxt(params_file)[trace_number, :]
 
 pyap_options = {}
 with open(options_file, 'r') as infile:
@@ -127,7 +129,8 @@ for i in xrange(num_gs+1):
         ax2.grid()
         x = np.linspace(xlim[0]-0.2*xlength, xlim[1]+0.2*xlength, num_prior_pts)
         ax2.plot(x, norm.pdf(x, loc=prior_mean[i], scale=prior_sd), lw=2, color=cs[1], label='Prior')
-        ax2.axvline(np.log(expt_params[i]), lw=2, color='black', label='Expt')
+        if not args.real:
+            ax2.axvline(np.log(expt_params[i]), lw=2, color='black', label='Expt')
         ax2.axvline(best_params[i], color=cs[2], lw=2, label="Best")
         ax2.legend()
         ax2.set_ylim(0, ax2.get_ylim()[1])
