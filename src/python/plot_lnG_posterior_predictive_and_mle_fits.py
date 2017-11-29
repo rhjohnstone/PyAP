@@ -138,7 +138,7 @@ for i in xrange(num_gs):
     axpp.grid()
     prior_y = np.zeros(num_pts)
     post_y = np.zeros(num_pts)
-    axpp.plot(means, np.zeros(N_e), 'x', color=cs[1], ms=10, mew=2, label='Expt', clip_on=False, zorder=10)
+    #axpp.plot(means, np.zeros(N_e), 'x', color=cs[1], ms=10, mew=2, label='Expt', clip_on=False, zorder=10)
     for t in xrange(T):
         mean_sample, s2_sample = sample_from_N_IG(old_eta_js[i, :])
         prior_y += norm.pdf(x, loc=mean_sample, scale=np.sqrt(s2_sample))
@@ -152,6 +152,7 @@ for i in xrange(num_gs):
     ylim = axpp.get_ylim()
     axpp.set_ylim(0, ylim[1])
     axpp.set_ylabel('Probability density')
+    axpp.set_ylabel('log({})'.format(g_labels[i]))
     axpp.legend(loc='best')
     #axpp.set_yticks(np.linspace(axpp.get_yticks()[0],axpp.get_yticks()[-1],len(ax2.get_yticks())))
 
