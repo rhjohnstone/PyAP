@@ -100,10 +100,6 @@ T = args.num_samples
 best_fits_params = np.zeros((args.num_traces, num_gs))
 for i in xrange(args.num_traces):
     best_params = np.loadtxt('/'.join( split_trace_path[:5] ) + "/expt_params.txt")[i, :]
-    if args.different: # 9,10,11
-        for j in [9,10,11]:
-            best_params[j] = 10 * original_gs[j] * npr.rand()
-    best_fits_params[i, :] = np.copy(best_params)
 starting_points = np.copy(best_fits_params)
 starting_mean = np.mean(starting_points,axis=0)
 starting_vars = np.var(starting_points,axis=0)
@@ -121,13 +117,16 @@ old_eta_js = np.vstack((mu, nu, alpha, beta)).T
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 201
 for i in xrange(num_gs):
-    fig = plt.figure(figsize=(8,6))
-    ax2 = fig.add_subplot(111)
-    ax2.grid()
-    ax2.set_xlabel("log({})".format(g_labels[i]))
-    ax2.set_ylabel("Normalised frequency")
+    fig = plt.figure(figsize=(6,4))
+    #ax2 = fig.add_subplot(111)
+    #ax2.grid()
+    #ax2.set_xlabel("log({})".format(g_labels[i]))
+    #ax2.set_ylabel("Normalised frequency")
+    #ax2.axvline(original_gs[i], color='green', lw=2, label='true top')
+    #xmin = 1e9
+    #xmax = -1e9
     
-    axpp = ax2.twinx()
+    axpp = fig.add_subplot(111)
     axpp.grid()
     xlim = ax2.get_xlim()
     x = np.linspace(xlim[0]-0.2, xlim[1]+0.2, num_pts)
@@ -141,6 +140,12 @@ for i in xrange(num_gs):
     prior_y /= T
     post_y /= T
     #axpp.plot(x, prior_y, lw=2, color=cs[0], label='Prior pred.')
+    indices = np.arange(2*num_gs + i, (2+N_e)*num_gs + i, num_gs)
+    means = np.mean(chain[:, indices], axis=0)
+    print "expt-level means:", means
+    loc, scale = norm.fit(means)
+    print "best fit loc: {}, scale: {}".format(loc, scale)
+    axpp.plot(x, norm.pdf(x, loc=loc, scale=scale), lw=2, color=cs[0], label='MLE fit')
     axpp.plot(x, post_y, lw=2, color=cs[1], label='Post. pred.')
     axpp.plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[2])
     ylim = axpp.get_ylim()
