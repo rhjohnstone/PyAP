@@ -121,7 +121,7 @@ old_eta_js = np.vstack((mu, nu, alpha, beta)).T
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 201
 for i in xrange(num_gs):
-    fig = plt.figure(figsize=(8,6))
+    fig = plt.figure(figsize=(6,4))
     ax2 = fig.add_subplot(111)
     ax2.grid()
     ax2.set_xlabel("log({})".format(g_labels[i]))
@@ -172,16 +172,16 @@ for i in xrange(num_gs):
 
 sys.exit()
 for i in xrange(num_gs):
-    fig = plt.figure(figsize=(8,6))
+    fig = plt.figure(figsize=(6,4))
     ax = fig.add_subplot(111)
     ax.grid()
     ax.set_xlabel("sigma squared "+g_labels[i])
     ax.set_ylabel("Normalised frequency")
     ax.hist(chain[:, num_gs+i], normed=True, bins=40, color='blue', edgecolor='blue')
-    ax.axvline((0.2*original_gs[i])**2, color='red', lw=2)  # just for synthetic OH atm
+    ax.axvline((sigma2_true, color='red', lw=2)  # just for synthetic OH atm
     plt.xticks(rotation=30)
     fig.tight_layout()
-    fig.savefig(png_dir+"{}_{}_traces_hierarchical_sigma2_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
+    fig.savefig(png_dir+"{}_{}_traces_hierarchical_s2_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
     plt.close()
 
 #plt.show(block=True)
