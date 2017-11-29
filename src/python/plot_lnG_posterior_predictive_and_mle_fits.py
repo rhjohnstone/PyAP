@@ -129,7 +129,7 @@ for i in xrange(num_gs):
     
     indices = np.arange(2*num_gs + i, (2+N_e)*num_gs + i, num_gs)
     means = np.mean(chain[:, indices], axis=0)
-    x = np.linspace(np.min(means)-1, np.max(means)+1, num_pts)
+    x = np.linspace(np.min(means)-0.5, np.max(means)+0.5, num_pts)
     print "expt-level means:", means
     loc, scale = norm.fit(means)
     print "best fit loc: {}, scale: {}".format(loc, scale)
@@ -152,7 +152,7 @@ for i in xrange(num_gs):
     ylim = axpp.get_ylim()
     axpp.set_ylim(0, ylim[1])
     axpp.set_ylabel('Probability density')
-    axpp.set_ylabel('log({})'.format(g_labels[i]))
+    axpp.set_xlabel('log({})'.format(g_labels[i]))
     axpp.legend(loc='best')
     #axpp.set_yticks(np.linspace(axpp.get_yticks()[0],axpp.get_yticks()[-1],len(ax2.get_yticks())))
 
