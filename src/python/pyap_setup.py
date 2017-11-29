@@ -19,15 +19,18 @@ import os
 import sys
 import socket
 
+arcus = False
+arcus_b = False
 if socket.getfqdn().endswith("arcus.arc.local"):
     arcus_b = True
     print "\nHopefully on arcus-b\n"
-else:
-    arcus_b = False
+elif socket.getfqdn().endswith("arcus.osc.local"):
+    arcus = True
+    print "\nShould be on arcus\n"
 
 
 def cmaes_and_figs_files(model_number, expt_name, trace_name, unscaled):
-    if arcus_b:
+    if arcus_b or arcus:
         first_bit = os.path.expandvars("$DATA/PyAP_output/")
     else:
         first_bit = os.path.expanduser("~/PyAP_output/")
@@ -46,7 +49,7 @@ def cmaes_and_figs_files(model_number, expt_name, trace_name, unscaled):
 
 
 def cmaes_and_figs_files_lnG(model_number, expt_name, trace_name):
-    if arcus_b:
+    if arcus_b or arcus:
         first_bit = os.path.expandvars("$DATA/PyAP_output/")
     else:
         first_bit = os.path.expanduser("~/PyAP_output/")
@@ -124,7 +127,7 @@ def old_mcmc_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, un
     
     
 def hierarchical_mcmc_files(model, expt_name, first_trace_name, num_traces, parallel):
-    if arcus_b:
+    if arcus_b or arcus:
         first_bit = os.path.expandvars("$DATA/PyAP_output/")
     else:
         first_bit = os.path.expanduser("~/PyAP_output/")
@@ -142,7 +145,7 @@ def hierarchical_mcmc_files(model, expt_name, first_trace_name, num_traces, para
 
 
 def hierarchical_lnG_mcmc_files(model, expt_name, first_trace_name, num_traces, parallel):
-    if arcus_b:
+    if arcus_b or arcus:
         first_bit = os.path.expandvars("$DATA/PyAP_output/")
     else:
         first_bit = os.path.expanduser("~/PyAP_output/")
