@@ -146,8 +146,8 @@ for i in xrange(num_gs):
     prior_y /= T
     post_y /= T
     axpp.plot(x, norm.pdf(x, loc=loc, scale=scale), lw=2, color=cs[0], label='MLE fit')
-    axpp.plot(x, post_y, lw=2, color=cs[1], label='Post. pred.')
-    axpp.plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[2])
+    axpp.plot(x, post_y, lw=2, color=cs[2], label='Post. pred.')
+    axpp.plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[1])
     ylim = axpp.get_ylim()
     axpp.set_ylim(0, ylim[1])
     axpp.set_ylabel('Probability density')
