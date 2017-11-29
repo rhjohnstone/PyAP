@@ -134,7 +134,7 @@ for i in xrange(num_gs):
         colour = plt.cm.winter(color_idx[n])
         c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=2./N_e)
         ax2.hist(chain[:, idx], normed=True, bins=40, color=c, lw=0)
-        ax2.scatter(np.log(expt_params[n, i]), 0, marker='x', color=cs[1], ms=10, label='Expt', zorder=10)
+        ax2.scatter(np.log(expt_params[n, i]), 0, marker='x', color=cs[1], s=50, label='Expt', zorder=10, clip_on=False)
         temp_min = np.min(chain[:, idx])
         temp_max = np.max(chain[:, idx])
         #if temp_min < xmin:
