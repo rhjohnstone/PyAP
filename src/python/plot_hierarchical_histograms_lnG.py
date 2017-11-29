@@ -178,7 +178,7 @@ for i in xrange(num_gs):
     ax.set_xlabel("sigma squared "+g_labels[i])
     ax.set_ylabel("Normalised frequency")
     ax.hist(chain[:, num_gs+i], normed=True, bins=40, color='blue', edgecolor='blue')
-    ax.axvline((sigma2_true, color='red', lw=2)  # just for synthetic OH atm
+    ax.axvline(sigma2_true, color='red', lw=2)  # just for synthetic OH atm
     plt.xticks(rotation=30)
     fig.tight_layout()
     fig.savefig(png_dir+"{}_{}_traces_hierarchical_s2_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
