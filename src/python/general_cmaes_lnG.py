@@ -117,7 +117,7 @@ def run_cmaes(cma_index):
     npr.seed(cma_index)  # can't fix CMA-ES seed for some reason
     opts = cma.CMAOptions()
     print opts["tolfun"] 
-    opts["tolfun"] = 1e-4
+    #opts["tolfun"] = 1e-4
     #npr.seed(cma_index)
     #opts['seed'] = cma_index
     #options = {'seed':cma_index}
@@ -136,6 +136,10 @@ def run_cmaes(cma_index):
     
     answer = np.concatenate((npexp(res[0][:-1]), [res[0][-1], res[1]]))
     time_taken = time.time()-start
+    
+    with open(cmaes_log_file, "a") as outfile:
+        outfile.write("{} iterations, {} min\n".format(res[4], round(time_taken/60.,1)))
+    
     print "\n\nTime taken by this CMA-ES run: {} s\n\n".format(round(time_taken))
     return answer
 
@@ -174,6 +178,9 @@ cmaes_indices = range(how_many_cmaes_runs)
 
 trace_start_time = time.time()
 cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files_lnG(pyap_options["model_number"], expt_name, trace_name)
+cmaes_log_file = cmaes_best_fits_file[:-3]+"log"
+with open(cmaes_log_file, "w") as outfile:
+    pass
 
 if num_cores > 1:
     pool = mp.Pool(num_cores)
@@ -187,6 +194,8 @@ else:
         best_boths.append(run_cmaes(ci))
 best_boths = np.array(best_boths)
 np.savetxt(cmaes_best_fits_file, best_boths)
+
+
 
 """
 ap_model = ap_simulator.APSimulator()
