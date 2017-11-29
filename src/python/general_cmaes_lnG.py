@@ -125,7 +125,7 @@ def run_cmaes(cma_index):
     sigma0 = 0.1
     print "x0:", x0
     print "sigma0:", sigma0
-    es = cma.CMAEvolutionStrategy(x0, sigma0), opts)
+    es = cma.CMAEvolutionStrategy(x0, sigma0, opts)
     while not es.stop():
         X = es.ask()
         #for q in X:
