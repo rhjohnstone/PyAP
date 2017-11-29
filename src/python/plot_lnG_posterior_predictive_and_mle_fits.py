@@ -125,11 +125,17 @@ for i in xrange(num_gs):
     #ax2.axvline(original_gs[i], color='green', lw=2, label='true top')
     #xmin = 1e9
     #xmax = -1e9
+    #axpp.plot(x, prior_y, lw=2, color=cs[0], label='Prior pred.')
+    
+    indices = np.arange(2*num_gs + i, (2+N_e)*num_gs + i, num_gs)
+    means = np.mean(chain[:, indices], axis=0)
+    x = np.linspace(np.min(means)-1, np.max(means)+1, num_pts)
+    print "expt-level means:", means
+    loc, scale = norm.fit(means)
+    print "best fit loc: {}, scale: {}".format(loc, scale)
     
     axpp = fig.add_subplot(111)
     axpp.grid()
-    xlim = ax2.get_xlim()
-    x = np.linspace(xlim[0]-0.2, xlim[1]+0.2, num_pts)
     prior_y = np.zeros(num_pts)
     post_y = np.zeros(num_pts)
     for t in xrange(T):
@@ -139,12 +145,6 @@ for i in xrange(num_gs):
         post_y += norm.pdf(x, loc=chain[idx,i], scale=np.sqrt(chain[idx,num_gs+i]))
     prior_y /= T
     post_y /= T
-    #axpp.plot(x, prior_y, lw=2, color=cs[0], label='Prior pred.')
-    indices = np.arange(2*num_gs + i, (2+N_e)*num_gs + i, num_gs)
-    means = np.mean(chain[:, indices], axis=0)
-    print "expt-level means:", means
-    loc, scale = norm.fit(means)
-    print "best fit loc: {}, scale: {}".format(loc, scale)
     axpp.plot(x, norm.pdf(x, loc=loc, scale=scale), lw=2, color=cs[0], label='MLE fit')
     axpp.plot(x, post_y, lw=2, color=cs[1], label='Post. pred.')
     axpp.plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[2])
@@ -152,7 +152,7 @@ for i in xrange(num_gs):
     axpp.set_ylim(0, ylim[1])
     axpp.set_ylabel('Probability density')
     axpp.legend()
-    axpp.set_yticks(np.linspace(axpp.get_yticks()[0],axpp.get_yticks()[-1],len(ax2.get_yticks())))
+    #axpp.set_yticks(np.linspace(axpp.get_yticks()[0],axpp.get_yticks()[-1],len(ax2.get_yticks())))
 
 
     fig.tight_layout()
