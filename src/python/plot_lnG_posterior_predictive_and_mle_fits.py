@@ -152,7 +152,7 @@ for i in xrange(num_gs):
     ylim = axpp.get_ylim()
     axpp.set_ylim(0, ylim[1])
     axpp.set_ylabel('Probability density')
-    axpp.legend()
+    axpp.legend(loc='best')
     #axpp.set_yticks(np.linspace(axpp.get_yticks()[0],axpp.get_yticks()[-1],len(ax2.get_yticks())))
 
 
