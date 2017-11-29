@@ -117,8 +117,7 @@ def run_cmaes(cma_index):
     npr.seed(cma_index)  # can't fix CMA-ES seed for some reason
     opts = cma.CMAOptions()
     print opts["tolfun"] 
-    sys.exit()
-    #opts["tolfun"] 
+    opts["tolfun"] = 1e-4
     #npr.seed(cma_index)
     #opts['seed'] = cma_index
     #options = {'seed':cma_index}
