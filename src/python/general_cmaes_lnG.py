@@ -115,7 +115,10 @@ def run_cmaes(cma_index):
     ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
     ap_model.SetNumberOfSolves(pyap_options["num_solves"])
     npr.seed(cma_index)  # can't fix CMA-ES seed for some reason
-    #opts = cma.CMAOptions()
+    opts = cma.CMAOptions()
+    print opts["tolfun"] 
+    sys.exit()
+    #opts["tolfun"] 
     #npr.seed(cma_index)
     #opts['seed'] = cma_index
     #options = {'seed':cma_index}
@@ -123,7 +126,7 @@ def run_cmaes(cma_index):
     sigma0 = 0.1
     print "x0:", x0
     print "sigma0:", sigma0
-    es = cma.CMAEvolutionStrategy(x0, sigma0)#, options)
+    es = cma.CMAEvolutionStrategy(x0, sigma0), opts)
     while not es.stop():
         X = es.ask()
         #for q in X:
