@@ -134,13 +134,14 @@ for i in xrange(num_gs):
         colour = plt.cm.winter(color_idx[n])
         c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=2./N_e)
         ax2.hist(chain[:, idx], normed=True, bins=40, color=c, lw=0)
-        ax2.scatter(np.log(expt_params[n, i]), marker='x', color=cs[2], label='Expt')
+        ax2.scatter(np.log(expt_params[n, i]), 0, marker='x', color=cs[1], ms=10, label='Expt', zorder=10)
         temp_min = np.min(chain[:, idx])
         temp_max = np.max(chain[:, idx])
         #if temp_min < xmin:
         #    xmin = temp_min
         #if temp_max > xmax:
         #    xmax = temp_max
+    ax2.set_ylim(0, ax2.get_ylim()[1])
     plt.xticks(rotation=30)
     
     axpp = ax2.twinx()
