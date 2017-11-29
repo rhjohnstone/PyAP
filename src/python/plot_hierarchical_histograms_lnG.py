@@ -134,7 +134,7 @@ for i in xrange(num_gs):
         colour = plt.cm.winter(color_idx[n])
         c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=2./N_e)
         ax2.hist(chain[:, idx], normed=True, bins=40, color=c, lw=0)
-        ax2.axvline(np.log(expt_params[n, i]), color='red', lw=2, label='Expt')
+        ax2.scatter(np.log(expt_params[n, i]), marker='x', color=cs[2], label='Expt')
         temp_min = np.min(chain[:, idx])
         temp_max = np.max(chain[:, idx])
         #if temp_min < xmin:
@@ -157,8 +157,8 @@ for i in xrange(num_gs):
     prior_y /= T
     post_y /= T
     axpp.plot(x, prior_y, lw=2, color=cs[0], label='Prior pred.')
-    axpp.plot(x, post_y, lw=2, color=cs[1], label='Post. pred.')
-    axpp.plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[2])
+    axpp.plot(x, post_y, lw=2, color=cs[2], label='Post. pred.')
+    axpp.plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[1])
     ylim = axpp.get_ylim()
     axpp.set_ylim(0, ylim[1])
     axpp.set_ylabel('Probability density')
