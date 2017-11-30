@@ -57,7 +57,11 @@ data_clamp_off = pyap_options["data_clamp_off"]
 def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace):
     ap_model.SetToModelInitialConditions()
     ap_model.SetVoltage(expt_trace[0])
-    return ap_model.SolveForVoltageTraceWithParams(npexp(temp_lnG_params))
+    try:
+        return ap_model.SolveForVoltageTraceWithParams(npexp(temp_lnG_params))
+    except:
+        print "\n\nFAIL\n\n"
+        return np.zeros(num_pts)
 
 
 def solve_for_voltage_trace_without_initial_V(temp_lnG_params, ap_model, expt_trace):
