@@ -131,7 +131,7 @@ for i in xrange(num_gs+1):
         ax2.plot(x, norm.pdf(x, loc=prior_mean[i], scale=prior_sd), lw=2, color=cs[1], label='Prior')
         if not args.real:
             ax2.plot(np.log(expt_params[n, i]), 0, 'x', color=cs[1], ms=10, mew=2, label='Expt', clip_on=False, zorder=10)
-        ax2.axvline(best_params[i], color=cs[2], lw=2, label="Best")
+        ax2.axvline(best_params[i], color=cs[2], lw=2, label="Max PD")
         ax2.legend(loc='best',fontsize=12)
         ax2.set_ylim(0, ax2.get_ylim()[1])
         ax2.set_ylabel('Probability density')
