@@ -110,6 +110,7 @@ prior_sd = 0.5*np.log(10)  # s.d. of Normal priors on lnGs
 
 cs = ['#1b9e77','#d95f02','#7570b3','#e7298a']
 num_prior_pts = 201
+num_ticks = 6
 for i in xrange(num_gs+1):
     fig = plt.figure(figsize=(5,4))
     ax = fig.add_subplot(111)
@@ -143,7 +144,9 @@ for i in xrange(num_gs+1):
     ax2.set_ylim(0, ax2.get_ylim()[1])
     ax2.set_ylabel('Probability density')
     ax2.legend(loc='best', fontsize=10)
-    ax2.set_yticks(np.round(np.linspace(0., ax2.get_ylim()[1], len(ax.get_yticks())),3))
+    ax.set_ylim(0, ax.get_ylim()[1])
+    ax.set_yticks(np.round(np.linspace(0., ax.get_ylim()[1], num_ticks), 3))
+    ax2.set_yticks(np.round(np.linspace(0., ax2.get_ylim()[1], num_ticks),3))
     fig.tight_layout()
     fig.savefig(savelabel)
     plt.close()
