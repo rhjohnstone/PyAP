@@ -139,7 +139,7 @@ for i in xrange(num_gs+1):
         if (x[0] > 1e-3) and (x[-1] < 25):
             ax2.axhline(1./(25.-1e-3), lw=2, color=cs[1], label='Prior')
     
-    ax.set_xticks(np.linspace(x[0], x[-1], 6))
+    ax.set_xticks(np.round(np.linspace(x[0], x[-1], 6), 3))
     ax2.set_ylim(0, ax2.get_ylim()[1])
     ax2.set_yticks(np.linspace(ax2.get_yticks()[0], ax2.get_yticks()[-1], len(ax.get_yticks())))
     ax2.set_ylabel('Probability density')
