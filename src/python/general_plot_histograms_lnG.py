@@ -136,10 +136,10 @@ for i in xrange(num_gs+1):
         ax2.axvline(best_params[i], color=cs[2], lw=2, label="Max PD")
     else:
         ax2.plot(0.5, 0, 'x', color=cs[3], ms=10, mew=2, label='Expt', clip_on=False, zorder=10)
-        if (x[0] > 1e-3) and (x[1] < 25):
+        if (x[0] > 1e-3) and (x[-1] < 25):
             ax2.axhline(1./(25.-1e-3), lw=2, color=cs[1], label='Prior')
     
-    ax.set_xticks(np.linspace(x[0], x[1], 6))
+    ax.set_xticks(np.linspace(x[0], x[-1], 6))
     ax2.set_ylim(0, ax2.get_ylim()[1])
     ax2.set_yticks(np.linspace(ax2.get_yticks()[0], ax2.get_yticks()[-1], len(ax.get_yticks())))
     ax2.set_ylabel('Probability density')
