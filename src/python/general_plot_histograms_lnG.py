@@ -108,7 +108,7 @@ sigma2_true = 0.01
 prior_mean = np.log(original_gs)
 prior_sd = 0.5*np.log(10)  # s.d. of Normal priors on lnGs
 
-cs = ['#1b9e77','#d95f02','#7570b3']
+cs = ['#1b9e77','#d95f02','#7570b3','#e7298a']
 num_prior_pts = 201
 for i in xrange(num_gs+1):
     fig = plt.figure(figsize=(5,4))
@@ -122,21 +122,25 @@ for i in xrange(num_gs+1):
         ax.set_xlabel(r"$\sigma$")
         savelabel = png_dir+'sigma_marginal.png'
     ax.hist(chain[:,i], normed=True, bins=40, color=cs[0], edgecolor=cs[0])
+    ax2 = ax.twinx()
+    ax2.grid()
+    xlim = ax.get_xlim()
     if i < num_gs:
-        xlim = ax.get_xlim()
         xlength = xlim[1]-xlim[0]
-        ax2 = ax.twinx()
-        ax2.grid()
         x = np.linspace(xlim[0]-0.2*xlength, xlim[1]+0.2*xlength, num_prior_pts)
         ax2.plot(x, norm.pdf(x, loc=prior_mean[i], scale=prior_sd), lw=2, color=cs[1], label='Prior')
         if not args.real:
             #ax2.axvline(np.log(expt_params[i]), lw=2, color='black', label='Expt')
-            ax2.plot(np.log(expt_params[i]), 0, 'x', color=cs[1], ms=10, mew=2, label='Expt', clip_on=False, zorder=10)
+            ax2.plot(np.log(expt_params[i]), 0, 'x', color=cs[3], ms=10, mew=2, label='Expt', clip_on=False, zorder=10)
         ax2.axvline(best_params[i], color=cs[2], lw=2, label="Max PD")
-        ax2.legend(loc='best',fontsize=12)
         ax2.set_ylim(0, ax2.get_ylim()[1])
-        ax2.set_ylabel('Probability density')
         ax2.set_yticks(np.linspace(ax2.get_yticks()[0],ax2.get_yticks()[-1],len(ax.get_yticks())))
+    else:
+        ax2.plot(0.5, 0, 'x', color=cs[3], ms=10, mew=2, label='Expt', clip_on=False, zorder=10)
+        if (xlim[0] > 1e-3) and (xlim[1] < 25):
+            ax2.axhline(1./(25.-1e-3), lw=2, color=cs[1], label='Prior')
+    ax2.set_ylabel('Probability density')
+    ax2.legend(loc='best', fontsize=10)
     fig.tight_layout()
     fig.savefig(savelabel)
     plt.close()
