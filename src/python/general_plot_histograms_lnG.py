@@ -141,9 +141,9 @@ for i in xrange(num_gs+1):
     
     ax.set_xticks(np.round(np.linspace(x[0], x[-1], 6), 3))
     ax2.set_ylim(0, ax2.get_ylim()[1])
-    ax2.set_yticks(np.linspace(ax2.get_yticks()[0], ax2.get_yticks()[-1], len(ax.get_yticks())))
     ax2.set_ylabel('Probability density')
     ax2.legend(loc='best', fontsize=10)
+    ax2.set_yticks(np.round(np.linspace(0., ax2.get_ylim()[1], len(ax.get_yticks())),3))
     fig.tight_layout()
     fig.savefig(savelabel)
     plt.close()
