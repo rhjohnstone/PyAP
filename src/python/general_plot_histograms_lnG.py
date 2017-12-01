@@ -125,20 +125,23 @@ for i in xrange(num_gs+1):
     ax2 = ax.twinx()
     ax2.grid()
     xlim = ax.get_xlim()
+    xlength = xlim[1]-xlim[0]
+    x = np.linspace(xlim[0]-0.2*xlength, xlim[1]+0.2*xlength, num_prior_pts)
+    ax.set_xlim(x[0], x[-1])
     if i < num_gs:
-        xlength = xlim[1]-xlim[0]
-        x = np.linspace(xlim[0]-0.2*xlength, xlim[1]+0.2*xlength, num_prior_pts)
         ax2.plot(x, norm.pdf(x, loc=prior_mean[i], scale=prior_sd), lw=2, color=cs[1], label='Prior')
         if not args.real:
             #ax2.axvline(np.log(expt_params[i]), lw=2, color='black', label='Expt')
             ax2.plot(np.log(expt_params[i]), 0, 'x', color=cs[3], ms=10, mew=2, label='Expt', clip_on=False, zorder=10)
         ax2.axvline(best_params[i], color=cs[2], lw=2, label="Max PD")
-        ax2.set_ylim(0, ax2.get_ylim()[1])
-        ax2.set_yticks(np.linspace(ax2.get_yticks()[0],ax2.get_yticks()[-1],len(ax.get_yticks())))
     else:
         ax2.plot(0.5, 0, 'x', color=cs[3], ms=10, mew=2, label='Expt', clip_on=False, zorder=10)
-        if (xlim[0] > 1e-3) and (xlim[1] < 25):
+        if (x[0] > 1e-3) and (x[1] < 25):
             ax2.axhline(1./(25.-1e-3), lw=2, color=cs[1], label='Prior')
+    
+    ax.set_xticks(np.linspace(xlim[0], xlim[1], 6))
+    ax2.set_ylim(0, ax2.get_ylim()[1])
+    ax2.set_yticks(np.linspace(ax2.get_yticks()[0], ax2.get_yticks()[-1], len(ax.get_yticks())))
     ax2.set_ylabel('Probability density')
     ax2.legend(loc='best', fontsize=10)
     fig.tight_layout()
