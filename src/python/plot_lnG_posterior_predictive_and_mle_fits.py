@@ -116,24 +116,17 @@ old_eta_js = np.vstack((mu, nu, alpha, beta)).T
 
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 201
+
+for n in xrange(N_e):
+    temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(n)
+    sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
+    sl_mcmc = np.loadtxt(sl_mcmc_file)
+    sl_means = np.mean(sl_mcmc[:,:-2], axis=0)
+    print sl_means
+sys.exit()
+
 for i in xrange(num_gs):
     fig = plt.figure(figsize=(6,4))
-    #ax2 = fig.add_subplot(111)
-    #ax2.grid()
-    #ax2.set_xlabel("log({})".format(g_labels[i]))
-    #ax2.set_ylabel("Normalised frequency")
-    #ax2.axvline(original_gs[i], color='green', lw=2, label='true top')
-    #xmin = 1e9
-    #xmax = -1e9
-    #axpp.plot(x, prior_y, lw=2, color=cs[0], label='Prior pred.')
-    
-    for n in xrange(N_e):
-        temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(n)
-        try:
-            sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
-        except:
-            print "Couldn't load", temp_trace_name
-            sys.exit()
     
     indices = np.arange(2*num_gs + i, (2+N_e)*num_gs + i, num_gs)
     means = np.mean(chain[:, indices], axis=0)
