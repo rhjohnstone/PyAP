@@ -10,7 +10,7 @@ import numpy.random as npr
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
-requiredNamed.add_argument("-T", "--num-samples", type=int, help="number of samples to plot prior predictive from", required=True)
+parser.add_argument("-T", "--num-samples", type=int, help="number of samples to plot prior predictive from", default=0)
 args, unknown = parser.parse_known_args()
 
 T = args.num_samples
@@ -46,6 +46,10 @@ g_labels = ["${}$".format(g) for g in g_parameters]
 m_true = np.log(original_gs)
 sigma2_true = 0.01
 
+fig_y = 3
+phi = 1.61803398875
+figsize = (phi*fig_y, fig_y)
+
 parallel = True
 
 expt_params = np.loadtxt(expt_params_file)
@@ -58,7 +62,7 @@ i = 0
 nums_expts = [2, 4]
 total_nums_expts = len(nums_expts)
 color_idx = np.linspace(0, 1, total_nums_expts)
-fig, axs = plt.subplots(1, 2, sharex=True, sharey=True)
+fig, axs = plt.subplots(1, 2, sharex=True, sharey=True, figsize=figsize)
 axs[0].set_ylabel('Probability density')
 x = np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts)
 for j in xrange(2):
@@ -83,10 +87,17 @@ for a, N_e in enumerate(nums_expts):
     h_chain = np.loadtxt(hmcmc_file,usecols=[i, num_gs+i])
     saved_its = h_chain.shape[0]
     post_pred = np.zeros(num_pts)
-    for t in xrange(T):
-        rand_idx = npr.randint(saved_its)
-        m, s2 = h_chain[rand_idx, :]
-        post_pred += norm.pdf(x, loc=m, scale=np.sqrt(s2))
+    if args.num_samples == 0:
+        T = saved_its
+        for t in xrange(T):
+            m, s2 = h_chain[t, :]
+            post_pred += norm.pdf(x, loc=m, scale=np.sqrt(s2))
+    else:
+        T = args.num_samples
+        for t in xrange(T):
+            rand_idx = npr.randint(saved_its)
+            m, s2 = h_chain[rand_idx, :]
+            post_pred += norm.pdf(x, loc=m, scale=np.sqrt(s2))
     post_pred /= T
     axs[1].plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
 
