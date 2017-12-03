@@ -159,7 +159,7 @@ for i in xrange(num_gs):
         ax.set_yticks(np.round(np.linspace(0, new_ylim[1], num_ticks),2))
         ax.legend(loc='best')
         g_axs[i][j].set_zorder(ax.get_zorder()+1) # put ax in front of ax2 
-        #ax1.patch.set_visible(False) # hide the 'canvas' 
+        g_axs[i][j].patch.set_visible(False) # hide the 'canvas' 
     
 
 plt.show()
