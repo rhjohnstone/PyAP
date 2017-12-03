@@ -57,11 +57,11 @@ expt_params = np.loadtxt(expt_params_file)
 cs = ['#1b9e77','#d95f02','#7570b3']
 ax_titles = ["Single-level MLE", "Hierarchical post. pred."]
 num_pts = 201
+nums_expts = [2, 4, 8, 16, 32]
+total_nums_expts = len(nums_expts)
+color_idx = np.linspace(0, 1, total_nums_expts)
 
 for i in xrange(num_gs):
-    nums_expts = [2, 4, 8, 16, 32]
-    total_nums_expts = len(nums_expts)
-    color_idx = np.linspace(0, 1, total_nums_expts)
     fig, axs = plt.subplots(1, 2, sharex=True, sharey=True, figsize=figsize)
     axs[0].set_ylabel('Probability density')
     x = np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts)
