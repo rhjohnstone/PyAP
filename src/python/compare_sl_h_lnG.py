@@ -58,54 +58,55 @@ cs = ['#1b9e77','#d95f02','#7570b3']
 ax_titles = ["Single-level MLE", "Hierarchical post. pred."]
 num_pts = 201
 
-i = 0
-nums_expts = [2, 4, 8, 16, 32]
-total_nums_expts = len(nums_expts)
-color_idx = np.linspace(0, 1, total_nums_expts)
-fig, axs = plt.subplots(1, 2, sharex=True, sharey=True, figsize=figsize)
-axs[0].set_ylabel('Probability density')
-x = np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts)
-for j in xrange(2):
-    axs[j].grid()
-    axs[j].set_title(ax_titles[j])
-    axs[j].set_xlabel('log({})'.format(g_labels[i]))
-    axs[j].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label="True")
-means = np.zeros(nums_expts[-1])
-for n in xrange(nums_expts[-1]):
-    temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
-    print "Trace:", temp_trace_name
-    sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
-    means[n] = np.loadtxt(sl_mcmc_file, usecols=[i]).mean()
+for i in xrange(num_gs):
+    nums_expts = [2, 4, 8, 16, 32]
+    total_nums_expts = len(nums_expts)
+    color_idx = np.linspace(0, 1, total_nums_expts)
+    fig, axs = plt.subplots(1, 2, sharex=True, sharey=True, figsize=figsize)
+    axs[0].set_ylabel('Probability density')
+    x = np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts)
+    for j in xrange(2):
+        axs[j].grid()
+        axs[j].set_title(ax_titles[j])
+        axs[j].set_xlabel('log({})'.format(g_labels[i]))
+        axs[j].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label="True")
+    means = np.zeros(nums_expts[-1])
+    for n in xrange(nums_expts[-1]):
+        temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
+        print "Trace:", temp_trace_name
+        sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
+        means[n] = np.loadtxt(sl_mcmc_file, usecols=[i]).mean()
 
-for a, N_e in enumerate(nums_expts):
-    colour = plt.cm.winter(color_idx[a])
-    # MLE fit
-    loc, scale = norm.fit(means[:N_e])
-    axs[0].plot(x, norm.pdf(x, loc=loc, scale=scale), lw=2, color=colour, label="$N_e = {}$".format(N_e))
-    # Posterior predictive
-    hmcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
-    h_chain = np.loadtxt(hmcmc_file,usecols=[i, num_gs+i])
-    saved_its = h_chain.shape[0]
-    post_pred = np.zeros(num_pts)
-    if args.num_samples == 0:
-        T = saved_its
-        for t in xrange(T):
-            m, s2 = h_chain[t, :]
-            post_pred += norm.pdf(x, loc=m, scale=np.sqrt(s2))
-    else:
-        T = args.num_samples
-        for t in xrange(T):
-            rand_idx = npr.randint(saved_its)
-            m, s2 = h_chain[rand_idx, :]
-            post_pred += norm.pdf(x, loc=m, scale=np.sqrt(s2))
-    post_pred /= T
-    axs[1].plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
+    for a, N_e in enumerate(nums_expts):
+        colour = plt.cm.winter(color_idx[a])
+        # MLE fit
+        loc, scale = norm.fit(means[:N_e])
+        axs[0].plot(x, norm.pdf(x, loc=loc, scale=scale), lw=2, color=colour, label="$N_e = {}$".format(N_e))
+        # Posterior predictive
+        hmcmc_file, log_file, h_png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
+        h_chain = np.loadtxt(hmcmc_file,usecols=[i, num_gs+i])
+        saved_its = h_chain.shape[0]
+        post_pred = np.zeros(num_pts)
+        if args.num_samples == 0:
+            T = saved_its
+            for t in xrange(T):
+                m, s2 = h_chain[t, :]
+                post_pred += norm.pdf(x, loc=m, scale=np.sqrt(s2))
+        else:
+            T = args.num_samples
+            for t in xrange(T):
+                rand_idx = npr.randint(saved_its)
+                m, s2 = h_chain[rand_idx, :]
+                post_pred += norm.pdf(x, loc=m, scale=np.sqrt(s2))
+        post_pred /= T
+        axs[1].plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
 
-for j in xrange(2):
-    axs[j].legend(loc='best')
-        
-fig.tight_layout()
-plt.show()
+    for j in xrange(2):
+        axs[j].legend(loc='best')
+            
+    fig.tight_layout()
+    fig.savefig(h_png_dir+'sl_mle_and_h_post_pred_{}.png'.format(g_parameters[i]))
+    plt.close()
 
         
 
