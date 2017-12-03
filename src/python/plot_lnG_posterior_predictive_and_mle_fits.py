@@ -122,13 +122,17 @@ g_figs = []
 g_axs = []
 titles = ["Hierarchical", "Single-level"]
 for i in xrange(num_gs):
+    x = np.linspace(m_true-2*np.sqrt(sigma2_true), m_true+2*np.sqrt(sigma2_true), num_pts)
     fig, axs = plt.subplots(2, 1, sharex=True, sharey=True)
     g_figs.append(fig)
-    g_axs.append(axs)
+    g_axs.append((axs[0].twinx(), axs[1].twinx()))
     for j in xrange(2):
+        axs[j].yaxis.tick_right()
         axs[j].grid()
         axs[j].set_title(titles[j])
         axs[j].set_ylabel('Normalised frequency')
+        axs[j].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[1])
+        axs[j].legend(loc='best')
     axs[1].set_xlabel('log({})'.format(g_labels[i]))
 
 for n in xrange(N_e):
@@ -145,21 +149,7 @@ for n in xrange(N_e):
         g_axs[i][0].hist(h_chain[:, h_expt_idx], normed=True, color=c, lw=0, bins=40, zorder=10)
         g_axs[i][1].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40, zorder=10)
 
-num_ticks = 6
-for i in xrange(num_gs):
-    xlim = g_axs[i][0].get_xlim()
-    ylim = g_axs[i][0].get_ylim()
-    x = np.linspace(xlim[0], xlim[1], num_pts)
-    for j in xrange(2):
-        g_axs[i][j].set_yticks(np.round(np.linspace(0, ylim[1], num_ticks),2))
-        ax = g_axs[i][j].twinx()
-        ax.plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[1])
-        new_ylim = ax.get_ylim()
-        ax.set_ylim(0, new_ylim[1])
-        ax.set_yticks(np.round(np.linspace(0, new_ylim[1], num_ticks),2))
-        ax.legend(loc='best')
-        g_axs[i][j].set_zorder(ax.get_zorder()+1) # put ax in front of ax2 
-        g_axs[i][j].patch.set_visible(False) # hide the 'canvas' 
+
     
 
 plt.show()
