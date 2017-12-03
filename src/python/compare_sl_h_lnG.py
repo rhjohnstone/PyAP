@@ -46,7 +46,7 @@ g_labels = ["${}$".format(g) for g in g_parameters]
 m_true = np.log(original_gs)
 sigma2_true = 0.01
 
-fig_y = 3
+fig_y = 5
 phi = 1.61803398875
 figsize = (phi*fig_y, fig_y)
 
@@ -59,7 +59,7 @@ ax_titles = ["Single-level MLE", "Hierarchical post. pred."]
 num_pts = 201
 
 i = 0
-nums_expts = [2, 4]
+nums_expts = [2, 4, 8, 16, 32]
 total_nums_expts = len(nums_expts)
 color_idx = np.linspace(0, 1, total_nums_expts)
 fig, axs = plt.subplots(1, 2, sharex=True, sharey=True, figsize=figsize)
