@@ -63,12 +63,12 @@ color_idx = np.linspace(0, 1, total_nums_expts)
 
 for i in xrange(num_gs):
     fig, axs = plt.subplots(1, 2, sharex=True, sharey=True, figsize=figsize)
-    axs[0].set_ylabel('Probability density')
+    axs[0].set_ylabel('Probability density', fontsize=14)
     x = np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts)
     for j in xrange(2):
         axs[j].grid()
         axs[j].set_title(ax_titles[j])
-        axs[j].set_xlabel('log({})'.format(g_labels[i]))
+        axs[j].set_xlabel('log({})'.format(g_labels[i]), fontsize=14)
         axs[j].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label="True")
     means = np.zeros(nums_expts[-1])
     for n in xrange(nums_expts[-1]):
@@ -102,7 +102,7 @@ for i in xrange(num_gs):
         axs[1].plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
 
     for j in xrange(2):
-        axs[j].legend(loc='best')
+        axs[j].legend(loc='best', fontsize=10)
             
     fig.tight_layout()
     fig.savefig(h_png_dir+'sl_mle_and_h_post_pred_{}.png'.format(g_parameters[i]))
