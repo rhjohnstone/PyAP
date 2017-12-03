@@ -142,8 +142,16 @@ for n in xrange(N_e):
     c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=2./N_e)
     for i in xrange(num_gs):
         h_expt_idx = (2+n)*num_gs + i
-        g_axs[i][0].hist(h_chain[:, h_expt_idx], normed=True, color=c, lw=0, bins=40)
-        g_axs[i][1].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40)
+        g_axs[i][0].hist(h_chain[:, h_expt_idx], normed=True, color=c, lw=0, bins=40, zorder=10)
+        g_axs[i][1].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40, zorder=10)
+
+for i in xrange(num_gs):
+    xlim = g_axs[i][0].get_xlim()
+    x = np.linspace(xlim[0], xlim[1], num_pts)
+    for j in xrange(2):
+        g_axs[i][j].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[1])
+        g_axs[i][j].legend(loc='best')
+    
 
 plt.show()
 sys.exit()
