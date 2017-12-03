@@ -127,12 +127,13 @@ for i in xrange(num_gs):
     g_figs.append(fig)
     g_axs.append((axs[0].twinx(), axs[1].twinx()))
     for j in xrange(2):
-        axs[j].yaxis.tick_right()
+        axs[j].yaxis.set_label_position("right")
         axs[j].grid()
         axs[j].set_title(titles[j])
-        axs[j].set_ylabel('Normalised frequency')
+        axs[j].set_ylabel('Probability density')
         axs[j].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[1])
         axs[j].legend(loc='best')
+        g_axs[i][j].set_ylabel('Normalised frequency')
     axs[1].set_xlabel('log({})'.format(g_labels[i]))
 
 for n in xrange(N_e):
