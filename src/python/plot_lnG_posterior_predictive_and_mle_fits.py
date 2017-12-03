@@ -4,7 +4,7 @@ import numpy as np
 import sys
 import numpy.random as npr
 import matplotlib
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import itertools as it
 from scipy.stats import norm
@@ -90,10 +90,8 @@ expt_params = np.loadtxt(expt_params_file)[:N_e,:]
 
 color_idx = np.linspace(0, 1, N_e)
 mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
-chain = np.loadtxt(mcmc_file)
-saved_its, d = chain.shape
-chain = chain[saved_its/2:, :]
-saved_its, d = chain.shape
+h_chain = np.loadtxt(mcmc_file)
+saved_its, d = h_chain.shape
 
 T = args.num_samples
 
@@ -117,12 +115,31 @@ old_eta_js = np.vstack((mu, nu, alpha, beta)).T
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 201
 
+ax_y = 3
+phi = 1.61803398875
+figsize = (phi*ax_y, 2*fig_y)
+g_figs = []
+g_axs = []
+for i in xrange(num_gs):
+    fig, axs = plt.subplot(2, 1, sharex=True)
+    g_figs.append(fig)
+    g_axs.append(axs)
+
 for n in xrange(N_e):
     temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(n)
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
-    sl_mcmc = np.loadtxt(sl_mcmc_file)
-    sl_means = np.mean(sl_mcmc[:,:-2], axis=0)
+    sl_chain = np.loadtxt(sl_mcmc_file)
+    sl_means = np.mean(sl_chain[:,:-2], axis=0)
     print sl_means
+    
+    colour = plt.cm.winter(color_idx[n])
+    c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=2./N_e)
+    for i in xrange(num_gs):
+        h_expt_idx = (2+n)*num_gs + i
+        g_axs[i][0].hist(h_chain[:, h_expt_idx], normed=True, color=c, lw=0)
+        g_axs[i][1].hist(sl_chain[:, i], normed=True, color=c, lw=0)
+
+plt.show()
 sys.exit()
 
 for i in xrange(num_gs):
@@ -159,7 +176,7 @@ for i in xrange(num_gs):
 
 
     fig.tight_layout()
-    fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_posterior_predictive.png".format(expt_name, N_e, g_parameters[i]))
+    #fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_posterior_predictive.png".format(expt_name, N_e, g_parameters[i]))
     plt.close()
 
 
