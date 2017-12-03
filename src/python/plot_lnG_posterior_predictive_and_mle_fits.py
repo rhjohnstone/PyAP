@@ -138,6 +138,13 @@ for i in xrange(num_gs):
         g_axs[i][j].yaxis.tick_left()
         g_axs[i][j].set_ylabel('Normalised frequency')
     axs[1].set_xlabel('log({})'.format(g_labels[i]))
+    post_y = np.zeros(num_pts)
+    for t in xrange(T):
+        mean_sample, s2_sample = sample_from_N_IG(old_eta_js[i, :])
+        idx = npr.randint(saved_its)
+        post_y += norm.pdf(x, loc=chain[idx,i], scale=np.sqrt(chain[idx,num_gs+i]))
+    post_y /= T
+    axs[0].plot(x, post_y, lw=2, color=cs[2], label='Post. pred.')
 
 for n in xrange(N_e):
     temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(n)
