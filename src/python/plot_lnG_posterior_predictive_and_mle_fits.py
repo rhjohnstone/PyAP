@@ -149,8 +149,9 @@ for i in xrange(num_gs):
     xlim = g_axs[i][0].get_xlim()
     x = np.linspace(xlim[0], xlim[1], num_pts)
     for j in xrange(2):
-        g_axs[i][j].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[1])
-        g_axs[i][j].legend(loc='best')
+        ax = g_axs[i][j].twinx()
+        ax.plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[1])
+        ax.legend(loc='best')
     
 
 plt.show()
