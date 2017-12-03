@@ -118,6 +118,8 @@ nu = 4.*beta / ((alpha+1.) * np.log(10)**2)
 
 old_eta_js = np.vstack((mu, nu, alpha, beta)).T
 
+num_ticks = 6
+
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 201
 for i in xrange(num_gs):
@@ -164,7 +166,8 @@ for i in xrange(num_gs):
     axpp.set_ylim(0, ylim[1])
     axpp.set_ylabel('Probability density')
     axpp.legend(loc='best',fontsize=12)
-    axpp.set_yticks(np.linspace(axpp.get_yticks()[0],axpp.get_yticks()[-1],len(ax2.get_yticks())))
+    ax2.set_yticks(np.round(np.linspace(0., ax2.get_ylim()[1], num_ticks), 3))
+    axpp.set_yticks(np.round(np.linspace(0., axpp.get_ylim()[1], num_ticks),3))
 
 
     fig.tight_layout()
