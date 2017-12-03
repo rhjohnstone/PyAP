@@ -117,13 +117,19 @@ num_pts = 201
 
 ax_y = 3
 phi = 1.61803398875
-figsize = (phi*ax_y, 2*fig_y)
+figsize = (phi*ax_y, 2*ax_y)
 g_figs = []
 g_axs = []
+titles = ["Hierarchical", "Single-level"]
 for i in xrange(num_gs):
-    fig, axs = plt.subplot(2, 1, sharex=True)
+    fig, axs = plt.subplots(2, 1, sharex=True)
     g_figs.append(fig)
     g_axs.append(axs)
+    for j in xrange(2):
+        axs[j].grid()
+        axs[j].set_title(titles[j])
+        axs[j].set_ylabel('Normalised frequency')
+    axs[1].set_xlabel('log({})'.format(g_labels[i]))
 
 for n in xrange(N_e):
     temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(n)
@@ -136,8 +142,8 @@ for n in xrange(N_e):
     c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=2./N_e)
     for i in xrange(num_gs):
         h_expt_idx = (2+n)*num_gs + i
-        g_axs[i][0].hist(h_chain[:, h_expt_idx], normed=True, color=c, lw=0)
-        g_axs[i][1].hist(sl_chain[:, i], normed=True, color=c, lw=0)
+        g_axs[i][0].hist(h_chain[:, h_expt_idx], normed=True, color=c, lw=0, bins=40)
+        g_axs[i][1].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40)
 
 plt.show()
 sys.exit()
