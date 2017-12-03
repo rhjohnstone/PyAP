@@ -127,6 +127,14 @@ for i in xrange(num_gs):
     #xmax = -1e9
     #axpp.plot(x, prior_y, lw=2, color=cs[0], label='Prior pred.')
     
+    for n in xrange(N_e):
+        temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(n)
+        try:
+            sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
+        except:
+            print "Couldn't load", temp_trace_name
+            sys.exit()
+    
     indices = np.arange(2*num_gs + i, (2+N_e)*num_gs + i, num_gs)
     means = np.mean(chain[:, indices], axis=0)
     x = np.linspace(np.min(means)-0.5, np.max(means)+0.5, num_pts)
