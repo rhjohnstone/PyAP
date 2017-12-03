@@ -120,12 +120,14 @@ phi = 1.61803398875
 figsize = (phi*ax_y, 2*ax_y)
 g_figs = []
 g_axs = []
+bottoms_axs = []
 titles = ["Hierarchical", "Single-level"]
 for i in xrange(num_gs):
     x = np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts)
     fig, axs = plt.subplots(2, 1, sharex=True, sharey=True)
     g_figs.append(fig)
     g_axs.append((axs[0].twinx(), axs[1].twinx()))
+    bottoms_axs.append(axs)
     for j in xrange(2):
         axs[j].yaxis.set_label_position("right")
         axs[j].yaxis.tick_right()
@@ -164,9 +166,9 @@ for i in xrange(num_gs):
     post_y /= T
     axs[0].plot(x, post_y, lw=2, color=cs[2], label='Post. pred.')
     loc, scale = norm.fit(sl_means[:, i])
-    axs[1].plot(x, norm.pdf(x,loc=loc, scale=scale, lw=2, color=cs[0], label='MLE fit')
-    axs[0].legend(loc='best')
-    axs[1].legend(loc='best')
+    bottoms_axs[i][1].plot(x, norm.pdf(x,loc=loc, scale=scale, lw=2, color=cs[0], label='MLE fit')
+    bottoms_axs[i][0].legend(loc='best')
+    bottoms_axs[i][1].legend(loc='best')
 
 plt.show()
 sys.exit()
