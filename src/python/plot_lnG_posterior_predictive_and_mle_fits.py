@@ -133,24 +133,18 @@ for i in xrange(num_gs):
         axs[j].set_title(titles[j])
         axs[j].set_ylabel('Probability density')
         axs[j].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[1])
-        axs[j].legend(loc='best')
+        
         g_axs[i][j].yaxis.set_label_position("left")
         g_axs[i][j].yaxis.tick_left()
         g_axs[i][j].set_ylabel('Normalised frequency')
     axs[1].set_xlabel('log({})'.format(g_labels[i]))
-    post_y = np.zeros(num_pts)
-    for t in xrange(T):
-        idx = npr.randint(saved_its)
-        post_y += norm.pdf(x, loc=h_chain[idx,i], scale=np.sqrt(h_chain[idx,num_gs+i]))
-    post_y /= T
-    axs[0].plot(x, post_y, lw=2, color=cs[2], label='Post. pred.')
 
+sl_means = np.zeros((N_e, num_gs))
 for n in xrange(N_e):
     temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(n)
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
     sl_chain = np.loadtxt(sl_mcmc_file)
-    sl_means = np.mean(sl_chain[:,:-2], axis=0)
-    print sl_means
+    sl_means[n, :] = np.mean(sl_chain[:,:-2], axis=0)
     
     colour = plt.cm.winter(color_idx[n])
     c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=2./N_e)
@@ -161,8 +155,18 @@ for n in xrange(N_e):
         for j in xrange(2):
             g_axs[i][j].plot(np.log(expt_params[n, i]), 0, 'x', color=cs[1], ms=10, mew=2, clip_on=False, zorder=10)
 
-
-    
+for i in xrange(num_gs):
+    x = np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts)
+    post_y = np.zeros(num_pts)
+    for t in xrange(T):
+        idx = npr.randint(saved_its)
+        post_y += norm.pdf(x, loc=h_chain[idx,i], scale=np.sqrt(h_chain[idx,num_gs+i]))
+    post_y /= T
+    axs[0].plot(x, post_y, lw=2, color=cs[2], label='Post. pred.')
+    loc, scale = norm.fit(sl_means[:, i])
+    axs[1].plot(x, norm.pdf(x,loc=loc, scale=scale, lw=2, color=cs[0], label='MLE fit')
+    axs[0].legend(loc='best')
+    axs[1].legend(loc='best')
 
 plt.show()
 sys.exit()
