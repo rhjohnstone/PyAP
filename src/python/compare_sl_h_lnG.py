@@ -13,6 +13,8 @@ requiredNamed.add_argument("--data-file", type=str, help="first csv file from wh
 requiredNamed.add_argument("-T", "--num-samples", type=int, help="number of samples to plot prior predictive from", required=True)
 args, unknown = parser.parse_known_args()
 
+T = args.num_samples
+
 trace_path = args.data_file
 split_trace_path = trace_path.split('/')
 expt_name = split_trace_path[4]
@@ -86,7 +88,7 @@ for a, N_e in enumerate(nums_expts):
         m, s2 = h_chain[rand_idx, :]
         post_pred += norm.pdf(x, loc=m, scale=np.sqrt(s2))
     post_pred /= T
-    axs[0].plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
+    axs[1].plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
 
 for j in xrange(2):
     axs[j].legend(loc='best')
