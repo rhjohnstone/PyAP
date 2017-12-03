@@ -128,6 +128,7 @@ for i in xrange(num_gs):
     g_axs.append((axs[0].twinx(), axs[1].twinx()))
     for j in xrange(2):
         axs[j].yaxis.set_label_position("right")
+        axs[j].yaxis.tick_right()
         axs[j].grid()
         axs[j].set_title(titles[j])
         axs[j].set_ylabel('Probability density')
