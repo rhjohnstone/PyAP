@@ -145,13 +145,21 @@ for n in xrange(N_e):
         g_axs[i][0].hist(h_chain[:, h_expt_idx], normed=True, color=c, lw=0, bins=40, zorder=10)
         g_axs[i][1].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40, zorder=10)
 
+num_ticks = 6
 for i in xrange(num_gs):
     xlim = g_axs[i][0].get_xlim()
+    ylim = g_axs[i][0].get_ylim()
     x = np.linspace(xlim[0], xlim[1], num_pts)
     for j in xrange(2):
+        g_axs[i][j].set_yticks(np.round(np.linspace(0, ylim[1], num_ticks),2))
         ax = g_axs[i][j].twinx()
         ax.plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[1])
+        new_ylim = ax.get_ylim()
+        ax.set_ylim(0, new_ylim[1])
+        ax.set_yticks(np.round(np.linspace(0, new_ylim[1], num_ticks),2))
         ax.legend(loc='best')
+        g_axs[i][j].set_zorder(ax.get_zorder()+1) # put ax in front of ax2 
+        #ax1.patch.set_visible(False) # hide the 'canvas' 
     
 
 plt.show()
