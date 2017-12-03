@@ -135,6 +135,7 @@ for i in xrange(num_gs):
         axs[j].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[1])
         axs[j].legend(loc='best')
         g_axs[i][j].yaxis.set_label_position("left")
+        g_axs[i][j].yaxis.tick_left()
         g_axs[i][j].set_ylabel('Normalised frequency')
     axs[1].set_xlabel('log({})'.format(g_labels[i]))
 
