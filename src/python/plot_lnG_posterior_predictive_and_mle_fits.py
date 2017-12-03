@@ -164,7 +164,7 @@ for i in xrange(num_gs):
         idx = npr.randint(saved_its)
         post_y += norm.pdf(x, loc=h_chain[idx,i], scale=np.sqrt(h_chain[idx,num_gs+i]))
     post_y /= T
-    axs[0].plot(x, post_y, lw=2, color=cs[2], label='Post. pred.')
+    bottoms_axs[0].plot(x, post_y, lw=2, color=cs[2], label='Post. pred.')
     loc, scale = norm.fit(sl_means[:, i])
     bottoms_axs[i][1].plot(x, norm.pdf(x,loc=loc, scale=scale), lw=2, color=cs[0], label='MLE fit')
     bottoms_axs[i][0].legend(loc='best')
