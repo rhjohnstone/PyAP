@@ -122,7 +122,7 @@ g_figs = []
 g_axs = []
 titles = ["Hierarchical", "Single-level"]
 for i in xrange(num_gs):
-    fig, axs = plt.subplots(2, 1, sharex=True)
+    fig, axs = plt.subplots(2, 1, sharex=True, sharey=True)
     g_figs.append(fig)
     g_axs.append(axs)
     for j in xrange(2):
