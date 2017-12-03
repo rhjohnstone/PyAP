@@ -150,8 +150,10 @@ for n in xrange(N_e):
     c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=2./N_e)
     for i in xrange(num_gs):
         h_expt_idx = (2+n)*num_gs + i
-        g_axs[i][0].hist(h_chain[:, h_expt_idx], normed=True, color=c, lw=0, bins=40, zorder=10)
-        g_axs[i][1].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40, zorder=10)
+        g_axs[i][0].hist(h_chain[:, h_expt_idx], normed=True, color=c, lw=0, bins=40)
+        g_axs[i][1].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40)
+        for j in xrange(2):
+            g_axs[i][j].plot(np.log(expt_params[n, i]), 0, 'x', color=cs[1], ms=10, mew=2, clip_on=False, zorder=10)
 
 
     
