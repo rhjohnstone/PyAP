@@ -4,6 +4,7 @@ import matplotlib
 #matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.stats import norm
+import argparse
 
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
@@ -51,30 +52,34 @@ ax_titles = ["Single-level", "Hierarchical"]
 num_pts = 201
 
 i = 0
-N_e = 2
+nums_expts = [2]
+total_nums_expts = len(nums_expts)
+color_idx = np.linspace(0, 1, total_nums_expts)
+for a, N_e in enumerate(nums_expts):
+    colour = plt.cm.winter(color_idx[a])
 
-fig, axs = plt.subplots(1, 2, sharex=True, sharey=True)
-axs[0].set_ylabel('Probability density')
-x = np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts)
-for j in xrange(2):
-    axs[j].grid()
-    axs[j].set_title(ax_titles[j])
-    axs[j].set_xlabel('log({})'.format(g_labels[i]))
-    axs[j].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label="True")
+    fig, axs = plt.subplots(1, 2, sharex=True, sharey=True)
+    axs[0].set_ylabel('Probability density')
+    x = np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts)
+    for j in xrange(2):
+        axs[j].grid()
+        axs[j].set_title(ax_titles[j])
+        axs[j].set_xlabel('log({})'.format(g_labels[i]))
+        axs[j].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label="True")
 
-means = np.zeros(N_e)
-for n in xrange(N_e):
-    temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
-    sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
-    means[n] = np.loadtxt(sl_mcmc_file, usecols=[i]).mean()
-loc, scale = norm.fit(means)
-axs[0].plot(x, norm.pdf(x, loc=loc, scale=scale), lw=2, label="$N_e = {}$".format(N_e))
+    means = np.zeros(N_e)
+    for n in xrange(N_e):
+        temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
+        sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
+        means[n] = np.loadtxt(sl_mcmc_file, usecols=[i]).mean()
+    loc, scale = norm.fit(means)
+    axs[0].plot(x, norm.pdf(x, loc=loc, scale=scale), lw=2, color=colour, label="$N_e = {}$".format(N_e))
 
-for j in xrange(2):
-    axs[j].legend(loc='best')
-    
-fig.tight_layout()
-plt.show()
+    for j in xrange(2):
+        axs[j].legend(loc='best')
+        
+    fig.tight_layout()
+    plt.show()
 
-    
+        
 
