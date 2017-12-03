@@ -141,7 +141,7 @@ for i in xrange(num_gs):
     post_y = np.zeros(num_pts)
     for t in xrange(T):
         idx = npr.randint(saved_its)
-        post_y += norm.pdf(x, loc=h_chain[idx,i], scale=np.sqrt(chain[idx,num_gs+i]))
+        post_y += norm.pdf(x, loc=h_chain[idx,i], scale=np.sqrt(h_chain[idx,num_gs+i]))
     post_y /= T
     axs[0].plot(x, post_y, lw=2, color=cs[2], label='Post. pred.')
 
