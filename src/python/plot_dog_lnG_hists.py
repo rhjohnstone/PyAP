@@ -78,11 +78,11 @@ old_eta_js = np.vstack((mu, nu, alpha, beta)).T
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 201
 
-ax_x = 6
+ax_x = 8
 phi = 1.61803398875
 figsize = (ax_x, phi*ax_x)
 
-fig, axs = plt.subplots(10, 6)#, figsize=figsize)
+fig, axs = plt.subplots(5, 3, figsize=figsize)
 axs = axs.flatten()
 for i in xrange(num_gs):
     axs[i].grid()
