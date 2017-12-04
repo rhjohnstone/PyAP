@@ -56,7 +56,7 @@ expt_params = np.loadtxt(expt_params_file)
 
 cs = ['#1b9e77','#d95f02','#7570b3']
 ax_titles = ["Single-level MLE pred.", "Hierarchical post. pred."]
-num_pts = 201
+num_pts = 101
 nums_expts = [2, 4, 8, 16, 32]
 total_nums_expts = len(nums_expts)
 color_idx = np.linspace(0, 1, total_nums_expts)
@@ -119,7 +119,7 @@ for i in xrange(num_gs):
         axs[j].legend(loc='best', fontsize=10)
             
     fig.tight_layout()
-    plt.show()
+    #plt.show()
     fig.savefig(h_png_dir+'sl_mle_pred_and_h_post_pred_{}.png'.format(g_parameters[i]))
     plt.close()
 
