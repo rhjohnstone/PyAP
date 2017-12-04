@@ -107,7 +107,11 @@ for n in xrange(N_e):
 num_ticks = 5
 for i in xrange(num_gs):
     xlim = axs[i].get_xlim()
-    axs[i].set_xticks(np.round(np.linspace(xlim[0], xlim[1], num_ticks)[1:-1],2))
+    xdiff = xlim[1]-xlim[0]
+    lower_x = xlim[0] + 0.2*xdiff
+    mid_x = xlim[0] + 0.5*xdiff
+    upper_x = xlim[0] + 0.8*xdiff
+    axs[i].set_xticks(np.round([lower_x, mid_x, upper_x],2))
     ylim = axs[i].get_ylim()
     axs[i].set_yticks(np.round(np.linspace(0, ylim[1], num_ticks),2))
 
