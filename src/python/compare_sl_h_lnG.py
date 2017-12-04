@@ -95,12 +95,12 @@ for i in xrange(num_gs):
         post_pred = np.zeros(num_pts)
         if args.num_samples == 0:
             T = saved_its
+            mle_m = norm.rvs(loc=loc, scale=scale, size=T)
+            mle_s2 = invgamma.rvs(alpha, scale=beta, size=T)
             for t in xrange(T):
                 m, s2 = h_chain[t, :]
                 post_pred += norm.pdf(x, loc=m, scale=np.sqrt(s2))
-                mle_m = norm.rvs(loc=loc, scale=scale)
-                mle_s2 = invgamma.rvs(alpha, scale=beta)
-                mle_pred += norm.pdf(x, loc=mle_m, scale=np.sqrt(mle_s2))
+                mle_pred += norm.pdf(x, loc=mle_m[t], scale=np.sqrt(mle_s2[t]))
         else:
             T = args.num_samples
             rand_idx = npr.randint(0, saved_its, T)
