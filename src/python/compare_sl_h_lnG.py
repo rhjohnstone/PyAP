@@ -102,10 +102,10 @@ for i in xrange(num_gs):
                 mle_pred += norm.pdf(x, loc=mle_m, scale=np.sqrt(mle_s2))
         else:
             T = args.num_samples
+            rand_idx = npr.randint(0, saved_its, T)
+            m, s2 = h_chain[rand_idx, :].T
             for t in xrange(T):
-                rand_idx = npr.randint(saved_its)
-                m, s2 = h_chain[rand_idx, :]
-                post_pred += norm.pdf(x, loc=m, scale=np.sqrt(s2))
+                post_pred += norm.pdf(x, loc=m[t], scale=np.sqrt(s2[t]))
         post_pred /= T
         post_pred /= T
         axs[0].plot(x, mle_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
