@@ -71,7 +71,7 @@ for i in xrange(num_gs):
         axs[j].set_xlabel('log({})'.format(g_labels[i]), fontsize=14)
         axs[j].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label="True")
     means = np.zeros(nums_expts[-1])
-    variances = np.zeros(num_expts[-1])
+    variances = np.zeros(nums_expts[-1])
     for n in xrange(nums_expts[-1]):
         temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
         print "Trace:", temp_trace_name
@@ -85,7 +85,7 @@ for i in xrange(num_gs):
         # MLE fit
         loc, scale = norm.fit(means[:N_e])
         #axs[0].plot(x, norm.pdf(x, loc=loc, scale=scale), lw=2, color=colour, label="$N_e = {}$".format(N_e))
-        alpha, beta = invgamma.fit(variances[:N_e], loc=0)
+        alpha, _, beta = invgamma.fit(variances[:N_e], floc=0)
         # Posterior predictive
         hmcmc_file, log_file, h_png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
         h_chain = np.loadtxt(hmcmc_file,usecols=[i, num_gs+i])
@@ -115,7 +115,7 @@ for i in xrange(num_gs):
         axs[j].legend(loc='best', fontsize=10)
             
     fig.tight_layout()
-    plt.show()
+    plt.show()sl
     #fig.savefig(h_png_dir+'sl_mle_and_h_post_pred_{}.png'.format(g_parameters[i]))
     plt.close()
 
