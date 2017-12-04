@@ -82,11 +82,11 @@ ax_x = 6
 phi = 1.61803398875
 figsize = (ax_x, phi*ax_x)
 
-fig, axs = plt.subplots(5, 3, figsize=figsize)
+fig, axs = plt.subplots(10, 6)#, figsize=figsize)
 axs = axs.flatten()
 for i in xrange(num_gs):
     axs[i].grid()
-    axs[i].set_ylabel('Normalised frequency')
+    #axs[i].set_ylabel('Normalised frequency')
     axs[i].set_xlabel('log({})'.format(g_labels[i]))
 
 sl_means = np.zeros((N_e, num_gs))
@@ -99,7 +99,7 @@ for n in xrange(N_e):
     sl_means[n, :] = np.mean(sl_chain[:,:-2], axis=0)
     
     colour = plt.cm.winter(color_idx[n])
-    c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=2./N_e)
+    c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=1.5/N_e)
     for i in xrange(num_gs):
         axs[i].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40)
 
