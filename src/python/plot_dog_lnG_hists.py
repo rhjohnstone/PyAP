@@ -84,9 +84,12 @@ figsize = (ax_x, phi*ax_x)
 
 fig, axs = plt.subplots(5, 3, figsize=figsize)
 axs = axs.flatten()
-for i in xrange(num_gs):
+for i in xrange(num_gs+1):
     axs[i].grid()
-    axs[i].set_xlabel('log({})'.format(g_labels[i]))
+    if i < num_gs:
+        axs[i].set_xlabel('log({})'.format(g_labels[i]))
+    else:
+        axs[i].set_xlabel(r"\sigma")
     if i%3==0:
         axs[i].set_ylabel('Norm. freq.')
 
@@ -101,11 +104,11 @@ for n in xrange(N_e):
     
     colour = plt.cm.winter(color_idx[n])
     c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=1.5/N_e)
-    for i in xrange(num_gs):
+    for i in xrange(num_gs+1):
         axs[i].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40)
 
 num_ticks = 5
-for i in xrange(num_gs):
+for i in xrange(num_gs+1):
     xlim = axs[i].get_xlim()
     xdiff = xlim[1]-xlim[0]
     lower_x = xlim[0] + 0.2*xdiff
