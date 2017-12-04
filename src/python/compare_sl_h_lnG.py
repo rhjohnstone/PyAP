@@ -86,6 +86,7 @@ for i in xrange(num_gs):
         loc, scale = norm.fit(means[:N_e])
         #axs[0].plot(x, norm.pdf(x, loc=loc, scale=scale), lw=2, color=colour, label="$N_e = {}$".format(N_e))
         alpha, _, beta = invgamma.fit(variances[:N_e], floc=0)
+        print "invgamma for variances: alpha = {}, beta = {}".format(alpha, beta)
         # Posterior predictive
         hmcmc_file, log_file, h_png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
         h_chain = np.loadtxt(hmcmc_file,usecols=[i, num_gs+i])
@@ -104,7 +105,6 @@ for i in xrange(num_gs):
             T = args.num_samples
             rand_idx = npr.randint(0, saved_its, T)
             m, s2 = h_chain[rand_idx, :].T
-            #print m, s2
             for t in xrange(T):
                 post_pred += norm.pdf(x, loc=m[t], scale=np.sqrt(s2[t]))
         mle_pred /= T
