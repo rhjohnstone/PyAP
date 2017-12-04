@@ -115,7 +115,7 @@ for i in xrange(num_gs):
         axs[j].legend(loc='best', fontsize=10)
             
     fig.tight_layout()
-    plt.show()sl
+    plt.show()
     #fig.savefig(h_png_dir+'sl_mle_and_h_post_pred_{}.png'.format(g_parameters[i]))
     plt.close()
 
