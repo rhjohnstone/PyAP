@@ -107,10 +107,11 @@ for n in xrange(N_e):
 num_ticks = 5
 for i in xrange(num_gs):
     xlim = axs[i].get_xlim()
-    axs[i].set_xticks(np.round(np.linspace(xlim[0], xlim[1], num_ticks),2))
+    axs[i].set_xticks(np.round(np.linspace(xlim[0], xlim[1], num_ticks)[1:-1],2))
     ylim = axs[i].get_ylim()
-    axs[i].set_yticks(np.round(np.linspace(ylim[0], ylim[1], num_ticks),2))
+    axs[i].set_yticks(np.round(np.linspace(0, ylim[1], num_ticks),2))
 
+fig.tight_layout()
 plt.show()
 sys.exit()
 
