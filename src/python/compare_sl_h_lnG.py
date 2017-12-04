@@ -79,7 +79,7 @@ for i in xrange(num_gs):
         temp_chain = np.loadtxt(sl_mcmc_file, usecols=[i])
         means[n] = temp_chain.mean()
         variances[n] = temp_chain.var()
-
+    print variances
     for a, N_e in enumerate(nums_expts):
         colour = plt.cm.winter(color_idx[a])
         # MLE fit
@@ -105,8 +105,11 @@ for i in xrange(num_gs):
             T = args.num_samples
             rand_idx = npr.randint(0, saved_its, T)
             m, s2 = h_chain[rand_idx, :].T
+            mle_m = norm.rvs(loc=loc, scale=scale, size=T)
+            mle_s2 = invgamma.rvs(alpha, scale=beta, size=T)
             for t in xrange(T):
                 post_pred += norm.pdf(x, loc=m[t], scale=np.sqrt(s2[t]))
+                mle_pred += norm.pdf(x, loc=mle_m[t], scale=np.sqrt(mle_s2[t]))
         mle_pred /= T
         post_pred /= T
         axs[0].plot(x, mle_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
