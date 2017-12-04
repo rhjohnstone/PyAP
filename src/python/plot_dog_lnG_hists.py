@@ -90,8 +90,9 @@ for i in xrange(num_gs):
     axs[i].set_xlabel('log({})'.format(g_labels[i]))
 
 sl_means = np.zeros((N_e, num_gs))
-for n in xrange(N_e):
+for n in xrange(first_trace_number, first_trace_number+N_e):
     temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(n)
+    print temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
     sl_chain = np.loadtxt(sl_mcmc_file)
     sl_means[n, :] = np.mean(sl_chain[:,:-2], axis=0)
