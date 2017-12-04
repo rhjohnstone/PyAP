@@ -115,7 +115,8 @@ for i in xrange(num_gs):
     ylim = axs[i].get_ylim()
     axs[i].set_yticks(np.round(np.linspace(0, ylim[1], num_ticks),2))
 
-fig.tight_layout()
+fig.tight_layout(h_pad=1.)
+fig.savefig(sl_png_dir+"superimposed_marginal_hists.png")
 plt.show()
 sys.exit()
 
