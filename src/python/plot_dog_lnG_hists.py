@@ -78,18 +78,19 @@ old_eta_js = np.vstack((mu, nu, alpha, beta)).T
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 201
 
-ax_x = 7.5
+ax_x = 8
 phi = 1.61803398875
-figsize = (ax_x, phi*ax_x)
+golden = (ax_x, phi*ax_x)
+a4 = (ax_x, np.sqrt(2)*ax_x)
 
-fig, axs = plt.subplots(5, 3, figsize=figsize)
+fig, axs = plt.subplots(5, 3, figsize=a4)
 axs = axs.flatten()
 for i in xrange(num_gs+1):
     axs[i].grid()
     if i < num_gs:
         axs[i].set_xlabel('log({})'.format(g_labels[i]))
     else:
-        axs[i].set_xlabel(r"\sigma")
+        axs[i].set_xlabel(r"$\sigma$")
     if i%3==0:
         axs[i].set_ylabel('Norm. freq.')
 
