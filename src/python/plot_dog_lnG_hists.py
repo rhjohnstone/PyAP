@@ -78,7 +78,7 @@ old_eta_js = np.vstack((mu, nu, alpha, beta)).T
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 201
 
-ax_x = 8
+ax_x = 7.5
 phi = 1.61803398875
 figsize = (ax_x, phi*ax_x)
 
@@ -111,9 +111,10 @@ for i in xrange(num_gs):
     lower_x = xlim[0] + 0.2*xdiff
     mid_x = xlim[0] + 0.5*xdiff
     upper_x = xlim[0] + 0.8*xdiff
-    axs[i].set_xticks(np.round([lower_x, mid_x, upper_x],2))
+    axs[i].set_xticks(np.round([lower_x, mid_x, upper_x],3))
     ylim = axs[i].get_ylim()
     axs[i].set_yticks(np.round(np.linspace(0, ylim[1], num_ticks),2))
+    plt.xticks(rotation=30)
 
 fig.tight_layout(h_pad=1.)
 fig.savefig(sl_png_dir+"superimposed_marginal_hists.png")
