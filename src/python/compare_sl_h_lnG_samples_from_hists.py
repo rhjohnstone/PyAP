@@ -76,12 +76,12 @@ for i in xrange(num_gs):
     for a, N_e in enumerate(nums_expts):
         colour = plt.cm.winter(color_idx[a])
         mle_samples = np.zeros((N_e, T))
-        for n in xrange(nums_expts[-1]):
+        for n in xrange(N_e):
             temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
             print "Trace:", temp_trace_name
             sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
             temp_chain = np.loadtxt(sl_mcmc_file, usecols=[i])
-            num_saved_its = len(chain)
+            num_saved_its = len(temp_chain)
             rand_idx = npr.randint(0, num_saved_its, T)
             mle_samples[n,:] = temp_chain[rand_idx]
         # MLE fit
