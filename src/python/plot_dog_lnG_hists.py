@@ -86,8 +86,9 @@ fig, axs = plt.subplots(5, 3, figsize=figsize)
 axs = axs.flatten()
 for i in xrange(num_gs):
     axs[i].grid()
-    #axs[i].set_ylabel('Normalised frequency')
     axs[i].set_xlabel('log({})'.format(g_labels[i]))
+    if i%3==0:
+        axs[i].set_ylabel('Norm. freq.')
 
 sl_means = np.zeros((N_e, num_gs))
 for n in xrange(N_e):
@@ -103,7 +104,12 @@ for n in xrange(N_e):
     for i in xrange(num_gs):
         axs[i].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40)
 
-
+num_ticks = 5
+for i in xrange(num_gs):
+    xlim = axs[i].get_xlim
+    axs[i].set_xticks(np.round(np.linspace(xlim[0], xlim[1], num_ticks),2))
+    ylim = axs[i].get_ylim
+    axs[i].set_yticks(np.round(np.linspace(ylim[0], ylim[1], num_ticks),2))
 
 plt.show()
 sys.exit()
