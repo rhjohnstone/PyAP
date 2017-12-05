@@ -73,7 +73,7 @@ for n in xrange(nums_expts[-1]):
     temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
     print "Trace:", temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
-    temp_chain = np.loadtxt(sl_mcmc_file, usecols=[range(num_gs)])
+    temp_chain = np.loadtxt(sl_mcmc_file, usecols=range(num_gs))
     means[n, :] = temp_chain.mean(axis=0)
     variances[n, :] = temp_chain.var(axis=0)
 print means
