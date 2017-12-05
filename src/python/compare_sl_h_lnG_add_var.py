@@ -85,7 +85,10 @@ for i in xrange(num_gs):
         # MLE fit
         means_mean = means[:N_e].mean()
         means_var = means[:N_e].var()
-        mle_pred = norm.pdf(x, loc=means_mean, scale=np.sqrt(means_var + variances[:N_e].max()))
+        loc = means_mean
+        scale = np.sqrt(means_var + variances[:N_e].max())
+        print "loc = {}, scale = {}".format(loc, scale)
+        mle_pred = norm.pdf(x, loc=loc, scale=scale)
         # Posterior predictive
         hmcmc_file, log_file, h_png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
         h_chain = np.loadtxt(hmcmc_file,usecols=[i, num_gs+i])
