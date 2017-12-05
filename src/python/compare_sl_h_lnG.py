@@ -57,7 +57,7 @@ expt_params = np.loadtxt(expt_params_file)
 cs = ['#1b9e77','#d95f02','#7570b3']
 ax_titles = ["Single-level MLE pred.", "Hierarchical post. pred."]
 num_pts = 101
-nums_expts = [2, 4, 8, 16, 32]
+nums_expts = [2, 4, 8]#, 16, 32]
 total_nums_expts = len(nums_expts)
 color_idx = np.linspace(0, 1, total_nums_expts)
 
@@ -96,11 +96,11 @@ for i in xrange(num_gs):
         print "invgamma for variances: alpha = {}, beta = {}".format(alpha, beta)
         # Posterior predictive
         hmcmc_file, log_file, h_png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
-        h_chain = np.loadtxt(hmcmc_file,usecols=[i, num_gs+i])
-        saved_its = h_chain.shape[0]
+        #h_chain = np.loadtxt(hmcmc_file,usecols=[i, num_gs+i])
+        #saved_its = h_chain.shape[0]
         start = time()
         mle_pred = np.zeros(num_pts)
-        post_pred = np.zeros(num_pts)
+        #post_pred = np.zeros(num_pts)
         if args.num_samples == 0:
             T = saved_its
             mle_m = normrvs(loc=loc, scale=scale, size=T)
@@ -110,18 +110,18 @@ for i in xrange(num_gs):
                 mle_pred += normpdf(x, loc=mle_m[t], scale=np.sqrt(mle_s2[t]))
         else:
             T = args.num_samples
-            rand_idx = npr.randint(0, saved_its, T)
+            #rand_idx = npr.randint(0, saved_its, T)
             mle_m = normrvs(loc=loc, scale=scale, size=T)
             mle_s2 = invgammarvs(alpha, loc=0, scale=beta, size=T)
             for t in xrange(T):
-                post_pred += normpdf(x, loc=h_chain[rand_idx[t], 0], scale=np.sqrt(h_chain[rand_idx[t], 1]))
+                #post_pred += normpdf(x, loc=h_chain[rand_idx[t], 0], scale=np.sqrt(h_chain[rand_idx[t], 1]))
                 mle_pred += normpdf(x, loc=mle_m[t], scale=np.sqrt(mle_s2[t]))
         mle_pred /= T
-        post_pred /= T
+        #post_pred /= T
         tt = time()-start
         print "Time taken for MLE pred: {} s".format(round(tt))
         axs[0].plot(x, mle_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
-        axs[1].plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
+        #axs[1].plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
 
     for j in xrange(2):
         axs[j].legend(loc='best', fontsize=10)
