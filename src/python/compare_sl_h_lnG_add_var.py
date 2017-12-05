@@ -83,10 +83,8 @@ for i in xrange(num_gs):
     for a, N_e in enumerate(nums_expts):
         colour = plt.cm.winter(color_idx[a])
         # MLE fit
-        means_mean = means[:N_e].mean()
-        means_var = means[:N_e].var()
-        loc = means_mean
-        scale = np.sqrt(means_var + variances[:N_e].max())
+        loc, scale = norm.fit(means[:N_e])
+        scale = scale + np.sqrt(variances[:N_e].max())
         print "loc = {}, scale = {}".format(loc, scale)
         mle_pred = norm.pdf(x, loc=loc, scale=scale)
         # Posterior predictive
