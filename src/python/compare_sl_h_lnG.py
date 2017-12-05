@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import norm, invgamma
 import argparse
 import numpy.random as npr
+import os
 
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
@@ -61,6 +62,10 @@ nums_expts = [2, 4, 8, 16, 32]
 total_nums_expts = len(nums_expts)
 color_idx = np.linspace(0, 1, total_nums_expts)
 
+normpdf = norm.pdf
+normrvs = norm.rvs
+invgammarvs = invgamma.rvs
+
 for i in xrange(num_gs):
     fig, axs = plt.subplots(1, 2, sharex=True, sharey=True, figsize=figsize)
     axs[0].set_ylabel('Probability density', fontsize=14)
@@ -69,7 +74,7 @@ for i in xrange(num_gs):
         axs[j].grid()
         axs[j].set_title(ax_titles[j])
         axs[j].set_xlabel('log({})'.format(g_labels[i]), fontsize=14)
-        axs[j].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label="True")
+        axs[j].plot(x, normpdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label="True")
     means = np.zeros(nums_expts[-1])
     variances = np.zeros(nums_expts[-1])
     for n in xrange(nums_expts[-1]):
@@ -84,7 +89,7 @@ for i in xrange(num_gs):
         colour = plt.cm.winter(color_idx[a])
         # MLE fit
         loc, scale = norm.fit(means[:N_e])
-        #axs[0].plot(x, norm.pdf(x, loc=loc, scale=scale), lw=2, color=colour, label="$N_e = {}$".format(N_e))
+        #axs[0].plot(x, normpdf(x, loc=loc, scale=scale), lw=2, color=colour, label="$N_e = {}$".format(N_e))
         alpha, _, beta = invgamma.fit(variances[:N_e], floc=0)
         print "invgamma for variances: alpha = {}, beta = {}".format(alpha, beta)
         # Posterior predictive
@@ -95,21 +100,19 @@ for i in xrange(num_gs):
         post_pred = np.zeros(num_pts)
         if args.num_samples == 0:
             T = saved_its
-            mle_m = norm.rvs(loc=loc, scale=scale, size=T)
-            mle_s2 = invgamma.rvs(alpha, loc=0, scale=beta, size=T)
+            mle_m = normrvs(loc=loc, scale=scale, size=T)
+            mle_s2 = invgammarvs(alpha, loc=0, scale=beta, size=T)
             for t in xrange(T):
-                m, s2 = h_chain[t, :]
-                post_pred += norm.pdf(x, loc=m, scale=np.sqrt(s2))
-                mle_pred += norm.pdf(x, loc=mle_m[t], scale=np.sqrt(mle_s2[t]))
+                post_pred += normpdf(x, loc=h_chain[t, 0], scale=np.sqrt(h_chain[t, 1]))
+                mle_pred += normpdf(x, loc=mle_m[t], scale=np.sqrt(mle_s2[t]))
         else:
             T = args.num_samples
             rand_idx = npr.randint(0, saved_its, T)
-            m, s2 = h_chain[rand_idx, :].T
-            mle_m = norm.rvs(loc=loc, scale=scale, size=T)
-            mle_s2 = invgamma.rvs(alpha, loc=0, scale=beta, size=T)
+            mle_m = normrvs(loc=loc, scale=scale, size=T)
+            mle_s2 = invgammarvs(alpha, loc=0, scale=beta, size=T)
             for t in xrange(T):
-                post_pred += norm.pdf(x, loc=m[t], scale=np.sqrt(s2[t]))
-                mle_pred += norm.pdf(x, loc=mle_m[t], scale=np.sqrt(mle_s2[t]))
+                post_pred += normpdf(x, loc=h_chain[t, 0], scale=np.sqrt(h_chain[t, 1]))
+                mle_pred += normpdf(x, loc=mle_m[t], scale=np.sqrt(mle_s2[t]))
         mle_pred /= T
         post_pred /= T
         axs[0].plot(x, mle_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
@@ -119,8 +122,11 @@ for i in xrange(num_gs):
         axs[j].legend(loc='best', fontsize=10)
             
     fig.tight_layout()
-    plt.show()
-    fig.savefig(h_png_dir+'sl_mle_pred_and_h_post_pred_{}.png'.format(g_parameters[i]))
+    #plt.show()
+    mle_pred_dir = h_png_dir + "{}_sl_h_post_preds/".format(expt_name)
+    if not os.path.exists(mle_pred_dir):
+        os.makedirs(mle_pred_dir)
+    fig.savefig(mle_pred_dir+'sl_mle_pred_and_h_post_pred_{}.png'.format(g_parameters[i]))
     plt.close()
 
         
