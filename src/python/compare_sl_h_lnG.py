@@ -7,14 +7,13 @@ from scipy.stats import norm, invgamma
 import argparse
 import numpy.random as npr
 import os
+from time import time
 
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
 parser.add_argument("-T", "--num-samples", type=int, help="number of samples to plot prior predictive from", default=0)
 args, unknown = parser.parse_known_args()
-
-T = args.num_samples
 
 trace_path = args.data_file
 split_trace_path = trace_path.split('/')
@@ -99,6 +98,7 @@ for i in xrange(num_gs):
         hmcmc_file, log_file, h_png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
         h_chain = np.loadtxt(hmcmc_file,usecols=[i, num_gs+i])
         saved_its = h_chain.shape[0]
+        start = time()
         mle_pred = np.zeros(num_pts)
         post_pred = np.zeros(num_pts)
         if args.num_samples == 0:
@@ -118,6 +118,8 @@ for i in xrange(num_gs):
                 mle_pred += normpdf(x, loc=mle_m[t], scale=np.sqrt(mle_s2[t]))
         mle_pred /= T
         post_pred /= T
+        tt = time()-start
+        print "Time taken for MLE pred: {} s".format(round(tt))
         axs[0].plot(x, mle_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
         axs[1].plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
 
@@ -125,7 +127,7 @@ for i in xrange(num_gs):
         axs[j].legend(loc='best', fontsize=10)
             
     fig.tight_layout()
-    #plt.show()
+    plt.show()
     mle_pred_dir = h_png_dir + "{}_sl_h_post_preds/".format(expt_name)
     if not os.path.exists(mle_pred_dir):
         os.makedirs(mle_pred_dir)
