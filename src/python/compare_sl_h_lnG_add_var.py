@@ -91,7 +91,6 @@ for i in xrange(num_gs):
         hmcmc_file, log_file, h_png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
         h_chain = np.loadtxt(hmcmc_file,usecols=[i, num_gs+i])
         saved_its = h_chain.shape[0]
-        mle_pred = np.zeros(num_pts)
         post_pred = np.zeros(num_pts)
     
         T = args.num_samples
