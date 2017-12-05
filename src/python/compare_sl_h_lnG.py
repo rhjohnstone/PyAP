@@ -66,6 +66,19 @@ normpdf = norm.pdf
 normrvs = norm.rvs
 invgammarvs = invgamma.rvs
 
+means = np.zeros((nums_expts[-1], num_gs))
+variances = np.zeros((nums_expts[-1], num_gs))
+
+for n in xrange(nums_expts[-1]):
+    temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
+    print "Trace:", temp_trace_name
+    sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
+    temp_chain = np.loadtxt(sl_mcmc_file, usecols=[:num_gs])
+    means[n, :] = temp_chain.mean(axis=0)
+    variances[n, :] = temp_chain.var(axis=0)
+print means
+print variances
+
 for i in xrange(num_gs):
     fig, axs = plt.subplots(1, 2, sharex=True, sharey=True, figsize=figsize)
     axs[0].set_ylabel('Probability density', fontsize=14)
@@ -75,22 +88,12 @@ for i in xrange(num_gs):
         axs[j].set_title(ax_titles[j])
         axs[j].set_xlabel('log({})'.format(g_labels[i]), fontsize=14)
         axs[j].plot(x, normpdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label="True")
-    means = np.zeros(nums_expts[-1])
-    variances = np.zeros(nums_expts[-1])
-    for n in xrange(nums_expts[-1]):
-        temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
-        print "Trace:", temp_trace_name
-        sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
-        temp_chain = np.loadtxt(sl_mcmc_file, usecols=[i])
-        means[n] = temp_chain.mean()
-        variances[n] = temp_chain.var()
-    print variances
     for a, N_e in enumerate(nums_expts):
         colour = plt.cm.winter(color_idx[a])
         # MLE fit
-        loc, scale = norm.fit(means[:N_e])
+        loc, scale = norm.fit(means[:N_e, i])
         #axs[0].plot(x, normpdf(x, loc=loc, scale=scale), lw=2, color=colour, label="$N_e = {}$".format(N_e))
-        alpha, _, beta = invgamma.fit(variances[:N_e], floc=0)
+        alpha, _, beta = invgamma.fit(variances[:N_e, i], floc=0)
         print "invgamma for variances: alpha = {}, beta = {}".format(alpha, beta)
         # Posterior predictive
         hmcmc_file, log_file, h_png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
