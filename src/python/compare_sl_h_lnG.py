@@ -96,7 +96,7 @@ for i in xrange(num_gs):
         if args.num_samples == 0:
             T = saved_its
             mle_m = norm.rvs(loc=loc, scale=scale, size=T)
-            mle_s2 = invgamma.rvs(alpha, scale=beta, size=T)
+            mle_s2 = invgamma.rvs(alpha, loc=0, scale=beta, size=T)
             for t in xrange(T):
                 m, s2 = h_chain[t, :]
                 post_pred += norm.pdf(x, loc=m, scale=np.sqrt(s2))
@@ -106,7 +106,7 @@ for i in xrange(num_gs):
             rand_idx = npr.randint(0, saved_its, T)
             m, s2 = h_chain[rand_idx, :].T
             mle_m = norm.rvs(loc=loc, scale=scale, size=T)
-            mle_s2 = invgamma.rvs(alpha, scale=beta, size=T)
+            mle_s2 = invgamma.rvs(alpha, loc=0, scale=beta, size=T)
             for t in xrange(T):
                 post_pred += norm.pdf(x, loc=m[t], scale=np.sqrt(s2[t]))
                 mle_pred += norm.pdf(x, loc=mle_m[t], scale=np.sqrt(mle_s2[t]))
@@ -119,7 +119,7 @@ for i in xrange(num_gs):
         axs[j].legend(loc='best', fontsize=10)
             
     fig.tight_layout()
-    #plt.show()
+    plt.show()
     fig.savefig(h_png_dir+'sl_mle_pred_and_h_post_pred_{}.png'.format(g_parameters[i]))
     plt.close()
 
