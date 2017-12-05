@@ -111,7 +111,7 @@ for i in xrange(num_gs):
             mle_m = normrvs(loc=loc, scale=scale, size=T)
             mle_s2 = invgammarvs(alpha, loc=0, scale=beta, size=T)
             for t in xrange(T):
-                post_pred += normpdf(x, loc=h_chain[t, 0], scale=np.sqrt(h_chain[t, 1]))
+                post_pred += normpdf(x, loc=h_chain[rand_idx[t], 0], scale=np.sqrt(h_chain[rand_idx[t], 1]))
                 mle_pred += normpdf(x, loc=mle_m[t], scale=np.sqrt(mle_s2[t]))
         mle_pred /= T
         post_pred /= T
