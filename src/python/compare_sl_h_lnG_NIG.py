@@ -64,7 +64,14 @@ num_gs = len(original_gs)
 g_labels = ["${}$".format(g) for g in g_parameters]
 
 m_true = np.log(original_gs)
-sigma2_true = 0.01
+sigma2_true = 0.04  # 0.04 was used in the actual hMCMC
+
+mu = m_true
+alpha = 4.*np.ones(num_gs)
+beta = (alpha+1.) * sigma2_true
+nu = 4.*beta / ((alpha+1.) * np.log(10)**2)
+
+old_eta_js = np.vstack((mu, nu, alpha, beta)).T
 
 fig_y = 5
 phi = 1.61803398875
@@ -101,12 +108,7 @@ for n in xrange(nums_expts[-1]):
     sl_saved = temp_chain.shape[0]
     sl_idx = npr.randint(0, sl_saved, num_sl_samples)
     sl_samples[n*num_sl_samples:(n+1)*num_sl_samples, :] = temp_chain[sl_idx, :]
-    
-print sl_samples
-sys.exit()
 
-#print means
-#print variances
 
 for i in xrange(num_gs):
     print "{} / {}\n".format(i+1, num_gs+1)
@@ -120,10 +122,6 @@ for i in xrange(num_gs):
         axs[j].plot(x, normpdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label="True")
     for a, N_e in enumerate(nums_expts):
         colour = plt.cm.winter(color_idx[a])
-        # MLE fit
-        loc, scale = norm.fit(means[:N_e, i])
-        alpha, _, beta = invgamma.fit(variances[:N_e, i], floc=0)
-        print "invgamma for variances: alpha = {}, beta = {}".format(alpha, beta)
         # Posterior predictive
         hmcmc_file, log_file, h_png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
         h_chain = np.loadtxt(hmcmc_file,usecols=[i, num_gs+i])
@@ -133,20 +131,13 @@ for i in xrange(num_gs):
         post_pred = np.zeros(num_pts)
         if args.num_samples == 0:
             T = saved_its
-            mle_m = normrvs(loc=loc, scale=scale, size=T)
-            mle_s2 = invgammarvs(alpha, loc=0, scale=beta, size=T)
             for t in xrange(T):
                 post_pred += normpdf(x, loc=h_chain[t, 0], scale=np.sqrt(h_chain[t, 1]))
-                mle_pred += normpdf(x, loc=mle_m[t], scale=np.sqrt(mle_s2[t]))
         else:
             T = args.num_samples
             rand_idx = npr.randint(0, saved_its, T)
-            mle_m = normrvs(loc=loc, scale=scale, size=T)
-            mle_s2 = invgammarvs(alpha, loc=0, scale=beta, size=T)
             for t in xrange(T):
                 post_pred += normpdf(x, loc=h_chain[rand_idx[t], 0], scale=np.sqrt(h_chain[rand_idx[t], 1]))
-                mle_pred += normpdf(x, loc=mle_m[t], scale=np.sqrt(mle_s2[t]))
-        mle_pred /= T
         post_pred /= T
         tt = time()-start
         print "Time taken for MLE pred: {} s".format(round(tt))
@@ -157,11 +148,11 @@ for i in xrange(num_gs):
         axs[j].legend(loc='best', fontsize=10)
             
     fig.tight_layout()
-    #plt.show()
+    plt.show()
     mle_pred_dir = h_png_dir + "{}_sl_h_post_preds_N-IG/".format(expt_name)
     if not os.path.exists(mle_pred_dir):
         os.makedirs(mle_pred_dir)
-    fig.savefig(mle_pred_dir+'sl_mle_pred_and_h_post_pred_N-IG_{}.png'.format(g_parameters[i]))
+    #fig.savefig(mle_pred_dir+'sl_mle_pred_and_h_post_pred_N-IG_{}.png'.format(g_parameters[i]))
     plt.close()
 
         
