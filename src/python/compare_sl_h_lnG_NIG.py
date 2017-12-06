@@ -64,12 +64,14 @@ num_gs = len(original_gs)
 g_labels = ["${}$".format(g) for g in g_parameters]
 
 m_true = np.log(original_gs)
-sigma2_true = 0.04  # 0.04 was used in the actual hMCMC
+hmcmc_prior_sigma2_true = 0.04  # 0.04 was used in the actual hMCMC
 
 mu = m_true
 alpha = 4.*np.ones(num_gs)
-beta = (alpha+1.) * sigma2_true
+beta = (alpha+1.) * hmcmc_prior_sigma2_true
 nu = 4.*beta / ((alpha+1.) * np.log(10)**2)
+
+sigma2_true = 0.01  # used to generate data
 
 old_eta_js = np.vstack((mu, nu, alpha, beta)).T
 
