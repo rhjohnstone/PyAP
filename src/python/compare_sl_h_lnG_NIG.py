@@ -84,7 +84,7 @@ expt_params = np.loadtxt(expt_params_file)
 cs = ['#1b9e77','#d95f02','#7570b3']
 ax_titles = ["Single-level MLE pred.", "Hierarchical post. pred."]
 num_pts = 101
-nums_expts = [2, 4, 8, 16, 32]
+nums_expts = [2, 4]#, 8, 16, 32]
 total_nums_expts = len(nums_expts)
 color_idx = np.linspace(0, 1, total_nums_expts)
 
@@ -121,13 +121,15 @@ for i in xrange(num_gs):
         axs[j].set_xlabel('log({})'.format(g_labels[i]), fontsize=14)
         axs[j].plot(x, normpdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label="True")
     for a, N_e in enumerate(nums_expts):
+        print "old eta:", old_eta_js[i,:]
+        new_mu, new_nu, new_alpha, new_beta = new_eta(old_eta_js[i,:], sl_samples[:N_e*num_sl_samples, i])
+        print "new eta:", [new_mu, new_nu, new_alpha, new_beta]
         colour = plt.cm.winter(color_idx[a])
         # Posterior predictive
         hmcmc_file, log_file, h_png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
         h_chain = np.loadtxt(hmcmc_file,usecols=[i, num_gs+i])
         saved_its = h_chain.shape[0]
         start = time()
-        mle_pred = np.zeros(num_pts)
         post_pred = np.zeros(num_pts)
         if args.num_samples == 0:
             T = saved_its
@@ -141,7 +143,6 @@ for i in xrange(num_gs):
         post_pred /= T
         tt = time()-start
         print "Time taken for MLE pred: {} s".format(round(tt))
-        axs[0].plot(x, mle_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
         axs[1].plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
 
     for j in xrange(2):
