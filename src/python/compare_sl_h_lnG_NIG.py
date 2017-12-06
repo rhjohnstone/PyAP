@@ -131,6 +131,7 @@ for i in xrange(num_gs):
         saved_its = h_chain.shape[0]
         start = time()
         post_pred = np.zeros(num_pts)
+        sample_pred = np.zeros(num_pts)
         if args.num_samples == 0:
             T = saved_its
             for t in xrange(T):
@@ -140,9 +141,13 @@ for i in xrange(num_gs):
             rand_idx = npr.randint(0, saved_its, T)
             for t in xrange(T):
                 post_pred += normpdf(x, loc=h_chain[rand_idx[t], 0], scale=np.sqrt(h_chain[rand_idx[t], 1]))
+                temp_mean, temp_s2 = sample_from_N_IG([new_mu, new_nu, new_alpha, new_beta])
+                sample_pred += normpdf(x, loc=temp_mean, scale=np.sqrt(temp_s2))
         post_pred /= T
+        sample_pred /= T
         tt = time()-start
         print "Time taken for MLE pred: {} s".format(round(tt))
+        axs[0].plot(x, sample_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
         axs[1].plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
 
     for j in xrange(2):
