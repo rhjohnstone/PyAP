@@ -11,12 +11,13 @@ from time import time
 
 
 def new_eta(old_eta, samples): # for sampling from conjugate prior-ed N-IG
+    num_samplpes = len(samples)
     x_bar = np.mean(samples)
     mu, nu, alpha, beta = 1.*old_eta
-    new_mu = ((nu*mu + N_e*x_bar) / (nu + N_e))
-    new_nu = nu + N_e
-    new_alpha = alpha + 0.5*N_e
-    new_beta = beta + 0.5*np.sum((samples-x_bar)**2) + 0.5*((N_e*nu)/(nu+N_e))*(x_bar-mu)**2
+    new_mu = ((nu*mu + num_samplpes*x_bar) / (nu + num_samplpes))
+    new_nu = nu + num_samplpes
+    new_alpha = alpha + 0.5*num_samplpes
+    new_beta = beta + 0.5*np.sum((samples-x_bar)**2) + 0.5*((num_samplpes*nu)/(nu+num_samplpes))*(x_bar-mu)**2
     return new_mu, new_nu, new_alpha, new_beta
 
     
