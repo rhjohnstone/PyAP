@@ -83,8 +83,10 @@ phi = 1.61803398875
 figsize = (phi*ax_y, ax_y)
 
 if pyap_options["model_number"] == 2:
+    figsize = (phi*ax_y, ax_y)
     fig, axs = plt.subplots(2, 2, sharex=False, sharey=True, figsize=figsize)
 elif pyap_options["model_number"] == 5:
+    figsize = (2*phi*3, 10)
     fig, axs = plt.subplots(5, 3, sharex=False, sharey=True, figsize=figsize)
 else:
     sys.exit("Only BR currently")
@@ -107,7 +109,7 @@ for i in xrange(num_gs):
     prior_y /= T
     axs[i].plot(x, prior_y, lw=2, color=cs[0], label='Prior. pred.')
     if i%2==0:
-        axs[i].set_ylabel('Normalised frequency')
+        axs[i].set_ylabel('Probability density')
     axs[i].set_xlabel('log({})'.format(g_labels[i]), fontsize=16)
 
 nums_expts = [2,4]#,8,16,32]
