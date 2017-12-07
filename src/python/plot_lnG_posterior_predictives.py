@@ -25,7 +25,6 @@ def sample_from_N_IG(eta):
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
-requiredNamed.add_argument("-n", "--num-traces", type=int, help="which hMCMC to use", required=True)
 requiredNamed.add_argument("-T", "--num-samples", type=int, help="number of samples to plot prior predictive from", required=True)
 
 args, unknown = parser.parse_known_args()
@@ -79,7 +78,7 @@ old_eta_js = np.vstack((mu, nu, alpha, beta)).T
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 101
 
-ax_y = 4
+ax_y = 6
 phi = 1.61803398875
 figsize = (phi*ax_y, ax_y)
 
@@ -125,8 +124,9 @@ for N_e in nums_expts:
 for i in xrange(num_gs):
     axs[i].set_xlim(x[0], x[-1])
     axs[i].set_ylim(0, axs[i].get_ylim()[1])
-    axs[i].legend(loc='best')
+    axs[i].legend(loc='best', fontsize=10)
 
+fig.tight_layout()
 plt.show()
 
 
