@@ -116,7 +116,7 @@ for i in xrange(num_gs):
 
 nums_expts = [2,4]#,8,16,32]
 
-labels = ["True", "Prior pred."] + ["$N_e = {}$".format(n) for n in nums_expts]
+labels = ("True", "Prior pred.") + tuple(["$N_e = {}$".format(n) for n in nums_expts])
 
 color_idx = np.linspace(0, 1, len(nums_expts))
 for j, N_e in enumerate(nums_expts):
@@ -125,7 +125,7 @@ for j, N_e in enumerate(nums_expts):
     h_chain = np.loadtxt(mcmc_file)
     saved_its, d = h_chain.shape
     for i in xrange(num_gs):
-        posts = []
+        lines = ()
         x = xs[i]
         post_y = np.zeros(num_pts)
         idx = npr.randint(0, saved_its, T)
@@ -133,13 +133,13 @@ for j, N_e in enumerate(nums_expts):
             post_y += norm.pdf(x, loc=h_chain[idx[t],i], scale=np.sqrt(h_chain[idx[t],num_gs+i]))
         post_y /= T
         post = axs[i].plot(x, post_y, lw=2, color=colour, label='$N_e = {}$'.format(N_e))
-        posts.append(post)
+        lines += post
         
 for i in xrange(num_gs):
     axs[i].set_xlim(xs[i][0], xs[i][-1])
     axs[i].set_ylim(0, axs[i].get_ylim()[1])
     
-fig.legend([true, prior]+posts, labels, loc=2)
+fig.legend((true, prior)+lines, labels, loc=2)
 
 fig.tight_layout()
 
