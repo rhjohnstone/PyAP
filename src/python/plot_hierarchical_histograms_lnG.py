@@ -109,11 +109,11 @@ starting_mean = np.mean(starting_points,axis=0)
 starting_vars = np.var(starting_points,axis=0)
 
 m_true = np.log(original_gs)
-sigma2_true = 0.01
+param_sigma2_true = 0.01
 
 mu = m_true
 alpha = 4.*np.ones(num_gs)
-beta = (alpha+1.) * sigma2_true
+beta = (alpha+1.) * 0.04  # value used in hMCMC
 nu = 4.*beta / ((alpha+1.) * np.log(10)**2)
 
 old_eta_js = np.vstack((mu, nu, alpha, beta)).T
@@ -121,7 +121,7 @@ old_eta_js = np.vstack((mu, nu, alpha, beta)).T
 num_ticks = 6
 
 cs = ['#1b9e77','#d95f02','#7570b3']
-num_pts = 201
+num_pts = 101
 for i in xrange(num_gs):
     fig = plt.figure(figsize=(6,4))
     ax2 = fig.add_subplot(111)
@@ -149,7 +149,7 @@ for i in xrange(num_gs):
     axpp = ax2.twinx()
     axpp.grid()
     xlim = ax2.get_xlim()
-    x = np.linspace(xlim[0]-0.2, xlim[1]+0.2, num_pts)
+    x = np.linspace(xlim[0]-0.3, xlim[1]+0.2, num_pts)
     prior_y = np.zeros(num_pts)
     post_y = np.zeros(num_pts)
     for t in xrange(T):
@@ -161,20 +161,22 @@ for i in xrange(num_gs):
     post_y /= T
     axpp.plot(x, prior_y, lw=2, color=cs[0], label='Prior pred.')
     axpp.plot(x, post_y, lw=2, color=cs[2], label='Post. pred.')
-    axpp.plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[1])
+    axpp.plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(param_sigma2_true)), label='True', lw=2, color=cs[1])
     ylim = axpp.get_ylim()
     axpp.set_ylim(0, ylim[1])
     axpp.set_ylabel('Probability density')
-    axpp.legend(loc='best',fontsize=12)
+    axpp.legend(loc=2,fontsize=12)
     ax2.set_yticks(np.round(np.linspace(0., ax2.get_ylim()[1], num_ticks), 3))
     axpp.set_yticks(np.round(np.linspace(0., axpp.get_ylim()[1], num_ticks),3))
 
 
     fig.tight_layout()
-    fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
-    plt.close()
+    #fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
+    #plt.close()
 
+plt.show()
 sys.exit()
+
 for i in xrange(num_gs):
     fig = plt.figure(figsize=(6,4))
     ax = fig.add_subplot(111)
@@ -182,7 +184,7 @@ for i in xrange(num_gs):
     ax.set_xlabel("sigma squared "+g_labels[i])
     ax.set_ylabel("Normalised frequency")
     ax.hist(chain[:, num_gs+i], normed=True, bins=40, color='blue', edgecolor='blue')
-    ax.axvline(sigma2_true, color='red', lw=2)  # just for synthetic OH atm
+    ax.axvline(param_sigma2_true, color='red', lw=2)  # just for synthetic OH atm
     plt.xticks(rotation=30)
     fig.tight_layout()
     fig.savefig(png_dir+"{}_{}_traces_hierarchical_s2_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
