@@ -169,7 +169,7 @@ for i in xrange(num_gs):
     ax2.set_yticks(np.round(np.linspace(0., ax2.get_ylim()[1], num_ticks), 3))
     axpp.set_yticks(np.round(np.linspace(0., axpp.get_ylim()[1], num_ticks),3))
 
-    ax2.set_xlim(ax2.get_xticks()[0], ax2.get_xticks()[-2])
+    ax2.set_xlim(x[0], x[-1])
     fig.tight_layout()
     #fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
     #plt.close()
