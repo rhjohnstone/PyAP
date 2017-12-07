@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import itertools as it
 from scipy.stats import norm
 from scipy.stats import invgamma
+import os
 
 
 #python_seed = 1
@@ -172,6 +173,8 @@ for i in xrange(num_gs):
     ax2.set_xlim(x[0], x[-1])
     fig.tight_layout()
     outdir = png_dir + "{}_{}_traces_hMCMC_hists_and_preds/".format(expt_name, N_e)
+    if not os.path.exists(outdir):
+        os.makedirs(outdir)
     fig.savefig(outdir+"{}_{}_traces_hMCMC_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
     #plt.close()
 
