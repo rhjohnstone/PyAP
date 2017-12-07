@@ -171,7 +171,8 @@ for i in xrange(num_gs):
 
     ax2.set_xlim(x[0], x[-1])
     fig.tight_layout()
-    #fig.savefig(png_dir+"{}_{}_traces_hierarchical_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
+    outdir = png_dir + "{}_{}_traces_hMCMC_hists_and_preds/".format(expt_name, N_e)
+    fig.savefig(outdir+"{}_{}_traces_hMCMC_{}_marginal.png".format(expt_name, N_e, g_parameters[i]))
     #plt.close()
 
 plt.show()
