@@ -142,7 +142,7 @@ for i in xrange(num_gs):
     
 print (true, prior)+lines
 print labels
-leg = fig.legend((true, prior)+lines, labels, loc="upper center", ncol=2+len(nums_expts), bbox_to_anchor=(0.5, 1.05))
+leg = fig.legend((true, prior)+lines, labels, loc="upper center", ncol=2+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.1))
 
 fig.tight_layout()
 
