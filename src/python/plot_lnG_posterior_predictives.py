@@ -114,7 +114,7 @@ for i in xrange(num_gs):
 
 
 
-nums_expts = [2,4]#,8,16,32]
+nums_expts = [2,4,8,16,32]
 
 labels = ("True", "Prior pred.") + tuple(["$N_e = {}$".format(n) for n in nums_expts])
 
@@ -144,9 +144,9 @@ print (true, prior)+lines
 print labels
 leg = fig.legend((true, prior)+lines, labels, loc="upper center", ncol=2+len(nums_expts), bbox_to_anchor=(0.5, 1.05))
 
-#fig.tight_layout()
+fig.tight_layout()
 
-fig.savefig(png_dir + "{}_{}_traces_hMCMC_post_preds.png".format(expt_name,N_e), bbox_extra_artists=(lgd,), bbox_inches='tight')
+fig.savefig(png_dir + "{}_{}_traces_hMCMC_post_preds.png".format(expt_name,N_e), bbox_extra_artists=(leg,), bbox_inches='tight')
 
 plt.show()
 
