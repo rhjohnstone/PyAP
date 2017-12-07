@@ -107,20 +107,25 @@ for i in xrange(num_gs):
         mean_sample, s2_sample = sample_from_N_IG(old_eta_js[i, :])
         prior_y += norm.pdf(x, loc=mean_sample, scale=np.sqrt(s2_sample))
     prior_y /= T
-    prior = axs[i].plot(x, prior_y, lw=2, color=cs[0], label='Prior. pred.')
+    prior = axs[i].plot(x, prior_y, lw=2, color=cs[0], label='Prior pred.')
     if i%2==0:
         axs[i].set_ylabel('Probability density')
     axs[i].set_xlabel('log({})'.format(g_labels[i]), fontsize=16)
 
+
+
 nums_expts = [2,4]#,8,16,32]
+
+labels = ["True", "Prior pred."] + ["$N_e = {}$".format(n) for n in nums_expts]
+
 color_idx = np.linspace(0, 1, len(nums_expts))
-posts = []
 for j, N_e in enumerate(nums_expts):
     colour = plt.cm.winter(color_idx[j])
     mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
     h_chain = np.loadtxt(mcmc_file)
     saved_its, d = h_chain.shape
     for i in xrange(num_gs):
+        posts = []
         x = xs[i]
         post_y = np.zeros(num_pts)
         idx = npr.randint(0, saved_its, T)
@@ -134,7 +139,7 @@ for i in xrange(num_gs):
     axs[i].set_xlim(xs[i][0], xs[i][-1])
     axs[i].set_ylim(0, axs[i].get_ylim()[1])
     
-fig.legend([true, prior]+posts)
+fig.legend([true, prior]+posts, labels, loc=2)
 
 fig.tight_layout()
 
