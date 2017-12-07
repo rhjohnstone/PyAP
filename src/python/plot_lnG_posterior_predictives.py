@@ -90,6 +90,7 @@ axs = axs.flatten()
 
 xs = []
 for i in xrange(num_gs):
+    axs[i].grid()
     xs.append(np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts))
     x = xs[i]
     axs[i].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[1])
@@ -101,9 +102,7 @@ for i in xrange(num_gs):
     axs[i].plot(x, prior_y, lw=2, color=cs[0], label='Prior. pred.')
     if i%2==0:
         axs[i].set_ylabel('Normalised frequency')
-    axs[i].set_xlabel('log({})'.format(g_labels[i]))
-
-N_e = args.num_traces
+    axs[i].set_xlabel('log({})'.format(g_labels[i]), fontsize=16)
 
 nums_expts = [2,4]#,8,16,32]
 biggest_Ne = max(nums_expts)
@@ -122,7 +121,7 @@ for N_e in nums_expts:
         axs[i].plot(x, post_y, lw=2, color=cs[2], label='$N_e = {}$'.format(N_e))
         
 for i in xrange(num_gs):
-    axs[i].set_xlim(x[0], x[-1])
+    axs[i].set_xlim(xs[i][0], xs[i][-1])
     axs[i].set_ylim(0, axs[i].get_ylim()[1])
     axs[i].legend(loc='best', fontsize=10)
 
