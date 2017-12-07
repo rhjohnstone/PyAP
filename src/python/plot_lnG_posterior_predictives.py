@@ -139,6 +139,8 @@ for i in xrange(num_gs):
     axs[i].set_xlim(xs[i][0], xs[i][-1])
     axs[i].set_ylim(0, axs[i].get_ylim()[1])
     
+print (true, prior)+lines
+print labels
 fig.legend((true, prior)+lines, labels, loc=2)
 
 fig.tight_layout()
