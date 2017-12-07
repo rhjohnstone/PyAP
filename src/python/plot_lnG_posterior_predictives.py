@@ -84,9 +84,15 @@ figsize = (phi*ax_y, ax_y)
 
 if pyap_options["model_number"] == 2:
     fig, axs = plt.subplots(2, 2, sharex=False, sharey=True, figsize=figsize)
+elif pyap_options["model_number"] == 5:
+    fig, axs = plt.subplots(5, 3, sharex=False, sharey=True, figsize=figsize)
 else:
     sys.exit("Only BR currently")
 axs = axs.flatten()
+
+if pyap_options["model_number"] == 5:
+    axs[-1].axis('off')
+    axs[-2].axis('off')
 
 xs = []
 for i in xrange(num_gs):
@@ -107,7 +113,7 @@ for i in xrange(num_gs):
 nums_expts = [2,4]#,8,16,32]
 biggest_Ne = max(nums_expts)
 color_idx = np.linspace(0, 1, biggest_Ne)
-for N_e in nums_expts:
+for j, N_e in enumerate(nums_expts):
     mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
     h_chain = np.loadtxt(mcmc_file)
     saved_its, d = h_chain.shape
@@ -118,7 +124,7 @@ for N_e in nums_expts:
         for t in xrange(T):
             post_y += norm.pdf(x, loc=h_chain[idx[t],i], scale=np.sqrt(h_chain[idx[t],num_gs+i]))
         post_y /= T
-        axs[i].plot(x, post_y, lw=2, color=cs[2], label='$N_e = {}$'.format(N_e))
+        axs[i].plot(x, post_y, lw=2, color=color_idx[j], label='$N_e = {}$'.format(N_e))
         
 for i in xrange(num_gs):
     axs[i].set_xlim(xs[i][0], xs[i][-1])
