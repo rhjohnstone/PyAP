@@ -132,8 +132,8 @@ for j, N_e in enumerate(nums_expts):
         for t in xrange(T):
             post_y += norm.pdf(x, loc=h_chain[idx[t],i], scale=np.sqrt(h_chain[idx[t],num_gs+i]))
         post_y /= T
-        post = axs[i].plot(x, post_y, lw=2, color=colour)
-        lines += tuple(post)
+        post, = axs[i].plot(x, post_y, lw=2, color=colour)
+        lines += (post,)
         
 for i in xrange(num_gs):
     axs[i].set_xlim(xs[i][0], xs[i][-1])
