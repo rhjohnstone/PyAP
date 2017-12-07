@@ -112,7 +112,7 @@ for i in xrange(num_gs):
         axs[i].set_ylabel('Probability density')
     axs[i].set_xlabel('log({})'.format(g_labels[i]), fontsize=16)
 
-nums_expts = [2,4]#,8,16,32]
+nums_expts = [2,4,8,16,32]
 color_idx = np.linspace(0, 1, len(nums_expts))
 for j, N_e in enumerate(nums_expts):
     colour = plt.cm.winter(color_idx[j])
@@ -134,6 +134,9 @@ for i in xrange(num_gs):
     axs[i].legend(loc='best', fontsize=10)
 
 fig.tight_layout()
+
+fig.savefig(png_dir + "{}_{}_traces_hMCMC_post_preds.png".format(expt_name,N_e))
+
 plt.show()
 
 
