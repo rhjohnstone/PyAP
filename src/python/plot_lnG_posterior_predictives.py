@@ -101,19 +101,20 @@ for i in xrange(num_gs):
     axs[i].grid()
     xs.append(np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts))
     x = xs[i]
-    axs[i].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[1])
+    true = axs[i].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), label='True', lw=2, color=cs[1])
     prior_y = np.zeros(num_pts)
     for t in xrange(T):
         mean_sample, s2_sample = sample_from_N_IG(old_eta_js[i, :])
         prior_y += norm.pdf(x, loc=mean_sample, scale=np.sqrt(s2_sample))
     prior_y /= T
-    axs[i].plot(x, prior_y, lw=2, color=cs[0], label='Prior. pred.')
+    prior = axs[i].plot(x, prior_y, lw=2, color=cs[0], label='Prior. pred.')
     if i%2==0:
         axs[i].set_ylabel('Probability density')
     axs[i].set_xlabel('log({})'.format(g_labels[i]), fontsize=16)
 
-nums_expts = [2,4,8,16,32]
+nums_expts = [2,4]#,8,16,32]
 color_idx = np.linspace(0, 1, len(nums_expts))
+posts = []
 for j, N_e in enumerate(nums_expts):
     colour = plt.cm.winter(color_idx[j])
     mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
@@ -126,16 +127,18 @@ for j, N_e in enumerate(nums_expts):
         for t in xrange(T):
             post_y += norm.pdf(x, loc=h_chain[idx[t],i], scale=np.sqrt(h_chain[idx[t],num_gs+i]))
         post_y /= T
-        axs[i].plot(x, post_y, lw=2, color=colour, label='$N_e = {}$'.format(N_e))
+        post = axs[i].plot(x, post_y, lw=2, color=colour, label='$N_e = {}$'.format(N_e))
+        posts.append(post)
         
 for i in xrange(num_gs):
     axs[i].set_xlim(xs[i][0], xs[i][-1])
     axs[i].set_ylim(0, axs[i].get_ylim()[1])
-    axs[i].legend(loc='best', fontsize=10)
+    
+fig.legend([true, prior]+posts)
 
 fig.tight_layout()
 
-fig.savefig(png_dir + "{}_{}_traces_hMCMC_post_preds.png".format(expt_name,N_e))
+#fig.savefig(png_dir + "{}_{}_traces_hMCMC_post_preds.png".format(expt_name,N_e))
 
 plt.show()
 
