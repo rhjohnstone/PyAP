@@ -111,8 +111,7 @@ for i in xrange(num_gs):
     axs[i].set_xlabel('log({})'.format(g_labels[i]), fontsize=16)
 
 nums_expts = [2,4]#,8,16,32]
-biggest_Ne = max(nums_expts)
-color_idx = np.linspace(0, 1, biggest_Ne)
+color_idx = np.linspace(0, 1, len(nums_expts))
 for j, N_e in enumerate(nums_expts):
     colour = plt.cm.winter(color_idx[j])
     mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
