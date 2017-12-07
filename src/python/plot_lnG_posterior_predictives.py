@@ -101,13 +101,13 @@ for i in xrange(num_gs):
     axs[i].grid()
     xs.append(np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts))
     x = xs[i]
-    true = axs[i].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1])
+    true, = axs[i].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1])
     prior_y = np.zeros(num_pts)
     for t in xrange(T):
         mean_sample, s2_sample = sample_from_N_IG(old_eta_js[i, :])
         prior_y += norm.pdf(x, loc=mean_sample, scale=np.sqrt(s2_sample))
     prior_y /= T
-    prior = axs[i].plot(x, prior_y, lw=2, color=cs[0])
+    prior, = axs[i].plot(x, prior_y, lw=2, color=cs[0])
     if i%2==0:
         axs[i].set_ylabel('Probability density')
     axs[i].set_xlabel('log({})'.format(g_labels[i]), fontsize=16)
