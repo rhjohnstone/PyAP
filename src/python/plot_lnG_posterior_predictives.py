@@ -114,6 +114,7 @@ nums_expts = [2,4]#,8,16,32]
 biggest_Ne = max(nums_expts)
 color_idx = np.linspace(0, 1, biggest_Ne)
 for j, N_e in enumerate(nums_expts):
+    colour = plt.cm.winter(color_idx[j])
     mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
     h_chain = np.loadtxt(mcmc_file)
     saved_its, d = h_chain.shape
@@ -124,7 +125,7 @@ for j, N_e in enumerate(nums_expts):
         for t in xrange(T):
             post_y += norm.pdf(x, loc=h_chain[idx[t],i], scale=np.sqrt(h_chain[idx[t],num_gs+i]))
         post_y /= T
-        axs[i].plot(x, post_y, lw=2, color=color_idx[j], label='$N_e = {}$'.format(N_e))
+        axs[i].plot(x, post_y, lw=2, color=colour, label='$N_e = {}$'.format(N_e))
         
 for i in xrange(num_gs):
     axs[i].set_xlim(xs[i][0], xs[i][-1])
