@@ -61,7 +61,7 @@ mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_opti
 h_chain = np.loadtxt(mcmc_file)
 saved_its, d = h_chain.shape
 titles = ['Single-level', 'Hierarchical']
-fig = plt.figure(figsize=(6,9))
+fig = plt.figure(figsize=(7,10))
 for i in xrange(num_gs):
     ax2 = fig.add_subplot(4,2,2*i+1)
     ax = fig.add_subplot(4,2,2*i+2, sharex=ax2, sharey=ax2)
