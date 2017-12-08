@@ -46,16 +46,12 @@ g_labels = ["${}$".format(g) for g in g_parameters]
 m_true = np.log(original_gs)
 sigma2_true = 0.01
 
-fig_y = 5
-phi = 1.61803398875
-figsize = (phi*fig_y, fig_y)
 
 parallel = True
 
 expt_params = np.loadtxt(expt_params_file)
 
 cs = ['#1b9e77','#d95f02','#7570b3']
-ax_titles = ["Single-level MLE pred.", "Hierarchical post. pred."]
 num_pts = 101
 nums_expts = [2, 4]#, 8, 16, 32]
 
@@ -83,11 +79,8 @@ print means
 print variances
 
 ax_titles = ['Single-level', 'Hierarchical']
-ax_y = 6
-phi = 1.61803398875
-figsize = (phi*ax_y, ax_y)
+fig = plt.figure(figsize=(7,10))
 
-fig = plt.figure(figsize=figsize)
 
 xs = []
 
@@ -147,6 +140,23 @@ for i in xrange(num_gs):
         if N_e==2:
             lines += (line,)
         ax2.plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
+        
+        
+    ax1.set_ylim(0, ax1.get_ylim()[1])
+    xlim = ax1.get_xlim()
+    xticks = ax1.get_xticks()
+    if xlim[0] <= xticks[0]:
+        ax1.set_xticks(xticks[1:-1])
+    else:
+        ax1.set_xticks(xticks[2:-1])
+    
+    for j, axx in enumerate([ax2, ax]):
+        axx.grid()
+        axx.set_xlabel("log({})".format(g_labels[i]), fontsize=16)
+        if i==0:
+            axx.set_title(titles[j])
+        for tick in axx.get_xticklabels():
+            tick.set_rotation(30)
        
 
 leg = fig.legend(lines, labels, loc="upper center", ncol=2+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.1))
