@@ -3,6 +3,8 @@ import argparse
 import numpy as np
 import sys
 import numpy.random as npr
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import itertools as it
 
@@ -95,7 +97,9 @@ for i in xrange(num_gs):
             tick.set_rotation(30)
             
 fig.tight_layout()
-#fig.savefig(hpng_dir+"{}_h_and_nonh_{}_traces_{}.png".format(expt_name, N_e, g_parameters[i]))
+fig_filename = png_dir+"{}_h_and_nonh_hists_{}_traces.png".format(expt_name, N_e)
+print fig_filename
+fig.savefig(fig_filename)
 
-plt.show(block=True)
+#plt.show(block=True)
 
