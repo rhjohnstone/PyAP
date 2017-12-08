@@ -85,10 +85,7 @@ fig = plt.figure(figsize=(7,10))
 xs = []
 
 for i in xrange(num_gs):
-    if i==0:
-        ax1 = fig.add_subplot(4,2,2*i+1)
-    else:
-        ax1 = fig.add_subplot(4,2,2*i+1, sharey=ax1)
+    ax1 = fig.add_subplot(4,2,2*i+1)
     ax2 = fig.add_subplot(4,2,2*i+2, sharex=ax1, sharey=ax1)
     plt.setp(ax2.get_yticklabels(), visible=False)
     ax1.set_ylabel('Probability density')
@@ -163,7 +160,7 @@ fig.tight_layout()
 
 fig_file = h_png_dir + "sl_mle_preds_and_h_post_preds.png"
 print fig_file
-fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight', pad_inches=0.15)
+fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight')#, pad_inches=0.15)
 #plt.show()
 
         
