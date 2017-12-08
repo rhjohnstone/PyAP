@@ -61,21 +61,22 @@ mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_opti
 h_chain = np.loadtxt(mcmc_file)
 saved_its, d = h_chain.shape
 titles = ['Single-level', 'Hierarchical']
-fig = plt.figure(figsize=(8,12))
+fig = plt.figure(figsize=(6,9))
 for i in xrange(num_gs):
     ax2 = fig.add_subplot(4,2,2*i+1)
     ax = fig.add_subplot(4,2,2*i+2, sharex=ax2, sharey=ax2)
     plt.setp(ax.get_yticklabels(), visible=False)
     ax2.set_ylabel("Normalised frequency")
     for n in xrange(N_e):
+        alpha = min(3./N_e, 1)
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
         temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
         sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
         single_chain = np.loadtxt(sl_mcmc_file, usecols=[i])
         
-        ax2.hist(single_chain, normed=True, bins=40, color=colour, alpha=1.5/N_e, lw=0)
-        ax.hist(h_chain[:, idx], normed=True, bins=40, color=colour, alpha=1.5/N_e, lw=0)
+        ax2.hist(single_chain, normed=True, bins=40, color=colour, alpha=alpha, lw=0)
+        ax.hist(h_chain[:, idx], normed=True, bins=40, color=colour, alpha=alpha, lw=0)
         
         ax.plot(np.log(expt_params[n, i]), 0, 'x', color='red', ms=10, mew=2, clip_on=False, zorder=10)
         ax2.plot(np.log(expt_params[n, i]), 0, 'x', color='red', ms=10, mew=2, clip_on=False, zorder=10)
