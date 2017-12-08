@@ -153,8 +153,6 @@ for i in xrange(num_gs):
     for j, axx in enumerate([ax2, ax]):
         axx.grid()
         axx.set_xlabel("log({})".format(g_labels[i]), fontsize=16)
-        if i==0:
-            axx.set_title(titles[j])
         for tick in axx.get_xticklabels():
             tick.set_rotation(30)
        
@@ -166,7 +164,7 @@ fig.tight_layout()
 fig_file = h_png_dir + "sl_mle_preds_and_h_post_preds.png"
 print fig_file
 fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight', pad_inches=0.15)
-plt.show()
+#plt.show()
 
         
 
