@@ -147,14 +147,14 @@ for i in xrange(num_gs):
     else:
         ax1.set_xticks(xticks[2:-1])
     
-    for j, axx in enumerate([ax2, ax]):
+    for j, axx in enumerate([ax1, ax2]):
         axx.grid()
         axx.set_xlabel("log({})".format(g_labels[i]), fontsize=16)
         for tick in axx.get_xticklabels():
             tick.set_rotation(30)
        
 
-leg = fig.legend(lines, labels, loc="upper center", ncol=2+len(nums_expts)/2, bbox_to_anchor=(0.5, 1))
+leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.05))
 
 fig.tight_layout()
 
