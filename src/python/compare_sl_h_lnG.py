@@ -134,7 +134,7 @@ for i in xrange(num_gs):
         tt = time()-start
         print "Time taken for MLE pred: {} s".format(round(tt))
         line, = ax1.plot(x, mle_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
-        if N_e==2:
+        if i==0:
             lines += (line,)
         ax2.plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
         
@@ -154,13 +154,13 @@ for i in xrange(num_gs):
             tick.set_rotation(30)
        
 
-leg = fig.legend(lines, labels, loc="upper center", ncol=2+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.1))
+leg = fig.legend(lines, labels, loc="upper center", ncol=2+len(nums_expts)/2, bbox_to_anchor=(0.5, 1))
 
 fig.tight_layout()
 
 fig_file = h_png_dir + "sl_mle_preds_and_h_post_preds.png"
 print fig_file
-fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight')#, pad_inches=0.15)
+fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight', pad_inches=0.15)
 #plt.show()
 
         
