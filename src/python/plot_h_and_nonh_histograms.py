@@ -75,19 +75,18 @@ for i in xrange(num_gs):
         single_chain = np.loadtxt(sl_mcmc_file, usecols=[i])
         
         ax2.hist(single_chain, normed=True, bins=40, color=colour, alpha=1.5/N_e, lw=0)
-    
-
         ax.hist(h_chain[:, idx], normed=True, bins=40, color=colour, alpha=1.5/N_e, lw=0)
         
-    
-        line = ax.scatter(np.log(expt_params[n, i]), 0, marker='x', c='red', zorder=10)
-        line.set_clip_on(False)
-        
-        line = ax2.scatter(np.log(expt_params[n, i]), 0, marker='x', c='red', zorder=10)
-        line.set_clip_on(False)
+        ax.plot(np.log(expt_params[n, i]), 0, 'x', color='red', ms=10, mew=2, clip_on=False, zorder=10)
+        ax2.plot(np.log(expt_params[n, i]), 0, 'x', color='red', ms=10, mew=2, clip_on=False, zorder=10)
     
     ax2.set_ylim(0, ax2.get_ylim()[1])
-    ax.set_xticks(ax.get_xticks()[1:-1]
+    xlim = ax.get_xlim()
+    xticks = ax.get_xticks()
+    if xlim[0] <= xticks[0]:
+        ax.set_xticks(xticks[1:-1])
+    else:
+        ax.set_xticks(xticks[2:-1])
     for tick in ax2.get_xticklabels():
         tick.set_rotation(30)
     for tick in ax.get_xticklabels():
