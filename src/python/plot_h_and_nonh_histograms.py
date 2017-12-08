@@ -14,7 +14,6 @@ parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
 requiredNamed.add_argument("-n", "--num-traces", type=int, help="which hMCMC to use", required=True)
-parser.add_argument("-s", "--series", action="store_true", help="plot serially-run hMCMC", default=False)
 
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
@@ -48,40 +47,17 @@ original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["mod
 num_gs = len(original_gs)
 
 g_labels = ["${}$".format(g) for g in g_parameters]
-
-parallel = not args.series
-print parallel
-
-
-"""for n, i in it.product(range(2), range(num_gs)):
-    print n, i
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.grid()
-    if n == 0:
-        xlabel = r"\hat{" + g_parameters[i] +"}$"
-        figname = "trace_{}_top_{}.png".format(n, g_parameters[i])
-    elif n == 1:
-        xlabel = r"\sigma_{" + g_parameters[i] +"}^2$"  # need to check if this squared is correct
-        figname = "trace_{}_sigma_{}_squared.png".format(n, g_parameters[i])
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel("Normalised frequency")
-    idx = (2+n)*num_gs + i
-    ax.hist(chain[burn:, idx], bins=40, color='blue', edgecolor='blue')"""
-    #fig.savefig(png_dir+figname)
-    #plt.close()
-
     
 N_e = args.num_traces
 
 expt_params = np.loadtxt(expt_params_file)[:N_e,:]
 
+parallel = True
+
 color_idx = np.linspace(0, 1, N_e)
-mcmc_file, log_file, hpng_dir, pdf_dir = ps.hierarchical_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
-chain = np.loadtxt(mcmc_file)
-saved_its, d = chain.shape
-chain = chain[saved_its/2:, :]
-T, d = chain.shape
+mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
+h_chain = np.loadtxt(mcmc_file)
+saved_its, d = h_chain.shape
 for i in xrange(num_gs):
     fig, (ax2,ax) = plt.subplots(1,2,figsize=(8,4), sharex=True,sharey=True)
     ax.grid()
@@ -94,15 +70,14 @@ for i in xrange(num_gs):
     for n in xrange(N_e):
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
+        temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
+        sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
+        single_chain = np.loadtxt(sl_mcmc_file, usecols=[i])
         
-        single_trace_name = trace_name[:-1]+str(n)
-        mcmc_file, log_file, png_dir = ps.mcmc_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, single_trace_name, unscaled=True, non_adaptive=False, temperature=1)
-        single_chain = np.loadtxt(mcmc_file, usecols=[i])
-        
-        ax2.hist(single_chain[single_chain.shape[0]/2:], normed=True, bins=40, color=colour, edgecolor=colour, alpha=4./N_e)
+        ax2.hist(single_chain, normed=True, bins=40, color=colour, edgecolor=colour, alpha=4./N_e)
     
 
-        ax.hist(chain[:, idx], normed=True, bins=40, color=colour, edgecolor=colour, alpha=4./N_e)
+        ax.hist(h_chain[:, idx], normed=True, bins=40, color=colour, edgecolor=colour, alpha=4./N_e)
         
     
         line = ax.scatter(expt_params[n, i], 0, marker='x', c='red', zorder=10)
