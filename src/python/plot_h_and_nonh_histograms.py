@@ -59,8 +59,11 @@ mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_opti
 h_chain = np.loadtxt(mcmc_file)
 saved_its, d = h_chain.shape
 titles = ['Single-level', 'Hierarchical']
+fig = plt.figure(figsize=(8,16))
 for i in xrange(num_gs):
-    fig, (ax2,ax) = plt.subplots(1,2,figsize=(8,4), sharex=True,sharey=True)
+    ax2 = fig.add_subplot(4,2,i/2+1)
+    ax = fig.add_subplot(4,2,i/2+2, sharex=ax2, sharey=ax)
+    plt.setp(ax.get_yticklabels(), visible=False)
     ax2.set_ylabel("Normalised frequency")
     for n in xrange(N_e):
         idx = (2+n)*num_gs + i
@@ -85,7 +88,7 @@ for i in xrange(num_gs):
     
     for j, axx in enumerate([ax2, ax]):
         axx.grid()
-        axx.set_xlabel("log({})".format(g_labels[i]))
+        axx.set_xlabel("log({})".format(g_labels[i]), fontsize=16)
         axx.set_title(titles[j])
         for tick in axx.get_xticklabels():
             tick.set_rotation(30)
