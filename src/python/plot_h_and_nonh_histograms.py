@@ -74,10 +74,10 @@ for i in xrange(num_gs):
         sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
         single_chain = np.loadtxt(sl_mcmc_file, usecols=[i])
         
-        ax2.hist(single_chain, normed=True, bins=40, color=colour, edgecolor=colour, alpha=4./N_e)
+        ax2.hist(single_chain, normed=True, bins=40, color=colour, alpha=1.5/N_e, lw=0)
     
 
-        ax.hist(h_chain[:, idx], normed=True, bins=40, color=colour, edgecolor=colour, alpha=4./N_e)
+        ax.hist(h_chain[:, idx], normed=True, bins=40, color=colour, alpha=1.5/N_e, lw=0)
         
     
         line = ax.scatter(expt_params[n, i], 0, marker='x', c='red', zorder=10)
