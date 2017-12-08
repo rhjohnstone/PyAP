@@ -58,15 +58,10 @@ color_idx = np.linspace(0, 1, N_e)
 mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
 h_chain = np.loadtxt(mcmc_file)
 saved_its, d = h_chain.shape
+titles = ['Single-level', 'Hierarchical']
 for i in xrange(num_gs):
     fig, (ax2,ax) = plt.subplots(1,2,figsize=(8,4), sharex=True,sharey=True)
-    ax.grid()
-    ax2.grid()
-    ax2.set_xlabel(g_labels[i])
-    ax.set_xlabel(g_labels[i])
     ax2.set_ylabel("Normalised frequency")
-    ax2.set_title('Single-level')
-    ax.set_title('Hierarchical')
     for n in xrange(N_e):
         idx = (2+n)*num_gs + i
         colour = plt.cm.winter(color_idx[n])
@@ -87,10 +82,13 @@ for i in xrange(num_gs):
         ax.set_xticks(xticks[1:-1])
     else:
         ax.set_xticks(xticks[2:-1])
-    for tick in ax2.get_xticklabels():
-        tick.set_rotation(30)
-    for tick in ax.get_xticklabels():
-        tick.set_rotation(30)
+    
+    for j, axx in enumerate([ax2, ax]):
+        axx.grid()
+        axx.set_xlabel("log({})".format(g_labels[i]))
+        axx.set_title(titles[j])
+        for tick in axx.get_xticklabels():
+            tick.set_rotation(30)
     fig.tight_layout()
     #fig.savefig(hpng_dir+"{}_h_and_nonh_{}_traces_{}.png".format(expt_name, N_e, g_parameters[i]))
 
