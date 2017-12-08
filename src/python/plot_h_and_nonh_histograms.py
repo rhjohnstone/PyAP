@@ -61,8 +61,8 @@ saved_its, d = h_chain.shape
 titles = ['Single-level', 'Hierarchical']
 fig = plt.figure(figsize=(8,16))
 for i in xrange(num_gs):
-    ax2 = fig.add_subplot(4,2,i/2+1)
-    ax = fig.add_subplot(4,2,i/2+2, sharex=ax2, sharey=ax2)
+    ax2 = fig.add_subplot(4,2,2*i+1)
+    ax = fig.add_subplot(4,2,2*i+2, sharex=ax2, sharey=ax2)
     plt.setp(ax.get_yticklabels(), visible=False)
     ax2.set_ylabel("Normalised frequency")
     for n in xrange(N_e):
@@ -92,8 +92,9 @@ for i in xrange(num_gs):
         axx.set_title(titles[j])
         for tick in axx.get_xticklabels():
             tick.set_rotation(30)
-    fig.tight_layout()
-    #fig.savefig(hpng_dir+"{}_h_and_nonh_{}_traces_{}.png".format(expt_name, N_e, g_parameters[i]))
+            
+fig.tight_layout()
+#fig.savefig(hpng_dir+"{}_h_and_nonh_{}_traces_{}.png".format(expt_name, N_e, g_parameters[i]))
 
 plt.show(block=True)
 
