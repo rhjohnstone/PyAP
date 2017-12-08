@@ -58,6 +58,10 @@ cs = ['#1b9e77','#d95f02','#7570b3']
 ax_titles = ["Single-level MLE pred.", "Hierarchical post. pred."]
 num_pts = 101
 nums_expts = [2, 4, 8, 16, 32]
+
+labels = ("True",) + tuple(["$N_e = {}$".format(n) for n in nums_expts])
+lines = ()
+
 total_nums_expts = len(nums_expts)
 color_idx = np.linspace(0, 1, total_nums_expts)
 
@@ -78,16 +82,35 @@ for n in xrange(nums_expts[-1]):
 print means
 print variances
 
+ax_titles = ['Single-level', 'Hierarchical']
+ax_y = 6
+phi = 1.61803398875
+figsize = (phi*ax_y, ax_y)
+
+fig = plt.figure(figsize=figsize)
+
+xs = []
+
 for i in xrange(num_gs):
-    print "{} / {}\n".format(i+1, num_gs+1)
-    fig, axs = plt.subplots(1, 2, sharex=True, sharey=True, figsize=figsize)
-    axs[0].set_ylabel('Probability density', fontsize=14)
-    x = np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts)
-    for j in xrange(2):
-        axs[j].grid()
-        axs[j].set_title(ax_titles[j])
-        axs[j].set_xlabel('log({})'.format(g_labels[i]), fontsize=14)
-        axs[j].plot(x, normpdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label="True")
+    if i==0:
+        ax1 = fig.add_subplot(4,2,2*i+1)
+    else:
+        ax1 = fig.add_subplot(4,2,2*i+1, sharey=ax1)
+    ax2 = fig.add_subplot(4,2,2*i+2, sharex=ax1, sharey=ax1)
+    plt.setp(ax2.get_yticklabels(), visible=False)
+    ax1.set_ylabel('Probability density')
+    print "{} / {}\n".format(i+1, num_gs)
+    xs.append(np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts))
+    x = xs[i]
+    ax1.set_xlim(xs[0], xs[-1])
+    for j, ax in enumerate([ax1, ax2]):
+        ax.grid()
+        if i==0:
+            ax.set_title(ax_titles[j])
+        ax.set_xlabel('log({})'.format(g_labels[i]), fontsize=16)
+        line, = ax.plot(x, normpdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label="True")
+        if i==0 and j==0:
+            lines += (line,)
     for a, N_e in enumerate(nums_expts):
         colour = plt.cm.winter(color_idx[a])
         # MLE fit
@@ -120,19 +143,20 @@ for i in xrange(num_gs):
         post_pred /= T
         tt = time()-start
         print "Time taken for MLE pred: {} s".format(round(tt))
-        axs[0].plot(x, mle_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
-        axs[1].plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
+        line, = ax1.plot(x, mle_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
+        if N_e==2:
+            lines += (line,)
+        ax2.plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
+       
 
-    for j in xrange(2):
-        axs[j].legend(loc='best', fontsize=10)
-            
-    fig.tight_layout()
-    #plt.show()
-    mle_pred_dir = h_png_dir + "{}_sl_h_post_preds/".format(expt_name)
-    if not os.path.exists(mle_pred_dir):
-        os.makedirs(mle_pred_dir)
-    fig.savefig(mle_pred_dir+'sl_mle_pred_and_h_post_pred_{}.png'.format(g_parameters[i]))
-    plt.close()
+leg = fig.legend(lines, labels, loc="upper center", ncol=2+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.1))
+
+fig.tight_layout()
+
+fig_file = h_png_dir + "sl_mle_preds_and_h_post_preds.png"
+print fig_file
+fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight', pad_inches=0.15)
+plt.show()
 
         
 
