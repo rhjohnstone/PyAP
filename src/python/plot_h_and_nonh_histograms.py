@@ -89,7 +89,8 @@ for i in xrange(num_gs):
     for j, axx in enumerate([ax2, ax]):
         axx.grid()
         axx.set_xlabel("log({})".format(g_labels[i]), fontsize=16)
-        axx.set_title(titles[j])
+        if i==0:
+            axx.set_title(titles[j])
         for tick in axx.get_xticklabels():
             tick.set_rotation(30)
             
