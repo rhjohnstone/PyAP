@@ -57,7 +57,7 @@ expt_params = np.loadtxt(expt_params_file)
 cs = ['#1b9e77','#d95f02','#7570b3']
 ax_titles = ["Single-level MLE pred.", "Hierarchical post. pred."]
 num_pts = 101
-nums_expts = [2, 4, 8, 16, 32]
+nums_expts = [2, 4]#, 8, 16, 32]
 
 labels = ("True",) + tuple(["$N_e = {}$".format(n) for n in nums_expts])
 lines = ()
@@ -102,7 +102,7 @@ for i in xrange(num_gs):
     print "{} / {}\n".format(i+1, num_gs)
     xs.append(np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts))
     x = xs[i]
-    ax1.set_xlim(xs[0], xs[-1])
+    ax1.set_xlim(x[0], x[-1])
     for j, ax in enumerate([ax1, ax2]):
         ax.grid()
         if i==0:
