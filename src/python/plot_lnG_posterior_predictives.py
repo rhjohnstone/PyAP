@@ -146,7 +146,7 @@ leg = fig.legend((true, prior)+lines, labels, loc="upper center", ncol=2+len(num
 
 fig.tight_layout()
 
-fig.savefig(png_dir + "{}_{}_traces_hMCMC_post_preds.png".format(expt_name,N_e), bbox_extra_artists=(leg,), bbox_inches='tight')
+fig.savefig(png_dir + "{}_{}_traces_hMCMC_post_preds.png".format(expt_name,N_e), bbox_extra_artists=(leg,))#, bbox_inches='tight')
 
 plt.show()
 
