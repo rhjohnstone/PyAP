@@ -146,9 +146,14 @@ for i in xrange(num_gs):
         ax1.set_xticks(xticks[1:-1])
     else:
         ax1.set_xticks(xticks[2:-1])
+    new_ticks = ax1.get_xticks()
+    if xlim[-1] >= new_ticks[-1]:
+        ax1.set_xticks(new_ticks[:-1])
+    else:
+        ax1.set_xticks(new_ticks[:-2])
+    
     
     for j, axx in enumerate([ax1, ax2]):
-        axx.grid()
         axx.set_xlabel("log({})".format(g_labels[i]), fontsize=16)
         for tick in axx.get_xticklabels():
             tick.set_rotation(30)
