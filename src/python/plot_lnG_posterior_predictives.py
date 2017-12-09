@@ -165,7 +165,7 @@ fig.tight_layout()
 fig_file = png_dir + "{}_{}_traces_hMCMC_post_preds.png".format(expt_name,N_e)
 print fig_file
 
-fig.savefig(fig_file, bbox_extra_artists=(leg,))#, bbox_inches='tight')
+fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight', pad_inches=0.1)
 
 #plt.show()
 
