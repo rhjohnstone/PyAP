@@ -78,7 +78,7 @@ old_eta_js = np.vstack((mu, nu, alpha, beta)).T
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 101
 
-ax_y = 6
+ax_y = 12
 phi = 1.61803398875
 figsize = (phi*ax_y, ax_y)
 
@@ -99,7 +99,7 @@ if pyap_options["model_number"] == 5:
 xs = []
 for i in xrange(num_gs):
     axs[i].grid()
-    xs.append(np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts))
+    xs.append(np.linspace(m_true[i]-3*np.sqrt(sigma2_true), m_true[i]+3*np.sqrt(sigma2_true), num_pts))
     x = xs[i]
     true, = axs[i].plot(x, norm.pdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1])
     prior_y = np.zeros(num_pts)
@@ -114,7 +114,7 @@ for i in xrange(num_gs):
 
 
 
-nums_expts = [2,4,8,16,32]
+nums_expts = [2,4]#,8,16,32]
 
 labels = ("True", "Prior pred.") + tuple(["$N_e = {}$".format(n) for n in nums_expts])
 
@@ -135,10 +135,26 @@ for j, N_e in enumerate(nums_expts):
         post, = axs[i].plot(x, post_y, lw=2, color=colour)
         if i==0:
             lines += (post,)
-        
+    
 for i in xrange(num_gs):
     axs[i].set_xlim(xs[i][0], xs[i][-1])
-    axs[i].set_ylim(0, axs[i].get_ylim()[1])
+    
+    axs[i].set_ylim(0, ax1.get_ylim()[1])
+    xlim = axs[i].get_xlim()
+    xticks = axs[i].get_xticks()
+    if xlim[0] <= xticks[0]:
+        axs[i].set_xticks(xticks[1:-1])
+    else:
+        axs[i].set_xticks(xticks[2:-1])
+    new_ticks = ax1.get_xticks()
+    if xlim[-1] >= new_ticks[-1]:
+        axs[i].set_xticks(new_ticks[:-1])
+    else:
+        axs[i].set_xticks(new_ticks[:-2])
+    
+    
+    for tick in axs[i].get_xticklabels():
+        tick.set_rotation(30)
     
 print (true, prior)+lines
 print labels
@@ -146,7 +162,7 @@ leg = fig.legend((true, prior)+lines, labels, loc="upper center", ncol=2+len(num
 
 fig.tight_layout()
 
-fig.savefig(png_dir + "{}_{}_traces_hMCMC_post_preds.png".format(expt_name,N_e), bbox_extra_artists=(leg,))#, bbox_inches='tight')
+#fig.savefig(png_dir + "{}_{}_traces_hMCMC_post_preds.png".format(expt_name,N_e), bbox_extra_artists=(leg,))#, bbox_inches='tight')
 
 plt.show()
 
