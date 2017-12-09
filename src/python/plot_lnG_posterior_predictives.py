@@ -78,7 +78,7 @@ old_eta_js = np.vstack((mu, nu, alpha, beta)).T
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 101
 
-ax_y = 12
+ax_y = 6
 phi = 1.61803398875
 figsize = (phi*ax_y, ax_y)
 
