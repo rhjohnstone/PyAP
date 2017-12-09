@@ -114,7 +114,7 @@ for i in xrange(num_gs):
 
 
 
-nums_expts = [2,4]#,8,16,32]
+nums_expts = [2,4,8,16,32]
 
 labels = ("True", "Prior pred.") + tuple(["$N_e = {}$".format(n) for n in nums_expts])
 
@@ -139,14 +139,14 @@ for j, N_e in enumerate(nums_expts):
 for i in xrange(num_gs):
     axs[i].set_xlim(xs[i][0], xs[i][-1])
     
-    axs[i].set_ylim(0, ax1.get_ylim()[1])
+    axs[i].set_ylim(0, axs[i].get_ylim()[1])
     xlim = axs[i].get_xlim()
     xticks = axs[i].get_xticks()
     if xlim[0] <= xticks[0]:
         axs[i].set_xticks(xticks[1:-1])
     else:
         axs[i].set_xticks(xticks[2:-1])
-    new_ticks = ax1.get_xticks()
+    new_ticks = axs[i].get_xticks()
     if xlim[-1] >= new_ticks[-1]:
         axs[i].set_xticks(new_ticks[:-1])
     else:
@@ -162,9 +162,12 @@ leg = fig.legend((true, prior)+lines, labels, loc="upper center", ncol=2+len(num
 
 fig.tight_layout()
 
-#fig.savefig(png_dir + "{}_{}_traces_hMCMC_post_preds.png".format(expt_name,N_e), bbox_extra_artists=(leg,))#, bbox_inches='tight')
+fig_file = png_dir + "{}_{}_traces_hMCMC_post_preds.png".format(expt_name,N_e)
+print fig_file
 
-plt.show()
+fig.savefig(fig_file, bbox_extra_artists=(leg,))#, bbox_inches='tight')
+
+#plt.show()
 
 
 
