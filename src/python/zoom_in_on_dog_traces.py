@@ -30,9 +30,8 @@ def solve_for_voltage_trace_without_initial_V(temp_lnG_params, ap_model, expt_tr
 data_clamp_on = 9.875
 data_clamp_off = 11.875
 
-offset = 0.125
 
-zoomed_xlim = (data_clamp_on-offset, data_clamp_off+offset)
+zoomed_xlim = (9, 12)
 
 
 
@@ -52,10 +51,11 @@ for i in xrange(num_traces):
     expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
     num_pts = len(expt_trace)
     
-    axs[0].plot(expt_times, expt_trace)
+    for j in xrange(2):
+        axs[j].plot(expt_times, expt_trace)
+    axs1.set_xlim(9, 12.5)
     
     zoomed_where = (zoomed_xlim[0] <= expt_times) & (expt_times <= zoomed_xlim[1])
-    axs[1].plot(expt_times[zoomed_where], expt_trace[zoomed_where])
 
 cs = ['#1b9e77','#d95f02','#7570b3']
 
