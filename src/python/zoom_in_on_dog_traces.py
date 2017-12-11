@@ -33,7 +33,7 @@ data_clamp_off = 11.875
 data_clamp_time = [data_clamp_on, data_clamp_off]
 
 zoomed_xlim = (9, 12.5)
-zoomed_ylim = (-100, 0)
+zoomed_ylim = (-90, -20)
 
 ax_y = 3
 lw = 1
@@ -73,6 +73,7 @@ axs[1].fill_between(data_clamp_time, [box_min, box_min], [box_max, box_max], col
 fig.tight_layout()
 fig_file = "dog_traces_zoomed.png"
 print fig_file
+fig.savefig(fig_file)
 plt.show()
 
 
