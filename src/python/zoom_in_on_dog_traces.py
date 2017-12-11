@@ -53,7 +53,8 @@ for i in xrange(num_traces):
     
     for j in xrange(2):
         axs[j].plot(expt_times, expt_trace)
-    axs1.set_xlim(9, 12.5)
+    axs[1].set_xlim(9, 12.5)
+    axs[1].set_ylim(-100, 0)
     
     zoomed_where = (zoomed_xlim[0] <= expt_times) & (expt_times <= zoomed_xlim[1])
 
