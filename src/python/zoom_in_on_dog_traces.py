@@ -30,13 +30,15 @@ def solve_for_voltage_trace_without_initial_V(temp_lnG_params, ap_model, expt_tr
 data_clamp_on = 9.875
 data_clamp_off = 11.875
 
-zoomed_xlim = (9, 12.5)
+offset = 0.125
+
+zoomed_xlim = (data_clamp_on-offset, data_clamp_off+offset)
 
 
 
 ax_y = 3
 lw = 1
-fig, axs = plt.subplots(1, 2, figsize=(2*ax_y,ax_y))
+fig, axs = plt.subplots(1, 2, figsize=(3*ax_y,ax_y))
 for i in xrange(2):
     axs[i].set_ylabel('Membrane voltage (mV)')
     axs[i].set_xlabel('Time (ms)')
@@ -52,7 +54,7 @@ for i in xrange(num_traces):
     
     axs[0].plot(expt_times, expt_trace)
     
-    zoomed_where = (zoomed_xlim[0] <= expt_times) && (expt_times <= zoomed_xlim[1])
+    zoomed_where = (zoomed_xlim[0] <= expt_times) & (expt_times <= zoomed_xlim[1])
     axs[1].plot(expt_times[zoomed_where], expt_trace[zoomed_where])
 
 cs = ['#1b9e77','#d95f02','#7570b3']
