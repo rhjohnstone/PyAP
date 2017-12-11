@@ -157,7 +157,7 @@ for i in xrange(2):
         axs[i,j].grid()
         idx = 2*i + j
         axs[i,j].plot(expt_times, expt_traces[idx], label="AP {}".format(trace_numbers[idx]), lw=lw, color=cs[1])
-        axs[i,j].plot(expt_times, best_APs[idx], label=r"\log(MPD) \propto_+ {}$".format(round(MPDs[idx],1)), lw=lw, color=cs[0])
+        axs[i,j].plot(expt_times, best_APs[idx], label=r"$\log(MPD) {\propto\!}_+ {ans}$".format(ans=round(MPDs[idx],1)), lw=lw, color=cs[0])
         axs[i,j].plot(expt_times, best_APs[idx] + 2*best_sigmas[idx], label=r"$MPD \pm 2\sigma$", lw=lw, color=cs[2], ls="--")
         axs[i,j].plot(expt_times, best_APs[idx] - 2*best_sigmas[idx], lw=lw, color=cs[2], ls="--")
         axs[i,j].legend(fontsize=12)
