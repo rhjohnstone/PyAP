@@ -58,6 +58,9 @@ with open(options_file, 'r') as infile:
         else:
             val = float(val)
         pyap_options[key] = val
+
+expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
+num_pts = len(expt_trace)
         
 data_clamp_on = pyap_options["data_clamp_on"]
 data_clamp_off = pyap_options["data_clamp_off"]
@@ -97,8 +100,7 @@ phi = 1.61803398875
 all_time_start = time.time()
 
 
-expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
-num_pts = len(expt_trace)
+
 
 protocol = 1
 solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
