@@ -44,12 +44,14 @@ for i in xrange(2):
     axs[i].grid()
 
 num_traces = 2
+box_min = 100
+box_max = -100
 for i in xrange(num_traces):
     trace_number = 150 + i
     trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(trace_number)
 
     expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
-    num_pts = len(expt_trace)
+
     
     for j in xrange(2):
         axs[j].plot(expt_times, expt_trace)
@@ -57,10 +59,15 @@ for i in xrange(num_traces):
     axs[1].set_ylim(zoomed_ylim)
     
     zoomed_where = (zoomed_xlim[0] <= expt_times) & (expt_times <= zoomed_xlim[1])
+    temp_min = np.min(expt_trace[zoomed_where])
+    if temp_min < box_min:
+        box_min = temp_min
+    temp_max = np.max(expt_trace[zoomed_where])
+    if temp_max < box_max:
+        box_max = temp_max
+    
 
-rectangle_lower = expt_trace[np.where(expt_times==data_clamp_on)][0]
-rectangle_upper = expt_trace[np.where(expt_times==data_clamp_off)][0]
-axs[1].fill_between(data_clamp_time, [rectangle_lower, rectangle_lower], [rectangle_upper, rectangle_upper], color='lightgray')
+axs[1].fill_between(data_clamp_time, [box_min, box_min], [box_max, box_max], color='lightgray')
 
 fig.tight_layout()
 fig_file = "dog_traces_zoomed.png"
