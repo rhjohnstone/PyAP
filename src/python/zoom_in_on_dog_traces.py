@@ -27,14 +27,14 @@ def solve_for_voltage_trace_without_initial_V(temp_lnG_params, ap_model, expt_tr
         return np.zeros(num_pts)
 
 
-ax_y = 4
+ax_y = 3
 lw = 1
-fig, axs = plt.subplots(1, 2, figsize=(phi*ax_y,ax_y), sharex=True)
+fig, axs = plt.subplots(1, 2, figsize=(2*ax_y,ax_y), sharex=True)
 
 num_traces = 32
 for i in xrange(num_traces):
     trace_number = 150 + i
-    trace_path = "projects/PyAP/python/input/dog_teun_decker/traces/dog_AP_trace_{}.csv".format(trace_number)
+    trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(trace_number)
 
     expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
     num_pts = len(expt_trace)
