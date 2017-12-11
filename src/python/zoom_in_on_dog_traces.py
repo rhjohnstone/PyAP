@@ -58,7 +58,8 @@ for i in xrange(num_traces):
     
     zoomed_where = (zoomed_xlim[0] <= expt_times) & (expt_times <= zoomed_xlim[1])
 
-rectangle_y = expt_trace[np.where(expt_times==data_clamp_off)]
+rectangle_y = expt_trace[np.where(expt_times==data_clamp_off)][0]
+print rectangle_y
 axs[1].fill_between(data_clamp_time, [rectangle_y, rectangle_y], color='lightgray')
 
 fig.tight_layout()
