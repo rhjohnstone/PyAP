@@ -58,7 +58,7 @@ for i in xrange(num_traces):
     axs[1].set_xlim(zoomed_xlim)
     axs[1].set_ylim(zoomed_ylim)
     
-    zoomed_where = (zoomed_xlim[0] <= expt_times) & (expt_times <= zoomed_xlim[1])
+    dc_where = (data_clamp_on <= expt_times) & (expt_times <= data_clamp_off)
     temp_min = np.min(expt_trace[zoomed_where])
     if temp_min < box_min:
         box_min = temp_min
