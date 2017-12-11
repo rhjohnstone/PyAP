@@ -124,22 +124,21 @@ best_params = cmaes_output[best_idx, :-1]
 best_AP = solve_for_voltage_trace(nplog(best_params[:-1]), ap_model, expt_trace)
 cs = ['#1b9e77','#d95f02','#7570b3']
 
-ax_y = 3
+ax_y = 6
 lw = 1
-fig = plt.figure(figsize=(phi*ax_y,ax_y))
-decker1 = fig.add_subplot(221)
-decker2 = fig.add_subplot(223, sharex=decker1, sharey=decker1)
-davies1 = fig.add_subplot(222, sharex=decker1)
-davies2 = fig.add_subplot(224, sharex=decker1, sharey=davies1)
-decker1.grid()
-decker1.set_title(model_name)
-decker1.set_xlabel('Time (ms)')
-decker1.set_ylabel('Membrane voltage (mV)')
-decker1.plot(expt_times, expt_trace, label=trace_name, lw=lw, color=cs[1])
-decker1.plot(expt_times, best_AP, label="MPD", lw=lw, color=cs[0])
-decker1.plot(expt_times, best_AP + 2*best_params[-1], label=r"MPD $\pm 2\sigma$", lw=lw, color=cs[2], ls="--")
-decker1.plot(expt_times, best_AP - 2*best_params[-1], lw=lw, color=cs[2], ls="--")
-decker1.legend(fontsize=10)
+fig, axs = plt.subplots(2, 2, figsize=(phi*ax_y,ax_y), sharex=True, sharey=True)
+for ax in axs:
+    ax.grid()
+for j in xrange(2):
+    axs[j,0].set_ylabel('Membrane voltage (mV)')
+    axs[1,j].set_xlabel('Time (ms)')
+    
+axs[0,0].set_title(model_name)
+axs[0,0].plot(expt_times, expt_trace, label=trace_name, lw=lw, color=cs[1])
+axs[0,0].plot(expt_times, best_AP, label="MPD", lw=lw, color=cs[0])
+axs[0,0].plot(expt_times, best_AP + 2*best_params[-1], label=r"MPD $\pm 2\sigma$", lw=lw, color=cs[2], ls="--")
+axs[0,0].plot(expt_times, best_AP - 2*best_params[-1], lw=lw, color=cs[2], ls="--")
+axs[0,0].legend(fontsize=10)
 fig.tight_layout()
 #fig.savefig(best_fit_png)
 plt.show()
