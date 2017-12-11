@@ -144,7 +144,7 @@ for trace_path in data_files:
 
 cs = ['#1b9e77','#d95f02','#7570b3']
 
-ax_y = 8
+ax_y = 6
 lw = 1
 fig, axs = plt.subplots(2, 2, figsize=(phi*ax_y,ax_y), sharex=True, sharey=True)
 for j in xrange(2):
@@ -157,9 +157,9 @@ for i in xrange(2):
         axs[i,j].grid()
         idx = 2*i + j
         axs[i,j].plot(expt_times, expt_traces[idx], label="AP {}".format(trace_numbers[idx]), lw=lw, color=cs[1])
-        axs[i,j].plot(expt_times, best_APs[idx], label=r"$\log(MPD) {\propto\!}_+ " + str(round(MPDs[idx],1)) + "$", lw=lw, color=cs[0])
         axs[i,j].plot(expt_times, best_APs[idx] + 2*best_sigmas[idx], label=r"$MPD \pm 2\sigma$", lw=lw, color=cs[2], ls="--")
         axs[i,j].plot(expt_times, best_APs[idx] - 2*best_sigmas[idx], lw=lw, color=cs[2], ls="--")
+        axs[i,j].plot(expt_times, best_APs[idx], label=r"$\log(MPD) {\propto\!}_+ " + str(round(MPDs[idx],1)) + "$", lw=lw, color=cs[0])
         axs[i,j].legend(fontsize=12)
 fig.tight_layout()
 print best_fit_png
