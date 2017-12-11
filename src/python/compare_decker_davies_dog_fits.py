@@ -122,6 +122,7 @@ for trace_path in data_files:
     cmaes_log_file = cmaes_best_fits_file[:-3]+"log"
 
     cmaes_output = np.loadtxt(cmaes_best_fits_file)
+    print "\n", trace_path
     print "\n", cmaes_output, "\n"
     best_idx = np.argmin(cmaes_output[:, -1])
     best_params = cmaes_output[best_idx, :-1]
