@@ -60,8 +60,7 @@ for i in xrange(num_traces):
 
 rectangle_lower = expt_trace[np.where(expt_times==data_clamp_on)][0]
 rectangle_upper = expt_trace[np.where(expt_times==data_clamp_off)][0]
-print rectangle_y
-axs[1].fill_between(data_clamp_time, [rectangle_lower, rectangle_upper], color='lightgray')
+axs[1].fill_between(data_clamp_time, [rectangle_lower, rectangle_lower], [rectangle_upper, rectangle_upper], color='lightgray')
 
 fig.tight_layout()
 fig_file = "dog_traces_zoomed.png"
