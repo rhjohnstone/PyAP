@@ -39,13 +39,14 @@ omega = 0.5*nplog(10)  # s.d. of Normal priors on lnGs
 two_omega_sq = 2.*omega**2
         
 data_files = ["projects/PyAP/python/input/dog_teun_decker/traces/dog_AP_trace_150.csv", 
-              "projects/PyAP/python/input/dog_teun_decker/traces/dog_AP_trace_151.csv",
               "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_150.csv", 
+              "projects/PyAP/python/input/dog_teun_decker/traces/dog_AP_trace_151.csv",
               "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_151.csv",]
 
 best_APs = []
 model_names = []
 best_sigmas = []
+expt_traces = []
 for trace_path in data_files:
     #trace_path = data_files[0]
     split_trace_path = trace_path.split('/')
@@ -65,6 +66,8 @@ for trace_path in data_files:
 
     expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
     num_pts = len(expt_trace)
+    
+    expt_traces.append(np.copy(expt_trace))
             
     data_clamp_on = pyap_options["data_clamp_on"]
     data_clamp_off = pyap_options["data_clamp_off"]
@@ -140,15 +143,17 @@ fig, axs = plt.subplots(2, 2, figsize=(phi*ax_y,ax_y), sharex=True, sharey=True)
 for j in xrange(2):
     axs[j,0].set_ylabel('Membrane voltage (mV)')
     axs[1,j].set_xlabel('Time (ms)')
-    for k in xrange(2):
-        axs[j,k].grid()
-    
-axs[0,0].set_title(model_names[0])
-axs[0,0].plot(expt_times, expt_trace, label=trace_name, lw=lw, color=cs[1])
-axs[0,0].plot(expt_times, best_APs[0], label="MPD", lw=lw, color=cs[0])
-axs[0,0].plot(expt_times, best_APs[0] + 2*best_sigmas[0], label=r"MPD $\pm 2\sigma$", lw=lw, color=cs[2], ls="--")
-axs[0,0].plot(expt_times, best_APs[0] - 2*best_sigmas[0], lw=lw, color=cs[2], ls="--")
-axs[0,0].legend(fontsize=10)
+
+for i in xrange(2):
+    axs[0,i].set_title(model_names[i])
+    for j in xrange(2):
+        axs[i,j].grid()
+        idx = 2*i + j
+        axs[i,j].plot(expt_times, expt_traces[idx], label=trace_name, lw=lw, color=cs[1])
+        axs[i,j].plot(expt_times, best_APs[idx], label="MPD", lw=lw, color=cs[0])
+        axs[i,j].plot(expt_times, best_APs[idx] + 2*best_sigmas[idx], label=r"MPD $\pm 2\sigma$", lw=lw, color=cs[2], ls="--")
+        axs[i,j].plot(expt_times, best_APs[idx] - 2*best_sigmas[idx], lw=lw, color=cs[2], ls="--")
+        axs[i,j].legend(fontsize=10)
 fig.tight_layout()
 #fig.savefig(best_fit_png)
 plt.show()
