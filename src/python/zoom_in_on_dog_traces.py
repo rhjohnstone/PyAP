@@ -32,6 +32,9 @@ data_clamp_off = 11.875
 
 data_clamp_time = [data_clamp_on, data_clamp_off]
 
+zoomed_xlim = (9, 12.5)
+zoomed_ylim = (-100, 0)
+
 ax_y = 3
 lw = 1
 fig, axs = plt.subplots(1, 2, figsize=(3*ax_y,ax_y))
@@ -50,8 +53,8 @@ for i in xrange(num_traces):
     
     for j in xrange(2):
         axs[j].plot(expt_times, expt_trace)
-    axs[1].set_xlim(9, 12.5)
-    axs[1].set_ylim(-100, 0)
+    axs[1].set_xlim(zoomed_xlim)
+    axs[1].set_ylim(zoomed_ylim)
     
     zoomed_where = (zoomed_xlim[0] <= expt_times) & (expt_times <= zoomed_xlim[1])
 
