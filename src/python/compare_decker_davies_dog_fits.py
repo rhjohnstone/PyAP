@@ -127,11 +127,11 @@ cs = ['#1b9e77','#d95f02','#7570b3']
 ax_y = 6
 lw = 1
 fig, axs = plt.subplots(2, 2, figsize=(phi*ax_y,ax_y), sharex=True, sharey=True)
-for ax in axs:
-    ax.grid()
 for j in xrange(2):
     axs[j,0].set_ylabel('Membrane voltage (mV)')
     axs[1,j].set_xlabel('Time (ms)')
+    for k in xrange(2):
+        axs[j,k].grid()
     
 axs[0,0].set_title(model_name)
 axs[0,0].plot(expt_times, expt_trace, label=trace_name, lw=lw, color=cs[1])
