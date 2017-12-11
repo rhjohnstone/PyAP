@@ -63,10 +63,11 @@ for i in xrange(num_traces):
     if temp_min < box_min:
         box_min = temp_min
     temp_max = np.max(expt_trace[zoomed_where])
-    if temp_max < box_max:
+    if temp_max > box_max:
         box_max = temp_max
     
-
+print "box_min:", box_min
+print "box_max:", box_max
 axs[1].fill_between(data_clamp_time, [box_min, box_min], [box_max, box_max], color='lightgray')
 
 fig.tight_layout()
