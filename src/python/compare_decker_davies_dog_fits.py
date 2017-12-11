@@ -48,6 +48,7 @@ model_names = []
 best_sigmas = []
 expt_traces = []
 trace_numbers = []
+MPDs = []
 for trace_path in data_files:
     #trace_path = data_files[0]
     split_trace_path = trace_path.split('/')
@@ -131,9 +132,12 @@ for trace_path in data_files:
     try:
         best_idx = np.argmin(cmaes_output[:, -1])
         best_params = cmaes_output[best_idx, :-1]
+        best_mpd = cmaes_output[best_idx, -1]
     except:  # remove once Davies CMA-ES has finished (again)
         best_params = np.concatenate((original_gs,[0.5]))
+        best_mpd = 0
     best_sigmas.append(best_params[-1])
+    MPDs.append(-best_mpd)
 
     best_AP = solve_for_voltage_trace(nplog(best_params[:-1]), ap_model, expt_trace)
     best_APs.append(np.copy(best_AP))
@@ -153,7 +157,7 @@ for i in xrange(2):
         axs[i,j].grid()
         idx = 2*i + j
         axs[i,j].plot(expt_times, expt_traces[idx], label="AP {}".format(trace_numbers[idx]), lw=lw, color=cs[1])
-        axs[i,j].plot(expt_times, best_APs[idx], label="MPD", lw=lw, color=cs[0])
+        axs[i,j].plot(expt_times, best_APs[idx], label="MPD = {}".format(round(MPDs[idx],1)), lw=lw, color=cs[0])
         axs[i,j].plot(expt_times, best_APs[idx] + 2*best_sigmas[idx], label=r"MPD $\pm 2\sigma$", lw=lw, color=cs[2], ls="--")
         axs[i,j].plot(expt_times, best_APs[idx] - 2*best_sigmas[idx], lw=lw, color=cs[2], ls="--")
         axs[i,j].legend(fontsize=12)
