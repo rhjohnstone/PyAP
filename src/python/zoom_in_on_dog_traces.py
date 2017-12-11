@@ -59,10 +59,10 @@ for i in xrange(num_traces):
     axs[1].set_ylim(zoomed_ylim)
     
     dc_where = (data_clamp_on <= expt_times) & (expt_times <= data_clamp_off)
-    temp_min = np.min(expt_trace[zoomed_where])
+    temp_min = np.min(expt_trace[dc_where])
     if temp_min < box_min:
         box_min = temp_min
-    temp_max = np.max(expt_trace[zoomed_where])
+    temp_max = np.max(expt_trace[dc_where])
     if temp_max > box_max:
         box_max = temp_max
     
