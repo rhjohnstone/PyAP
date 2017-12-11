@@ -121,16 +121,17 @@ best_AP = solve_for_voltage_trace(nplog(best_params[:-1]), ap_model, expt_trace)
 cs = ['#1b9e77','#d95f02','#7570b3']
 
 ax_y = 3
+lw = 1
 fig = plt.figure(figsize=(phi*ax_y,ax_y))
 ax = fig.add_subplot(111)
 ax.grid()
 ax.set_title(model_name)
 ax.set_xlabel('Time (ms)')
 ax.set_ylabel('Membrane voltage (mV)')
-ax.plot(expt_times, expt_trace, label=trace_name, lw=2, color=cs[1])
-ax.plot(expt_times, best_AP, label="MPD", lw=2, color=cs[0])
-ax.plot(expt_times, best_AP + 2*best_params[-1], label=r"$\pm 2\sigma$", lw=2, color=cs[2])
-ax.plot(expt_times, best_AP - 2*best_params[-1], lw=2, color=cs[2], ls="--")
+ax.plot(expt_times, expt_trace, label=trace_name, lw=lw, color=cs[1])
+ax.plot(expt_times, best_AP, label="MPD", lw=lw, color=cs[0])
+ax.plot(expt_times, best_AP + 2*best_params[-1], label=r"MPD $\pm 2\sigma$", lw=lw, color=cs[2], ls="--")
+ax.plot(expt_times, best_AP - 2*best_params[-1], lw=lw, color=cs[2], ls="--")
 ax.legend(fontsize=10)
 fig.tight_layout()
 #fig.savefig(best_fit_png)
