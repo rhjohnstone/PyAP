@@ -43,85 +43,92 @@ data_files = ["projects/PyAP/python/input/dog_teun_decker/traces/dog_AP_trace_15
               "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_150.csv", 
               "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_151.csv",]
 
-trace_path = data_files[0]
-split_trace_path = trace_path.split('/')
-expt_name = split_trace_path[4]
-trace_name = split_trace_path[-1][:-4]
-options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
+best_APs = []
+model_names = []
+best_sigmas = []
+for trace_path in data_files:
+    #trace_path = data_files[0]
+    split_trace_path = trace_path.split('/')
+    expt_name = split_trace_path[4]
+    trace_name = split_trace_path[-1][:-4]
+    options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 
-pyap_options = {}
-with open(options_file, 'r') as infile:
-    for line in infile:
-        (key, val) = line.split()
-        if (key == "model_number") or (key == "num_solves"):
-            val = int(val)
-        else:
-            val = float(val)
-        pyap_options[key] = val
+    pyap_options = {}
+    with open(options_file, 'r') as infile:
+        for line in infile:
+            (key, val) = line.split()
+            if (key == "model_number") or (key == "num_solves"):
+                val = int(val)
+            else:
+                val = float(val)
+            pyap_options[key] = val
 
-expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
-num_pts = len(expt_trace)
-        
-data_clamp_on = pyap_options["data_clamp_on"]
-data_clamp_off = pyap_options["data_clamp_off"]
+    expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
+    num_pts = len(expt_trace)
+            
+    data_clamp_on = pyap_options["data_clamp_on"]
+    data_clamp_off = pyap_options["data_clamp_off"]
 
-ap_model = ap_simulator.APSimulator()
-if (data_clamp_on < data_clamp_off):
-    ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
-    ap_model.DefineModel(pyap_options["model_number"])
-    ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
-    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
-else:
-    ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
-    ap_model.DefineModel(pyap_options["model_number"])
-ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
-ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
-ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
-ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
-ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
-ap_model.SetNumberOfSolves(pyap_options["num_solves"])
-if (data_clamp_on < data_clamp_off):
-    ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
-    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
-
-
-
-
-if data_clamp_on < data_clamp_off:
-    solve_for_voltage_trace = solve_for_voltage_trace_with_initial_V
-    print "Solving after setting V(0) = data(0)"
-else:
-    solve_for_voltage_trace = solve_for_voltage_trace_without_initial_V
-    print "Solving without setting V(0) = data(0)"
-
-
-phi = 1.61803398875
-
-all_time_start = time.time()
+    ap_model = ap_simulator.APSimulator()
+    if (data_clamp_on < data_clamp_off):
+        ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
+        ap_model.DefineModel(pyap_options["model_number"])
+        ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
+        ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
+    else:
+        ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
+        ap_model.DefineModel(pyap_options["model_number"])
+    ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
+    ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
+    ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
+    ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
+    ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
+    ap_model.SetNumberOfSolves(pyap_options["num_solves"])
+    if (data_clamp_on < data_clamp_off):
+        ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
+        ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
 
 
 
 
-protocol = 1
-solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
-if pyap_options["model_number"] == 1:
-    solve_end = 100  # just for HH
-original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
-num_gs = len(original_gs)
-num_params = num_gs + 1
-log_gs = nplog(original_gs)
+    if data_clamp_on < data_clamp_off:
+        solve_for_voltage_trace = solve_for_voltage_trace_with_initial_V
+        print "Solving after setting V(0) = data(0)"
+    else:
+        solve_for_voltage_trace = solve_for_voltage_trace_without_initial_V
+        print "Solving without setting V(0) = data(0)"
 
-cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files_lnG(pyap_options["model_number"], expt_name, trace_name)
-cmaes_log_file = cmaes_best_fits_file[:-3]+"log"
 
-cmaes_output = np.loadtxt(cmaes_best_fits_file)
-best_idx = np.argmin(cmaes_output[:, -1])
-best_params = cmaes_output[best_idx, :-1]
+    phi = 1.61803398875
+
+    all_time_start = time.time()
 
 
 
 
-best_AP = solve_for_voltage_trace(nplog(best_params[:-1]), ap_model, expt_trace)
+    protocol = 1
+    solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
+    if pyap_options["model_number"] == 1:
+        solve_end = 100  # just for HH
+    original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
+    
+    model_names.append(model_name)
+    
+    num_gs = len(original_gs)
+    num_params = num_gs + 1
+    log_gs = nplog(original_gs)
+
+    cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_and_figs_files_lnG(pyap_options["model_number"], expt_name, trace_name)
+    cmaes_log_file = cmaes_best_fits_file[:-3]+"log"
+
+    cmaes_output = np.loadtxt(cmaes_best_fits_file)
+    best_idx = np.argmin(cmaes_output[:, -1])
+    best_params = cmaes_output[best_idx, :-1]
+    best_sigmas.append(best_params[-1])
+
+    best_AP = solve_for_voltage_trace(nplog(best_params[:-1]), ap_model, expt_trace)
+    best_APs.append(np.copy(best_AP))
+
 cs = ['#1b9e77','#d95f02','#7570b3']
 
 ax_y = 6
@@ -133,11 +140,11 @@ for j in xrange(2):
     for k in xrange(2):
         axs[j,k].grid()
     
-axs[0,0].set_title(model_name)
+axs[0,0].set_title(model_names[0])
 axs[0,0].plot(expt_times, expt_trace, label=trace_name, lw=lw, color=cs[1])
-axs[0,0].plot(expt_times, best_AP, label="MPD", lw=lw, color=cs[0])
-axs[0,0].plot(expt_times, best_AP + 2*best_params[-1], label=r"MPD $\pm 2\sigma$", lw=lw, color=cs[2], ls="--")
-axs[0,0].plot(expt_times, best_AP - 2*best_params[-1], lw=lw, color=cs[2], ls="--")
+axs[0,0].plot(expt_times, best_APs[0], label="MPD", lw=lw, color=cs[0])
+axs[0,0].plot(expt_times, best_APs[0] + 2*best_sigmas[0], label=r"MPD $\pm 2\sigma$", lw=lw, color=cs[2], ls="--")
+axs[0,0].plot(expt_times, best_APs[0] - 2*best_sigmas[0], lw=lw, color=cs[2], ls="--")
 axs[0,0].legend(fontsize=10)
 fig.tight_layout()
 #fig.savefig(best_fit_png)
