@@ -6,45 +6,7 @@ import numpy as np
 import time
 import pyap_setup as ps
 import sys
-import argparse
 
-npexp = np.exp
-nplog = np.log
-npinf = np.inf
-npsum = np.sum
-npsqrt = np.sqrt
-
-sigma_uniform_lower = 1e-3
-sigma_uniform_upper = 25.
-omega = 0.5*nplog(10)  # s.d. of Normal priors on lnGs
-two_omega_sq = 2.*omega**2
-        
-
-parser = argparse.ArgumentParser()
-requiredNamed = parser.add_argument_group('required arguments')
-requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
-args, unknown = parser.parse_known_args()
-if len(sys.argv)==1:
-    parser.print_help()
-    sys.exit(1)
-trace_path = args.data_file
-split_trace_path = trace_path.split('/')
-expt_name = split_trace_path[4]
-trace_name = split_trace_path[-1][:-4]
-options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
-
-pyap_options = {}
-with open(options_file, 'r') as infile:
-    for line in infile:
-        (key, val) = line.split()
-        if (key == "model_number") or (key == "num_solves"):
-            val = int(val)
-        else:
-            val = float(val)
-        pyap_options[key] = val
-        
-data_clamp_on = pyap_options["data_clamp_on"]
-data_clamp_off = pyap_options["data_clamp_off"]
 
 def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace):
     ap_model.SetToModelInitialConditions()
@@ -63,6 +25,63 @@ def solve_for_voltage_trace_without_initial_V(temp_lnG_params, ap_model, expt_tr
     except:
         print "\n\nFAIL\n\n"
         return np.zeros(num_pts)
+        
+
+npexp = np.exp
+nplog = np.log
+npinf = np.inf
+npsum = np.sum
+npsqrt = np.sqrt
+
+sigma_uniform_lower = 1e-3
+sigma_uniform_upper = 25.
+omega = 0.5*nplog(10)  # s.d. of Normal priors on lnGs
+two_omega_sq = 2.*omega**2
+        
+data_files = ["projects/PyAP/python/input/dog_teun_decker/traces/dog_AP_trace_150.csv", 
+              "projects/PyAP/python/input/dog_teun_decker/traces/dog_AP_trace_151.csv",
+              "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_150.csv", 
+              "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_151.csv",]
+
+trace_path = data_files[0]
+split_trace_path = trace_path.split('/')
+expt_name = split_trace_path[4]
+trace_name = split_trace_path[-1][:-4]
+options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
+
+pyap_options = {}
+with open(options_file, 'r') as infile:
+    for line in infile:
+        (key, val) = line.split()
+        if (key == "model_number") or (key == "num_solves"):
+            val = int(val)
+        else:
+            val = float(val)
+        pyap_options[key] = val
+        
+data_clamp_on = pyap_options["data_clamp_on"]
+data_clamp_off = pyap_options["data_clamp_off"]
+
+ap_model = ap_simulator.APSimulator()
+if (data_clamp_on < data_clamp_off):
+    ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
+    ap_model.DefineModel(pyap_options["model_number"])
+    ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
+    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
+else:
+    ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
+    ap_model.DefineModel(pyap_options["model_number"])
+ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
+ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
+ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
+ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
+ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
+ap_model.SetNumberOfSolves(pyap_options["num_solves"])
+if (data_clamp_on < data_clamp_off):
+    ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
+    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
+
+
 
 
 if data_clamp_on < data_clamp_off:
@@ -98,24 +117,7 @@ best_idx = np.argmin(cmaes_output[:, -1])
 best_params = cmaes_output[best_idx, :-1]
 
 
-ap_model = ap_simulator.APSimulator()
-if (data_clamp_on < data_clamp_off):
-    ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
-    ap_model.DefineModel(pyap_options["model_number"])
-    ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
-    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
-else:
-    ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
-    ap_model.DefineModel(pyap_options["model_number"])
-ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
-ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
-ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
-ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
-ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
-ap_model.SetNumberOfSolves(pyap_options["num_solves"])
-if (data_clamp_on < data_clamp_off):
-    ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
-    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
+
 
 best_AP = solve_for_voltage_trace(nplog(best_params[:-1]), ap_model, expt_trace)
 cs = ['#1b9e77','#d95f02','#7570b3']
@@ -123,16 +125,19 @@ cs = ['#1b9e77','#d95f02','#7570b3']
 ax_y = 3
 lw = 1
 fig = plt.figure(figsize=(phi*ax_y,ax_y))
-ax = fig.add_subplot(111)
-ax.grid()
-ax.set_title(model_name)
-ax.set_xlabel('Time (ms)')
-ax.set_ylabel('Membrane voltage (mV)')
-ax.plot(expt_times, expt_trace, label=trace_name, lw=lw, color=cs[1])
-ax.plot(expt_times, best_AP, label="MPD", lw=lw, color=cs[0])
-ax.plot(expt_times, best_AP + 2*best_params[-1], label=r"MPD $\pm 2\sigma$", lw=lw, color=cs[2], ls="--")
-ax.plot(expt_times, best_AP - 2*best_params[-1], lw=lw, color=cs[2], ls="--")
-ax.legend(fontsize=10)
+decker1 = fig.add_subplot(221)
+decker2 = fig.add_subplot(223, sharex=decker1, sharey=decker1)
+davies1 = fig.add_subplot(222, sharex=decker1)
+davies2 = fig.add_subplot(224, sharex=decker1, sharey=davies1)
+decker1.grid()
+decker1.set_title(model_name)
+decker1.set_xlabel('Time (ms)')
+decker1.set_ylabel('Membrane voltage (mV)')
+decker1.plot(expt_times, expt_trace, label=trace_name, lw=lw, color=cs[1])
+decker1.plot(expt_times, best_AP, label="MPD", lw=lw, color=cs[0])
+decker1.plot(expt_times, best_AP + 2*best_params[-1], label=r"MPD $\pm 2\sigma$", lw=lw, color=cs[2], ls="--")
+decker1.plot(expt_times, best_AP - 2*best_params[-1], lw=lw, color=cs[2], ls="--")
+decker1.legend(fontsize=10)
 fig.tight_layout()
 #fig.savefig(best_fit_png)
 plt.show()
