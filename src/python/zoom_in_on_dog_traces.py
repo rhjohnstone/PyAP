@@ -30,10 +30,7 @@ def solve_for_voltage_trace_without_initial_V(temp_lnG_params, ap_model, expt_tr
 data_clamp_on = 9.875
 data_clamp_off = 11.875
 
-
-zoomed_xlim = (9, 12)
-
-
+data_clamp_time = [data_clamp_on, data_clamp_off]
 
 ax_y = 3
 lw = 1
@@ -58,7 +55,7 @@ for i in xrange(num_traces):
     
     zoomed_where = (zoomed_xlim[0] <= expt_times) & (expt_times <= zoomed_xlim[1])
 
-cs = ['#1b9e77','#d95f02','#7570b3']
+axs[1].fill_between(data_clamp_time, expt_trace[np.where(expt_times==data_clamp_off)], color='lightgray')
 
 fig.tight_layout()
 fig_file = "dog_traces_zoomed.png"
