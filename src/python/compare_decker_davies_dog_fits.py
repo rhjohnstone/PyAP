@@ -47,12 +47,15 @@ best_APs = []
 model_names = []
 best_sigmas = []
 expt_traces = []
+trace_numbers = []
 for trace_path in data_files:
     #trace_path = data_files[0]
     split_trace_path = trace_path.split('/')
     expt_name = split_trace_path[4]
     trace_name = split_trace_path[-1][:-4]
     options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
+    
+    trace_numbers.append(int(trace_name.split("_")[-1]))
 
     pyap_options = {}
     with open(options_file, 'r') as infile:
@@ -149,7 +152,7 @@ for i in xrange(2):
     for j in xrange(2):
         axs[i,j].grid()
         idx = 2*i + j
-        axs[i,j].plot(expt_times, expt_traces[idx], label=trace_name, lw=lw, color=cs[1])
+        axs[i,j].plot(expt_times, expt_traces[idx], label="AP {}".format(trace_numbers[idx]), lw=lw, color=cs[1])
         axs[i,j].plot(expt_times, best_APs[idx], label="MPD", lw=lw, color=cs[0])
         axs[i,j].plot(expt_times, best_APs[idx] + 2*best_sigmas[idx], label=r"MPD $\pm 2\sigma$", lw=lw, color=cs[2], ls="--")
         axs[i,j].plot(expt_times, best_APs[idx] - 2*best_sigmas[idx], lw=lw, color=cs[2], ls="--")
