@@ -77,7 +77,6 @@ phi = 1.61803398875
 
 all_time_start = time.time()
 
-num_cores = args.num_cores  # make 16 for ARCUS-B!!
 
 expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
 num_pts = len(expt_trace)
@@ -118,7 +117,7 @@ if (data_clamp_on < data_clamp_off):
     ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
     ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
 
-best_AP = solve_for_voltage_trace(nplog(best_params), ap_model, expt_trace)
+best_AP = solve_for_voltage_trace(nplog(best_params[:-1]), ap_model, expt_trace)
 cs = ['#1b9e77','#d95f02','#7570b3']
 
 ax_y = 3
@@ -130,6 +129,8 @@ ax.set_xlabel('Time (ms)')
 ax.set_ylabel('Membrane voltage (mV)')
 ax.plot(expt_times, expt_trace, label=trace_name, lw=2, color=cs[1])
 ax.plot(expt_times, best_AP, label="MPD", lw=2, color=cs[0])
+ax.plot(expt_times, best_AP + 2*best_params[-1], label=r"$\pm 2\sigma$", lw=2, color=cs[2])
+ax.plot(expt_times, best_AP - 2*best_params[-1], lw=2, color=cs[2], ls="--")
 ax.legend(fontsize=10)
 fig.tight_layout()
 #fig.savefig(best_fit_png)
