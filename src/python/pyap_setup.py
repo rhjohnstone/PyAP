@@ -62,6 +62,22 @@ def cmaes_and_figs_files_lnG(model_number, expt_name, trace_name):
     best_fit_png = png_dir+"{}_model_{}_trace_{}_cmaes_best_fit.png".format(expt_name, model_number, trace_name)
     best_fit_svg = svg_dir+"{}_model_{}_trace_{}_cmaes_best_fit.svg".format(expt_name, model_number, trace_name)
     return cmaes_best_fits_file, best_fit_png, best_fit_svg
+    
+
+def cmaes_log_likelihood_lnG(model_number, expt_name, trace_name):
+    if arcus_b or arcus:
+        first_bit = os.path.expandvars("$DATA/PyAP_output/")
+    else:
+        first_bit = os.path.expanduser("~/PyAP_output/")
+    cmaes_dir = first_bit+"{}/cmaes/model_{}/".format(expt_name, model_number)
+    txt_dir, png_dir, svg_dir = cmaes_dir+"params/", cmaes_dir+"figs/png/", cmaes_dir+"figs/svg/"
+    for d in [txt_dir, png_dir, svg_dir]:
+        if not os.path.exists(d):
+            os.makedirs(d)
+    cmaes_best_fits_file = txt_dir+"{}_model_{}_trace_{}_cmaes_best_log_likelihoods.txt".format(expt_name, model_number, trace_name)
+    best_fit_png = png_dir+"{}_model_{}_trace_{}_cmaes_best_log_likelihood.png".format(expt_name, model_number, trace_name)
+    best_fit_svg = svg_dir+"{}_model_{}_trace_{}_cmaes_best_log_likelihood.svg".format(expt_name, model_number, trace_name)
+    return cmaes_best_fits_file, best_fit_png, best_fit_svg
 
 
 def mcmc_file_log_file_and_figs_dirs(model_number, expt_name, trace_name, unscaled, non_adaptive, temperature):
