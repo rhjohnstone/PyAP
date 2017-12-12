@@ -131,7 +131,7 @@ for trace_path in data_files:
     
     try:
         cmaes_output = np.loadtxt(cmaes_best_fits_file)
-        best_idx = np.argmin(cmaes_output[:, -1])
+        best_idx = np.argmax(cmaes_output[:, -1])
         best_params = cmaes_output[best_idx, :-1]
         best_mpd = cmaes_output[best_idx, -1]
     except:  # remove once Davies CMA-ES has finished (again)
