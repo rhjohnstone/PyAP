@@ -100,7 +100,7 @@ for i in xrange(num_gs+1):
     if i < num_gs:
         axs[i].set_xlabel('log({})'.format(g_labels[i]), fontsize=16)
     else:
-        axs[i].set_xlabel(r"$\sigma$")
+        axs[i].set_xlabel(r"$\sigma$", fontsize=16)
     if i%3==0:
         axs[i].set_ylabel('Norm. freq.')
 
