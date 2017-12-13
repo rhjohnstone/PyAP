@@ -101,8 +101,11 @@ for i in xrange(2*(num_gs+1)):
         line += " & " + str(rounded_all_stuff[i,n])
     line += r" \\"
     print line
+    if i%2==1:
+        print r"\midrule"
 
 print r"\midrule"
+print r"\end{tabular}
 
 fssh
 
