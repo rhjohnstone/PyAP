@@ -67,7 +67,15 @@ print "\n"
 dp = args.dp
 means_stds_weaved = np.zeros(2*(num_gs+1))
 all_stuff = np.zeros((N_e, 2*(num_gs+1)))
-print " & " + " & ".join(labels) + r" \\"
+
+first_line = " & "
+for i in xrange(num_gs+1):
+    first_line += r"\multicolumn{4}{c}{"+labels[i]+"}"
+
+first_line += r" \\"
+print first_line
+
+
 for n in xrange(N_e):
     temp_trace_number = first_trace_number + n
     temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(temp_trace_number)
@@ -79,7 +87,7 @@ for n in xrange(N_e):
     means_stds_weaved[1::2] = stds
     all_stuff[n, :] = means_stds_weaved
     
-    latex = " & ".join([str(x) for x in means_stds_weaved.round(dp)])
+    latex = " & ".join([r"\multicolumn{2}{c}{"+str(x)+"}" for x in means_stds_weaved.round(dp)])
     
     print temp_trace_number, "&", latex, r"\\"
 print r"\midrule"
