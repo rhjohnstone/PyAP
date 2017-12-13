@@ -137,6 +137,7 @@ for i in xrange(num_gs+1):
         axprior.plot(x, norm.pdf(x, loc=prior_means[i], scale=prior_sd), lw=2, color=cs[1], zorder=0)
     else:
         axprior.axhline(sigma_const, lw=2, color=cs[1], zorder=0)
+    axprior.set_ylim(0, axprior.get_ylim()[1])
 
 fig.tight_layout()#h_pad=1.)
 fig_file = sl_png_dir+"{}_{}_traces_superimposed_marginal_hists.png".format(expt_name, N_e)
