@@ -68,27 +68,37 @@ color_idx = np.linspace(0, 1, N_e)
 m_true = np.log(original_gs)
 sigma2_true = 0.01
 
+sigma_lower = 1e-3
+sigma_upper = 25
+
+sigma_const = 1./(sigma_upper-sigma_lower)
+
 mu = m_true
 alpha = 4.*np.ones(num_gs)
 beta = (alpha+1.) * sigma2_true
 nu = 4.*beta / ((alpha+1.) * np.log(10)**2)
 
+prior_means = np.log(original_gs)
+prior_sd = 0.5*np.log(10)
+
 old_eta_js = np.vstack((mu, nu, alpha, beta)).T
 
 cs = ['#1b9e77','#d95f02','#7570b3']
-num_pts = 201
+num_pts = 101
 
 ax_x = 8
 phi = 1.61803398875
 golden = (ax_x, phi*ax_x)
 a4 = (ax_x, np.sqrt(2)*ax_x)
 
+figsize = (ax_x, 1.2*ax_x)
+
 fig, axs = plt.subplots(5, 3, figsize=a4)
 axs = axs.flatten()
 for i in xrange(num_gs+1):
     axs[i].grid()
     if i < num_gs:
-        axs[i].set_xlabel('log({})'.format(g_labels[i]))
+        axs[i].set_xlabel('log({})'.format(g_labels[i]), fontsize=16)
     else:
         axs[i].set_xlabel(r"$\sigma$")
     if i%3==0:
@@ -106,7 +116,7 @@ for n in xrange(N_e):
     colour = plt.cm.winter(color_idx[n])
     c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=1.5/N_e)
     for i in xrange(num_gs+1):
-        axs[i].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40)
+        axs[i].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40, zorder=10)
 
 num_ticks = 5
 for i in xrange(num_gs+1):
@@ -119,10 +129,17 @@ for i in xrange(num_gs+1):
     ylim = axs[i].get_ylim()
     axs[i].set_yticks(np.round(np.linspace(0, ylim[1], num_ticks),2))
     plt.setp( axs[i].xaxis.get_majorticklabels(), rotation=30 )
+    x = np.linspace(xlim[0], xlim[1], num_pts)
+    if i<num_gs:
+        axs[i].plot(x, norm.pdf(x, loc=prior_means[i], scale=prior_sd), lw=2, color=cs[1], zorder=0)
+    else:
+        axs[i].axhline(sigma_const, lw=2, color=cs[1], zorder=0)
 
-fig.tight_layout(h_pad=1.)
-fig.savefig(sl_png_dir+"superimposed_marginal_hists.png")
-#plt.show()
+fig.tight_layout()#h_pad=1.)
+fig_file = sl_png_dir+"{}_{}_traces_superimposed_marginal_hists.png".format(expt_name, N_e)
+print fig_file
+#fig.savefig(fig_file)
+plt.show()
 sys.exit()
 
 for i in xrange(num_gs):
@@ -153,7 +170,7 @@ for i in xrange(num_gs):
     ylim = axpp.get_ylim()
     axpp.set_ylim(0, ylim[1])
     axpp.set_ylabel('Probability density')
-    axpp.set_xlabel('log({})'.format(g_labels[i]))
+    axpp.set_xlabel('log({})'.format(g_labels[i]), fontsize=16)
     axpp.legend(loc='best')
     #axpp.set_yticks(np.linspace(axpp.get_yticks()[0],axpp.get_yticks()[-1],len(ax2.get_yticks())))
 
