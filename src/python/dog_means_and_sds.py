@@ -66,20 +66,33 @@ N_e = args.num_traces
 print "\n"
 dp = args.dp
 means_stds_weaved = np.zeros(2*(num_gs+1))
-print " & " + " & ".join(parameters) + r" \\"
+all_stuff = np.zeros((N_e, 2*(num_gs+1)))
+print " & " + " & ".join(labels) + r" \\"
 for n in xrange(N_e):
     temp_trace_number = first_trace_number + n
     temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(temp_trace_number)
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
     sl_chain = np.loadtxt(sl_mcmc_file, usecols=range(num_gs+1))
-    means = sl_chain.mean(axis=0).round(dp)
-    stds = sl_chain.std(axis=0).round(dp)
+    means = sl_chain.mean(axis=0)
+    stds = sl_chain.std(axis=0)
     means_stds_weaved[0::2] = means
     means_stds_weaved[1::2] = stds
+    all_stuff[n, :] = means_stds_weaved
     
-    latex = " & ".join([str(x) for x in means_stds_weaved])
+    latex = " & ".join([str(x) for x in means_stds_weaved.round(dp)])
     
     print temp_trace_number, "&", latex, r"\\"
+print r"\midrule"
+
+all_means = all_stuff.mean(axis=0)
+all_stds = all_stuff.std(axis=0)
+final_line = np.zeros(4*(num_gs+1))
+final_line[0::2] = all_means
+final_line[1::2] = all_stds
+final_latex = " & ".join([str(x) for x in final_line.round(dp)])
+print final_latex, r"\\"
+print r"\bottomrule"
+
 print "\n"
     
 
