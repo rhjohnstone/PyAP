@@ -61,12 +61,12 @@ g_labels = ["${}$".format(g) for g in g_parameters]
 
 N_e = args.num_traces
 
+print "\n"
 dp = 2
 means_stds_weaved = np.zeros(2*(num_gs+1))
 for n in xrange(N_e):
     temp_trace_number = first_trace_number + n
     temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(temp_trace_number)
-    print temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
     sl_chain = np.loadtxt(sl_mcmc_file, usecols=range(num_gs+1))
     means = sl_chain.mean(axis=0).round(dp)
@@ -77,6 +77,6 @@ for n in xrange(N_e):
     latex = " & ".join([str(x) for x in means_stds_weaved])
     
     print temp_trace_number, "&", latex, r"\\"
-    
+print "\n"
     
 
