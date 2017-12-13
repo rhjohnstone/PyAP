@@ -68,9 +68,9 @@ dp = args.dp
 means_stds_weaved = np.zeros(2*(num_gs+1))
 all_stuff = np.zeros((N_e, 2*(num_gs+1)))
 
-first_line = " & "
+first_line = ""
 for i in xrange(num_gs+1):
-    first_line += r"\multicolumn{4}{c}{"+labels[i]+"}"
+    first_line += r" & \multicolumn{4}{c}{"+labels[i]+"}"
 
 first_line += r" \\"
 print first_line
