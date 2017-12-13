@@ -92,8 +92,9 @@ rounded_all_stuff = all_stuff.round(dp)
 
 # now do LaTeX
 for i in xrange(2*(num_gs+1)):
+    p = i/2
     if i%2==0:
-        line = r"\multirow{2}{*}{" + parameters[i] + "}"
+        line = r"\multirow{2}{*}{" + parameters[p] + "}"
     else:
         line = ""
     for n in xrange(N_e):
