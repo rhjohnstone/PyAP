@@ -130,16 +130,19 @@ for i in xrange(num_gs+1):
     axs[i].set_yticks(np.round(np.linspace(0, ylim[1], num_ticks),2))
     plt.setp( axs[i].xaxis.get_majorticklabels(), rotation=30 )
     x = np.linspace(xlim[0], xlim[1], num_pts)
+    axprior = axs[i].twinx()
+    if i%3==2:
+        axprior.set_ylabel("Prob. dens.")
     if i<num_gs:
-        axs[i].plot(x, norm.pdf(x, loc=prior_means[i], scale=prior_sd), lw=2, color=cs[1], zorder=0)
+        axprior.plot(x, norm.pdf(x, loc=prior_means[i], scale=prior_sd), lw=2, color=cs[1], zorder=0)
     else:
-        axs[i].axhline(sigma_const, lw=2, color=cs[1], zorder=0)
+        axprior.axhline(sigma_const, lw=2, color=cs[1], zorder=0)
 
 fig.tight_layout()#h_pad=1.)
 fig_file = sl_png_dir+"{}_{}_traces_superimposed_marginal_hists.png".format(expt_name, N_e)
 print fig_file
-#fig.savefig(fig_file)
-plt.show()
+fig.savefig(fig_file)
+#plt.show()
 sys.exit()
 
 for i in xrange(num_gs):
