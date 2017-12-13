@@ -74,7 +74,7 @@ for i in xrange(num_gs+1):
 
 first_line += r" \\"
 print first_line
-
+print r"\midrule"
 
 for n in xrange(N_e):
     temp_trace_number = first_trace_number + n
@@ -87,7 +87,7 @@ for n in xrange(N_e):
     means_stds_weaved[1::2] = stds
     all_stuff[n, :] = means_stds_weaved
     
-    latex = " & ".join([r"\multicolumn{2}{c}{"+str(x)+"}" for x in means_stds_weaved.round(dp)])
+    latex = " & ".join([r"\multicolumn{2}{c|}{"+str(x)+"}" for x in means_stds_weaved.round(dp)])
     
     print temp_trace_number, "&", latex, r"\\"
 print r"\midrule"
