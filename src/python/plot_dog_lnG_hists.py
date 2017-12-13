@@ -93,7 +93,7 @@ a4 = (ax_x, np.sqrt(2)*ax_x)
 
 figsize = (ax_x, 1.2*ax_x)
 
-fig, axs = plt.subplots(5, 3, figsize=a4)
+fig, axs = plt.subplots(5, 3, figsize=figsize)
 axs = axs.flatten()
 for i in xrange(num_gs+1):
     axs[i].grid()
