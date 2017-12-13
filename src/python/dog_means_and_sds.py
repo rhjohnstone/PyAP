@@ -59,6 +59,8 @@ num_gs = len(original_gs)
 
 g_labels = ["${}$".format(g) for g in g_parameters]
 
+N_e = args.num_traces
+
 dp = 2
 means_stds_weaved = np.zeros(2*(num_gs+1))
 for n in xrange(N_e):
@@ -72,7 +74,7 @@ for n in xrange(N_e):
     means_stds_weaved[0::2] = means
     means_stds_weaved[1::2] = stds
     
-    latex = "&".join([str(x) for x in means_stds_weaved])
+    latex = " & ".join([str(x) for x in means_stds_weaved])
     
     print temp_trace_number, "&", latex, r"\\"
     
