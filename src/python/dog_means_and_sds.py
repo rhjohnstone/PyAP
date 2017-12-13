@@ -26,6 +26,7 @@ parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
 requiredNamed.add_argument("-n", "--num-traces", type=int, help="which hMCMC to use", required=True)
+parser.add_argument("--dp", type=int, help="how many decimal places to round means and stds to", default=2)
 
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
@@ -59,11 +60,14 @@ num_gs = len(original_gs)
 
 g_labels = ["${}$".format(g) for g in g_parameters]
 
+parameters = g_parameters + [r"\sigma"]
+
 N_e = args.num_traces
 
 print "\n"
-dp = 2
+dp = args.dp
 means_stds_weaved = np.zeros(2*(num_gs+1))
+print "&" + " & ".join(parameters)
 for n in xrange(N_e):
     temp_trace_number = first_trace_number + n
     temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(temp_trace_number)
