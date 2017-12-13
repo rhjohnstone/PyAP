@@ -68,6 +68,9 @@ dp = args.dp
 means_stds_weaved = np.zeros(2*(num_gs+1))
 all_stuff = np.zeros((2*(num_gs+1), N_e))
 
+pre_first_line = r"\begin{tabular}{*{"+str(N_e+1)+"}{c|}}"
+print pre_first_line
+
 first_line = " & " + " & ".join(str(first_trace_number + n) for n in xrange(N_e)) + r" \\"
 
 print first_line
@@ -93,7 +96,7 @@ for i in xrange(2*(num_gs+1)):
         line = r"\multirow{2}{*}{" + parameters[i] + "}"
     else:
         line = ""
-    for n in xrange(first_trace_number, first_trace_number+N_e):
+    for n in xrange(N_e):
         line += " & " + str(rounded_all_stuff[i,n])
     line += r" \\"
     print line
