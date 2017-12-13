@@ -66,16 +66,14 @@ N_e = args.num_traces
 print "\n"
 dp = args.dp
 means_stds_weaved = np.zeros(2*(num_gs+1))
-all_stuff = np.zeros((N_e, 2*(num_gs+1)))
+all_stuff = np.zeros((2*(num_gs+1), N_e))
 
-first_line = ""
-for i in xrange(num_gs+1):
-    first_line += r" & \multicolumn{4}{c}{"+labels[i]+"}"
+first_line = " & " + " & ".join(str(first_trace_number + n) for n in xrange(N_e)) + r" \\"
 
-first_line += r" \\"
 print first_line
 print r"\midrule"
 
+# work out stuff, but no LaTeX here
 for n in xrange(N_e):
     temp_trace_number = first_trace_number + n
     temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(temp_trace_number)
@@ -85,12 +83,24 @@ for n in xrange(N_e):
     stds = sl_chain.std(axis=0)
     means_stds_weaved[0::2] = means
     means_stds_weaved[1::2] = stds
-    all_stuff[n, :] = means_stds_weaved
+    all_stuff[:, n] = means_stds_weaved
     
-    latex = " & ".join([r"\multicolumn{2}{c|}{"+str(x)+"}" for x in means_stds_weaved.round(dp)])
-    
-    print temp_trace_number, "&", latex, r"\\"
+rounded_all_stuff = all_stuff.round(dp)
+
+# now do LaTeX
+for i in xrange(2*(num_gs+1)):
+    if i%2==0:
+        line = r"\multirow{2}{*}{" + parameters[i] + "}"
+    else:
+        line = ""
+    for n in xrange(first_trace_number, first_trace_number+N_e):
+        line += " & " + str(rounded_all_stuff[i,n])
+    line += r" \\"
+    print line
+
 print r"\midrule"
+
+fssh
 
 all_means = all_stuff.mean(axis=0)
 all_stds = all_stuff.std(axis=0)
