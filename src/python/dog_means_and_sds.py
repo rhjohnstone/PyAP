@@ -58,16 +58,15 @@ data_clamp_off = pyap_options["data_clamp_off"]
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
 
-g_labels = ["${}$".format(g) for g in g_parameters]
-
 parameters = g_parameters + [r"\sigma"]
+labels = ["${}$".format(p) for p in parameters]
 
 N_e = args.num_traces
 
 print "\n"
 dp = args.dp
 means_stds_weaved = np.zeros(2*(num_gs+1))
-print "&" + " & ".join(parameters)
+print " & " + " & ".join(parameters) + r" \\"
 for n in xrange(N_e):
     temp_trace_number = first_trace_number + n
     temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(temp_trace_number)
