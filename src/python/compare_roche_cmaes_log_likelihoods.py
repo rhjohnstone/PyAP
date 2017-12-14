@@ -157,7 +157,7 @@ for j in xrange(4):
     axs[1,j].set_xlabel('Time (ms)')
 
 for j in xrange(4):
-    axs[0,j].set_title(model_names[i])
+    axs[0,j].set_title(model_names[2*j])
     for i in xrange(2):
         axs[i,j].grid()
         idx = 2*i + j
