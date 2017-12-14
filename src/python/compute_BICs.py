@@ -74,11 +74,21 @@ for t in trace_numbers:
                 else:
                     val = float(val)
                 pyap_options[key] = val
+                
+        cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_log_likelihood_lnG(pyap_options["model_number"], expt_name, trace_name)
 
         try:
-            expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
-        except:
+            cmaes_output = np.loadtxt(cmaes_best_fits_file)
+            best_idx = np.argmax(cmaes_output[:, -1])
+            best_params = cmaes_output[best_idx, :-1]
+            best_ll = cmaes_output[best_idx, -1]
+        except:  # only compute BICs for ones that have been log-likelihood CMA-ESed
             continue
+            
+        best_sigmas.append(best_params[-1])
+        best_lls.append(best_ll)
+
+        expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
             
         num_pts = len(expt_trace)
         
@@ -127,19 +137,9 @@ for t in trace_numbers:
         num_params = num_gs + 1
         log_gs = nplog(original_gs)
 
-        cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_log_likelihood_lnG(pyap_options["model_number"], expt_name, trace_name)
-        cmaes_log_file = cmaes_best_fits_file[:-3]+"log"
 
-        try:
-            cmaes_output = np.loadtxt(cmaes_best_fits_file)
-            best_idx = np.argmax(cmaes_output[:, -1])
-            best_params = cmaes_output[best_idx, :-1]
-            best_ll = cmaes_output[best_idx, -1]
-        except:  # remove once Davies CMA-ES has finished (again)
-            best_params = np.concatenate((original_gs,[0.5]))
-            best_ll = 0
-        best_sigmas.append(best_params[-1])
-        best_lls.append(best_ll)
+
+
 
         best_AP = solve_for_voltage_trace(nplog(best_params[:-1]), ap_model, expt_trace)
         best_APs.append(np.copy(best_AP))
