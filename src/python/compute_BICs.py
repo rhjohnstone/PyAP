@@ -51,11 +51,11 @@ model_names = []
 best_sigmas = []
 expt_traces = []
 best_lls = []
-BICs = []
 data_files = []
 print "\n"
 for t in trace_numbers:
     print "Roche trace", t
+    BICs = {}
     for m in models:
         trace_path = "projects/PyAP/python/input/roche_{}/traces/Trace_2_2_{}_1.csv".format(m, t)
         split_trace_path = trace_path.split('/')
@@ -144,7 +144,8 @@ for t in trace_numbers:
         best_APs.append(np.copy(best_AP))
         
         BIC = compute_bic(num_params, best_ll)
+        BICs[m] = BIC
         
-        print m, BIC
+    print BICs
     print "\n"
 
