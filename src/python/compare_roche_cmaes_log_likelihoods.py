@@ -150,21 +150,22 @@ cs = ['#1b9e77','#d95f02','#7570b3']
 
 ax_x = 6
 lw = 1
-fig, axs = plt.subplots(4, 2, figsize=(6,12), sharex=True, sharey=True)
-for j in xrange(4):
+fig, axs = plt.subplots(2,4, figsize=(6,12), sharex=True, sharey=True)
+for j in xrange(2):
     axs[j,0].set_ylabel('Membrane voltage (mV)')
+for j in xrange(4):
     axs[1,j].set_xlabel('Time (ms)')
 
-for i in xrange(2):
+for i in xrange(4):
     axs[0,i].set_title(model_names[i])
-    for j in xrange(4):
-        axs[j,i].grid()
-        idx = 2*j + i
-        axs[j,i].plot(expt_times, expt_traces[idx], label="AP {}".format(trace_numbers[idx]), lw=lw, color=cs[1])
-        axs[j,i].plot(expt_times, best_APs[idx] + 2*best_sigmas[idx], label=r"$ll \pm 2\sigma$", lw=lw, color=cs[2], ls="--")
-        axs[j,i].plot(expt_times, best_APs[idx] - 2*best_sigmas[idx], lw=lw, color=cs[2], ls="--")
-        axs[j,i].plot(expt_times, best_APs[idx], label=r"$ll {\propto\!}_+ " + str(round(best_lls[idx],1)) + "$", lw=lw, color=cs[0])
-        axs[j,i].legend(fontsize=12)
+    for j in xrange(2):
+        axs[i,j].grid()
+        idx = 2*i + j
+        axs[i,j].plot(expt_times, expt_traces[idx], label="AP {}".format(trace_numbers[idx]), lw=lw, color=cs[1])
+        axs[i,j].plot(expt_times, best_APs[idx] + 2*best_sigmas[idx], label=r"$ll \pm 2\sigma$", lw=lw, color=cs[2], ls="--")
+        axs[i,j].plot(expt_times, best_APs[idx] - 2*best_sigmas[idx], lw=lw, color=cs[2], ls="--")
+        axs[i,j].plot(expt_times, best_APs[idx], label=r"$ll {\propto\!}_+ " + str(round(best_lls[idx],1)) + "$", lw=lw, color=cs[0])
+        axs[i,j].legend(fontsize=12)
 fig.tight_layout()
 print best_fit_png
 #fig.savefig(best_fit_png)
