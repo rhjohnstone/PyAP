@@ -55,7 +55,7 @@ best_lls = []
 BICs = []
 data_files = []
 print "\n"
-for t in trace_number:
+for t in trace_numbers:
     print "Roche trace", t
     for m in models:
         trace_path = "projects/PyAP/python/input/roche_{}/traces/Trace_2_2_{}_1.csv".format(m, t)
@@ -64,7 +64,6 @@ for t in trace_number:
         trace_name = split_trace_path[-1][:-4]
         options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
         
-        trace_numbers.append(int(trace_name.split("_")[-2]))
 
         pyap_options = {}
         with open(options_file, 'r') as infile:
