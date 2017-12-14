@@ -169,7 +169,7 @@ for j in xrange(4):
     for i in xrange(2):
         axs[i,j].grid()
         idx = 2*j+i  # to match the order in which traces were loaded and plotted
-        textstr = "BIC = {}".format(round(BICs[idx]))
+        textstr = r"$\mathrm{BIC} = " + str(int(BICs[idx])) + "$"
         axs[i,j].plot(expt_times, expt_traces[idx], label="AP {}".format(trace_numbers[idx]), lw=lw, color=cs[1])
         axs[i,j].plot(expt_times, best_APs[idx] + 2*best_sigmas[idx], label=r"$ll \pm 2\sigma$", lw=lw, color=cs[2], ls="--")
         axs[i,j].plot(expt_times, best_APs[idx] - 2*best_sigmas[idx], lw=lw, color=cs[2], ls="--")
