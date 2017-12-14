@@ -6,6 +6,7 @@ import numpy as np
 import time
 import pyap_setup as ps
 import sys
+from matplotlib.patches import Rectangle
 
 
 def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace):
@@ -169,12 +170,16 @@ for j in xrange(4):
     for i in xrange(2):
         axs[i,j].grid()
         idx = 2*j+i  # to match the order in which traces were loaded and plotted
-        textstr = r"$\mathrm{BIC} = " + str(int(BICs[idx])) + "$"
-        axs[i,j].plot(expt_times, expt_traces[idx], label="AP {}".format(trace_numbers[idx]), lw=lw, color=cs[1])
-        axs[i,j].plot(expt_times, best_APs[idx] + 2*best_sigmas[idx], label=r"$ll \pm 2\sigma$", lw=lw, color=cs[2], ls="--")
+        extra = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor='none', linewidth=0)
+        BIC_label = r"$\mathrm{BIC} = " + str(int(BICs[idx])) + "$"
+        expt = axs[i,j].plot(expt_times, expt_traces[idx], lw=lw, color=cs[1])
+        expt_label = "AP {}".format(trace_numbers[idx])
+        sigma = axs[i,j].plot(expt_times, best_APs[idx] + 2*best_sigmas[idx], lw=lw, color=cs[2], ls="--")
+        sigma_label = r"$ll \pm 2\sigma$"
         axs[i,j].plot(expt_times, best_APs[idx] - 2*best_sigmas[idx], lw=lw, color=cs[2], ls="--")
-        axs[i,j].plot(expt_times, best_APs[idx], label=r"$ll {\propto\!}_+ " + str(round(best_lls[idx],1)) + "$\n"+textstr, lw=lw, color=cs[0])
-        axs[i,j].legend(fontsize=10)
+        ll = axs[i,j].plot(expt_times, best_APs[idx], lw=lw, color=cs[0])
+        ll_label = r"$ll {\propto\!}_+ " + str(round(best_lls[idx],1)) + "$"
+        axs[i,j].legend([expt, sigma, ll, extra], [expt_label, sigma_label, ll_label, BIC_label], fontsize=10)
 fig.tight_layout()
 print best_fit_png
 #fig.savefig(best_fit_png)
