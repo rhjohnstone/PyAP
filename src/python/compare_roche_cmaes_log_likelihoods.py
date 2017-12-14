@@ -166,6 +166,7 @@ for j in xrange(4):
         axs[i,j].plot(expt_times, best_APs[idx] - 2*best_sigmas[idx], lw=lw, color=cs[2], ls="--")
         axs[i,j].plot(expt_times, best_APs[idx], label=r"$ll {\propto\!}_+ " + str(round(best_lls[idx],1)) + "$", lw=lw, color=cs[0])
         axs[i,j].legend(fontsize=10)
+axs[0,0].set_xticks(axs[0,0].get_xticks()[:-1])
 fig.tight_layout()
 print best_fit_png
 #fig.savefig(best_fit_png)
