@@ -52,6 +52,8 @@ best_sigmas = []
 expt_traces = []
 best_lls = []
 data_files = []
+
+all_BICs = []
 print "\n"
 for t in trace_numbers:
     BICs = {}
@@ -145,7 +147,9 @@ for t in trace_numbers:
         BIC = compute_bic(num_params, best_ll)
         BICs[m] = BIC
     
-    print "Roche trace", t
-    print BICs
-    print "\n"
+    all_BICs.append(BICs)
+
+for i, x in enumerate(all_BICs):
+    print "Roche trace", i+100
+    print x, "\n"
 
