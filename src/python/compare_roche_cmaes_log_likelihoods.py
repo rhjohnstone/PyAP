@@ -169,13 +169,12 @@ for j in xrange(4):
     for i in xrange(2):
         axs[i,j].grid()
         idx = 2*j+i  # to match the order in which traces were loaded and plotted
+        textstr = "BIC = {}".format(round(BICs[idx]))
         axs[i,j].plot(expt_times, expt_traces[idx], label="AP {}".format(trace_numbers[idx]), lw=lw, color=cs[1])
         axs[i,j].plot(expt_times, best_APs[idx] + 2*best_sigmas[idx], label=r"$ll \pm 2\sigma$", lw=lw, color=cs[2], ls="--")
         axs[i,j].plot(expt_times, best_APs[idx] - 2*best_sigmas[idx], lw=lw, color=cs[2], ls="--")
-        axs[i,j].plot(expt_times, best_APs[idx], label=r"$ll {\propto\!}_+ " + str(round(best_lls[idx],1)) + "$", lw=lw, color=cs[0])
+        axs[i,j].plot(expt_times, best_APs[idx], label=r"$ll {\propto\!}_+ " + str(round(best_lls[idx],1)) + "$\n"+textstr, lw=lw, color=cs[0])
         axs[i,j].legend(fontsize=10)
-        textstr = "BIC = {}".format(round(BICs[idx],1))
-        axs[i,j].text(0.6, 0.5, textstr, transform=axs[i,j].transAxes, fontsize=10, bbox=dict(facecolor='none', edgecolor='black'))
 fig.tight_layout()
 print best_fit_png
 #fig.savefig(best_fit_png)
