@@ -150,15 +150,15 @@ cs = ['#1b9e77','#d95f02','#7570b3']
 
 ax_x = 6
 lw = 1
-fig, axs = plt.subplots(2,4, figsize=(6,12), sharex=True, sharey=True)
+fig, axs = plt.subplots(2,4, figsize=(12, 6), sharex=True, sharey=True)
 for j in xrange(2):
     axs[j,0].set_ylabel('Membrane voltage (mV)')
 for j in xrange(4):
     axs[1,j].set_xlabel('Time (ms)')
 
-for i in xrange(2):
-    for j in xrange(4):
-        axs[0,j].set_title(model_names[i])
+for j in xrange(4):
+    axs[0,j].set_title(model_names[i])
+    for i in xrange(2):
         axs[i,j].grid()
         idx = 2*i + j
         axs[i,j].plot(expt_times, expt_traces[idx], label="AP {}".format(trace_numbers[idx]), lw=lw, color=cs[1])
