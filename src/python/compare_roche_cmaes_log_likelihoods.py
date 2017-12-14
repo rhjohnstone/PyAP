@@ -156,9 +156,9 @@ for j in xrange(2):
 for j in xrange(4):
     axs[1,j].set_xlabel('Time (ms)')
 
-for i in xrange(4):
-    axs[0,i].set_title(model_names[i])
-    for j in xrange(2):
+for i in xrange(2):
+    for j in xrange(4):
+        axs[0,j].set_title(model_names[i])
         axs[i,j].grid()
         idx = 2*i + j
         axs[i,j].plot(expt_times, expt_traces[idx], label="AP {}".format(trace_numbers[idx]), lw=lw, color=cs[1])
