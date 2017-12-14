@@ -175,7 +175,7 @@ for j in xrange(4):
         axs[i,j].plot(expt_times, best_APs[idx] - 2*best_sigmas[idx], lw=lw, color=cs[2], ls="--")
         axs[i,j].plot(expt_times, best_APs[idx], label=r"$ll {\propto\!}_+ " + str(int(best_lls[idx])) + "$", lw=lw, color=cs[0])
         axs[i,j].plot([], [], ' ', label=BIC_label)
-        axs[i,j].legend(fontsize=10)
+        axs[i,j].legend(fontsize=10, handletextpad=0.1)
 fig.tight_layout()
 print best_fit_png
 #fig.savefig(best_fit_png)
