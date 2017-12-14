@@ -27,6 +27,10 @@ def solve_for_voltage_trace_without_initial_V(temp_lnG_params, ap_model, expt_tr
         return np.zeros(num_pts)
         
 
+def compute_bic(k, ll):
+    return np.log(num_pts)*k - 2*ll
+
+
 npexp = np.exp
 nplog = np.log
 npinf = np.inf
@@ -53,6 +57,7 @@ best_sigmas = []
 expt_traces = []
 trace_numbers = []
 best_lls = []
+BICs = []
 for trace_path in data_files:
     #trace_path = data_files[0]
     split_trace_path = trace_path.split('/')
@@ -145,6 +150,9 @@ for trace_path in data_files:
 
     best_AP = solve_for_voltage_trace(nplog(best_params[:-1]), ap_model, expt_trace)
     best_APs.append(np.copy(best_AP))
+    
+    BIC = compute_bic(num_params, best_ll)
+    BICs.append(BIC)
 
 cs = ['#1b9e77','#d95f02','#7570b3']
 
@@ -166,6 +174,8 @@ for j in xrange(4):
         axs[i,j].plot(expt_times, best_APs[idx] - 2*best_sigmas[idx], lw=lw, color=cs[2], ls="--")
         axs[i,j].plot(expt_times, best_APs[idx], label=r"$ll {\propto\!}_+ " + str(round(best_lls[idx],1)) + "$", lw=lw, color=cs[0])
         axs[i,j].legend(fontsize=10)
+        textstr = "BIC = {}".format(round(BICs[idx],1))
+        axs[i,j].text(0.6, 0.5, textstr, transform=axs[i,j].transAxes, fontsize=10, bbox=dict(facecolor='none', edgecolor='black'))
 fig.tight_layout()
 print best_fit_png
 #fig.savefig(best_fit_png)
