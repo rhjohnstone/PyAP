@@ -163,7 +163,7 @@ for i, x in enumerate(all_BICs):
     temp_BICs = [int(x[m]) for m in models]
     min_idx = np.argmin(temp_BICs)
     stuff = [str(i+100)] + [str(int(x[m])) for m in models]  # just to ensure they're printed in the same order
-    stuff[min_idx+1] = r"\hilight{" + stuff[min_idx+1] + "}"
+    stuff[min_idx+1] = r"\cellcolor{green!25}" + stuff[min_idx+1]
     line = " & ".join(stuff) + r" \\"
     print line
 print r"\bottomrule"
