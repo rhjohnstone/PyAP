@@ -153,6 +153,7 @@ for t in trace_numbers:
         all_BICs.append(BICs)
 
 # now to print a \LaTeX table...
+print "\n\n"
 print r"\begin{tabular}{*{" + str(num_models) + "}{c|}}"
 line = " & " + " & ".join(model_names) + r" \\"
 print line
@@ -161,7 +162,8 @@ print r"\midrule"
 for i, x in enumerate(all_BICs):
     stuff = [str(i+100)] + [str(int(x[m])) for m in models]  # just to ensure they're printed in the same order
     line = " & ".join(stuff) + r" \\"
+    print line
 print r"\bottomrule"
 print r"\end{tabular}"
-print "\n"
+print "\n\n"
 
