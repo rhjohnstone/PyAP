@@ -45,18 +45,20 @@ two_omega_sq = 2.*omega**2
 trace_numbers = range(100, 116)
 models = ["luo_rudy", "ten_tusscher", "ohara", "paci"]
 
+num_models = len(models)
 
 best_APs = []
-model_names = []
 best_sigmas = []
 expt_traces = []
 best_lls = []
 data_files = []
 
 all_BICs = []
+
 print "\n"
 for t in trace_numbers:
     BICs = {}
+    model_names = []
     for m in models:
         trace_path = "projects/PyAP/python/input/roche_{}/traces/Trace_2_2_{}_1.csv".format(m, t)
         split_trace_path = trace_path.split('/')
@@ -147,11 +149,16 @@ for t in trace_numbers:
         BIC = compute_bic(num_params, best_ll)
         BICs[m] = BIC
     
-    if len(BICs>0):
+    if len(BICs)>0:
         all_BICs.append(BICs)
 
+# now to print a \LaTeX table...
+print r"\begin{tabular}{*{" + str(num_models) + "}{c|}}"
+line = " & " + " & ".join(model_names) + r" \\"
+print line
+print models
 for i, x in enumerate(all_BICs):
-    print "\n", "Roche trace", i+100
-    print x
+    stuff = [str(i+100)] + [x[m] for m in models]  # just to ensure they're printed in the same order
+    print stuff
 print "\n"
 
