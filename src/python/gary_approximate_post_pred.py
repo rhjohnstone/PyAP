@@ -38,7 +38,7 @@ data_clamp_off = pyap_options["data_clamp_off"]
 
 
 split_trace_name = trace_name.split("_")
-if pyap_options["model_number"]==6:
+if pyap_options["model_number"]==2:
     first_trace_number = int(split_trace_name[-1])
 elif pyap_options["model_number"]==4:
     first_trace_number = int(split_trace_name[-2])
@@ -102,7 +102,7 @@ for i in xrange(num_gs):
         sl_chains = []
         gary_pred = np.zeros(num_pts)
         for n in xrange(N_e):
-            if pyap_options["model_number"]==6:  # Davies
+            if pyap_options["model_number"]==2:  # BR
                 temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
             elif pyap_options["model_number"]==4:  # TT
                 temp_trace_name = "_".join(split_trace_name[:-2]) + "_{}_".format(n) + split_trace_name[-1]
