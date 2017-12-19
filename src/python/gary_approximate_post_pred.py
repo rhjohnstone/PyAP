@@ -22,7 +22,6 @@ trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 
 
-
 pyap_options = {}
 with open(options_file, 'r') as infile:
     for line in infile:
@@ -59,7 +58,7 @@ parallel = True
 
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 101
-nums_expts = [2, 4, 8]#, 16, 32]
+nums_expts = [2, 4, 8, 16, 32]
 
 labels = ("True",) + tuple(["$N_e = {}$".format(n) for n in nums_expts])
 lines = ()
@@ -74,7 +73,7 @@ invgammarvs = invgamma.rvs
 
 
 ax_titles = ['Single-level', 'Hierarchical']
-fig = plt.figure(figsize=(7,10))
+fig = plt.figure(figsize=(7,2.5*num_gs))
 
 
 xs = []
@@ -166,11 +165,11 @@ for i in xrange(num_gs):
             tick.set_rotation(30)
        
 
-leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.05))
+leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.07))
 
 fig.tight_layout()
 
-fig_file = h_png_dir + "gary_predictive.png"
+fig_file = h_png_dir + "{}_gary_predictive_{}.png".format(expt_name, max(nums_expts))
 print fig_file
 fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight', pad_inches=0.15)
 #plt.show()
