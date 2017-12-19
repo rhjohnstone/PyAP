@@ -100,7 +100,6 @@ for i in xrange(num_gs):
         colour = plt.cm.winter(color_idx[a])
         # Gary approximation
         sl_chains = []
-        gary_pred = np.zeros(num_pts)
         for n in xrange(N_e):
             if pyap_options["model_number"]==2:  # BR
                 temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
@@ -110,13 +109,16 @@ for i in xrange(num_gs):
             sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
             temp_chain = np.loadtxt(sl_mcmc_file, usecols=[i])
             sl_chains.append(temp_chain)
+        gary_pred = np.zeros(num_pts)
         for t in xrange(args.num_samples):
             samples = np.zeros(N_e)
             for n in xrange(N_e):
                 rand_idx = npr.randint(0,len(sl_chains[n]))
                 samples[n] = sl_chains[n][rand_idx]
+            if t%100==0:
+                print "samples:", samples
             loc, scale = norm.fit(samples)
-            gary_pred += norm.pdf(x, loc=mean, scale=scale)
+            gary_pred += norm.pdf(x, loc=loc, scale=scale)
         gary_pred /= args.num_samples
         
         # Posterior predictive
