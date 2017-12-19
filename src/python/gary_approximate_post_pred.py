@@ -79,8 +79,8 @@ fig = plt.figure(figsize=(7,2.5*num_gs))
 xs = []
 
 for i in xrange(num_gs):
-    ax1 = fig.add_subplot(4,2,2*i+1)
-    ax2 = fig.add_subplot(4,2,2*i+2, sharex=ax1, sharey=ax1)
+    ax1 = fig.add_subplot(num_gs,2,2*i+1)
+    ax2 = fig.add_subplot(num_gs,2,2*i+2, sharex=ax1, sharey=ax1)
     ax1.set_ylim(0,5)
     plt.setp(ax2.get_yticklabels(), visible=False)
     ax1.set_ylabel('Probability density')
@@ -164,8 +164,10 @@ for i in xrange(num_gs):
         for tick in axx.get_xticklabels():
             tick.set_rotation(30)
        
-
-leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.07))
+if (pyap_options["model_number"]==2):
+    leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.07))
+elif (pyap_options["model_number"]==5):
+    leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.01))
 
 fig.tight_layout()
 
