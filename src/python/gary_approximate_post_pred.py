@@ -59,7 +59,7 @@ parallel = True
 
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 101
-nums_expts = [2, 4]#, 8, 16, 32]
+nums_expts = [2, 4, 8]#, 16, 32]
 
 labels = ("True",) + tuple(["$N_e = {}$".format(n) for n in nums_expts])
 lines = ()
@@ -82,6 +82,7 @@ xs = []
 for i in xrange(num_gs):
     ax1 = fig.add_subplot(4,2,2*i+1)
     ax2 = fig.add_subplot(4,2,2*i+2, sharex=ax1, sharey=ax1)
+    ax1.set_ylim(0,5)
     plt.setp(ax2.get_yticklabels(), visible=False)
     ax1.set_ylabel('Probability density')
     print "{} / {}\n".format(i+1, num_gs)
@@ -139,10 +140,10 @@ for i in xrange(num_gs):
                 post_pred += normpdf(x, loc=h_chain[rand_idx[t], 0], scale=np.sqrt(h_chain[rand_idx[t], 1]))
         post_pred /= T
         tt = time()-start
+        line, = ax2.plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
         if i==0:
             lines += (line,)
         ax1.plot(x, gary_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
-        ax2.plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
         
         
     ax1.set_ylim(0, ax1.get_ylim()[1])
@@ -171,8 +172,8 @@ fig.tight_layout()
 
 fig_file = h_png_dir + "gary_predictive.png"
 print fig_file
-#fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight', pad_inches=0.15)
-plt.show()
+fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight', pad_inches=0.15)
+#plt.show()
 
         
 
