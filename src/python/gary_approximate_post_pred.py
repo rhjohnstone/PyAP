@@ -102,7 +102,10 @@ for i in xrange(num_gs):
         sl_chains = []
         gary_pred = np.zeros(num_pts)
         for n in xrange(N_e):
-            temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)  # probably different for Roche
+            if pyap_options["model_number"]==6:  # Davies
+                temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
+            elif pyap_options["model_number"]==4:  # TT
+                temp_trace_name = "_".join(split_trace_name[:-2]) + "_{}_".format(n) + split_trace_name[-1]
             print "Trace:", temp_trace_name
             sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
             temp_chain = np.loadtxt(sl_mcmc_file, usecols=[i])
