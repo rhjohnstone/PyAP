@@ -116,8 +116,8 @@ for i in xrange(num_gs):
             for n in xrange(N_e):
                 rand_idx = npr.randint(0,len(sl_chains[n]))
                 samples[n] = sl_chains[n][rand_idx]
-            if t%100==0:
-                print "samples:", samples
+            #if t%100==0:
+            #    print "samples:", samples
             loc, scale = norm.fit(samples)
             gary_pred += norm.pdf(x, loc=loc, scale=scale)
         gary_pred /= args.num_samples
@@ -166,7 +166,7 @@ for i in xrange(num_gs):
             tick.set_rotation(30)
        
 
-leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.1))
+leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.05))
 
 fig.tight_layout()
 
