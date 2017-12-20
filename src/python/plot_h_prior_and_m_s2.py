@@ -121,11 +121,11 @@ cs = ['#1b9e77','#d95f02','#7570b3']
 nums_expts = [2, 4, 8, 16, 32]
 labels = ("Prior",) + tuple(["$N_e = {}$".format(n) for n in nums_expts])
 lines = ()
-ps = [0, 4, 11]
+p_s = [0, 4, 11]
 
 
 fig, axs = plt.subplots(1, 2, figsize=(7,3*len(ps)))
-for p in ps:
+for p in p_s:
     a, b = alpha[p], beta[p]
     s2_prior = invgamma.pdf(x2, a, loc=0, scale=b)
 
@@ -147,8 +147,6 @@ for p in ps:
         
     if p==0:
         lines += (line,)
-    
-
     
     
 
