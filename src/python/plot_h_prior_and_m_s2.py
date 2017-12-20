@@ -123,10 +123,12 @@ fig, axs = plt.subplots(len(p_s), 2, figsize=(7,3*len(p_s)))
 
 for i, p in enumerate(p_s):
     print "{} / {}".format(i+1, len(p_s))
-    if mu[p]>0:
-        x1 = np.linspace(int(mu[p])-1, int(mu[p])+2, num_pts)
-    else:
-        x1 = np.linspace(int(mu[p])-2, int(mu[p])+1, num_pts)
+    if i==0:
+        x1 = np.linspace(4, 5, num_pts)
+    elif i==1:
+        x1 = np.linspace(-3.5, -2.5, num_pts)
+    elif i==2:
+        x1 = np.linspace(-9, -6, num_pts)
     x2 = np.linspace(0.005, 0.07, num_pts)
     xs = [x1, x2]
 
@@ -159,10 +161,10 @@ for i, p in enumerate(p_s):
         saved_its = h_chain.shape[0]
 
         for j in xrange(2):
-            axs[i][j].hist(h_chain[:, j], normed=True, bins=100, lw=0, color=colors[a], alpha=0.8, zorder=10)
+            axs[i][j].hist(h_chain[:, j], normed=True, bins=100, lw=0, color=colors[a], alpha=0.6, zorder=10)
     
 
-hist_patches = [mpatches.Patch(color=color, label=label, alpha=0.8) for label, color in zip(hist_labels,colors)]
+hist_patches = [mpatches.Patch(color=color, label=label, alpha=0.6) for label, color in zip(hist_labels,colors)]
 
 lines += hist_patches
 
