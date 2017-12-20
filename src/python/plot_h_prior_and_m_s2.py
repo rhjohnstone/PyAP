@@ -124,11 +124,13 @@ fig, axs = plt.subplots(len(p_s), 2, figsize=(7,3*len(p_s)))
 for i, p in enumerate(p_s):
     print "{} / {}".format(i+1, len(p_s))
     if i==0:
-        x1 = np.linspace(4, 5, num_pts)
+        x1 = np.linspace(-3.5, -3, num_pts)
     elif i==1:
-        x1 = np.linspace(-3.5, -2.5, num_pts)
+        x1 = np.linspace(-6.5, -5.5, num_pts)
     elif i==2:
-        x1 = np.linspace(-9, -6, num_pts)
+        x1 = np.linspace(-5.5, -4.5, num_pts)
+    elif i==2:
+        x1 = np.linspace(-7.5, -6, num_pts)
     x2 = np.linspace(0.005, 0.07, num_pts)
     xs = [x1, x2]
 
@@ -169,7 +171,7 @@ hist_patches = [mpatches.Patch(color=color, label=label, alpha=0.6) for label, c
 lines += hist_patches
 
 
-leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.07))
+leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.06))
 
 fig.tight_layout()
 
