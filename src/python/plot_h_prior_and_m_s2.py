@@ -152,7 +152,7 @@ for i, p in enumerate(p_s):
     xlabels = ["$m$", "$s^2$"]
     priors = [m_prior, s2_prior]
     for j in xrange(2):
-        line, = axs[i][j].plot(xs[j], priors[j], color=cs[1], lw=2, zorder=0)
+        line, = axs[i][j].plot(xs[j], priors[j], color=cs[1], lw=2, zorder=100)
         axs[i][j].grid()
         axs[i][j].set_xlabel(xlabels[j] + " $({})$".format(g_parameters[p]), fontsize=16)
         axs[i][j].set_ylabel("Probability density")
@@ -171,6 +171,11 @@ for i, p in enumerate(p_s):
             axs[i][j].hist(h_chain[:, j], normed=True, bins=100, lw=0, color=colors[a], alpha=1.5/len(nums_expts), zorder=10)
     
 lines += [mpatches.Patch(color=color) for color in colors]
+
+print "\n"
+print lines
+print labels
+print "\n"
 
 leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.05))
 
