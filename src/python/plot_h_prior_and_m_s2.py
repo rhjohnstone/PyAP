@@ -109,7 +109,7 @@ def just_sample_m(Mu, Lambda, Sigma2):
 
 
 num_pts = 101
-p = 0
+#p = 0
 x1 = np.linspace(4, 5, num_pts)
 x2 = np.linspace(0.005, 0.05, num_pts)
 xs = [x1, x2]
@@ -131,32 +131,34 @@ priors = [m_prior, s2_prior]
 
 cs = ['#1b9e77','#d95f02','#7570b3']
 
+ps = [0, 4, 11]
 
-fig, axs = plt.subplots(1, 2, figsize=(7,3))
-for j in xrange(2):
-    axs[j].plot(xs[j], priors[j], color=cs[1], lw=2, zorder=0)
-    axs[j].grid()
-    axs[j].set_xlabel(xlabels[j] + " $({})$".format(g_parameters[p]), fontsize=16)
-    axs[j].set_ylabel("Probability density")
-    axs[j].set_xlim(xs[j][0], xs[j][-1])
-    
-
-nums_expts = [2, 4, 8, 16, 32]
-
-labels = ("True",) + tuple(["$N_e = {}$".format(n) for n in nums_expts])
-lines = ()
-
-total_nums_expts = len(nums_expts)
-color_idx = np.linspace(0, 1, total_nums_expts)
-
-for a, N_e in enumerate(nums_expts):
-    hmcmc_file, log_file, h_png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
-    h_chain = np.loadtxt(hmcmc_file,usecols=[p, num_gs+p])
-    saved_its = h_chain.shape[0]
-
-    colour = plt.cm.winter(color_idx[a])
+fig, axs = plt.subplots(1, 2, figsize=(7,3*len(ps)))
+for p in ps:
     for j in xrange(2):
-        axs[j].hist(h_chain[:, j], normed=True, bins=40, lw=0, color=colour, alpha=1.5/len(nums_expts), zorder=10)
+        axs[j].plot(xs[j], priors[j], color=cs[1], lw=2, zorder=0)
+        axs[j].grid()
+        axs[j].set_xlabel(xlabels[j] + " $({})$".format(g_parameters[p]), fontsize=16)
+        axs[j].set_ylabel("Probability density")
+        axs[j].set_xlim(xs[j][0], xs[j][-1])
+        
+
+    nums_expts = [2, 4, 8, 16, 32]
+
+    labels = ("True",) + tuple(["$N_e = {}$".format(n) for n in nums_expts])
+    lines = ()
+
+    total_nums_expts = len(nums_expts)
+    color_idx = np.linspace(0, 1, total_nums_expts)
+
+    for a, N_e in enumerate(nums_expts):
+        hmcmc_file, log_file, h_png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
+        h_chain = np.loadtxt(hmcmc_file,usecols=[p, num_gs+p])
+        saved_its = h_chain.shape[0]
+
+        colour = plt.cm.winter(color_idx[a])
+        for j in xrange(2):
+            axs[j].hist(h_chain[:, j], normed=True, bins=40, lw=0, color=colour, alpha=1.5/len(nums_expts), zorder=10)
     
 #axs[1].hist(s2_samples, normed=True, bins=40)
 fig.tight_layout()
