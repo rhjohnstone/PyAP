@@ -129,16 +129,18 @@ m_prior /= T
 xlabels = ["$m$", "$s^2$"]
 priors = [m_prior, s2_prior]
 
+cs = ['#1b9e77','#d95f02','#7570b3']
+
 
 fig, axs = plt.subplots(1, 2, figsize=(7,3))
 for j in xrange(2):
-    axs[j].plot(xs[j], priors[j], lw=2)
+    axs[j].plot(xs[j], priors[j], color=cs[1], lw=2, zorder=0)
     axs[j].grid()
     axs[j].set_xlabel(xlabels[j] + " $({})$".format(g_parameters[p]), fontsize=16)
     axs[j].set_ylabel("Probability density")
     axs[j].set_xlim(xs[j][0], xs[j][-1])
     
-cs = ['#1b9e77','#d95f02','#7570b3']
+
 nums_expts = [2, 4, 8, 16, 32]
 
 labels = ("True",) + tuple(["$N_e = {}$".format(n) for n in nums_expts])
@@ -154,7 +156,7 @@ for a, N_e in enumerate(nums_expts):
 
     colour = plt.cm.winter(color_idx[a])
     for j in xrange(2):
-        axs[j].hist(h_chain[:, j], normed=True, bins=40, lw=0, color=colour, alpha=1./len(nums_expts))
+        axs[j].hist(h_chain[:, j], normed=True, bins=40, lw=0, color=colour, alpha=1.5/len(nums_expts), zorder=10)
     
 #axs[1].hist(s2_samples, normed=True, bins=40)
 fig.tight_layout()
