@@ -152,6 +152,8 @@ for i, p in enumerate(p_s):
         axs[i][j].set_xlabel(xlabels[j] + " $({})$".format(g_parameters[p]), fontsize=16)
         axs[i][j].set_ylabel("Probability density")
         axs[i][j].set_xlim(xs[j][0], xs[j][-1])
+    axs[i][0].plot(m_true[p], 0, 'x', color='red', ms=10, mew=2, clip_on=False, zorder=1000)
+    axs[i][1].plot(sigma2_true, 0, 'x', color='red', ms=10, mew=2, clip_on=False, zorder=1000)
         
     if p==0:
         lines.append(line)
