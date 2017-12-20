@@ -73,12 +73,16 @@ invgammarvs = invgamma.rvs
 
 
 ax_titles = ['Single-level', 'Hierarchical']
-fig = plt.figure(figsize=(7,2.5*num_gs))
+if (pyap_options["model_number"]==2):
+    fig = plt.figure(figsize=(7,2.5*num_gs))
+elif (pyap_options["model_number"]==5):
+    fig = plt.figure(figsize=(7,2.5*7))
+    
 
 
 xs = []
 
-for i in xrange(num_gs):
+for i in xrange(7):
     ax1 = fig.add_subplot(num_gs,2,2*i+1)
     ax2 = fig.add_subplot(num_gs,2,2*i+2, sharex=ax1, sharey=ax1)
     ax1.set_ylim(0,5)
@@ -171,10 +175,112 @@ elif (pyap_options["model_number"]==5):
 
 fig.tight_layout()
 
-fig_file = h_png_dir + "{}_gary_predictive_{}.png".format(expt_name, max(nums_expts))
+fig_file = h_png_dir + "{}_gary_predictive_{}_01.png".format(expt_name, max(nums_expts))
 print fig_file
-fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight', pad_inches=0.15)
-#plt.show()
 
+fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight', pad_inches=0.15)
+plt.close()
         
+xs = []
+
+fig = plt.figure(figsize=(6,2.5*6))
+for i in xrange(7,num_gs):
+    ax1 = fig.add_subplot(num_gs,2,2*i+1)
+    ax2 = fig.add_subplot(num_gs,2,2*i+2, sharex=ax1, sharey=ax1)
+    ax1.set_ylim(0,5)
+    plt.setp(ax2.get_yticklabels(), visible=False)
+    ax1.set_ylabel('Probability density')
+    print "{} / {}\n".format(i+1, num_gs)
+    xs.append(np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts))
+    x = xs[i]
+    ax1.set_xlim(x[0], x[-1])
+    for j, ax in enumerate([ax1, ax2]):
+        ax.grid()
+        if i==0:
+            ax.set_title(ax_titles[j])
+        ax.set_xlabel('log({})'.format(g_labels[i]), fontsize=16)
+        line, = ax.plot(x, normpdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label="True")
+        if i==0 and j==0:
+            lines += (line,)
+    for a, N_e in enumerate(nums_expts):
+        colour = plt.cm.winter(color_idx[a])
+        # Gary approximation
+        sl_chains = []
+        for n in xrange(N_e):
+            if (pyap_options["model_number"]==2) or (pyap_options["model_number"]==5):  # synth BR/OH
+                temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
+            elif pyap_options["model_number"]==4:  # TT
+                temp_trace_name = "_".join(split_trace_name[:-2]) + "_{}_".format(n) + split_trace_name[-1]
+            print "Trace:", temp_trace_name
+            sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
+            temp_chain = np.loadtxt(sl_mcmc_file, usecols=[i])
+            sl_chains.append(temp_chain)
+        gary_pred = np.zeros(num_pts)
+        for t in xrange(args.num_samples):
+            samples = np.zeros(N_e)
+            for n in xrange(N_e):
+                rand_idx = npr.randint(0,len(sl_chains[n]))
+                samples[n] = sl_chains[n][rand_idx]
+            #if t%100==0:
+            #    print "samples:", samples
+            loc, scale = norm.fit(samples)
+            gary_pred += norm.pdf(x, loc=loc, scale=scale)
+        gary_pred /= args.num_samples
+        
+        # Posterior predictive
+        hmcmc_file, log_file, h_png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
+        h_chain = np.loadtxt(hmcmc_file,usecols=[i, num_gs+i])
+        saved_its = h_chain.shape[0]
+        start = time()
+        
+        post_pred = np.zeros(num_pts)
+        if args.num_samples == 0:
+            T = saved_its
+            for t in xrange(T):
+                post_pred += normpdf(x, loc=h_chain[t, 0], scale=np.sqrt(h_chain[t, 1]))
+        else:
+            T = args.num_samples
+            rand_idx = npr.randint(0, saved_its, T)
+            for t in xrange(T):
+                post_pred += normpdf(x, loc=h_chain[rand_idx[t], 0], scale=np.sqrt(h_chain[rand_idx[t], 1]))
+        post_pred /= T
+        tt = time()-start
+        line, = ax2.plot(x, post_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
+        if i==0:
+            lines += (line,)
+        ax1.plot(x, gary_pred, lw=2, color=colour, label="$N_e = {}$".format(N_e))
+        
+        
+    ax1.set_ylim(0, ax1.get_ylim()[1])
+    xlim = ax1.get_xlim()
+    xticks = ax1.get_xticks()
+    if xlim[0] <= xticks[0]:
+        ax1.set_xticks(xticks[1:-1])
+    else:
+        ax1.set_xticks(xticks[2:-1])
+    new_ticks = ax1.get_xticks()
+    if xlim[-1] >= new_ticks[-1]:
+        ax1.set_xticks(new_ticks[:-1])
+    else:
+        ax1.set_xticks(new_ticks[:-2])
+    
+    
+    for j, axx in enumerate([ax1, ax2]):
+        axx.set_xlabel("log({})".format(g_labels[i]), fontsize=16)
+        for tick in axx.get_xticklabels():
+            tick.set_rotation(30)
+       
+if (pyap_options["model_number"]==2):
+    leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.07))
+elif (pyap_options["model_number"]==5):
+    leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.01))
+
+fig.tight_layout()
+
+fig_file = h_png_dir + "{}_gary_predictive_{}_02.png".format(expt_name, max(nums_expts))
+print fig_file
+
+fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight', pad_inches=0.15)
+
+plt.close()
 
