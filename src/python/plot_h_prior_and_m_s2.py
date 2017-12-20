@@ -120,7 +120,8 @@ nums_expts = [2, 4]#, 8, 16, 32]
 
 total_nums_expts = len(nums_expts)
 color_idx = np.linspace(0, 1, total_nums_expts)
-labels = ("Prior",) + tuple(["$N_e = {}$".format(n) for n in nums_expts])
+hist_labels = ["$N_e = {}$".format(n) for n in nums_expts]
+labels = ["Prior"] + hist_labels
 
 colors = [plt.cm.winter(color_idx[a]) for a in xrange(total_nums_expts)]
 
@@ -133,9 +134,9 @@ fig, axs = plt.subplots(len(p_s), 2, figsize=(7,3*len(p_s)))
 for i, p in enumerate(p_s):
 
     if mu[p]>0:
-        x1 = np.linspace(int(mu[p]), int(mu[p])+1, num_pts)
+        x1 = np.linspace(int(mu[p])-1, int(mu[p])+2, num_pts)
     else:
-        x1 = np.linspace(int(mu[p])-1, int(mu[p]), num_pts)
+        x1 = np.linspace(int(mu[p])-2, int(mu[p])+1, num_pts)
     x2 = np.linspace(0.005, 0.07, num_pts)
     xs = [x1, x2]
 
@@ -170,7 +171,9 @@ for i, p in enumerate(p_s):
         for j in xrange(2):
             axs[i][j].hist(h_chain[:, j], normed=True, bins=100, lw=0, color=colors[a], alpha=1.5/len(nums_expts), zorder=10)
     
-lines += [mpatches.Patch(color=color) for color in colors]
+print lines
+
+lines += [mpatches.Patch(color=color, label=label) for label, color in zip(hist_labels,colors)]
 
 print "\n"
 print lines
