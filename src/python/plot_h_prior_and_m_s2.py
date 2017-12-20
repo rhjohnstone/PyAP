@@ -114,39 +114,43 @@ x1 = np.linspace(4, 5, num_pts)
 x2 = np.linspace(0.005, 0.05, num_pts)
 xs = [x1, x2]
 
-a, b = alpha[p], beta[p]
-s2_prior = invgamma.pdf(x2, a, loc=0, scale=b)
 
-m_prior = np.zeros(num_pts)
-#s2_samples = np.zeros(T)
-for t in xrange(T):
-    s2_sample = invgamma.rvs(a, loc=0, scale=b)
-    m_prior += norm.pdf(x1, loc=mu[p], scale=sqrt(s2_sample/nu[p]))
-    #s2_samples[t] = s2_sample
-m_prior /= T
-
-
-xlabels = ["$m$", "$s^2$"]
-priors = [m_prior, s2_prior]
 
 cs = ['#1b9e77','#d95f02','#7570b3']
 
+nums_expts = [2, 4, 8, 16, 32]
+labels = ("Prior",) + tuple(["$N_e = {}$".format(n) for n in nums_expts])
+lines = ()
 ps = [0, 4, 11]
+
 
 fig, axs = plt.subplots(1, 2, figsize=(7,3*len(ps)))
 for p in ps:
+    a, b = alpha[p], beta[p]
+    s2_prior = invgamma.pdf(x2, a, loc=0, scale=b)
+
+    m_prior = np.zeros(num_pts)
+    for t in xrange(T):
+        s2_sample = invgamma.rvs(a, loc=0, scale=b)
+        m_prior += norm.pdf(x1, loc=mu[p], scale=sqrt(s2_sample/nu[p]))
+    m_prior /= T
+
+
+    xlabels = ["$m$", "$s^2$"]
+    priors = [m_prior, s2_prior]
     for j in xrange(2):
-        axs[j].plot(xs[j], priors[j], color=cs[1], lw=2, zorder=0)
+        line, = axs[j].plot(xs[j], priors[j], color=cs[1], lw=2, zorder=0)
         axs[j].grid()
         axs[j].set_xlabel(xlabels[j] + " $({})$".format(g_parameters[p]), fontsize=16)
         axs[j].set_ylabel("Probability density")
         axs[j].set_xlim(xs[j][0], xs[j][-1])
         
+    if p==0:
+        lines += (line,)
+    
 
-    nums_expts = [2, 4, 8, 16, 32]
-
-    labels = ("True",) + tuple(["$N_e = {}$".format(n) for n in nums_expts])
-    lines = ()
+    
+    
 
     total_nums_expts = len(nums_expts)
     color_idx = np.linspace(0, 1, total_nums_expts)
@@ -158,10 +162,19 @@ for p in ps:
 
         colour = plt.cm.winter(color_idx[a])
         for j in xrange(2):
-            axs[j].hist(h_chain[:, j], normed=True, bins=40, lw=0, color=colour, alpha=1.5/len(nums_expts), zorder=10)
+            line, = axs[j].hist(h_chain[:, j], normed=True, bins=40, lw=0, color=colour, alpha=1.5/len(nums_expts), zorder=10)
+        if p==0:
+            lines += (line,)
     
-#axs[1].hist(s2_samples, normed=True, bins=40)
+leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.05))
+
 fig.tight_layout()
+
+fig_file = h_png_dir + "{}_m_s2_priors_marginals_{}.png".format(expt_name, max(nums_expts))
+print fig_file
+
+#fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight', pad_inches=0.05)
+
 plt.show()
 #for t in xrange(T):
     
