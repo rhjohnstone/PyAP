@@ -118,7 +118,7 @@ xs = [x1, x2]
 
 cs = ['#1b9e77','#d95f02','#7570b3']
 
-nums_expts = [2, 4, 8, 16, 32]
+nums_expts = [2, 4]#, 8, 16, 32]
 
 total_nums_expts = len(nums_expts)
 color_idx = np.linspace(0, 1, total_nums_expts)
@@ -130,7 +130,8 @@ lines = []
 p_s = [0, 4, 11]
 
 
-fig, axs = plt.subplots(1, 2, figsize=(7,3*len(p_s)))
+fig, axs = plt.subplots(len(p_s), 2, figsize=(7,3*len(p_s)))
+
 for p in p_s:
     a, b = alpha[p], beta[p]
     s2_prior = invgamma.pdf(x2, a, loc=0, scale=b)
@@ -146,27 +147,22 @@ for p in p_s:
     priors = [m_prior, s2_prior]
     for j in xrange(2):
         line, = axs[j].plot(xs[j], priors[j], color=cs[1], lw=2, zorder=0)
-        axs[j].grid()
-        axs[j].set_xlabel(xlabels[j] + " $({})$".format(g_parameters[p]), fontsize=16)
-        axs[j].set_ylabel("Probability density")
-        axs[j].set_xlim(xs[j][0], xs[j][-1])
+        axs[p][j].grid()
+        axs[p][j].set_xlabel(xlabels[j] + " $({})$".format(g_parameters[p]), fontsize=16)
+        axs[p][j].set_ylabel("Probability density")
+        axs[p][j].set_xlim(xs[j][0], xs[j][-1])
         
     if p==0:
         lines.append(line)
     
     
-
-
-
     for a, N_e in enumerate(nums_expts):
         hmcmc_file, log_file, h_png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
         h_chain = np.loadtxt(hmcmc_file,usecols=[p, num_gs+p])
         saved_its = h_chain.shape[0]
 
         for j in xrange(2):
-            axs[j].hist(h_chain[:, j], normed=True, bins=40, lw=0, color=colors[a], alpha=1.5/len(nums_expts), zorder=10)
-        if p==0:
-            lines += (line,)
+            axs[p][j].hist(h_chain[:, j], normed=True, bins=40, lw=0, color=colors[a], alpha=1.5/len(nums_expts), zorder=10)
     
 lines += [mpatches.Patch(color=color) for color in colors]
 
