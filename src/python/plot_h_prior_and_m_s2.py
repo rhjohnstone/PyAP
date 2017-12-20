@@ -146,7 +146,7 @@ for p in p_s:
     xlabels = ["$m$", "$s^2$"]
     priors = [m_prior, s2_prior]
     for j in xrange(2):
-        line, = axs[j].plot(xs[j], priors[j], color=cs[1], lw=2, zorder=0)
+        line, = axs[p][j].plot(xs[j], priors[j], color=cs[1], lw=2, zorder=0)
         axs[p][j].grid()
         axs[p][j].set_xlabel(xlabels[j] + " $({})$".format(g_parameters[p]), fontsize=16)
         axs[p][j].set_ylabel("Probability density")
