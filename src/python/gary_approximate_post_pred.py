@@ -58,7 +58,7 @@ parallel = True
 
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 101
-nums_expts = [2, 4]#, 8, 16, 32]
+nums_expts = [2, 4, 8, 16, 32]
 
 labels = ("True",) + tuple(["$N_e = {}$".format(n) for n in nums_expts])
 lines = ()
@@ -174,7 +174,7 @@ for i in xrange(first):
 if (pyap_options["model_number"]==2):
     leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.07))
 elif (pyap_options["model_number"]==5):
-    leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.01))
+    leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.035))
 
 fig.tight_layout()
 
@@ -277,7 +277,7 @@ for i in xrange(second):
 if (pyap_options["model_number"]==2):
     leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.07))
 elif (pyap_options["model_number"]==5):
-    leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.01))
+    leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.035))
 
 fig.tight_layout()
 
