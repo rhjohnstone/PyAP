@@ -4,8 +4,8 @@ import numpy as np
 import sys
 import numpy.random as npr
 import time
-import multiprocessing as mp
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 from scipy.stats import invgamma, norm
 
 start = time.time()
@@ -119,12 +119,18 @@ xs = [x1, x2]
 cs = ['#1b9e77','#d95f02','#7570b3']
 
 nums_expts = [2, 4, 8, 16, 32]
+
+total_nums_expts = len(nums_expts)
+color_idx = np.linspace(0, 1, total_nums_expts)
 labels = ("Prior",) + tuple(["$N_e = {}$".format(n) for n in nums_expts])
-lines = ()
+
+colors = [plt.cm.winter(color_idx[a]) for a in xrange(total_nums_expts)]
+
+lines = []
 p_s = [0, 4, 11]
 
 
-fig, axs = plt.subplots(1, 2, figsize=(7,3*len(ps)))
+fig, axs = plt.subplots(1, 2, figsize=(7,3*len(p_s)))
 for p in p_s:
     a, b = alpha[p], beta[p]
     s2_prior = invgamma.pdf(x2, a, loc=0, scale=b)
@@ -146,24 +152,24 @@ for p in p_s:
         axs[j].set_xlim(xs[j][0], xs[j][-1])
         
     if p==0:
-        lines += (line,)
+        lines.append(line)
     
     
 
-    total_nums_expts = len(nums_expts)
-    color_idx = np.linspace(0, 1, total_nums_expts)
+
 
     for a, N_e in enumerate(nums_expts):
         hmcmc_file, log_file, h_png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
         h_chain = np.loadtxt(hmcmc_file,usecols=[p, num_gs+p])
         saved_its = h_chain.shape[0]
 
-        colour = plt.cm.winter(color_idx[a])
         for j in xrange(2):
-            line, = axs[j].hist(h_chain[:, j], normed=True, bins=40, lw=0, color=colour, alpha=1.5/len(nums_expts), zorder=10)
+            axs[j].hist(h_chain[:, j], normed=True, bins=40, lw=0, color=colors[a], alpha=1.5/len(nums_expts), zorder=10)
         if p==0:
             lines += (line,)
     
+lines += [mpatches.Patch(color=color) for color in colors]
+
 leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.05))
 
 fig.tight_layout()
