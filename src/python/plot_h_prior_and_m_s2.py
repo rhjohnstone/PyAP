@@ -116,7 +116,7 @@ labels = ["Prior"] + hist_labels
 colors = [plt.cm.winter(color_idx[a]) for a in xrange(total_nums_expts)]
 
 lines = []
-p_s = [0, 4, 11]
+p_s = range(4)
 
 
 fig, axs = plt.subplots(len(p_s), 2, figsize=(7,3*len(p_s)))
@@ -129,7 +129,7 @@ for i, p in enumerate(p_s):
         x1 = np.linspace(-6.5, -5.5, num_pts)
     elif i==2:
         x1 = np.linspace(-5.5, -4.5, num_pts)
-    elif i==2:
+    elif i==3:
         x1 = np.linspace(-7.5, -6, num_pts)
     x2 = np.linspace(0.005, 0.07, num_pts)
     xs = [x1, x2]
