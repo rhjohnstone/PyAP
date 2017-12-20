@@ -71,24 +71,27 @@ normrvs = norm.rvs
 invgammarvs = invgamma.rvs
 
 
+first = 7
+second = 6
 
 ax_titles = ['Single-level', 'Hierarchical']
 if (pyap_options["model_number"]==2):
     fig = plt.figure(figsize=(7,2.5*num_gs))
 elif (pyap_options["model_number"]==5):
-    fig = plt.figure(figsize=(7,2.5*7))
+    fig = plt.figure(figsize=(7,2.5*first))
     
 
 
 xs = []
 
-for i in xrange(7):
-    ax1 = fig.add_subplot(num_gs,2,2*i+1)
-    ax2 = fig.add_subplot(num_gs,2,2*i+2, sharex=ax1, sharey=ax1)
+
+for i in xrange(first):
+    ax1 = fig.add_subplot(first,2,2*i+1)
+    ax2 = fig.add_subplot(first,2,2*i+2, sharex=ax1, sharey=ax1)
     ax1.set_ylim(0,5)
     plt.setp(ax2.get_yticklabels(), visible=False)
     ax1.set_ylabel('Probability density')
-    print "{} / {}\n".format(i+1, num_gs)
+    print "{} / {} / {}\n".format(i+1, first, num_gs)
     xs.append(np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts))
     x = xs[i]
     ax1.set_xlim(x[0], x[-1])
@@ -183,15 +186,15 @@ plt.close()
         
 xs = []
 
-fig = plt.figure(figsize=(6,2.5*6))
-for i in xrange(6):
+fig = plt.figure(figsize=(7,2.5*second))
+for i in xrange(second):
     p = 7 + i
-    ax1 = fig.add_subplot(num_gs,2,2*i+1)
-    ax2 = fig.add_subplot(num_gs,2,2*i+2, sharex=ax1, sharey=ax1)
+    ax1 = fig.add_subplot(second,2,2*i+1)
+    ax2 = fig.add_subplot(second,2,2*i+2, sharex=ax1, sharey=ax1)
     ax1.set_ylim(0,5)
     plt.setp(ax2.get_yticklabels(), visible=False)
     ax1.set_ylabel('Probability density')
-    print "{} / {}\n".format(i+1, num_gs)
+    print "{} / {} / {}\n".format(i+1, second, num_gs)
     xs.append(np.linspace(m_true[p]-2*np.sqrt(sigma2_true), m_true[p]+2*np.sqrt(sigma2_true), num_pts))
     x = xs[i]
     ax1.set_xlim(x[0], x[-1])
