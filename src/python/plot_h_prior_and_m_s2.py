@@ -132,7 +132,7 @@ p_s = [0, 4, 11]
 
 fig, axs = plt.subplots(len(p_s), 2, figsize=(7,3*len(p_s)))
 
-for p in p_s:
+for i, p in enumerate(p_s):
     a, b = alpha[p], beta[p]
     s2_prior = invgamma.pdf(x2, a, loc=0, scale=b)
 
@@ -146,11 +146,11 @@ for p in p_s:
     xlabels = ["$m$", "$s^2$"]
     priors = [m_prior, s2_prior]
     for j in xrange(2):
-        line, = axs[p][j].plot(xs[j], priors[j], color=cs[1], lw=2, zorder=0)
-        axs[p][j].grid()
-        axs[p][j].set_xlabel(xlabels[j] + " $({})$".format(g_parameters[p]), fontsize=16)
-        axs[p][j].set_ylabel("Probability density")
-        axs[p][j].set_xlim(xs[j][0], xs[j][-1])
+        line, = axs[i][j].plot(xs[j], priors[j], color=cs[1], lw=2, zorder=0)
+        axs[i][j].grid()
+        axs[i][j].set_xlabel(xlabels[j] + " $({})$".format(g_parameters[p]), fontsize=16)
+        axs[i][j].set_ylabel("Probability density")
+        axs[i][j].set_xlim(xs[j][0], xs[j][-1])
         
     if p==0:
         lines.append(line)
@@ -162,7 +162,7 @@ for p in p_s:
         saved_its = h_chain.shape[0]
 
         for j in xrange(2):
-            axs[p][j].hist(h_chain[:, j], normed=True, bins=40, lw=0, color=colors[a], alpha=1.5/len(nums_expts), zorder=10)
+            axs[i][j].hist(h_chain[:, j], normed=True, bins=40, lw=0, color=colors[a], alpha=1.5/len(nums_expts), zorder=10)
     
 lines += [mpatches.Patch(color=color) for color in colors]
 
