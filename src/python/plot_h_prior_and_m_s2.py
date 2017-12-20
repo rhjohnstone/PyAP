@@ -57,7 +57,6 @@ num_gs = len(original_gs)
 
 split_trace_name = trace_name.split("_")
 first_trace_number = int(split_trace_name[-1])  # need a specific-ish format currently
-print trace_numbers
 
 protocol = 1
 solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
@@ -111,8 +110,8 @@ def just_sample_m(Mu, Lambda, Sigma2):
 
 num_pts = 101
 p = 0
-x1 = np.linspace(2, 7, num_pts)
-x2 = np.linspace(0, 0.12, num_pts)
+x1 = np.linspace(4, 5, num_pts)
+x2 = np.linspace(0.005, 0.05, num_pts)
 xs = [x1, x2]
 
 a, b = alpha[p], beta[p]
@@ -135,7 +134,7 @@ fig, axs = plt.subplots(1, 2, figsize=(7,3))
 for j in xrange(2):
     axs[j].plot(xs[j], priors[j], lw=2)
     axs[j].grid()
-    axs[j].set_xlabel(xlabels[j], fontsize=16)
+    axs[j].set_xlabel(xlabels[j] + " $({})$".format(g_parameters[p]), fontsize=16)
     axs[j].set_ylabel("Probability density")
     axs[j].set_xlim(xs[j][0], xs[j][-1])
     
