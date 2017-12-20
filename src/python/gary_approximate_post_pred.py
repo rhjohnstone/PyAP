@@ -58,7 +58,7 @@ parallel = True
 
 cs = ['#1b9e77','#d95f02','#7570b3']
 num_pts = 101
-nums_expts = [2, 4, 8, 16, 32]
+nums_expts = [2, 4]#, 8, 16, 32]
 
 labels = ("True",) + tuple(["$N_e = {}$".format(n) for n in nums_expts])
 lines = ()
@@ -184,22 +184,23 @@ plt.close()
 xs = []
 
 fig = plt.figure(figsize=(6,2.5*6))
-for i in xrange(7,num_gs):
+for i in xrange(6):
+    p = 7 + i
     ax1 = fig.add_subplot(num_gs,2,2*i+1)
     ax2 = fig.add_subplot(num_gs,2,2*i+2, sharex=ax1, sharey=ax1)
     ax1.set_ylim(0,5)
     plt.setp(ax2.get_yticklabels(), visible=False)
     ax1.set_ylabel('Probability density')
     print "{} / {}\n".format(i+1, num_gs)
-    xs.append(np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts))
+    xs.append(np.linspace(m_true[p]-2*np.sqrt(sigma2_true), m_true[p]+2*np.sqrt(sigma2_true), num_pts))
     x = xs[i]
     ax1.set_xlim(x[0], x[-1])
     for j, ax in enumerate([ax1, ax2]):
         ax.grid()
         if i==0:
             ax.set_title(ax_titles[j])
-        ax.set_xlabel('log({})'.format(g_labels[i]), fontsize=16)
-        line, = ax.plot(x, normpdf(x, loc=m_true[i], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label="True")
+        ax.set_xlabel('log({})'.format(g_labels[p]), fontsize=16)
+        line, = ax.plot(x, normpdf(x, loc=m_true[p], scale=np.sqrt(sigma2_true)), lw=2, color=cs[1], label="True")
         if i==0 and j==0:
             lines += (line,)
     for a, N_e in enumerate(nums_expts):
@@ -213,7 +214,7 @@ for i in xrange(7,num_gs):
                 temp_trace_name = "_".join(split_trace_name[:-2]) + "_{}_".format(n) + split_trace_name[-1]
             print "Trace:", temp_trace_name
             sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
-            temp_chain = np.loadtxt(sl_mcmc_file, usecols=[i])
+            temp_chain = np.loadtxt(sl_mcmc_file, usecols=[p])
             sl_chains.append(temp_chain)
         gary_pred = np.zeros(num_pts)
         for t in xrange(args.num_samples):
@@ -229,7 +230,7 @@ for i in xrange(7,num_gs):
         
         # Posterior predictive
         hmcmc_file, log_file, h_png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(pyap_options["model_number"], expt_name, trace_name, N_e, parallel)
-        h_chain = np.loadtxt(hmcmc_file,usecols=[i, num_gs+i])
+        h_chain = np.loadtxt(hmcmc_file,usecols=[p, num_gs+p])
         saved_its = h_chain.shape[0]
         start = time()
         
@@ -266,7 +267,7 @@ for i in xrange(7,num_gs):
     
     
     for j, axx in enumerate([ax1, ax2]):
-        axx.set_xlabel("log({})".format(g_labels[i]), fontsize=16)
+        axx.set_xlabel("log({})".format(g_labels[p]), fontsize=16)
         for tick in axx.get_xticklabels():
             tick.set_rotation(30)
        
