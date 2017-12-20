@@ -124,13 +124,13 @@ fig, axs = plt.subplots(len(p_s), 2, figsize=(7,3*len(p_s)))
 for i, p in enumerate(p_s):
     print "{} / {}".format(i+1, len(p_s))
     if i==0:
-        x1 = np.linspace(-3.5, -3, num_pts)
+        x1 = np.linspace(-3.4, -2.8, num_pts)
     elif i==1:
-        x1 = np.linspace(-6.5, -5.5, num_pts)
+        x1 = np.linspace(-6.2, -5.5, num_pts)
     elif i==2:
-        x1 = np.linspace(-5.5, -4.5, num_pts)
+        x1 = np.linspace(-5.2, -4.5, num_pts)
     elif i==3:
-        x1 = np.linspace(-7.5, -6, num_pts)
+        x1 = np.linspace(-7.5, -6.8, num_pts)
     x2 = np.linspace(0.005, 0.07, num_pts)
     xs = [x1, x2]
 
