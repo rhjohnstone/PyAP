@@ -173,14 +173,18 @@ for i, p in enumerate(p_s):
     
 print lines
 
-lines += [mpatches.Patch(color=color, label=label) for label, color in zip(hist_labels,colors)]
+hist_patches = [mpatches.Patch(color=color, label=label) for label, color in zip(hist_labels,colors)]
+
+lines += hist_patches
 
 print "\n"
 print lines
 print labels
 print "\n"
+print hist_patches
+print hist_labels
 
-leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.05))
+leg = fig.legend(hist_patches, hist_labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.05))
 
 fig.tight_layout()
 
