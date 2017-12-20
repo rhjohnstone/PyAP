@@ -77,10 +77,6 @@ nu = 4.*beta / ((alpha+1.) * np.log(10)**2)
 
 old_eta_js = np.vstack((mu, nu, alpha, beta)).T
 
-print "old_eta_js:\n", old_eta_js
-
-
-#sys.exit()
 
 uniform_noise_prior = [1e-3,25.]
 
@@ -106,17 +102,11 @@ def just_sample_m(Mu, Lambda, Sigma2):
     return norm.rvs(loc=Mu, scale=sqrt(Sigma2/Lambda))
     
 
-
-
 num_pts = 101
-#p = 0
-
-
-
 
 cs = ['#1b9e77','#d95f02','#7570b3']
 
-nums_expts = [2, 4]#, 8, 16, 32]
+nums_expts = [2, 4, 8, 16, 32]
 
 total_nums_expts = len(nums_expts)
 color_idx = np.linspace(0, 1, total_nums_expts)
@@ -171,30 +161,23 @@ for i, p in enumerate(p_s):
         for j in xrange(2):
             axs[i][j].hist(h_chain[:, j], normed=True, bins=100, lw=0, color=colors[a], alpha=1.2/len(nums_expts), zorder=10)
     
-print lines
 
 hist_patches = [mpatches.Patch(color=color, label=label) for label, color in zip(hist_labels,colors)]
 
 lines += hist_patches
 
-print "\n"
-print lines
-print labels
-print "\n"
-print hist_patches
-print hist_labels
 
-leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.05))
+leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.07))
 
 fig.tight_layout()
 
 fig_file = h_png_dir + "{}_m_s2_priors_marginals_{}.png".format(expt_name, max(nums_expts))
 print fig_file
 
-fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight', pad_inches=0.05)
+fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight', pad_inches=0.14)
 
-#plt.show()
-#for t in xrange(T):
+
+
     
 
 
