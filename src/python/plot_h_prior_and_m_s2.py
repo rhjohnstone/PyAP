@@ -169,7 +169,7 @@ for i, p in enumerate(p_s):
         saved_its = h_chain.shape[0]
 
         for j in xrange(2):
-            axs[i][j].hist(h_chain[:, j], normed=True, bins=100, lw=0, color=colors[a], alpha=1.5/len(nums_expts), zorder=10)
+            axs[i][j].hist(h_chain[:, j], normed=True, bins=100, lw=0, color=colors[a], alpha=1.2/len(nums_expts), zorder=10)
     
 print lines
 
@@ -184,16 +184,16 @@ print "\n"
 print hist_patches
 print hist_labels
 
-leg = fig.legend(hist_patches, hist_labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.05))
+leg = fig.legend(lines, labels, loc="upper center", ncol=1+len(nums_expts)/2, bbox_to_anchor=(0.5, 1.05))
 
 fig.tight_layout()
 
 fig_file = h_png_dir + "{}_m_s2_priors_marginals_{}.png".format(expt_name, max(nums_expts))
 print fig_file
 
-#fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight', pad_inches=0.05)
+fig.savefig(fig_file, bbox_extra_artists=(leg,), bbox_inches='tight', pad_inches=0.05)
 
-plt.show()
+#plt.show()
 #for t in xrange(T):
     
 
