@@ -22,7 +22,6 @@ npr.seed(python_seed)
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
-requiredNamed.add_argument("--num-traces", type=int, help="number of traces to fit to, including the one specified as argument", required=True)
 requiredNamed.add_argument("-T", "--num-samples", type=int, help="number of samples to plot priors for", required=True)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
@@ -55,11 +54,9 @@ model_number = pyap_options["model_number"]
 original_gs, g_parameters, model_name = ps.get_original_params(model_number)
 num_gs = len(original_gs)
 
-N_e = args.num_traces
 
 split_trace_name = trace_name.split("_")
 first_trace_number = int(split_trace_name[-1])  # need a specific-ish format currently
-trace_numbers = range(first_trace_number, first_trace_number+N_e)
 print trace_numbers
 
 protocol = 1
@@ -68,7 +65,6 @@ solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, s
 
 parallel = True
 
-mcmc_file, log_file, png_dir, pdf_dir = ps.hierarchical_lnG_mcmc_files(model_number, expt_name, trace_name, N_e, parallel)
 
 
 m_true = np.log(original_gs)
