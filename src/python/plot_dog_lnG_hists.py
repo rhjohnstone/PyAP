@@ -134,10 +134,13 @@ for i in xrange(num_gs+1):
     axs[i].set_yticks(np.round(np.linspace(0, ylim[1], num_ticks),2))
     plt.setp( axs[i].xaxis.get_majorticklabels(), rotation=30 )
     x = np.linspace(xlim[0], xlim[1], num_pts)
+    axprior = axs[i].twinx()
     if i<num_gs:
-        axs[i].plot(x, norm.pdf(x, loc=prior_means[i], scale=prior_sd), "--", lw=2, color=cs[1], alpha=0.8)
+        axprior.set_ylim(0, 0.35)
+        axprior.plot(x, norm.pdf(x, loc=prior_means[i], scale=prior_sd), "--", lw=2, color=cs[1], alpha=0.8)
     else:
-        axs[i].axhline(sigma_const, "--", lw=2, color=cs[1], alpha=0.8)
+        axprior.set_ylim(0, 2*sigma_const)
+        axprior.axhline(sigma_const, linestyle="--", lw=2, color=cs[1], alpha=0.8)
 
 fig.tight_layout()#h_pad=1.)
 fig_file = sl_png_dir+"{}_{}_traces_superimposed_marginal_hists.png".format(expt_name, N_e)
