@@ -93,7 +93,11 @@ a4 = (ax_x, np.sqrt(2)*ax_x)
 
 figsize = (ax_x, 1.2*ax_x)
 
-fig, axs = plt.subplots(5, 3, figsize=figsize)
+if expt_name=="dog_teun_davies":
+    fig, axs = plt.subplots(5, 3, figsize=figsize)
+elif expt_name=="roche_ten_tusscher":
+    fig, axs = plt.subplots(4, 3, figsize=figsize)
+
 axs = axs.flatten()
 for i in xrange(num_gs+1):
     axs[i].grid()
@@ -116,7 +120,7 @@ for n in xrange(N_e):
     colour = plt.cm.winter(color_idx[n])
     c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=1.5/N_e)
     for i in xrange(num_gs+1):
-        axs[i].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40, zorder=10)
+        axs[i].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40)
 
 num_ticks = 5
 for i in xrange(num_gs+1):
@@ -130,15 +134,10 @@ for i in xrange(num_gs+1):
     axs[i].set_yticks(np.round(np.linspace(0, ylim[1], num_ticks),2))
     plt.setp( axs[i].xaxis.get_majorticklabels(), rotation=30 )
     x = np.linspace(xlim[0], xlim[1], num_pts)
-    axprior = axs[i].twinx()
-    if i%3==2:
-        axprior.set_ylabel("Prob. dens.")
     if i<num_gs:
-        axprior.plot(x, norm.pdf(x, loc=prior_means[i], scale=prior_sd), lw=2, color=cs[1], zorder=0)
+        axs[i].plot(x, norm.pdf(x, loc=prior_means[i], scale=prior_sd), "--", lw=2, color=cs[1], alpha=0.8)
     else:
-        axprior.axhline(sigma_const, lw=2, color=cs[1], zorder=0)
-    axprior.set_ylim(0, axprior.get_ylim()[1])
-    axprior.set_yticks(axprior.get_yticks()[::2])
+        axs[i].axhline(sigma_const, "--", lw=2, color=cs[1], alpha=0.8)
 
 fig.tight_layout()#h_pad=1.)
 fig_file = sl_png_dir+"{}_{}_traces_superimposed_marginal_hists.png".format(expt_name, N_e)
