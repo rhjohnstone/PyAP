@@ -135,7 +135,7 @@ for i in xrange(num_gs+1):
     plt.setp( axs[i].xaxis.get_majorticklabels(), rotation=30 )
     x = np.linspace(xlim[0], xlim[1], num_pts)
     axprior = axs[i].twinx()
-    axprior.axes.get_yaxis().set_ticklabels([])
+    axprior.axes.get_yaxis().set_visible(False)
     if i<num_gs:
         axprior.set_ylim(0, 0.35)
         axprior.plot(x, norm.pdf(x, loc=prior_means[i], scale=prior_sd), "--", lw=2, color=cs[1], alpha=0.8)
