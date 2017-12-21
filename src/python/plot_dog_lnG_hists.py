@@ -102,9 +102,9 @@ axs = axs.flatten()
 for i in xrange(num_gs+1):
     axs[i].grid()
     if i < num_gs:
-        axs[i].set_xlabel('log({})'.format(g_labels[i]), fontsize=16)
+        axs[i].set_xlabel('log({})'.format(g_labels[i]), fontsize=15)
     else:
-        axs[i].set_xlabel(r"$\sigma$", fontsize=16)
+        axs[i].set_xlabel(r"$\sigma$", fontsize=15)
     if i%3==0:
         axs[i].set_ylabel('Norm. freq.')
 
@@ -138,10 +138,10 @@ for i in xrange(num_gs+1):
     axprior.axes.get_yaxis().set_visible(False)
     if i<num_gs:
         axprior.set_ylim(0, 0.35)
-        axprior.plot(x, norm.pdf(x, loc=prior_means[i], scale=prior_sd), "--", lw=2, color=cs[1], alpha=0.8)
+        axprior.plot(x, norm.pdf(x, loc=prior_means[i], scale=prior_sd), "--", lw=2, color=cs[1], alpha=0.5)
     else:
         axprior.set_ylim(0, 2*sigma_const)
-        axprior.axhline(sigma_const, linestyle="--", lw=2, color=cs[1], alpha=0.8)
+        axprior.axhline(sigma_const, linestyle="--", lw=2, color=cs[1], alpha=0.5)
 
 fig.tight_layout()#h_pad=1.)
 fig_file = sl_png_dir+"{}_{}_traces_superimposed_marginal_hists.png".format(expt_name, N_e)
