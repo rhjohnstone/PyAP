@@ -60,18 +60,18 @@ cs = ['#1b9e77','#d95f02','#7570b3']
 
 T = args.num_samples
 rand_samples = npr.rand(T)
-fig, axs = plt.subplots(1, 2, figsize=(8,3), sharey=True)
+fig, axs = plt.subplots(1, 2, figsize=(7,3), sharey=True)
 axs[0].set_ylabel("Cumulative dist.")
 p_s = [0, 11]
 for i, p in enumerate(p_s):
     axs[i].grid()
     axs[i].set_xlabel(r"$\log({})$".format(g_parameters[p]), fontsize=16)
     axs[i].set_xlim(gary_predictives[p][0,0], gary_predictives[p][-1,0])
-    axs[i].plot(*gary_predictives[p].T, lw=2, color=cs[0])
+    axs[i].plot(*gary_predictives[p].T, lw=3, color=cs[0])
     gary_predictive_samples = np.interp(rand_samples, gary_predictives[p][:,1], gary_predictives[p][:,0])
     for t in xrange(T):
-        axs[i].plot([gary_predictives[p][0,0], gary_predictive_samples[t]], [rand_samples[t], rand_samples[t]], color=cs[1])
-        axs[i].plot([gary_predictive_samples[t], gary_predictive_samples[t]], [0, rand_samples[t]], color=cs[2])
+        axs[i].plot([gary_predictives[p][0,0], gary_predictive_samples[t]], [rand_samples[t], rand_samples[t]], color=cs[1], lw=2)
+        axs[i].plot([gary_predictive_samples[t], gary_predictive_samples[t]], [0, rand_samples[t]], color=cs[2], lw=2)
 fig.tight_layout()
 plt.show()
 
