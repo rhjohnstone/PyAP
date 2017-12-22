@@ -60,7 +60,7 @@ cs = ['#1b9e77','#d95f02','#7570b3']
 
 T = args.num_samples
 rand_samples = npr.rand(T)
-fig, axs = plt.subplots(1,2,figsize=(8,3))
+fig, axs = plt.subplots(1, 2, figsize=(8,3), sharey=True)
 axs[0].set_ylabel("Cumulative dist.")
 p_s = [0, 11]
 for i, p in enumerate(p_s):
