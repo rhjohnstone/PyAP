@@ -234,8 +234,9 @@ def gary_predictive_file(expt_name, num_traces, param_idx):
     else:
         first_bit = os.path.expanduser("~/PyAP_output/")
     garydir = first_bit + "{}/gary_predictive/{}_traces/".format(expt_name, num_traces)
-    if not os.path.exists(garydir):
-        os.makedirs(garydir)
-    return garydir + "{}_{}_traces_gary_predictive_parameter_{}.txt".format(expt_name, num_traces, param_idx)
+    garydir_png = garydir + "png/"
+    if not os.path.exists(garydir_png):
+        os.makedirs(garydir_png)
+    return garydir + "{}_{}_traces_gary_predictive_parameter_{}.txt".format(expt_name, num_traces, param_idx), garydir_png
     
 
