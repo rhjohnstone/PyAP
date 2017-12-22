@@ -1,7 +1,7 @@
 import pyap_setup as ps
 import numpy as np
 import matplotlib
-#matplotlib.use('Agg')
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 import argparse
@@ -106,16 +106,16 @@ gary_predictives /= T
 
 
 for i in xrange(num_gs):
-    garyfile = ps.gary_predictive_file(expt_name, N_e, i)
+    garyfile, garypng = ps.gary_predictive_file(expt_name, N_e, i)
     np.savetxt(garyfile, np.vstack((xs[i, :], gary_predictives[i, :])).T)
-    continue
     fig, ax = plt.subplots(1,1, figsize=(4,3))
     ax.grid()
     ax.plot(xs[i, :], gary_predictives[i, :], lw=2)
     ax.set_xlabel(r"$\log({})$".format(g_parameters[i]), fontsize=16)
     ax.set_ylabel("Cumulative dist.")
     fig.tight_layout()
-    plt.show()
+    plt.savefig(garypng+"{}_{}_traces_predictive_cdf_{}.png".format(expt_name, N_e, g_parameters[i])
+    plt.close()
 
 
 sys.exit()
