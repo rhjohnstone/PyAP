@@ -102,15 +102,18 @@ for i in xrange(num_gs):
         loc, scale = norm.fit(samples)
         gary_predictives[i, :] += norm.cdf(xs[i, :], loc=loc, scale=scale)
 gary_predictives /= T
-print gary_predictives
+
+
 
 for i in xrange(num_gs):
+    garyfile = ps.gary_predictive_file(expt_name, N_e, i)
+    np.savetxt(garyfile, np.vstack((xs[i, :], gary_predictives[i, :])).T)
+    continue
     fig, ax = plt.subplots(1,1, figsize=(4,3))
     ax.grid()
     ax.plot(xs[i, :], gary_predictives[i, :], lw=2)
     ax.set_xlabel(r"$\log({})$".format(g_parameters[i]), fontsize=16)
     ax.set_ylabel("Cumulative dist.")
-    ax.legend(loc=2)
     fig.tight_layout()
     plt.show()
 

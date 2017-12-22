@@ -228,3 +228,14 @@ def get_protocol_details(protocol): # pre-defined protocols
     return solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time
     
 
+def gary_predictive_file(expt_name, num_traces, param_idx):
+    if arcus_b or arcus:
+        first_bit = os.path.expandvars("$DATA/PyAP_output/")
+    else:
+        first_bit = os.path.expanduser("~/PyAP_output/")
+    garydir = first_bit + "{}/gary_predictive/{}_traces/".format(expt_name, num_traces)
+    if not os.path.exists(garydir):
+        os.makedirs(garydir)
+    return garydir + "{}_{}_traces_gary_predictive_parameter_{}.txt".format(expt_name, num_traces, param_idx)
+    
+
