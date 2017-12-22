@@ -14,6 +14,7 @@ requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
 parser.add_argument("-T", "--num-samples", type=int, help="number of samples to plot prior predictive from", default=0)
 parser.add_argument("-n", "--num-expts", type=int, help="number of traces to construct Gary-predictive from", required=True)
+parser.add_argument("-x", "--num-pts", type=int, help="number of x points to plot Gary-predictive for", required=True)
 args, unknown = parser.parse_known_args()
 
 trace_path = args.data_file
@@ -83,10 +84,10 @@ for n in xrange(N_e):
 length = chain_lengths[0]
 assert(np.all(chain_lengths==length))
 
-num_pts = 51
+num_pts = args.num_pts
 xs = np.zeros((num_gs, num_pts))
 for i in xrange(num_gs):
-    xs[i, :] = np.linspace(0.5*mins[i], 1.5*maxs[i], num_pts)
+    xs[i, :] = np.linspace(0.9*mins[i], 1.1*maxs[i], num_pts)
 
 
 T = args.num_samples
