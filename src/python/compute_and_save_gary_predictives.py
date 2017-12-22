@@ -38,12 +38,7 @@ data_clamp_off = pyap_options["data_clamp_off"]
 
 
 split_trace_name = trace_name.split("_")
-if (pyap_options["model_number"]==2) or (pyap_options["model_number"]==5):
-    first_trace_number = int(split_trace_name[-1])
-elif pyap_options["model_number"]==4:
-    first_trace_number = int(split_trace_name[-2])
-    
-print first_trace_number
+
         
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
