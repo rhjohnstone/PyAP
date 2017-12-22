@@ -51,17 +51,6 @@ sigma2_true = 0.01
 
 parallel = True
 
-
-cs = ['#1b9e77','#d95f02','#7570b3']
-num_pts = 101
-nums_expts = [2, 4, 8, 16, 32]
-
-labels = ("True",) + tuple(["$N_e = {}$".format(n) for n in nums_expts])
-lines = ()
-
-total_nums_expts = len(nums_expts)
-color_idx = np.linspace(0, 1, total_nums_expts)
-
 normpdf = norm.pdf
 normrvs = norm.rvs
 
@@ -70,8 +59,8 @@ N_e = args.num_expts
 xs = []
 sl_chains = []
 mins = 1e9*np.ones(num_gs)
-print mins
 maxs = -1e9*np.ones(num_gs)
+chain_lengths = np.zeros(N_e)
 for n in xrange(N_e):
     if (pyap_options["model_number"]==2) or (pyap_options["model_number"]==5):  # synth BR/OH
         temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
@@ -89,11 +78,33 @@ for n in xrange(N_e):
     where_new_max = np.where(temp_maxs > maxs)
     mins[where_new_min] = temp_mins[where_new_min]
     maxs[where_new_max] = temp_maxs[where_new_max]
-    print mins
+    chain_lengths[n] = temp_chain.shape[0]
+    
+length = chain_lengths[0]
+assert(np.all(chain_lengths==length))
 
 num_pts = 51
+xs = np.zeros((num_gs, num_pts))
 for i in xrange(num_gs):
-    x = np.linspace(0.1*original_gs[i], 1.9*original_gs[i], num_pts)
+    xs[i, :] = np.linspace(0.5*mins[i], 1.5*maxs[i], num_pts)
+
+
+T = args.num_samples
+gary_predictives = np.zeros((num_gs, num_pts))
+rand_idx = npr.randint(0, length, size=(N_e, T))
+for i in xrange(num_gs):
+    for t in xrange(T):
+        samples = np.zeros(N_e)
+        for n in xrange(N_e):
+            samples[n] = sl_chains[n][rand_idx[n,t]]
+        loc, scale = norm.fit(samples)
+        gary_predictives[i, :] += norm.cdf(xs[i, :], loc=loc, scale=scale)
+gary_predictives /= T
+print gary_predictives
+
+plt.plot(xs[0, :], gary_predictives[0, :])
+plt.show()
+
 
 sys.exit()
 for i in xrange(num_gs):
