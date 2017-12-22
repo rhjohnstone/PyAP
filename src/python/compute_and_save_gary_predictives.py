@@ -104,11 +104,14 @@ for i in xrange(num_gs):
 gary_predictives /= T
 print gary_predictives
 
-fig, ax = plt.subplots(1,1)
-ax.grid()
-ax.plot(xs[0, :], gary_predictives[0, :], lw=2, label="Predictive")
-ax.legend(loc=2)
-plt.show()
+for i in xrange(num_gs):
+    fig, ax = plt.subplots(1,1, figsize=(3,3))
+    ax.grid()
+    ax.plot(xs[i, :], gary_predictives[i, :], lw=2, label="Predictive")
+    ax.set_xlabel(r"$\log({})$".format(g_parameters[i])
+    ax.set_ylabel("CDF")
+    ax.legend(loc=2)
+    plt.show()
 
 
 sys.exit()
