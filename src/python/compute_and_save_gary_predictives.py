@@ -3,11 +3,11 @@ import numpy as np
 import matplotlib
 #matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from scipy.stats import norm, invgamma
+from scipy.stats import norm
 import argparse
 import numpy.random as npr
-import os
 from time import time
+import sys
 
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
@@ -64,7 +64,6 @@ color_idx = np.linspace(0, 1, total_nums_expts)
 
 normpdf = norm.pdf
 normrvs = norm.rvs
-invgammarvs = invgamma.rvs
 
 N_e = args.num_expts
 
