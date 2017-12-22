@@ -87,7 +87,7 @@ assert(np.all(chain_lengths==length))
 num_pts = args.num_pts
 xs = np.zeros((num_gs, num_pts))
 for i in xrange(num_gs):
-    xs[i, :] = np.linspace(mins[i]-0.1, maxs[i]+0.1, num_pts)
+    xs[i, :] = np.linspace(mins[i]-0.2, maxs[i]+0.2, num_pts)
 
 
 
@@ -113,8 +113,9 @@ for i in xrange(num_gs):
     ax.plot(xs[i, :], gary_predictives[i, :], lw=2)
     ax.set_xlabel(r"$\log({})$".format(g_parameters[i]), fontsize=16)
     ax.set_ylabel("Cumulative dist.")
+    ax.set_xlim(xs[i, 0], xs[i, -1])
     fig.tight_layout()
-    plt.savefig(garypng+"{}_{}_traces_predictive_cdf_{}.png".format(expt_name, N_e, g_parameters[i])
+    plt.savefig(garypng+"{}_{}_traces_predictive_cdf_{}.png".format(expt_name, N_e, g_parameters[i]))
     plt.close()
 
 
