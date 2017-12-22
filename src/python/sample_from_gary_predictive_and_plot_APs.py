@@ -56,13 +56,21 @@ for i in xrange(num_gs):
     garyfile, garypng = ps.gary_predictive_file(expt_name, N_e, i)
     gary_predictives.append(np.loadtxt(garyfile))
 
+cs = ['#1b9e77','#d95f02','#7570b3']
+
 T = args.num_samples
 rand_samples = npr.rand(T)
-i = 0
-gary_predictive_samples = np.interp(rand_samples, gary_predictives[i][:,1], gary_predictives[i][:,0])
-plt.plot(*gary_predictives[i].T)
-for t in xrange(T):
-    plt.axhline(rand_samples[t])
-    plt.axvline(gary_predictive_samples[t])
+fig, axs = plt.subplots(1,2,figsize=(8,3))
+axs[0].set_ylabel("Cumulative dist.")
+p_s = [0, 11]
+for i, p in enumerate(p_s):
+    axs[i].grid()
+    axs[i].set_xlabel(r"$\log({})$".format(g_parameters[p]), fontsize=16)
+    axs[i].plot(*gary_predictives[p].T, lw=2, color=cs[0])
+    gary_predictive_samples = np.interp(rand_samples, gary_predictives[p][:,1], gary_predictives[p][:,0])
+    for t in xrange(T):
+        axs[i].plot([0, gary_predictive_samples[t]], [rand_samples[t], rand_samples[t]], color=cs[1])
+        axs[i].plot([gary_predictive_samples[t], gary_predictive_samples[t]], [0, rand_samples[t]], , color=cs[2])
+fig.tight_layout()
 plt.show()
 
