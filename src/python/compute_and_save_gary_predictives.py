@@ -96,7 +96,7 @@ for i in xrange(num_gs):
     for t in xrange(T):
         samples = np.zeros(N_e)
         for n in xrange(N_e):
-            samples[n] = sl_chains[n][rand_idx[n,t]]
+            samples[n] = sl_chains[n][rand_idx[n,t], i]
         loc, scale = norm.fit(samples)
         gary_predictives[i, :] += norm.cdf(xs[i, :], loc=loc, scale=scale)
 gary_predictives /= T
