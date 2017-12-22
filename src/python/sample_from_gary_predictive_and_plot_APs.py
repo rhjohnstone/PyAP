@@ -1,7 +1,7 @@
 import pyap_setup as ps
 import numpy as np
 import matplotlib
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 import argparse
@@ -22,7 +22,6 @@ split_trace_path = trace_path.split('/')
 expt_name = split_trace_path[4]
 trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
-
 
 pyap_options = {}
 with open(options_file, 'r') as infile:
@@ -56,8 +55,13 @@ gary_predictives = []
 for i in xrange(num_gs):
     garyfile, garypng = ps.gary_predictive_file(expt_name, N_e, i)
     gary_predictives.append(np.loadtxt(garyfile))
-    
+
+T = args.num_samples
+rand_samples = npr.rand(T)
 i = 0
-plt.plot(gary_predictives[i][:,0], gary_predictives[i][:,1])
+gary_predictive_samples = np.interp(rand_samples, *gary_predictives[i].T)
+plt.plot(*gary_predictives[i].T)
+for s in gary_predictive_samples:
+    plt.axvline(s)
 plt.show()
 
