@@ -9,6 +9,9 @@ import numpy.random as npr
 from time import time
 import sys
 
+seed = 1
+npr.seed(seed)
+
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
