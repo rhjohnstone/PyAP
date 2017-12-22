@@ -59,7 +59,7 @@ for i in xrange(num_gs):
 T = args.num_samples
 rand_samples = npr.rand(T)
 i = 0
-gary_predictive_samples = np.interp(gary_predictives[i][:,0], rand_samples, gary_predictives[i][:,1])
+gary_predictive_samples = np.interp(rand_samples, gary_predictives[i][:,1], gary_predictives[i][:,0])
 plt.plot(*gary_predictives[i].T)
 for t in xrange(T):
     plt.axhline(rand_samples[t])
