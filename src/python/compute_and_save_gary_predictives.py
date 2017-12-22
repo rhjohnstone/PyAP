@@ -87,7 +87,8 @@ assert(np.all(chain_lengths==length))
 num_pts = args.num_pts
 xs = np.zeros((num_gs, num_pts))
 for i in xrange(num_gs):
-    xs[i, :] = np.linspace(0.9*mins[i], 1.1*maxs[i], num_pts)
+    xs[i, :] = np.linspace(mins[i]-0.1, maxs[i]+0.1, num_pts)
+
 
 
 T = args.num_samples
