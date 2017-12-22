@@ -66,11 +66,12 @@ p_s = [0, 11]
 for i, p in enumerate(p_s):
     axs[i].grid()
     axs[i].set_xlabel(r"$\log({})$".format(g_parameters[p]), fontsize=16)
+    axs[i].set_xlim(gary_predictives[p][0,0], gary_predictives[p][-1,0])
     axs[i].plot(*gary_predictives[p].T, lw=2, color=cs[0])
     gary_predictive_samples = np.interp(rand_samples, gary_predictives[p][:,1], gary_predictives[p][:,0])
     for t in xrange(T):
-        axs[i].plot([0, gary_predictive_samples[t]], [rand_samples[t], rand_samples[t]], color=cs[1])
-        axs[i].plot([gary_predictive_samples[t], gary_predictive_samples[t]], [0, rand_samples[t]], , color=cs[2])
+        axs[i].plot([gary_predictives[p][0,0], gary_predictive_samples[t]], [rand_samples[t], rand_samples[t]], color=cs[1])
+        axs[i].plot([gary_predictive_samples[t], gary_predictive_samples[t]], [0, rand_samples[t]], color=cs[2])
 fig.tight_layout()
 plt.show()
 
