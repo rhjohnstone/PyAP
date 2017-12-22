@@ -93,7 +93,7 @@ for i in xrange(num_gs):
 
 T = args.num_samples
 gary_predictives = np.zeros((num_gs, num_pts))
-rand_idx = npr.randint(0, length, size=(N_e, T))
+rand_idx = npr.randint(0, length, size=(N_e, T))  # don't know if this will cause memory/speed issues
 for i in xrange(num_gs):
     for t in xrange(T):
         samples = np.zeros(N_e)
@@ -104,7 +104,10 @@ for i in xrange(num_gs):
 gary_predictives /= T
 print gary_predictives
 
-plt.plot(xs[0, :], gary_predictives[0, :])
+fig, ax = plt.subplots(1,1)
+ax.grid()
+ax.plot(xs[0, :], gary_predictives[0, :], lw=2, label="Predictive")
+ax.legend(loc=2)
 plt.show()
 
 
