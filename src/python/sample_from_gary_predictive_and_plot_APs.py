@@ -48,6 +48,8 @@ with open(options_file, 'r') as infile:
 data_clamp_on = pyap_options["data_clamp_on"]
 data_clamp_off = pyap_options["data_clamp_off"]
 
+
+
 try:
     expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
 except:
@@ -56,6 +58,8 @@ except:
 
 split_trace_name = trace_name.split("_")
 
+if pyap_options["model_number"]==6:
+    trace_number = int(split_trace_name[-1])
         
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
@@ -126,6 +130,7 @@ print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_tak
 ax.plot([], [], label="{} samples".format(T), color='black')
 ax.legend(loc=1)
 fig.tight_layout()
+fig.savefig("{}_trace_{}_{}_samples.png".format(expt_name, trace_number, T))
 plt.show()
 
 
