@@ -51,7 +51,10 @@ options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 expt_params_file = '/'.join( split_trace_path[:5] ) + "/expt_params.txt"
 
 split_trace_name = trace_name.split("_")
-first_trace_number = int(split_trace_name[-1])
+if pyap_options["model_number"]==6:
+    first_trace_number = int(split_trace_name[-1])
+elif pyap_options["model_number"]==4:
+    first_trace_number = int(split_trace_name[-2])
 print "first_trace_number:", first_trace_number
 
 pyap_options = {}
