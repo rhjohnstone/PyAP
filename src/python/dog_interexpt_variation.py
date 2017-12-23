@@ -101,7 +101,7 @@ stds = MPDs.std(axis=0).round(dp)
 
 print "\n"
 for i in xrange(num_gs):
-    line = r"${}$ & {} & {} \\".format(g_parameters[i], means[i], stds[i])
+    line = r"$\log({})$ & {} & {} \\".format(g_parameters[i], means[i], stds[i])
     print line
 print "\n"
 
