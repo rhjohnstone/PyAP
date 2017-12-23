@@ -16,6 +16,33 @@ def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace
     ap_model.SetToModelInitialConditions()
     ap_model.SetVoltage(expt_trace[0])
     return ap_model.SolveForVoltageTraceWithParams(npexp(temp_lnG_params))
+
+
+def solve_for_voltage_trace_with_block(temp_lnG_params, ap_model, expt_trace, dose):
+    ap_model.SetToModelInitialConditions()
+    temp_Gs = npexp(temp_lnG_params)
+    temp_Gs = apply_moxi_blocks(temp_Gs, dose)
+    #ap_model.SetVoltage(expt_trace[0])
+    return ap_model.SolveForVoltageTraceWithParams(temp_Gs)
+
+
+def fraction_block(dose,hill,IC50):
+    return 1. - 1./(1.+(1.*dose/IC50)**hill)
+    
+def pic50_to_ic50(pic50): # IC50 in uM
+    return 10**(6-pic50)
+    
+def ic50_to_pic50(ic50): # IC50 in uM
+    return 6-np.log10(ic50)
+    
+
+                        
+def apply_moxi_blocks(temp_G_params, dose):
+    hill = 1
+    for i, p in enumerate(block_indices):
+        ic50 = pic50_to_ic50(pic50s[i])
+        temp_G_params[p] *= (1.-fraction_block(dose, hill, ic50))
+    return temp_G_params
     
 
 seed = 3
@@ -58,8 +85,15 @@ except:
 
 split_trace_name = trace_name.split("_")
 
+g_parameters = ['G_{Na}', 'G_{CaL}', 'G_{K1}', 'G_{pK}',
+                        'G_{Ks}', 'G_{Kr}', 'G_{pCa}', 'G_{bCa}',
+                        'k_{NaCa}', 'P_{NaK}', 'G_{to1}', 'G_{to2}',
+                        'G_{bCl}', 'G_{NaL}']
+
 if pyap_options["model_number"]==6:
     trace_number = int(split_trace_name[-1])
+    block_indices = [0, 1, 4, 5]
+    pic50s = [206.7, 158., 158., 29.]
         
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
@@ -116,6 +150,7 @@ ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 
 
 T = args.num_samples
+
 rand_samples = npr.rand(T)
 fig, ax = plt.subplots(1, 1, figsize=(6,4))
 ax.grid()
@@ -135,4 +170,39 @@ print fig_png
 fig.savefig(fig_png)
 plt.show()
 
+moxi_conc = 10
+new_extra_K_conc = 4
+ap_model = ap_simulator.APSimulator()
+if (data_clamp_on < data_clamp_off):
+    ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
+    ap_model.DefineModel(pyap_options["model_number"])
+    ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
+    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
+else:
+    ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
+    ap_model.DefineModel(pyap_options["model_number"])
+ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
+ap_model.SetExtracellularPotassiumConc(new_extra_K_conc)
+ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
+ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
+ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
+ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 
+rand_samples = npr.rand(T)
+fig, ax = plt.subplots(1, 1, figsize=(6,4))
+ax.grid()
+ax.set_xlabel("Time (ms)")
+ax.set_ylabel("Membrane voltage (mV)")
+start = time()
+for t in xrange(T):
+    temp_lnGs = [np.interp(rand_samples[t], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
+    ax.plot(expt_times, solve_for_voltage_trace_with_block(temp_lnGs, ap_model, expt_trace, moxi_conc), alpha=0.01, color='black')
+time_taken = time()-start
+print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
+ax.plot([], [], label="{} samples".format(T), color='black')
+ax.legend(loc=1)
+fig.tight_layout()
+fig_png = "{}_trace_{}_{}_samples_moxi_predictions.png".format(expt_name, trace_number, T)
+print fig_png
+fig.savefig(fig_png)
+plt.show()
