@@ -15,7 +15,11 @@ npexp = np.exp
 def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace):
     ap_model.SetToModelInitialConditions()
     ap_model.SetVoltage(expt_trace[0])
-    return ap_model.SolveForVoltageTraceWithParams(npexp(temp_lnG_params))
+    temp_Gs = npexp(temp_lnG_params)
+    solved = ap_model.SolveForVoltageTraceWithParams(temp_Gs)
+    if solved[-1] > -70:
+        print temp_Gs
+    return solved
 
 
 def solve_for_voltage_trace_with_block(temp_lnG_params, ap_model, expt_trace, dose):
@@ -44,8 +48,8 @@ def apply_moxi_blocks(temp_G_params, dose):
     return temp_G_params
     
 
-seed = 3
-npr.seed(seed)
+#seed = 3
+#npr.seed(seed)
 
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
