@@ -90,9 +90,9 @@ for i in xrange(num_gs):
     if pyap_options["model_number"]==4:
         #xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
         if i==0:
-            xs[i, :] = np.linspace(mins[i], maxs[i]+1, num_pts)
+            xs[i, :] = np.linspace(mins[i]+0.5, maxs[i]+1, num_pts)
         elif i==1 or i==2:
-            xs[i, :] = np.linspace(mins[i]+0.5, maxs[i]+0.5, num_pts)
+            xs[i, :] = np.linspace(mins[i]-0.5, maxs[i]+0.5, num_pts)
         elif i==3:
             xs[i, :] = np.linspace(mins[i]-3, maxs[i]+3, num_pts)
         elif i==4:
@@ -101,6 +101,8 @@ for i in xrange(num_gs):
             xs[i, :] = np.linspace(mins[i]-0.5, maxs[i]+0.5, num_pts)
         elif i==8:
             xs[i, :] = np.linspace(mins[i]-1.5, maxs[i]+1.5, num_pts)
+        elif i==9 or i==10:
+            xs[i, :] = np.linspace(mins[i], maxs[i]+0.5, num_pts)
         else:
             xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
 
