@@ -118,8 +118,13 @@ for n in xrange(N_e):
     max_target_idx = np.argmax(sl_chain[:,-1])
     MPDs[n, :] = sl_chain[max_target_idx, :-2]
     
-    plot_trace_number = 100 + n
-    plot_trace_path = "projects/PyAP/python/input/roche_ten_tusscher/traces/Trace_2_2_{}_1.csv".format(plot_trace_number)
+    
+    elif pyap_options["model_number"]==4:
+        plot_trace_number = 100 + n
+        plot_trace_path = "projects/PyAP/python/input/roche_ten_tusscher/traces/Trace_2_2_{}_1.csv".format(plot_trace_number)
+    elif pyap_options["model_number"]==6:
+        plot_trace_number = 150 + n
+        plot_trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(plot_trace_number)
     expt_times, expt_trace = np.loadtxt(plot_trace_path, delimiter=',').T
     expt_traces.append(expt_trace)
 
