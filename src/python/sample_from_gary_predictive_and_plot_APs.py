@@ -182,15 +182,19 @@ for i in xrange(N_e):
 
     expt_times_for_plotting, expt_trace_for_plotting = np.loadtxt(trace_path,delimiter=',').T
     axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='blue')
-axs[0].plot([], [], color='blue', label='Control')
+
 
 for i in xrange(N_e):
     trace_number = 400 + i
+    print trace_number
     trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(trace_number)
 
     expt_times_for_plotting, expt_trace_for_plotting = np.loadtxt(trace_path,delimiter=',').T
     axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='red')
+
+axs[0].plot([], [], color='blue', label='Control')
 axs[0].plot([], [], color='red', label="K$^+$, Moxi.")
+
 axs[0].legend(loc=1)
 
 moxi_conc = 10
