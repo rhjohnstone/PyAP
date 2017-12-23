@@ -52,6 +52,7 @@ expt_params_file = '/'.join( split_trace_path[:5] ) + "/expt_params.txt"
 
 split_trace_name = trace_name.split("_")
 first_trace_number = int(split_trace_name[-1])
+print "first_trace_number:", first_trace_number
 
 pyap_options = {}
 with open(options_file, 'r') as infile:
