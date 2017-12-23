@@ -130,7 +130,9 @@ print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_tak
 ax.plot([], [], label="{} samples".format(T), color='black')
 ax.legend(loc=1)
 fig.tight_layout()
-fig.savefig("{}_trace_{}_{}_samples.png".format(expt_name, trace_number, T))
+fig_png = "{}_trace_{}_{}_samples.png".format(expt_name, trace_number, T)
+print fig_png
+fig.savefig(fig_png)
 plt.show()
 
 
