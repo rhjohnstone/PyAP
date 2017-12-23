@@ -173,6 +173,16 @@ axs[1].plot([], [], label="Control".format(T), color='blue')
 #fig.savefig(fig_png)
 #plt.show()
 
+
+for i in xrange(num_traces):
+    trace_number = 150 + i
+    trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(trace_number)
+
+    expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
+    axs[0].plot(expt_times, expt_trace, color='blue')
+axs[0].plot([], [], color='blue', label='Control')
+
+
 moxi_conc = 10
 new_extra_K_conc = 4
 ap_model = ap_simulator.APSimulator()
