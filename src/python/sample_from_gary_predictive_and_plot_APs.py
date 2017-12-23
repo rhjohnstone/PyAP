@@ -151,23 +151,27 @@ ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 T = args.num_samples
 
 rand_samples = npr.rand(T)
-fig, ax = plt.subplots(1, 1, figsize=(6,4))
-ax.grid()
-ax.set_xlabel("Time (ms)")
-ax.set_ylabel("Membrane voltage (mV)")
+
+
+fig, axs = plt.subplots(1, 2, figsize=(10,4), sharex=True, sharey=True)
+for j in xrange(2):
+    axs[j].set_xlabel("Time (ms)")
+    axs[j].grid()
+axs[0].set_ylabel("Membrane voltage (mV)")
+
+
 start = time()
 for t in xrange(T):
     temp_lnGs = [np.interp(rand_samples[t], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
-    ax.plot(expt_times, solve_for_voltage_trace_with_initial_V(temp_lnGs, ap_model, expt_trace), alpha=0.01, color='black')
+    axs[1].plot(expt_times, solve_for_voltage_trace_with_initial_V(temp_lnGs, ap_model, expt_trace), alpha=0.01, color='blue')
 time_taken = time()-start
 print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
-ax.plot([], [], label="{} samples".format(T), color='black')
-ax.legend(loc=1)
-fig.tight_layout()
-fig_png = "{}_trace_{}_{}_samples.png".format(expt_name, trace_number, T)
-print fig_png
-fig.savefig(fig_png)
-plt.show()
+axs[1].plot([], [], label="Control".format(T), color='blue')
+#fig.tight_layout()
+#fig_png = "{}_trace_{}_{}_samples.png".format(expt_name, trace_number, T)
+#print fig_png
+#fig.savefig(fig_png)
+#plt.show()
 
 moxi_conc = 10
 new_extra_K_conc = 4
@@ -188,20 +192,18 @@ ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
 ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 
 rand_samples = npr.rand(T)
-fig, ax = plt.subplots(1, 1, figsize=(6,4))
-ax.grid()
-ax.set_xlabel("Time (ms)")
-ax.set_ylabel("Membrane voltage (mV)")
+
+
 start = time()
 for t in xrange(T):
     temp_lnGs = [np.interp(rand_samples[t], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
-    ax.plot(expt_times, solve_for_voltage_trace_with_block(temp_lnGs, ap_model, expt_trace, moxi_conc), alpha=0.01, color='black')
+    axs[1].plot(expt_times, solve_for_voltage_trace_with_block(temp_lnGs, ap_model, expt_trace, moxi_conc), alpha=0.01, color='red')
 time_taken = time()-start
 print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
-ax.plot([], [], label="{} samples".format(T), color='black')
-ax.legend(loc=1)
+axs[1].plot([], [], label="K$^+$, Moxi.".format(T), color='red')
+axs[1].legend(loc=1)
 fig.tight_layout()
-fig_png = "{}_trace_{}_{}_samples_moxi_predictions.png".format(expt_name, trace_number, T)
+fig_png = "{}_trace_{}_{}_samples_control_and_moxi_predictions.png".format(expt_name, trace_number, T)
 print fig_png
 fig.savefig(fig_png)
 plt.show()
