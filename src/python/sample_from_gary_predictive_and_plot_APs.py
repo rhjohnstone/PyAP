@@ -113,13 +113,13 @@ ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 
 T = args.num_samples
 rand_samples = npr.rand(T)
-fig, ax = plt.subplots(1, 1, figsize=(4,3))
+fig, ax = plt.subplots(1, 1, figsize=(8,6))
 ax.grid()
 ax.set_xlabel("Time (ms)")
 ax.set_ylabel("Membrane voltage (mV)")
 for t in xrange(T):
     temp_lnGs = [np.interp(rand_samples[t], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
-    ax.plot(expt_times, solve_for_voltage_trace_with_initial_V(temp_lnGs, ap_model, expt_trace), alpha=0.1, color='black')
+    ax.plot(expt_times, solve_for_voltage_trace_with_initial_V(temp_lnGs, ap_model, expt_trace), alpha=0.01, color='black')
 fig.tight_layout()
 plt.show()
 
