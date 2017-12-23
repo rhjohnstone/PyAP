@@ -88,14 +88,17 @@ num_pts = args.num_pts
 xs = np.zeros((num_gs, num_pts))
 for i in xrange(num_gs):
     if pyap_options["model_number"]==4:
-        xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
-        """if i==0:
-            xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
-        if i in [3, 7, 8]:
+        #xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
+        if i==0:
+            xs[i, :] = np.linspace(mins[i], maxs[i]+1, num_pts)
+        elif i==1 or i==2:
+            xs[i, :] = np.linspace(mins[i]+0.5, maxs[i]+0.5, num_pts)
+        elif i==3:
             xs[i, :] = np.linspace(mins[i]-3, maxs[i]+3, num_pts)
+        elif i==4:
+            xs[i, :] = np.linspace(mins[i]+1, maxs[i], num_pts)
         else:
-            xs[i, :] = np.linspace(mins[i]-0.5, maxs[i]+1, num_pts)"""
-
+            xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
 
 
 T = args.num_samples
