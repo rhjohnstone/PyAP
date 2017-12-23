@@ -159,6 +159,8 @@ for j in xrange(2):
     axs[j].grid()
 axs[0].set_ylabel("Membrane voltage (mV)")
 
+axs[0].set_title("Experimental")
+axs[1].set_title("Predicted")
 
 start = time()
 for t in xrange(T):
@@ -166,7 +168,7 @@ for t in xrange(T):
     axs[1].plot(expt_times, solve_for_voltage_trace_with_initial_V(temp_lnGs, ap_model, expt_trace), alpha=0.01, color='blue')
 time_taken = time()-start
 print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
-axs[1].plot([], [], label="Control".format(T), color='blue')
+axs[1].plot([], [], label="Control", color='blue')
 #fig.tight_layout()
 #fig_png = "{}_trace_{}_{}_samples.png".format(expt_name, trace_number, T)
 #print fig_png
@@ -174,7 +176,7 @@ axs[1].plot([], [], label="Control".format(T), color='blue')
 #plt.show()
 
 
-for i in xrange(num_traces):
+for i in xrange(N_e):
     trace_number = 150 + i
     trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(trace_number)
 
@@ -182,6 +184,14 @@ for i in xrange(num_traces):
     axs[0].plot(expt_times, expt_trace, color='blue')
 axs[0].plot([], [], color='blue', label='Control')
 
+for i in xrange(N_e):
+    trace_number = 400 + i
+    trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(trace_number)
+
+    expt_times, expt_trace = np.loadtxt(trace_path,delimiter=',').T
+    axs[0].plot(expt_times, expt_trace, color='red')
+axs[0].plot([], [], color='red', label="K$^+$, Moxi.")
+axs[0].legend(loc=1)
 
 moxi_conc = 10
 new_extra_K_conc = 4
@@ -210,7 +220,7 @@ for t in xrange(T):
     axs[1].plot(expt_times, solve_for_voltage_trace_with_block(temp_lnGs, ap_model, expt_trace, moxi_conc), alpha=0.01, color='red')
 time_taken = time()-start
 print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
-axs[1].plot([], [], label="K$^+$, Moxi.".format(T), color='red')
+axs[1].plot([], [], label="K$^+$, Moxi.", color='red')
 axs[1].legend(loc=1)
 fig.tight_layout()
 fig_png = "{}_trace_{}_{}_samples_control_and_moxi_predictions.png".format(expt_name, trace_number, T)
