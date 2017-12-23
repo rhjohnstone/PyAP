@@ -95,18 +95,14 @@ for n in xrange(N_e):
     max_target_idx = np.argmax(sl_chain[:,-1])
     MPDs[n, :] = sl_chain[max_target_idx, :-2]
 
-means = MPDs.mean(axis=0).round(1)
-stds = MPDs.std(axis=0).round(1)
+dp = 3
+means = MPDs.mean(axis=0).round(dp)
+stds = MPDs.std(axis=0).round(dp)
 
 print "\n"
-print r"\begin{tabular}{ccc}"
-print r" & Mean & Standard deviation \\"
-print r"\midrule"
 for i in xrange(num_gs):
     line = r"${}$ & {} & {} \\".format(g_parameters[i], means[i], stds[i])
     print line
-print r"\bottomrule"
-print r"\end{tabular"
 print "\n"
 
 
