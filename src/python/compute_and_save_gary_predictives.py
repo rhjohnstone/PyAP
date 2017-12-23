@@ -115,7 +115,9 @@ for i in xrange(num_gs):
     ax.set_ylabel("Cumulative dist.")
     ax.set_xlim(xs[i, 0], xs[i, -1])
     fig.tight_layout()
-    plt.savefig(garypng+"{}_{}_traces_predictive_cdf_{}.png".format(expt_name, N_e, g_parameters[i]))
+    fullpng = garypng+"{}_{}_traces_predictive_cdf_{}.png".format(expt_name, N_e, g_parameters[i])
+    print fullpng
+    plt.savefig(fullpng)
     plt.close()
 
 
