@@ -50,12 +50,7 @@ trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 expt_params_file = '/'.join( split_trace_path[:5] ) + "/expt_params.txt"
 
-split_trace_name = trace_name.split("_")
-if pyap_options["model_number"]==6:
-    first_trace_number = int(split_trace_name[-1])
-elif pyap_options["model_number"]==4:
-    first_trace_number = int(split_trace_name[-2])
-print "first_trace_number:", first_trace_number
+
 
 pyap_options = {}
 with open(options_file, 'r') as infile:
@@ -69,6 +64,13 @@ with open(options_file, 'r') as infile:
         
 data_clamp_on = pyap_options["data_clamp_on"]
 data_clamp_off = pyap_options["data_clamp_off"]
+
+split_trace_name = trace_name.split("_")
+if pyap_options["model_number"]==6:
+    first_trace_number = int(split_trace_name[-1])
+elif pyap_options["model_number"]==4:
+    first_trace_number = int(split_trace_name[-2])
+print "first_trace_number:", first_trace_number
         
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
