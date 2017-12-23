@@ -106,7 +106,7 @@ for i in xrange(num_gs):
         elif i==8:
             xs[i, :] = np.linspace(mins[i]-4, maxs[i]+6, num_pts)
         elif i==9:
-            xs[i, :] = np.linspace(mins[i]-3, maxs[i]+4, num_pts)
+            xs[i, :] = np.linspace(mins[i]-4, maxs[i]+5, num_pts)
         elif i==10:
             xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
         elif i==11:
