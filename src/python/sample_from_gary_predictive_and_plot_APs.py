@@ -123,7 +123,7 @@ for t in xrange(T):
     ax.plot(expt_times, solve_for_voltage_trace_with_initial_V(temp_lnGs, ap_model, expt_trace), alpha=0.01, color='black')
 time_taken = time()-start
 print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
-ax.plot([], [], label="{} samples".format(T))
+ax.plot([], [], label="{} samples".format(T), color='black')
 ax.legend(loc=1)
 fig.tight_layout()
 plt.show()
