@@ -112,6 +112,9 @@ for n in xrange(N_e):
     print temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
     sl_chain = np.loadtxt(sl_mcmc_file)
+    plt.plot(sl_chain[:,-1])
+    plt.show()
+    plt.close()
     max_target_idx = np.argmax(sl_chain[:,-1])
     MPDs[n, :] = sl_chain[max_target_idx, :-2]
     
