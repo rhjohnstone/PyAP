@@ -177,19 +177,20 @@ axs[1].plot([], [], label="Control", color='blue')
 
 
 for i in xrange(N_e):
-    trace_number = 150 + i
-    trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(trace_number)
+    plot_trace_number = 150 + i
+    plot_trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(plot_trace_number)
 
-    expt_times_for_plotting, expt_trace_for_plotting = np.loadtxt(trace_path,delimiter=',').T
+    expt_times_for_plotting, expt_trace_for_plotting = np.loadtxt(plot_trace_path, delimiter=',').T
     axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='blue')
 
 
 for i in xrange(N_e):
-    trace_number = 400 + i
-    print trace_number
-    trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(trace_number)
+    plot_trace_number = 400 + i
+    plot_trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(plot_trace_number)
 
-    expt_times_for_plotting, expt_trace_for_plotting = np.loadtxt(trace_path,delimiter=',').T
+    expt_times_for_plotting, expt_trace_for_plotting = np.loadtxt(plot_trace_path, delimiter=',').T
+    print expt_times_for_plotting
+    print expt_trace_for_plotting
     axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='red')
 
 axs[0].plot([], [], color='blue', label='Control')
