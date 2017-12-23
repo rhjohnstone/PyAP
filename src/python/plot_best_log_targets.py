@@ -138,6 +138,7 @@ ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 
 fig, ax = plt.subplots(1, 1)
 ax.plot(expt_times, expt_traces[0], color='blue')
+ax.plot(expt_times, solve_for_voltage_trace_with_initial_V(MPDs[0, :], ap_model, expt_traces[0]), color='red')
 plt.show()
 
 
