@@ -75,7 +75,7 @@ sigma_const = 1./(sigma_upper-sigma_lower)
 
 mu = m_true
 alpha = 4.*np.ones(num_gs)
-beta = (alpha+1.) * sigma2_true
+beta = (alpha+1.) * 0.04
 nu = 4.*beta / ((alpha+1.) * np.log(10)**2)
 
 prior_means = np.log(original_gs)
@@ -95,4 +95,24 @@ for n in xrange(N_e):
     max_target_idx = np.argmax(sl_chain[:,-1])
     MPDs[n, :] = sl_chain[max_target_idx, :-2]
 
-print MPDs
+means = MPDs.mean(axis=0).round(1)
+stds = MPDs.std(axis=0).round(1)
+
+print "\n"
+print r"\begin{tabular}{ccc}"
+print r" & Mean & Standard deviation \\"
+print r"\midrule"
+for i in xrange(num_gs):
+    line = r"${}$ & {} & {} \\".format(g_parameters[i], means[i], stds[i])
+    print line
+print r"\bottomrule"
+print r"\end{tabular"
+print "\n"
+
+
+
+
+
+
+
+
