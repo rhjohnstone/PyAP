@@ -40,8 +40,7 @@ def ic50_to_pic50(ic50): # IC50 in uM
 def apply_moxi_blocks(temp_G_params, dose):
     hill = 1
     for i, p in enumerate(block_indices):
-        ic50 = pic50_to_ic50(pic50s[i])
-        temp_G_params[p] *= (1.-fraction_block(dose, hill, ic50))
+        temp_G_params[p] *= (1.-fraction_block(dose, hill, ic50s[i]))
     return temp_G_params
     
 
@@ -93,7 +92,7 @@ g_parameters = ['G_{Na}', 'G_{CaL}', 'G_{K1}', 'G_{pK}',
 if pyap_options["model_number"]==6:
     trace_number = int(split_trace_name[-1])
     block_indices = [0, 1, 4, 5]
-    pic50s = [206.7, 158., 158., 29.]
+    ic50s = [206.7, 158., 158., 29.]
         
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
