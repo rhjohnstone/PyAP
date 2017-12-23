@@ -188,9 +188,7 @@ for i in xrange(N_e):
     plot_trace_number = 400 + i
     plot_trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(plot_trace_number)
 
-    expt_times_for_plotting, expt_trace_for_plotting = np.loadtxt(plot_trace_path, delimiter=',').T
-    print expt_times_for_plotting
-    print expt_trace_for_plotting
+    expt_times_for_plotting, expt_trace_for_plotting = 1000.*np.loadtxt(plot_trace_path, delimiter=',').T
     axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='red')
 
 axs[0].plot([], [], color='blue', label='Control')
