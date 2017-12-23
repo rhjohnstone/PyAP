@@ -99,8 +99,11 @@ dp = 3
 means = MPDs.mean(axis=0).round(dp)
 stds = MPDs.std(axis=0).round(dp)
 
+sorted_idx = np.argsort(stds)[::-1]
+
 print "\n"
-for i in xrange(num_gs):
+for j in xrange(num_gs):
+    i = sorted_idx[j]
     line = r"$\log({})$ & {} & {} \\".format(g_parameters[i], means[i], stds[i])
     print line
 print "\n"
