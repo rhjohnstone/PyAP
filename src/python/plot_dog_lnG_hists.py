@@ -39,7 +39,12 @@ options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 expt_params_file = '/'.join( split_trace_path[:5] ) + "/expt_params.txt"
 
 split_trace_name = trace_name.split("_")
-first_trace_number = int(split_trace_name[-1])
+
+
+if expt_name=="dog_teun_davies":
+    first_trace_number = 150
+elif expt_name=="roche_ten_tusscher":
+    first_trace_number = 100
 
 pyap_options = {}
 with open(options_file, 'r') as infile:
