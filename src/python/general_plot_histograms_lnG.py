@@ -84,6 +84,11 @@ try:
 except:
     sys.exit("\nCan't find (or load) {}\n".format(mcmc_file))
     
+
+if expt_name=="roche_ten_tusscher":
+    saved_its = chain.shape[0]
+    sl_chain = chain[saved_its/4:, :]
+    
 saved_its, num_params_plus_1 = chain.shape
 
 best_all = chain[np.argmax(chain[:,-1]),:]
@@ -233,6 +238,8 @@ while count < 2:
 plt.setp(hidden_labels, visible=False)
 
 matrix_fig.tight_layout()
-matrix_fig.savefig(png_dir+'scatterplot_matrix.png')
+matrixpng = png_dir+'scatterplot_matrix.png'
+print matrixpng
+matrix_fig.savefig(matrixpng)
 plt.close()
 
