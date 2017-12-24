@@ -72,6 +72,9 @@ for n in xrange(N_e):
     print "Trace:", temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
     temp_chain = np.loadtxt(sl_mcmc_file, usecols=range(num_gs))
+    saved_its = temp_chain.shape[0]
+    if pyap_options["model_number"]==4:
+        temp_chain = temp_chain[saved_its/4:, :]
     sl_chains.append(temp_chain)
     temp_mins = np.min(temp_chain, axis=0)
     temp_maxs = np.max(temp_chain, axis=0)
