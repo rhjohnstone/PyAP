@@ -123,6 +123,10 @@ for n in xrange(N_e):
     print temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
     sl_chain = np.loadtxt(sl_mcmc_file)
+    if expt_name=="roche_ten_tusscher":
+        saved_its = sl_chain.shape[0]
+        sl_chain = sl_chain[saved_its/4:, :]
+    
     sl_means[n, :] = np.mean(sl_chain[:,:-2], axis=0)
     
     colour = plt.cm.winter(color_idx[n])
