@@ -96,7 +96,7 @@ figsize = (ax_x, 1.2*ax_x)
 if expt_name=="dog_teun_davies":
     fig, axs = plt.subplots(5, 3, figsize=figsize)
 elif expt_name=="roche_ten_tusscher":
-    fig, axs = plt.subplots(4, 3, figsize=figsize)
+    fig, axs = plt.subplots(5, 3, figsize=figsize)
 
 axs = axs.flatten()
 for i in xrange(num_gs+1):
@@ -111,14 +111,17 @@ for i in xrange(num_gs+1):
 sl_means = np.zeros((N_e, num_gs))
 for n in xrange(N_e):
     temp_trace_number = first_trace_number + n
-    temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(temp_trace_number)
+    if expt_name=="dog_teun_davies":
+        temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(temp_trace_number)
+    elif expt_name=="roche_ten_tusscher":
+        temp_trace_name = "_".join(split_trace_name[:-2])+"_{}_1".format(temp_trace_number)
     print temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
     sl_chain = np.loadtxt(sl_mcmc_file)
     sl_means[n, :] = np.mean(sl_chain[:,:-2], axis=0)
     
     colour = plt.cm.winter(color_idx[n])
-    c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=1.5/N_e)
+    c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=3./N_e)
     for i in xrange(num_gs+1):
         axs[i].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40)
 
