@@ -112,6 +112,9 @@ for n in xrange(N_e):
     print temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
     sl_chain = np.loadtxt(sl_mcmc_file)
+    saved_its = sl_chain.shape[0]
+    if pyap_options["model_number"]==4:
+        sl_chain = sl_chain[saved_its/4:, :]
     plt.plot(sl_chain[:,-1])
     plt.show()
     plt.close()
@@ -119,7 +122,7 @@ for n in xrange(N_e):
     MPDs[n, :] = sl_chain[max_target_idx, :-2]
     
     
-    elif pyap_options["model_number"]==4:
+    if pyap_options["model_number"]==4:
         plot_trace_number = 100 + n
         plot_trace_path = "projects/PyAP/python/input/roche_ten_tusscher/traces/Trace_2_2_{}_1.csv".format(plot_trace_number)
     elif pyap_options["model_number"]==6:
