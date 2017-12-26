@@ -157,7 +157,7 @@ axs[0].set_yticks(axs[0].get_yticks()[1:-1])
 for i in xrange(4):
     axs[i].grid()
     axs[i].set_title(model_names[i])
-fig.suptitle(r"$I_{stim} = 1000\,pA, C_m = 56.31\,pF$")
+fig.suptitle(r"$I_{stim} = 1000\,$pA$, $C_m = 56.31\,$pF", fontsize=16)
 fig.tight_layout()
 fig.subplots_adjust(top=0.9)
 plt.show()
