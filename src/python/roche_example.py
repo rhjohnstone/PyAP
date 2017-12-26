@@ -6,6 +6,7 @@ import pyap_setup as ps
 import sys
 import itertools as it
 import numpy.random as npr
+from os.path import expanduser
 
 
 def example_likelihood_function(trace):
@@ -59,12 +60,12 @@ fitted_V = m*triangle_times + c
 dc_on = 50
 dc_off = 51.3
 ax.set_xlim(50, 52)
-ax.axvline(dc_on, color='red', lw=2, clip_on=False)
-ax.axvline(dc_off, color='red', lw=2)
+#ax.axvline(dc_on, color='red', lw=2, clip_on=False)
+#ax.axvline(dc_off, color='red', lw=2)
 ax.set_ylabel("Membrane voltage (mV)")
 ax.set_xlabel("Time (ms)")
 
-ax.plot(triangle_times, fitted_V, color='red', lw=1.5, label="Fitted I_stim = {} pA".format(I_stim))
+ax.plot(triangle_times, fitted_V, color='red', lw=1.5, label="Fitted I_stim = {} pA".format(round(I_stim,2)))
 ax.plot(triangle_times[0], fitted_V[0], 'x', color='red', ms=10, mew=2, zorder=10)
 ax.plot(triangle_times[-1], fitted_V[-1], 'x', color='red', ms=10, mew=2, zorder=10)
 ax.set_title("Applied I_stim = 1000 pA, measured Cm = 56.31 pF")
@@ -72,7 +73,9 @@ ax.legend(loc='best')
 fig.tight_layout()
 
 
-
+figpng = expanduser("~/fit_stim.png")
+print figpng
+fig.savefig(figpng)
 
 plt.show()
 sys.exit()
