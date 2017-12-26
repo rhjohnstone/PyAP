@@ -117,9 +117,11 @@ triangle_Vs = test_trace[triangle_idx]
 
 m, c = np.polyfit(triangle_times, triangle_Vs, deg=1)
 
-Cm = cap  # 56.31 pF
-I_stim = m*Cm
-print "Estimated I_stim = {} pA = {} nA = {} uA".format(I_stim, I_stim/1000., I_stim/1000000.)
+print "Real I_stim_amp =", stimulus_magnitude
+print "Real cap =", cap
+print "Fitted -m =", -m
+print "-m/stimulus_magnitude =", -m/stimulus_magnitude
+
 
 cap *= 2
 
@@ -142,10 +144,38 @@ triangle_Vs = test_trace[triangle_idx]
 
 m, c = np.polyfit(triangle_times, triangle_Vs, deg=1)
 
-Cm = cap  # 56.31 pF
-I_stim = m*Cm
-print "Estimated I_stim = {} pA = {} nA = {} uA".format(I_stim, I_stim/1000., I_stim/1000000.)
+print "Real I_stim_amp =", stimulus_magnitude
+print "Real cap =", cap
+print "Fitted -m =", -m
+print "-m/stimulus_magnitude =", -m/stimulus_magnitude
 
+cap *= 2
+
+ap = ap_simulator.APSimulator()
+ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
+ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
+ap.DefineModel(model_number)
+ap.SetMembraneCapacitance(cap)
+temp_gs = np.copy(original_gs)
+ap.SetToModelInitialConditions()
+test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
+ax.plot(expt_times, test_trace, label="cap = {}".format(cap))
+
+
+triangle_t0 = 50.2
+triangle_t1 = 51.2
+triangle_idx = (triangle_t0 < expt_times) & (expt_times < triangle_t1)
+triangle_times = expt_times[triangle_idx]
+triangle_Vs = test_trace[triangle_idx]
+
+m, c = np.polyfit(triangle_times, triangle_Vs, deg=1)
+
+print "Real I_stim_amp =", stimulus_magnitude
+print "Real cap =", cap
+print "Fitted -m =", -m
+print "-m/stimulus_magnitude =", -m/stimulus_magnitude
+
+ax.legend(loc="best")
 plt.show()
 sys.exit()
 
