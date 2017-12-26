@@ -112,9 +112,9 @@ for i, model_number in enumerate([3,4,5,7]):
     ax = axs[i]
     
     if model_number==3:
-        stimulus_magnitude = -stim_amp/cap
-    elif model_number==4:
         stimulus_magnitude = -stim_amp
+    elif model_number==4:
+        stimulus_magnitude = -stim_amp/cap
     elif model_number==5:
         stimulus_magnitude = -stim_amp
     elif model_number==7:
