@@ -151,8 +151,9 @@ for i, model_number in enumerate([3,4,5,7]):
 
 axs[0].set_xticks(axs[0].get_xticks()[1:-1])
 axs[0].set_yticks(axs[0].get_yticks()[1:-1])
-axs[0].grid()
-
+for i in xrange(4):
+    axs[i].grid()
+fig.suptitle(r"$I_{stim} = 1000\,pA, C_m = 56.31\,pF$")
 fig.tight_layout()
 plt.show()
 sys.exit()
