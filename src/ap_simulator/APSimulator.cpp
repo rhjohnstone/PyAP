@@ -388,6 +388,11 @@ void APSimulator::SetVoltage(double v)
     mpModel->SetStateVariable("membrane_voltage", v);
 }
 
+void APSimulator::SetMembraneCapacitance(double Cm)
+{
+    mpModel->SetParameter("membrane_capacitance", Cm);
+}
+
 /*void APSimulator::ArchiveStateVariables()
 {
     boost::filesystem::path arch_dir;
