@@ -53,7 +53,7 @@ m, c = np.polyfit(triangle_times, triangle_Vs.mean(axis=0), deg=1)
 
 Cm = 56.31  # 56.31 pF
 I_stim = m*Cm
-print "I_stim = {} pA = {} nA = {} uA".format(I_stim, I_stim/1000., I_stim/1000000.)
+print "Estimated I_stim = {} pA = {} nA = {} uA".format(I_stim, I_stim/1000., I_stim/1000000.)
 
 fitted_V = m*triangle_times + c
     
@@ -109,6 +109,18 @@ ap.SetToModelInitialConditions()
 test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
 ax.plot(expt_times, test_trace, label="cap = {}".format(cap))
 
+triangle_t0 = 50.2
+triangle_t1 = 51.2
+triangle_idx = (triangle_t0 < expt_times) & (expt_times < triangle_t1)
+triangle_times = expt_times[triangle_idx]
+triangle_Vs = test_trace[triangle_idx]
+
+m, c = np.polyfit(triangle_times, triangle_Vs, deg=1)
+
+Cm = cap  # 56.31 pF
+I_stim = m*Cm
+print "Estimated I_stim = {} pA = {} nA = {} uA".format(I_stim, I_stim/1000., I_stim/1000000.)
+
 cap *= 2
 
 ap = ap_simulator.APSimulator()
@@ -121,6 +133,19 @@ ap.SetToModelInitialConditions()
 test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
 ax.plot(expt_times, test_trace, label="cap = {}".format(cap))
 ax.legend(loc="best")
+
+triangle_t0 = 50.2
+triangle_t1 = 51.2
+triangle_idx = (triangle_t0 < expt_times) & (expt_times < triangle_t1)
+triangle_times = expt_times[triangle_idx]
+triangle_Vs = test_trace[triangle_idx]
+
+m, c = np.polyfit(triangle_times, triangle_Vs, deg=1)
+
+Cm = cap  # 56.31 pF
+I_stim = m*Cm
+print "Estimated I_stim = {} pA = {} nA = {} uA".format(I_stim, I_stim/1000., I_stim/1000000.)
+
 plt.show()
 sys.exit()
 
