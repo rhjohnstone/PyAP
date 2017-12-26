@@ -26,13 +26,30 @@ def sos(test_trace):
 
 protocol = 1
 
-fig = plt.figure()
+fig = plt.figure(figsize=(4,3))
 ax = fig.add_subplot(111)
 ax.grid()
-for t in xrange(100, 116):
+first_trace = 100
+num_traces = 16
+for i in xrange(num_traces):
+    t = first_trace + i
     roche_file = "projects/PyAP/python/input/roche_ten_tusscher/traces/Trace_2_2_{}_1.csv".format(t)
     expt_times, expt_trace = np.loadtxt(roche_file, delimiter=',').T
+    if i==0:
+        num_pts = len(expt_times)
+        all_expts = np.zeros((num_traces, num_pts))
+    all_expts[i, :] = expt_trace
     ax.plot(expt_times, expt_trace)
+    
+triangle_t0 = 50.2
+triangle_t1 = 51.2
+triangle_idx = (triangle_t0 < expt_times) & (expt_times < triangle_t1)
+triangle_times = expt_times[triangle_idx]
+triangle_Vs = all_expts[:, triangle_idx]
+
+m, c = np.polyfit(triangle_times, triangle_Vs, deg=1)
+fitted_V = m*triangle_times + c
+    
 dc_on = 50
 dc_off = 51.3
 ax.set_xlim(50, 52)
@@ -40,6 +57,9 @@ ax.axvline(dc_on, color='red', lw=2, clip_on=False)
 ax.axvline(dc_off, color='red', lw=2)
 ax.set_ylabel("Membrane voltage (mV)")
 ax.set_xlabel("Time (ms)")
+
+ax.plot(triangle_times, fitted_V, color='cyan')
+
 fig.tight_layout()
 plt.show()
 sys.exit()
