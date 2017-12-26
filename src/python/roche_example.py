@@ -118,10 +118,10 @@ for i, model_number in enumerate([3,4,5,7]):
         stimulus_magnitude = -stim_amp/cap
         scale = 1
     elif model_number==5:
-        stimulus_magnitude = -stim_amp
+        stimulus_magnitude = -stim_amp/cap
         scale = 1
     elif model_number==7:
-        stimulus_magnitude = -stim_amp
+        stimulus_magnitude = -stim_amp/cap
         scale = 1
     
     ap = ap_simulator.APSimulator()
@@ -135,7 +135,7 @@ for i, model_number in enumerate([3,4,5,7]):
     temp_gs = scale*np.copy(original_gs)
     ap.SetToModelInitialConditions()
     test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
-    ax.plot(expt_times, test_trace)
+    ax.plot(expt_times, test_trace, label=r"$\del m \times C_m = {}$".format(m * cap))
     ax.legend(loc="best")
 
     triangle_Vs = test_trace[triangle_idx]
