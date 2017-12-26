@@ -110,7 +110,7 @@ for i, model_number in enumerate([3,4,5,7]):
     ax = axs[i]
     for p in range(-2,3):
         if model_number==7:
-            cap = 10**(p+3)
+            cap = 10**(p-3)
         else:
             cap = 10**p
         ap = ap_simulator.APSimulator()
