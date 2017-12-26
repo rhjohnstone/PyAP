@@ -114,6 +114,7 @@ for i, model_number in enumerate([3,4,5,7]):
 
     ax = axs[i]
     
+    model_cap = cap
     if model_number==3:
         stimulus_magnitude = -stim_amp
         scale = 15
@@ -126,21 +127,17 @@ for i, model_number in enumerate([3,4,5,7]):
     elif model_number==7:
         stimulus_magnitude = -stim_amp/cap
         scale = 1
-        g_na_scale = 10
+        model_cap = cap * 1e-9  # Paci has Cm in F, not pF
     
     ap = ap_simulator.APSimulator()
     ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
     ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
     ap.DefineModel(model_number)
     try:
-        ap.SetMembraneCapacitance(cap)
+        ap.SetMembraneCapacitance(model_cap)
     except:
         print "Can't set capacitance in", model_name
     temp_gs = scale*np.copy(original_gs)
-    try:
-        temp_gs[0] *= g_na_scale
-    except:
-        pass
     ap.SetToModelInitialConditions()
     test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
     
