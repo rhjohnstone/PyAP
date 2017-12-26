@@ -47,7 +47,7 @@ triangle_idx = (triangle_t0 < expt_times) & (expt_times < triangle_t1)
 triangle_times = expt_times[triangle_idx]
 triangle_Vs = all_expts[:, triangle_idx]
 
-m, c = np.polyfit(triangle_times, triangle_Vs, deg=1)
+m, c = np.polyfit(triangle_times, triangle_Vs.mean(axis=0), deg=1)
 fitted_V = m*triangle_times + c
     
 dc_on = 50
@@ -59,6 +59,8 @@ ax.set_ylabel("Membrane voltage (mV)")
 ax.set_xlabel("Time (ms)")
 
 ax.plot(triangle_times, fitted_V, color='cyan')
+ax.plot(triangle_times[0], fitted_V[0], linestyle='x', lw=10)
+ax.plot(triangle_times[-1], fitted_V[-1], linestyle='x', lw=10)
 
 fig.tight_layout()
 plt.show()
