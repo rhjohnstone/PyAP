@@ -100,6 +100,8 @@ for j in xrange(2):
 #ax.plot(expt_times, expt_trace)
 
 axs = axs.flatten()
+cap = 56.31  # pF
+stim_amp = 1000  # pA
 
 print "\nReal I_stim_amp =", stimulus_magnitude
 #model_number = 4
@@ -108,37 +110,41 @@ for i, model_number in enumerate([3,4,5,7]):
     original_gs = np.array(original_gs)
 
     ax = axs[i]
-    for p in range(-2,3):
-        if model_number==7:
-            cap = 10**(p-3)
-        else:
-            cap = 10**p
-        ap = ap_simulator.APSimulator()
-        ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
-        ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
-        ap.DefineModel(model_number)
-        try:
-            ap.SetMembraneCapacitance(cap)
-        except:
-            print "Can't set capacitance in", model_name
-        temp_gs = np.copy(original_gs)
-        ap.SetToModelInitialConditions()
-        test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
-        ax.plot(expt_times, test_trace, label="cap = {}".format(cap))
-        ax.legend(loc="best")
-
-        triangle_Vs = test_trace[triangle_idx]
-
-        m, c = np.polyfit(triangle_times, triangle_Vs, deg=1)
-
-        
-        print "\nReal cap =", cap
-        print "Fitted -m =", -m
-        print "-m/stimulus_magnitude =", -m/stimulus_magnitude
-
-
-    print "\n"
+    
+    if model_number==3:
+        stimulus_magnitude = -stim_amp/cap
+    elif model_number==4:
+        stimulus_magnitude = -stim_amp
+    elif model_number==5:
+        stimulus_magnitude = -stim_amp
+    elif model_number==7:
+        stimulus_magnitude = -stim_amp
+    
+    ap = ap_simulator.APSimulator()
+    ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
+    ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
+    ap.DefineModel(model_number)
+    try:
+        ap.SetMembraneCapacitance(cap)
+    except:
+        print "Can't set capacitance in", model_name
+    temp_gs = np.copy(original_gs)
+    ap.SetToModelInitialConditions()
+    test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
+    ax.plot(expt_times, test_trace)
     ax.legend(loc="best")
+
+    triangle_Vs = test_trace[triangle_idx]
+
+    m, c = np.polyfit(triangle_times, triangle_Vs, deg=1)
+
+    
+    print "\nReal cap =", cap
+    print "Fitted -m =", -m
+    print "-m/stimulus_magnitude =", -m/stimulus_magnitude
+    print "\n"
+
+fig.tight_layout()
 plt.show()
 sys.exit()
 
