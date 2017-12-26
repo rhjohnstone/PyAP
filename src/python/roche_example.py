@@ -26,9 +26,16 @@ def sos(test_trace):
 
 protocol = 1
 
-
-roche_file = "projects/PyAP/python/input/roche_ten_tusscher/traces/Trace_2_2_100_1.csv"
-expt_times, expt_trace = np.loadtxt(roche_file, delimiter=',').T
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.grid()
+for i in xrange(100, 116):
+    roche_file = "projects/PyAP/python/input/roche_ten_tusscher/traces/Trace_2_2_100_1.csv"
+    expt_times, expt_trace = np.loadtxt(roche_file, delimiter=',').T
+    ax.plot(expt_times, expt_trace)
+ax.set_xlim(50, 52)
+plt.show()
+sys.exit()
 
 solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time = ps.get_protocol_details(protocol)
 
@@ -42,9 +49,7 @@ stimulus_start_time = 50
 
 model_number = 4
 
-fig = plt.figure()
-ax = fig.add_subplot(111)
-ax.grid()
+
 ax.plot(expt_times, expt_trace)
 
 original_gs, g_parameters, model_name = ps.get_original_params(model_number)
