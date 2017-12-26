@@ -35,9 +35,9 @@ for t in xrange(100, 116):
     ax.plot(expt_times, expt_trace)
 dc_on = 50
 dc_off = 51.3
-ax.axvline(dc_on, color='red', lw=2)
-ax.axvline(dc_off, color='red', lw=2)
 ax.set_xlim(50, 52)
+ax.axvline(dc_on, color='red', lw=2, clip_on="False")
+ax.axvline(dc_off, color='red', lw=2)
 plt.show()
 sys.exit()
 
