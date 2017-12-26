@@ -28,9 +28,9 @@ def sos(test_trace):
 
 
 
-fig = plt.figure(figsize=(8,6))
-ax = fig.add_subplot(111)
-ax.grid()
+#fig = plt.figure(figsize=(8,6))
+#ax = fig.add_subplot(111)
+#ax.grid()
 first_trace = 100
 num_traces = 16
 for i in xrange(num_traces):
@@ -41,9 +41,9 @@ for i in xrange(num_traces):
         num_pts = len(expt_times)
         all_expts = np.zeros((num_traces, num_pts))
     all_expts[i, :] = expt_trace
-    ax.plot(expt_times, expt_trace, color='blue')
+    #ax.plot(expt_times, expt_trace, color='blue')
     
-triangle_t0 = 50.2
+"""triangle_t0 = 50.2
 triangle_t1 = 51.2
 triangle_idx = (triangle_t0 < expt_times) & (expt_times < triangle_t1)
 triangle_times = expt_times[triangle_idx]
@@ -73,42 +73,43 @@ ax.legend(loc='best')
 fig.tight_layout()
 
 
-figpng = expanduser("~/fit_stim.png")
+figpng = expanduser("~/roche_fit_stim.png")
 print figpng
 fig.savefig(figpng)
 
-plt.show()
-sys.exit()
+plt.close()"""
 
 solve_start = expt_times[0]
 solve_end = expt_times[-1]
 solve_timestep = expt_times[1]-expt_times[0]
-stimulus_magnitude = -50  # wrong
+stimulus_magnitude = -25  # wrong
 stimulus_duration = 2
 stimulus_period = 1000
 stimulus_start_time = 50
 
 model_number = 4
 
-
+fig, ax = plt.subplots(1, 1)
 ax.plot(expt_times, expt_trace)
 
 original_gs, g_parameters, model_name = ps.get_original_params(model_number)
 original_gs = np.array(original_gs)
 
+cap = 1.
+
 ap = ap_simulator.APSimulator()
+ap.SetMembraneCapacitance(cap)
 ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
 ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
 ap.DefineModel(model_number)
-
-ap.SetToModelInitialConditions()
 temp_gs = np.copy(original_gs)
 test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
 ax.plot(expt_times, test_trace)
-
+plt.show()
+sys.exit()
 
 ap.SetToModelInitialConditions()
-ap.SetMembraneCapacitance(0.00005631)  # 56.31 pF
+ap.SetMembraneCapacitance(0.00005631)
 temp_gs = np.copy(original_gs)
 test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
 ax.plot(expt_times, test_trace)
