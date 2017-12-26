@@ -108,8 +108,8 @@ for model_number in xrange(3, 7):
     original_gs = np.array(original_gs)
 
     ax = axs[model_number-3]
-    for p in xrange(-2,3):
-        cap = 10**p
+    for p in np.linspace(0.9,1.1,5):
+        cap = p
         ap = ap_simulator.APSimulator()
         ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
         ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
