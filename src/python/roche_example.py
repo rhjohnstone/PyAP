@@ -93,11 +93,13 @@ triangle_idx = (triangle_t0 < expt_times) & (expt_times < triangle_t1)
 triangle_times = expt_times[triangle_idx]
 
 fig, axs = plt.subplots(2, 2, sharex=True, sharey=True)
-axs = axs.flatten()
+
 for j in xrange(2):
     axs[j, 0].set_ylabel("Membrane voltage (mV)")
     axs[1, j].set_xlabel("Time (ms)")
 #ax.plot(expt_times, expt_trace)
+
+axs = axs.flatten()
 
 print "\nReal I_stim_amp =", stimulus_magnitude
 model_number = 4
