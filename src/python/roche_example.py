@@ -51,7 +51,7 @@ triangle_Vs = all_expts[:, triangle_idx]
 m, c = np.polyfit(triangle_times, triangle_Vs.mean(axis=0), deg=1)
 
 Cm = 56.31  # 56.31 pF
-I_stim = -m*Cm
+I_stim = m*Cm
 print "I_stim = {} pA = {} nA = {} uA".format(I_stim, I_stim/1000., I_stim/1000000.)
 
 fitted_V = m*triangle_times + c
@@ -64,11 +64,11 @@ ax.axvline(dc_off, color='red', lw=2)
 ax.set_ylabel("Membrane voltage (mV)")
 ax.set_xlabel("Time (ms)")
 
-ax.plot(triangle_times, fitted_V, color='red', label="Fitted I_stim = {} pA".format(I_stim))
+ax.plot(triangle_times, fitted_V, color='red', lw=1.5, label="Fitted I_stim = {} pA".format(I_stim))
 ax.plot(triangle_times[0], fitted_V[0], 'x', color='red', ms=10, mew=2, zorder=10)
 ax.plot(triangle_times[-1], fitted_V[-1], 'x', color='red', ms=10, mew=2, zorder=10)
 ax.set_title("Applied I_stim = 1000 pA, measured Cm = 56.31 pF")
-ax.legend(loc=1)
+ax.legend(loc='best')
 fig.tight_layout()
 
 
