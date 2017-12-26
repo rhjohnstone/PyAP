@@ -114,7 +114,10 @@ for model_number in xrange(3, 7):
         ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
         ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
         ap.DefineModel(model_number)
-        ap.SetMembraneCapacitance(cap)
+        try:
+            ap.SetMembraneCapacitance(cap)
+        except:
+            print "Can't set capacitance in", model_name
         temp_gs = np.copy(original_gs)
         ap.SetToModelInitialConditions()
         test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
