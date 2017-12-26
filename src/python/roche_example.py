@@ -107,7 +107,7 @@ ap.SetMembraneCapacitance(cap)
 temp_gs = np.copy(original_gs)
 ap.SetToModelInitialConditions()
 test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
-ax.plot(expt_times, test_trace) label="cap = {}".format(cap))
+ax.plot(expt_times, test_trace, label="cap = {}".format(cap))
 
 cap *= 2
 
@@ -119,7 +119,7 @@ ap.SetMembraneCapacitance(cap)
 temp_gs = np.copy(original_gs)
 ap.SetToModelInitialConditions()
 test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
-ax.plot(expt_times, test_trace) label="cap = {}".format(cap))
+ax.plot(expt_times, test_trace, label="cap = {}".format(cap))
 ax.legend(loc="best")
 plt.show()
 sys.exit()
