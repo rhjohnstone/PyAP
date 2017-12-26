@@ -24,7 +24,8 @@ def sos(test_trace):
 # 7. Paci (SC-CM ventricular) (not available atm)
 # 8. Gokhale 2017 ex293 (not available atm)
 
-protocol = 1
+
+
 
 fig = plt.figure(figsize=(4,3))
 ax = fig.add_subplot(111)
@@ -48,6 +49,11 @@ triangle_times = expt_times[triangle_idx]
 triangle_Vs = all_expts[:, triangle_idx]
 
 m, c = np.polyfit(triangle_times, triangle_Vs.mean(axis=0), deg=1)
+
+Cm = 56.31  # 56.31 pF
+I_stim = -m*Cm
+print "I_stim = {} pA".format(I_stim)
+
 fitted_V = m*triangle_times + c
     
 dc_on = 50
@@ -63,10 +69,12 @@ ax.plot(triangle_times[0], fitted_V[0], 'x', color='red', ms=10, mew=2, zorder=1
 ax.plot(triangle_times[-1], fitted_V[-1], 'x', color='red', ms=10, mew=2, zorder=10)
 
 fig.tight_layout()
+
+
+
+
 plt.show()
 sys.exit()
-
-solve_start,solve_end,solve_timestep,stimulus_magnitude,stimulus_duration,stimulus_period,stimulus_start_time = ps.get_protocol_details(protocol)
 
 solve_start = expt_times[0]
 solve_end = expt_times[-1]
