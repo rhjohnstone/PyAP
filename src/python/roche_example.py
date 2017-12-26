@@ -103,10 +103,13 @@ axs = axs.flatten()
 cap = 56.31  # pF
 stim_amp = 1000  # pA
 
+model_names = []
+
 print "\nReal I_stim_amp =", stimulus_magnitude
 #model_number = 4
 for i, model_number in enumerate([3,4,5,7]):
     original_gs, g_parameters, model_name = ps.get_original_params(model_number)
+    model_names.append(model_name)
     original_gs = np.array(original_gs)
 
     ax = axs[i]
@@ -153,8 +156,10 @@ axs[0].set_xticks(axs[0].get_xticks()[1:-1])
 axs[0].set_yticks(axs[0].get_yticks()[1:-1])
 for i in xrange(4):
     axs[i].grid()
+    axs[i].set_title(model_names[i])
 fig.suptitle(r"$I_{stim} = 1000\,pA, C_m = 56.31\,pF$")
 fig.tight_layout()
+fig.subplots_adjust(top=0.9)
 plt.show()
 sys.exit()
 
