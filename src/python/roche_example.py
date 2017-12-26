@@ -51,6 +51,8 @@ ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
 ap.DefineModel(model_number)
 
 ap.SetToModelInitialConditions()
+temp_gs = np.copy(original_gs)
+temp_gs[0] *= 0.5
 test_trace = ap.SolveForVoltageTraceWithParams(original_gs)
 print "expt_trace original_gs done"
 
