@@ -87,47 +87,48 @@ stimulus_duration = 2
 stimulus_period = 1000
 stimulus_start_time = 50
 
-model_number = 4
-
-fig, ax = plt.subplots(1, 1)
-ax.set_ylabel("Membrane voltage (mV)")
-ax.set_xlabel("Time (ms)")
-#ax.plot(expt_times, expt_trace)
-
-original_gs, g_parameters, model_name = ps.get_original_params(model_number)
-original_gs = np.array(original_gs)
-
-
 triangle_t0 = 50.2
 triangle_t1 = 51.2
 triangle_idx = (triangle_t0 < expt_times) & (expt_times < triangle_t1)
 triangle_times = expt_times[triangle_idx]
 
-for p in xrange(10):
-    cap = 2**p
-    ap = ap_simulator.APSimulator()
-    ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
-    ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
-    ap.DefineModel(model_number)
-    ap.SetMembraneCapacitance(cap)
-    temp_gs = np.copy(original_gs)
-    ap.SetToModelInitialConditions()
-    test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
-    ax.plot(expt_times, test_trace, label="cap = {}".format(cap))
+fig, axs = plt.subplots(2,2)
+axs = axs.flatten()
+ax.set_ylabel("Membrane voltage (mV)")
+ax.set_xlabel("Time (ms)")
+#ax.plot(expt_times, expt_trace)
+
+print "\nReal I_stim_amp =", stimulus_magnitude
+model_number = 4
+for model_number in xrange(3, 7):
+    original_gs, g_parameters, model_name = ps.get_original_params(model_number)
+    original_gs = np.array(original_gs)
+
+    for p in xrange(-2,3):
+        cap = 10**p
+        ap = ap_simulator.APSimulator()
+        ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
+        ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
+        ap.DefineModel(model_number)
+        ap.SetMembraneCapacitance(cap)
+        temp_gs = np.copy(original_gs)
+        ap.SetToModelInitialConditions()
+        test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
+        ax.plot(expt_times, test_trace, label="cap = {}".format(cap))
+        ax.legend(loc="best")
+
+        triangle_Vs = test_trace[triangle_idx]
+
+        m, c = np.polyfit(triangle_times, triangle_Vs, deg=1)
+
+        
+        print "\nReal cap =", cap
+        print "Fitted -m =", -m
+        print "-m/stimulus_magnitude =", -m/stimulus_magnitude
+
+
+    print "\n"
     ax.legend(loc="best")
-
-    triangle_Vs = test_trace[triangle_idx]
-
-    m, c = np.polyfit(triangle_times, triangle_Vs, deg=1)
-
-    print "\nReal I_stim_amp =", stimulus_magnitude
-    print "Real cap =", cap
-    print "Fitted -m =", -m
-    print "-m/stimulus_magnitude =", -m/stimulus_magnitude
-
-
-print "\n"
-ax.legend(loc="best")
 plt.show()
 sys.exit()
 
