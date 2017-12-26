@@ -52,7 +52,7 @@ m, c = np.polyfit(triangle_times, triangle_Vs.mean(axis=0), deg=1)
 
 Cm = 56.31  # 56.31 pF
 I_stim = -m*Cm
-print "I_stim = {} pA".format(I_stim)
+print "I_stim = {} pA = {} nA = {} uA".format(I_stim, I_stim/1000., I_stim/1000000.)
 
 fitted_V = m*triangle_times + c
     
