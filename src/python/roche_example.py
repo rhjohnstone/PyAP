@@ -104,6 +104,7 @@ for model_number in xrange(3, 7):
     original_gs, g_parameters, model_name = ps.get_original_params(model_number)
     original_gs = np.array(original_gs)
 
+    ax = axs[model_number-3]
     for p in xrange(-2,3):
         cap = 10**p
         ap = ap_simulator.APSimulator()
