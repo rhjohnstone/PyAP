@@ -119,6 +119,7 @@ for i, model_number in enumerate([3,4,5,7]):
         stimulus_magnitude = -stim_amp
     elif model_number==7:
         stimulus_magnitude = -stim_amp
+        cap *= 1e-6
     
     ap = ap_simulator.APSimulator()
     ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
@@ -139,9 +140,8 @@ for i, model_number in enumerate([3,4,5,7]):
     m, c = np.polyfit(triangle_times, triangle_Vs, deg=1)
 
     
-    print "\nReal cap =", cap
-    print "Fitted -m =", -m
-    print "-m * cap =", -m * cap
+    print "\nCm used =", cap
+    print "dV/dt * Cm =", m * cap
     print "\n"
 
 fig.tight_layout()
