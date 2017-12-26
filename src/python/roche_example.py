@@ -100,10 +100,10 @@ original_gs = np.array(original_gs)
 cap = 1.
 
 ap = ap_simulator.APSimulator()
-ap.SetMembraneCapacitance(cap)
 ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
 ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
 ap.DefineModel(model_number)
+ap.SetMembraneCapacitance(cap)
 temp_gs = np.copy(original_gs)
 test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
 ax.plot(expt_times, test_trace, label="cap = {}".format(cap))
@@ -111,10 +111,10 @@ ax.plot(expt_times, test_trace, label="cap = {}".format(cap))
 cap *= 2
 
 ap = ap_simulator.APSimulator()
-ap.SetMembraneCapacitance(cap)
 ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
 ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
 ap.DefineModel(model_number)
+ap.SetMembraneCapacitance(cap)
 temp_gs = np.copy(original_gs)
 test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
 ax.plot(expt_times, test_trace, label="cap = {}".format(cap))
