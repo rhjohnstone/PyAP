@@ -36,8 +36,11 @@ for t in xrange(100, 116):
 dc_on = 50
 dc_off = 51.3
 ax.set_xlim(50, 52)
-ax.axvline(dc_on, color='red', lw=2, clip_on="False")
+ax.axvline(dc_on, color='red', lw=2, clip_on=False)
 ax.axvline(dc_off, color='red', lw=2)
+ax.set_ylabel("Membrane voltage (mV)")
+ax.set_xlabel("Time (ms)")
+fig.tight_layout()
 plt.show()
 sys.exit()
 
