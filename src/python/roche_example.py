@@ -59,8 +59,8 @@ ax.set_ylabel("Membrane voltage (mV)")
 ax.set_xlabel("Time (ms)")
 
 ax.plot(triangle_times, fitted_V, color='cyan')
-ax.plot(triangle_times[0], fitted_V[0], linestyle='x', lw=10)
-ax.plot(triangle_times[-1], fitted_V[-1], linestyle='x', lw=10)
+ax.plot(triangle_times[0], fitted_V[0], 'x', color='cyan', ms=10, mew=2, zorder=10)
+ax.plot(triangle_times[-1], fitted_V[-1], 'x', color='cyan', ms=10, mew=2, zorder=10)
 
 fig.tight_layout()
 plt.show()
