@@ -55,15 +55,14 @@ ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimul
 ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
 ap.DefineModel(model_number)
 
-ap.SetMembraneCapacitance(1.)
-
 ap.SetToModelInitialConditions()
 temp_gs = np.copy(original_gs)
 test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
 ax.plot(expt_times, test_trace)
 
-ap.SetMembraneCapacitance(2.)
+
 ap.SetToModelInitialConditions()
+ap.SetMembraneCapacitance(0.00005631)  # 56.31 pF
 temp_gs = np.copy(original_gs)
 test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
 ax.plot(expt_times, test_trace)
