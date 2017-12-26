@@ -92,7 +92,7 @@ triangle_t1 = 51.2
 triangle_idx = (triangle_t0 < expt_times) & (expt_times < triangle_t1)
 triangle_times = expt_times[triangle_idx]
 
-fig, axs = plt.subplots(2, 2, sharex=True)
+fig, axs = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(8,6))
 
 for j in xrange(2):
     axs[j, 0].set_ylabel("Membrane voltage (mV)")
@@ -148,6 +148,10 @@ for i, model_number in enumerate([3,4,5,7]):
     print "\nCm used =", cap
     print "dV/dt * Cm =", m * cap
     print "\n"
+
+axs[0].set_xticks(axs[0].get_xticks()[1:-1])
+axs[0].set_yticks(axs[0].get_yticks()[1:-1])
+axs[0].grid()
 
 fig.tight_layout()
 plt.show()
