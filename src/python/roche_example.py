@@ -125,7 +125,7 @@ for i, model_number in enumerate([3,4,5,7]):
         scale = 1
     elif model_number==7:
         stimulus_magnitude = -stim_amp/cap
-        scale = 1
+        scale = 2
     
     ap = ap_simulator.APSimulator()
     ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
@@ -145,9 +145,6 @@ for i, model_number in enumerate([3,4,5,7]):
     ax.plot(expt_times, test_trace, label=r"$(\vartriangle m) \times C_m = {}$".format(round(m * cap,1)))
     ax.legend(loc="best")
 
-
-
-    
     print "\nCm used =", cap
     print "dV/dt * Cm =", m * cap
     print "\n"
@@ -160,6 +157,8 @@ for i in xrange(4):
 fig.suptitle(r"$I_{stim} = 1000\,\mathrm{pA}, C_m = 56.31\,\mathrm{pF}$", fontsize=16)
 fig.tight_layout()
 fig.subplots_adjust(top=0.9)
-plt.show()
-sys.exit()
 
+figpng = expanduser("~/trying_to_recreate_expt_stim.png")
+print figpng
+fig.savefig(figpng)
+plt.show()
