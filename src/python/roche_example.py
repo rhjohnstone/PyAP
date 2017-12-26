@@ -27,7 +27,7 @@ def sos(test_trace):
 
 
 
-fig = plt.figure(figsize=(4,3))
+fig = plt.figure(figsize=(8,6))
 ax = fig.add_subplot(111)
 ax.grid()
 first_trace = 100
@@ -64,10 +64,11 @@ ax.axvline(dc_off, color='red', lw=2)
 ax.set_ylabel("Membrane voltage (mV)")
 ax.set_xlabel("Time (ms)")
 
-ax.plot(triangle_times, fitted_V, color='red')
+ax.plot(triangle_times, fitted_V, color='red', label="Fitted I_stim = {} pA".format(I_stim))
 ax.plot(triangle_times[0], fitted_V[0], 'x', color='red', ms=10, mew=2, zorder=10)
 ax.plot(triangle_times[-1], fitted_V[-1], 'x', color='red', ms=10, mew=2, zorder=10)
-
+ax.set_title("Applied I_stim = 1000 pA, measured Cm = 56.31 pF")
+ax.legend(loc=1)
 fig.tight_layout()
 
 
