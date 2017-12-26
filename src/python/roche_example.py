@@ -80,7 +80,7 @@ fig.savefig(figpng)
 plt.close()"""
 
 solve_start = expt_times[0]
-solve_end = 500
+solve_end = expt_times[-1]
 solve_timestep = expt_times[1]-expt_times[0]
 stimulus_magnitude = -25  # wrong
 stimulus_duration = 2
@@ -105,6 +105,7 @@ ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
 ap.DefineModel(model_number)
 ap.SetMembraneCapacitance(cap)
 temp_gs = np.copy(original_gs)
+ap.SetToModelInitialConditions()
 test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
 ax.plot(expt_times, test_trace, label="cap = {}".format(cap))
 
@@ -116,6 +117,7 @@ ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
 ap.DefineModel(model_number)
 ap.SetMembraneCapacitance(cap)
 temp_gs = np.copy(original_gs)
+ap.SetToModelInitialConditions()
 test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
 ax.plot(expt_times, test_trace, label="cap = {}".format(cap))
 
