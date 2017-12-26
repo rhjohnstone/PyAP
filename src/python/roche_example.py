@@ -113,13 +113,16 @@ for i, model_number in enumerate([3,4,5,7]):
     
     if model_number==3:
         stimulus_magnitude = -stim_amp
+        scale = 15
     elif model_number==4:
         stimulus_magnitude = -stim_amp/cap
+        scale = 1
     elif model_number==5:
         stimulus_magnitude = -stim_amp
+        scale = 1
     elif model_number==7:
         stimulus_magnitude = -stim_amp
-        cap *= 1e-6
+        scale = 1
     
     ap = ap_simulator.APSimulator()
     ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
@@ -129,7 +132,7 @@ for i, model_number in enumerate([3,4,5,7]):
         ap.SetMembraneCapacitance(cap)
     except:
         print "Can't set capacitance in", model_name
-    temp_gs = np.copy(original_gs)
+    temp_gs = scale*np.copy(original_gs)
     ap.SetToModelInitialConditions()
     test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
     ax.plot(expt_times, test_trace)
