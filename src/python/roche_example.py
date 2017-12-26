@@ -125,7 +125,8 @@ for i, model_number in enumerate([3,4,5,7]):
         scale = 1
     elif model_number==7:
         stimulus_magnitude = -stim_amp/cap
-        scale = 2
+        scale = 1
+        g_na_scale = 10
     
     ap = ap_simulator.APSimulator()
     ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
@@ -136,6 +137,10 @@ for i, model_number in enumerate([3,4,5,7]):
     except:
         print "Can't set capacitance in", model_name
     temp_gs = scale*np.copy(original_gs)
+    try:
+        temp_gs[0] *= g_na_scale
+    except:
+        pass
     ap.SetToModelInitialConditions()
     test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
     
