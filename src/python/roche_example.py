@@ -139,7 +139,7 @@ for i, model_number in enumerate([3,4,5,7]):
     triangle_Vs = test_trace[triangle_idx]
     m, c = np.polyfit(triangle_times, triangle_Vs, deg=1)
     
-    ax.plot(expt_times, test_trace, label=r"$\del m \times C_m = {}$".format(m * cap))
+    ax.plot(expt_times, test_trace, label=r"$(\triangle m) \times C_m = {}$".format(m * cap))
     ax.legend(loc="best")
 
 
