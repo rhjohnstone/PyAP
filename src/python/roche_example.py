@@ -103,11 +103,11 @@ axs = axs.flatten()
 
 print "\nReal I_stim_amp =", stimulus_magnitude
 #model_number = 4
-for model_number in [3,4,5,7]:
+for i, model_number in enumerate([3,4,5,7]):
     original_gs, g_parameters, model_name = ps.get_original_params(model_number)
     original_gs = np.array(original_gs)
 
-    ax = axs[model_number-3]
+    ax = axs[i]
     for p in np.linspace(0.9,1.1,5):
         cap = p
         ap = ap_simulator.APSimulator()
