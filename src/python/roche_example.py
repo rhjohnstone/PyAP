@@ -29,10 +29,14 @@ protocol = 1
 fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.grid()
-for i in xrange(100, 116):
-    roche_file = "projects/PyAP/python/input/roche_ten_tusscher/traces/Trace_2_2_100_1.csv"
+for t in xrange(100, 116):
+    roche_file = "projects/PyAP/python/input/roche_ten_tusscher/traces/Trace_2_2_{}_1.csv".format(t)
     expt_times, expt_trace = np.loadtxt(roche_file, delimiter=',').T
     ax.plot(expt_times, expt_trace)
+dc_on = 50
+dc_off = 51.3
+ylim = ax.get_ylim()
+ax.fill_between([dc_on, dc_off], [ylim[0], ylim[0]], [ylim[1], ylim[1]], color='lightgray')
 ax.set_xlim(50, 52)
 plt.show()
 sys.exit()
