@@ -80,7 +80,7 @@ fig.savefig(figpng)
 plt.close()"""
 
 solve_start = expt_times[0]
-solve_end = expt_times[-1]
+solve_end = 500
 solve_timestep = expt_times[1]-expt_times[0]
 stimulus_magnitude = -25  # wrong
 stimulus_duration = 2
@@ -90,7 +90,9 @@ stimulus_start_time = 50
 model_number = 4
 
 fig, ax = plt.subplots(1, 1)
-ax.plot(expt_times, expt_trace)
+ax.set_ylabel("Membrane voltage (mV)")
+ax.set_xlabel("Time (ms)")
+#ax.plot(expt_times, expt_trace)
 
 original_gs, g_parameters, model_name = ps.get_original_params(model_number)
 original_gs = np.array(original_gs)
@@ -104,19 +106,19 @@ ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
 ap.DefineModel(model_number)
 temp_gs = np.copy(original_gs)
 test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
-ax.plot(expt_times, test_trace)
-plt.show()
-sys.exit()
+ax.plot(expt_times, test_trace, label="cap = {}".format(cap))
 
-ap.SetToModelInitialConditions()
-ap.SetMembraneCapacitance(0.00005631)
+cap *= 2
+
+ap = ap_simulator.APSimulator()
+ap.SetMembraneCapacitance(cap)
+ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
+ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
+ap.DefineModel(model_number)
 temp_gs = np.copy(original_gs)
 test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
-ax.plot(expt_times, test_trace)
+ax.plot(expt_times, test_trace, label="cap = {}".format(cap))
 
-ax.set_title(model_name)
-plt.show(block=True)
-
-
-
+plt.show()
+sys.exit()
 
