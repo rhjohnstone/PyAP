@@ -39,7 +39,7 @@ for i in xrange(num_traces):
         num_pts = len(expt_times)
         all_expts = np.zeros((num_traces, num_pts))
     all_expts[i, :] = expt_trace
-    ax.plot(expt_times, expt_trace)
+    ax.plot(expt_times, expt_trace, color='blue')
     
 triangle_t0 = 50.2
 triangle_t1 = 51.2
@@ -58,9 +58,9 @@ ax.axvline(dc_off, color='red', lw=2)
 ax.set_ylabel("Membrane voltage (mV)")
 ax.set_xlabel("Time (ms)")
 
-ax.plot(triangle_times, fitted_V, color='cyan')
-ax.plot(triangle_times[0], fitted_V[0], 'x', color='cyan', ms=10, mew=2, zorder=10)
-ax.plot(triangle_times[-1], fitted_V[-1], 'x', color='cyan', ms=10, mew=2, zorder=10)
+ax.plot(triangle_times, fitted_V, color='red')
+ax.plot(triangle_times[0], fitted_V[0], 'x', color='red', ms=10, mew=2, zorder=10)
+ax.plot(triangle_times[-1], fitted_V[-1], 'x', color='red', ms=10, mew=2, zorder=10)
 
 fig.tight_layout()
 plt.show()
