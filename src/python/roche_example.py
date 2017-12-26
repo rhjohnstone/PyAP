@@ -42,6 +42,11 @@ stimulus_start_time = 50
 
 model_number = 4
 
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.grid()
+ax.plot(expt_times, expt_trace)
+
 original_gs, g_parameters, model_name = ps.get_original_params(model_number)
 original_gs = np.array(original_gs)
 
@@ -50,17 +55,19 @@ ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimul
 ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
 ap.DefineModel(model_number)
 
+ap.SetMembraneCapacitance(1.)
+
 ap.SetToModelInitialConditions()
 temp_gs = np.copy(original_gs)
-temp_gs[0] *= 0.5
-test_trace = ap.SolveForVoltageTraceWithParams(original_gs)
-print "expt_trace original_gs done"
-
-fig = plt.figure()
-ax = fig.add_subplot(111)
-ax.grid()
-ax.plot(expt_times, expt_trace)
+test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
 ax.plot(expt_times, test_trace)
+
+ap.SetMembraneCapacitance(2.)
+ap.SetToModelInitialConditions()
+temp_gs = np.copy(original_gs)
+test_trace = ap.SolveForVoltageTraceWithParams(temp_gs)
+ax.plot(expt_times, test_trace)
+
 ax.set_title(model_name)
 plt.show(block=True)
 
