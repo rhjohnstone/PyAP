@@ -141,7 +141,7 @@ for i, model_number in enumerate([3,4,5,7]):
     
     print "\nReal cap =", cap
     print "Fitted -m =", -m
-    print "-m/stimulus_magnitude =", -m/stimulus_magnitude
+    print "-m * cap =", -m * cap
     print "\n"
 
 fig.tight_layout()
