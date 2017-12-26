@@ -110,6 +110,8 @@ for i, model_number in enumerate([3,4,5,7]):
     ax = axs[i]
     for p in range(-2,3):
         cap = 10**p
+        if model_number==7:
+            cap *= 1000
         ap = ap_simulator.APSimulator()
         ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
         ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
