@@ -10,3 +10,4 @@ stimulus_period_ms 1000
 membrane_capacitance_pF 56.31
 stimulus_magnitude_pA 1000
 stimulus_duration_ms 2
+stimulus_start_ms 50
