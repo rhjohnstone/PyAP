@@ -55,9 +55,12 @@ data_clamp_on = pyap_options["data_clamp_on"]
 data_clamp_off = pyap_options["data_clamp_off"]
 
 # convert Cm and Istim to correct units, model-specific
-if pyap_options["model_number"]==4:
+if pyap_options["model_number"]==3:
     Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
-    stimulus_magnitude = pyap_options["stimulus_magnitude_pA"] / Cm * 1e-6
+    stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] * 1e-6
+elif pyap_options["model_number"]==4:
+    Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
+    stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-6
 
 def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace):
     ap_model.SetToModelInitialConditions()
