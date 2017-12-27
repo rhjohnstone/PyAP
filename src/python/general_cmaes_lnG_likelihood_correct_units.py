@@ -243,9 +243,11 @@ best_fit_trace = solve_for_voltage_trace(np.log(best_Gs), ap_model, expt_trace)
 ax.plot(expt_times, best_fit_trace, color='red', label='Best ll')
 max_V_idx = np.argmax(expt_trace)
 ax.plot(expt_times[max_V_idx], expt_trace[max_V_idx], 'x', color="green", ms=9, mew=2, label='Expt max', zorder=100)
-ax.legend(loc=1, fontsize=12)
+ax.legend(loc=1, fontsize=10)
 fig.tight_layout()
 fig.savefig(best_fit_png)
+fig.savefig(best_fit_svg)
+print best_fit_svg
 print best_fit_png
 plt.close()
 
