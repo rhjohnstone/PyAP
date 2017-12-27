@@ -116,7 +116,7 @@ for i, model_number in enumerate([3,4,5,7]):
     
     if model_number==3:
         stimulus_magnitude = -stim_amp * 1e-6
-        scale = 15
+        scale = 1e-6
         cap = true_cap * 1e-6
     elif model_number==4:  # not yet done
         scale = 1
