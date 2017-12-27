@@ -117,26 +117,26 @@ for i, model_number in enumerate([3,4,5,7]):
     if model_number==3:
         stimulus_magnitude = -stim_amp * 1e-6  # uF
         scale = 15*1e-6
-        cap = true_cap * 1e-6  # uP
+        model_cap = true_cap * 1e-6  # uP
     elif model_number==4:
         scale = 1
-        cap = true_cap * 1e-6
+        model_cap = true_cap * 1e-6
         stimulus_magnitude = -stim_amp/cap * 1e-6
     elif model_number==5:
         scale = 1
-        cap = true_cap * 1e-6
+        model_cap = true_cap * 1e-6
         stimulus_magnitude = -stim_amp/cap * 1e-6
     elif model_number==7:
         scale = 1
-        cap = true_cap * 1e-12
-        stimulus_magnitude = -stim_amp/cap * 1e-16
+        model_cap = true_cap * 1e-12
+        stimulus_magnitude = -stim_amp/cap * 1e-12
     
     ap = ap_simulator.APSimulator()
     ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
     ap.DefineSolveTimes(solve_start, solve_end, solve_timestep)
     ap.DefineModel(model_number)
     try:
-        ap.SetMembraneCapacitance(cap)
+        ap.SetMembraneCapacitance(model_cap)
     except:
         print "Can't set capacitance in", model_name
     temp_gs = scale*np.copy(original_gs)
@@ -148,10 +148,6 @@ for i, model_number in enumerate([3,4,5,7]):
     
     ax.plot(expt_times, test_trace, label=r"$(\vartriangle m) \times C_m = {}$".format(round(m * true_cap,1)))
     ax.legend(loc="best")
-
-    print "\nCm used =", cap
-    print "dV/dt * Cm =", m * cap
-    print "\n"
 
 axs[0].set_xticks(axs[0].get_xticks()[1:-1])
 axs[0].set_yticks(axs[0].get_yticks()[1:-1])
