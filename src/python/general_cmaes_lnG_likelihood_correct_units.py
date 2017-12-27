@@ -55,12 +55,18 @@ data_clamp_on = pyap_options["data_clamp_on"]
 data_clamp_off = pyap_options["data_clamp_off"]
 
 # convert Cm and Istim to correct units, model-specific
-if pyap_options["model_number"]==3:
+if pyap_options["model_number"]==3:  # LR
     Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
     stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] * 1e-6
-elif pyap_options["model_number"]==4:
+elif pyap_options["model_number"]==4:  # TT
     Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
     stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-6
+elif pyap_options["model_number"]==5:  # OH
+    Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
+    stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-6
+elif pyap_options["model_number"]==7:  # Pa
+    Cm = pyap_options["membrane_capacitance_pF"] * 1e-12
+    stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-12
 
 def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace):
     ap_model.SetToModelInitialConditions()
@@ -133,6 +139,8 @@ def run_cmaes(cma_index):
     #opts['seed'] = cma_index
     #options = {'seed':cma_index}
     x0 = nplog(original_gs)  + 0.1*npr.randn(num_gs)
+    if pyap_options["model_number"]==3:
+        x0 += nplog(15)-6*nplog(10)  # have to rescale because of Cm, this line is NOT general currently
     sigma0 = 0.1
     print "x0:", x0
     print "sigma0:", sigma0
