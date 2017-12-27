@@ -121,7 +121,7 @@ def run_cmaes(cma_index):
     ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
     ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
     ap_model.SetNumberOfSolves(pyap_options["num_solves"])
-    ap.SetMembraneCapacitance(Cm)
+    ap_model.SetMembraneCapacitance(Cm)
     npr.seed(cma_index)  # can't fix CMA-ES seed for some reason
     opts = cma.CMAOptions()
     print opts["tolfun"] 
