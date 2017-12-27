@@ -1,6 +1,6 @@
-#import matplotlib
-#matplotlib.use('Agg')
-#import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 import ap_simulator
 import numpy as np
 import numpy.random as npr
@@ -205,4 +205,34 @@ np.savetxt(cmaes_best_fits_file, best_boths)
 
 trace_time_taken = time.time()-trace_start_time
 print "\n\n{}, time taken: {} s = {} min\n\n".format(trace_name, round(trace_time_taken), round(trace_time_taken/60.))
+
+# new AP model for plotting
+ap_model = ap_simulator.APSimulator()
+ap_model.DefineStimulus(stimulus_magnitude, pyap_options["stimulus_duration_ms"], pyap_options["stimulus_period_ms"], pyap_options["stimulus_start_ms"])
+ap_model.DefineModel(pyap_options["model_number"])
+if (data_clamp_on < data_clamp_off):
+    ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
+    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)        
+ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
+ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
+ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
+ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
+ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
+ap_model.SetNumberOfSolves(pyap_options["num_solves"])
+ap_model.SetMembraneCapacitance(Cm)
+
+best_ll_idx = np.argmax(best_boths[:, -1])
+best_Gs = best_boths[best_ll_idx, :-2]
+fig, ax = plt.subplots(1, 1, figsize=(4,3))
+ax.set_xlabel("Time (ms)")
+ax.set_ylabel("Membrane voltage (mV)")
+ax.grid()
+ax.plot(expt_times, expt_trace, color='blue', label='Expt')
+best_fit_trace = solve_for_voltage_trace(np.log(best_Gs), ap_model, expt_trace)
+ax.plot(expt_times, best_fit_trace, color='red', label='Best ll')
+ax.legend(loc=1)
+fig.tight_layout()
+fig.savefig(best_fit_png)
+print best_fit_png
+plt.close()
 
