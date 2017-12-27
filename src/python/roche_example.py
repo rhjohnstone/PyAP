@@ -115,18 +115,18 @@ for i, model_number in enumerate([3,4,5,7]):
     ax = axs[i]
     
     if model_number==3:
-        stimulus_magnitude = -stim_amp * 1e-6
+        stimulus_magnitude = -stim_amp
         scale = 1#5
-        cap = true_cap * 1e-6
-    elif model_number==4:
+        cap = true_cap
+    elif model_number==4:  # not yet done
         scale = 1
         cap = true_cap * 1e-6
         stimulus_magnitude = -stim_amp/cap
-    elif model_number==5:
+    elif model_number==5:  # not yet done
         scale = 1
         cap = true_cap * 1e-6
         stimulus_magnitude = -stim_amp/cap
-    elif model_number==7:
+    elif model_number==7:  # not yet done
         scale = 1
         cap = true_cap * 1e-12
         stimulus_magnitude = -stim_amp/cap
