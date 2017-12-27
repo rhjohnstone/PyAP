@@ -119,15 +119,15 @@ for i, model_number in enumerate([3,4,5,7]):
         scale = 15*1e-6
         model_cap = true_cap * 1e-6  # uP
     elif model_number==4:
-        scale = 15
+        scale = 1
         model_cap = true_cap * 1e-6
         stimulus_magnitude = -stim_amp/model_cap * 1e-6
     elif model_number==5:
-        scale = 15
+        scale = 1
         model_cap = true_cap * 1e-6
         stimulus_magnitude = -stim_amp/model_cap * 1e-6
     elif model_number==7:
-        scale = 15
+        scale = 1
         model_cap = true_cap * 1e-12
         stimulus_magnitude = -stim_amp/model_cap * 1e-12
     
