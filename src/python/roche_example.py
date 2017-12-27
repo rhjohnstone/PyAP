@@ -114,7 +114,7 @@ for i, model_number in enumerate([3,4,5,7]):
 
     ax = axs[i]
     
-    if model_number==3:  # done for now
+    if model_number==3:
         stimulus_magnitude = -stim_amp * 1e-6  # uF
         scale = 15*1e-6
         cap = true_cap * 1e-6  # uP
@@ -122,14 +122,14 @@ for i, model_number in enumerate([3,4,5,7]):
         scale = 1
         cap = true_cap * 1e-6
         stimulus_magnitude = -stim_amp/cap * 1e-6
-    elif model_number==5:  # not yet done
+    elif model_number==5:
         scale = 1
         cap = true_cap * 1e-6
         stimulus_magnitude = -stim_amp/cap * 1e-6
-    elif model_number==7:  # not yet done
+    elif model_number==7:
         scale = 1
         cap = true_cap * 1e-12
-        stimulus_magnitude = -stim_amp * 1e-12
+        stimulus_magnitude = -stim_amp/cap * 1e-6
     
     ap = ap_simulator.APSimulator()
     ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
