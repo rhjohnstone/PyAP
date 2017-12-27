@@ -114,9 +114,8 @@ for i, model_number in enumerate([3,4,5,7]):
 
     ax = axs[i]
     
-    model_cap = cap
     if model_number==3:
-        stimulus_magnitude = -stim_amp
+        stimulus_magnitude = -stim_amp * 1e-6
         scale = 1#5
         cap = true_cap * 1e-6
     elif model_number==4:
@@ -134,10 +133,10 @@ for i, model_number in enumerate([3,4,5,7]):
     
     ap = ap_simulator.APSimulator()
     ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
-    ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
+    ap.DefineSolveTimes(solve_start, solve_end, solve_timestep)
     ap.DefineModel(model_number)
     try:
-        ap.SetMembraneCapacitance(model_cap)
+        ap.SetMembraneCapacitance(cap)
     except:
         print "Can't set capacitance in", model_name
     temp_gs = scale*np.copy(original_gs)
