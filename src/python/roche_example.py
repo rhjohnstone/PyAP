@@ -100,7 +100,7 @@ for j in xrange(2):
 #ax.plot(expt_times, expt_trace)
 
 axs = axs.flatten()
-cap = 56.31  # pF
+true_cap = 56.31  # pF
 stim_amp = 1000  # pA
 
 model_names = []
@@ -117,17 +117,20 @@ for i, model_number in enumerate([3,4,5,7]):
     model_cap = cap
     if model_number==3:
         stimulus_magnitude = -stim_amp
-        scale = 15
+        scale = 1#5
+        cap = true_cap * 1e-6
     elif model_number==4:
-        stimulus_magnitude = -stim_amp/cap
         scale = 1
+        cap = true_cap * 1e-6
+        stimulus_magnitude = -stim_amp/cap
     elif model_number==5:
-        stimulus_magnitude = -stim_amp/cap
         scale = 1
+        cap = true_cap * 1e-6
+        stimulus_magnitude = -stim_amp/cap
     elif model_number==7:
-        stimulus_magnitude = -stim_amp/cap
         scale = 1
-        model_cap = cap * 1e-9  # Paci has Cm in F, not pF
+        cap = true_cap * 1e-12
+        stimulus_magnitude = -stim_amp/cap
     
     ap = ap_simulator.APSimulator()
     ap.DefineStimulus(stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time)
@@ -144,7 +147,7 @@ for i, model_number in enumerate([3,4,5,7]):
     triangle_Vs = test_trace[triangle_idx]
     m, c = np.polyfit(triangle_times, triangle_Vs, deg=1)
     
-    ax.plot(expt_times, test_trace, label=r"$(\vartriangle m) \times C_m = {}$".format(round(m * cap,1)))
+    ax.plot(expt_times, test_trace, label=r"$(\vartriangle m) \times C_m = {}$".format(round(m * true_cap,1)))
     ax.legend(loc="best")
 
     print "\nCm used =", cap
@@ -158,7 +161,7 @@ for i in xrange(4):
     axs[i].set_title(model_names[i])
 fig.suptitle(r"$I_{stim} = 1000\,\mathrm{pA}, C_m = 56.31\,\mathrm{pF}$", fontsize=16)
 fig.tight_layout()
-fig.subplots_adjust(top=0.9)
+fig.subplots_adjust(top=0.88)
 
 figpng = expanduser("~/trying_to_recreate_expt_stim.png")
 print figpng
