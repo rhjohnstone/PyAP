@@ -109,7 +109,7 @@ def log_likelihood(sos, sigma):
 def run_cmaes(cma_index):
     print "\n\n\n{}, cma {}\n\n\n".format(trace_name, cma_index)
     start = time.time()
-    ap_model = ap_simulator.APSimulator()stimulus_start_ms
+    ap_model = ap_simulator.APSimulator()
     ap_model.DefineStimulus(stimulus_magnitude, pyap_options["stimulus_duration_ms"], pyap_options["stimulus_period_ms"], pyap_options["stimulus_start_ms"])
     ap_model.DefineModel(pyap_options["model_number"])
     if (data_clamp_on < data_clamp_off):
