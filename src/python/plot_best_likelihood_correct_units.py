@@ -29,8 +29,6 @@ two_omega_sq = 2.*omega**2
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
-requiredNamed.add_argument("--num-cores", type=int, help="how many cores to run multiple CMA-ES minimisations on", required=True)
-requiredNamed.add_argument("--num-runs", type=int, help="how many CMA-ES minimisations to run", required=True)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
     parser.print_help()
@@ -67,6 +65,15 @@ elif pyap_options["model_number"]==5:  # OH
 elif pyap_options["model_number"]==7:  # Pa
     Cm = pyap_options["membrane_capacitance_pF"] * 1e-12
     stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-12
+
+
+expt_times, expt_trace = np.loadtxt(trace_path, delimiter=',').T
+num_pts = len(expt_trace)
+
+original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
+num_gs = len(original_gs)
+log_gs = nplog(original_gs)
+
 
 def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace):
     ap_model.SetToModelInitialConditions()
