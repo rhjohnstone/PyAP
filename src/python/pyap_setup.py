@@ -29,6 +29,15 @@ elif socket.getfqdn().endswith("arcus.osc.local"):
     print "\nShould be on arcus\n"
 
 
+def compute_apd90(times, trace, stim_start_time):
+    approx_resting_V = np.mean(trace[times<stim_start_time])
+    max_V_diff = np.max(trace) - approx_resting_V
+    adp90_threshold = approx_resting_V + 0.1*max_V_diff
+    start_clock = np.min(times[trace >= adp90_threshold])
+    stop_clock = np.max(times[trace >= adp90_threshold])
+    return stop_clock - start_clock
+
+
 def cmaes_and_figs_files(model_number, expt_name, trace_name, unscaled):
     if arcus_b or arcus:
         first_bit = os.path.expandvars("$DATA/PyAP_output/")

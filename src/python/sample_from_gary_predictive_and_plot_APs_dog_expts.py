@@ -191,6 +191,7 @@ for i in xrange(N_e):
 
     expt_times_for_plotting, expt_trace_for_plotting = 1000.*np.loadtxt(plot_trace_path, delimiter=',').T
     axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='red')
+    print "APD90 =", ps.compute_apd90(expt_times_for_plotting, expt_trace_for_plotting, data_clamp_on)
 
 axs[0].plot([], [], color='blue', label='Control')
 axs[0].plot([], [], color='red', label="K$^+$, Moxi.")
@@ -229,6 +230,6 @@ axs[1].legend(loc=1)
 fig.tight_layout()
 fig_png = "{}_trace_{}_{}_samples_control_and_moxi_predictions.png".format(expt_name, trace_number, T)
 print fig_png
-#fig.savefig(fig_png)
+fig.savefig(fig_png)
 plt.show(block=True)
 
