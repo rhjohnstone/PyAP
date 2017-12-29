@@ -224,7 +224,7 @@ ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 
 
 unif_samples = npr.rand(T, num_gs)
-moxi_apd90s = []
+moxi_apd90s = np.zeros(T)
 start = time()
 for t in xrange(T):
     temp_lnGs = [np.interp(unif_samples[t,p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
