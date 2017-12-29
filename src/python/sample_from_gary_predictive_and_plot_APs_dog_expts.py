@@ -183,6 +183,8 @@ for i in xrange(N_e):
 
     expt_times_for_plotting, expt_trace_for_plotting = np.loadtxt(plot_trace_path, delimiter=',').T
     axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='blue')
+    print "Trace", plot_trace_number
+    print "APD90 =", ps.compute_apd90(expt_times_for_plotting, expt_trace_for_plotting, data_clamp_on)
 
 
 for i in xrange(N_e):
@@ -191,6 +193,7 @@ for i in xrange(N_e):
 
     expt_times_for_plotting, expt_trace_for_plotting = 1000.*np.loadtxt(plot_trace_path, delimiter=',').T
     axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='red')
+    print "Trace", plot_trace_number
     print "APD90 =", ps.compute_apd90(expt_times_for_plotting, expt_trace_for_plotting, data_clamp_on)
 
 axs[0].plot([], [], color='blue', label='Control')
