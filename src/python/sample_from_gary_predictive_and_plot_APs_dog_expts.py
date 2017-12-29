@@ -223,7 +223,7 @@ ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
 ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 
 
-unif_samples = npr.rand(T, num_gs)
+"""unif_samples = npr.rand(T, num_gs)
 moxi_apd90s = np.zeros(T)
 start = time()
 for t in xrange(T):
@@ -233,24 +233,24 @@ for t in xrange(T):
     moxi_apd90s[t] = ps.compute_apd90(expt_times, test_trace, data_clamp_on)
 time_taken = time()-start
 print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
-axs[1].plot([], [], label="K$^+$, Moxi.", color='red')
+axs[1].plot([], [], label="K$^+$, Moxi.", color='red')"""
 axs[1].legend(loc=1)
 fig.tight_layout()
 fig_png = "{}_trace_{}_{}_samples_control_and_moxi_predictions.png".format(expt_name, trace_number, T)
 print fig_png
-fig.savefig(fig_png)
+#fig.savefig(fig_png)
 
 apd90_fig = plt.figure(figsize=(4,3))
 apd90_ax = apd90_fig.add_subplot(111)
 apd90_ax.grid()
 apd90_ax.hist(control_apd90s, bins=40, normed=True, color='blue', alpha=0.5, lw=0)
-apd90_ax.hist(moxi_apd90s, bins=30, normed=True, color='red', alpha=0.5, lw=0)
+#apd90_ax.hist(moxi_apd90s, bins=30, normed=True, color='red', alpha=0.5, lw=0)
 apd90_ax.set_xlabel("APD90 (ms)")
 apd90_ax.set_ylabel("Normalised frequency")
 apd90_fig.tight_layout()
 apd90_fig_png = "{}_trace_{}_{}_samples_control_and_moxi_apd90_predictions.png".format(expt_name, trace_number, T)
 print apd90_fig_png
-apd90_fig.savefig(apd90_fig_png)
+#apd90_fig.savefig(apd90_fig_png)
 
 plt.show(block=True)
 
