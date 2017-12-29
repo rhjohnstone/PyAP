@@ -242,11 +242,15 @@ fig.savefig(fig_png)
 
 apd90_fig = plt.figure(figsize=(4,3))
 apd90_ax = apd90_fig.add_subplot(111)
+apd90_ax.grid()
 apd90_ax.hist(control_apd90s, bins=40, normed=True, color='blue', alpha=0.5, lw=0)
-apd90_ax.hist(moxi_apd90s, bins=40, normed=True, color='red', alpha=0.5, lw=0)
+apd90_ax.hist(moxi_apd90s, bins=30, normed=True, color='red', alpha=0.5, lw=0)
 apd90_ax.set_xlabel("APD90 (ms)")
 apd90_ax.set_ylabel("Normalised frequency")
 apd90_fig.tight_layout()
+apd90_fig_png = "{}_trace_{}_{}_samples_control_and_moxi_apd90_predictions.png".format(expt_name, trace_number, T)
+print apd90_fig_png
+apd90_fig.savefig(apd90_fig_png)
 
 plt.show(block=True)
 
