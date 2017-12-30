@@ -78,7 +78,6 @@ for t in trace_numbers:
                 
         cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_log_likelihood_lnG(pyap_options["model_number"], expt_name, trace_name)
 
-        print "\n", cmaes_best_fits_file
         try:
             cmaes_output = np.loadtxt(cmaes_best_fits_file)
             best_idx = np.argmax(cmaes_output[:, -1])
@@ -145,6 +144,7 @@ for t in trace_numbers:
         if best_ll != 0:
             BIC = compute_bic(num_params, best_ll)
         elif best_ll==0:
+            print t, m
             BIC = 80000
         BICs[m] = BIC
     
