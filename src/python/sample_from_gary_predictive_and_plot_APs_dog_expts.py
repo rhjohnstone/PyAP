@@ -181,7 +181,7 @@ axs[1].plot([], [], label="Control", color='blue')
 #fig.savefig(fig_png)
 #plt.show()
 
-
+expt_apd90s_control = np.zeros(N_e)
 for i in xrange(N_e):
     plot_trace_number = 150 + i
     plot_trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(plot_trace_number)
@@ -189,9 +189,9 @@ for i in xrange(N_e):
     expt_times_for_plotting, expt_trace_for_plotting = np.loadtxt(plot_trace_path, delimiter=',').T
     axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='blue')
     print "Trace", plot_trace_number
-    print "APD90 =", ps.compute_apd90(expt_times_for_plotting, expt_trace_for_plotting, data_clamp_on)
+    expt_apd90s_control[i] = ps.compute_apd90(expt_times_for_plotting, expt_trace_for_plotting, data_clamp_on)
 
-
+expt_apd90s_moxi = np.zeros(N_e)
 for i in xrange(N_e):
     plot_trace_number = 400 + i
     plot_trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(plot_trace_number)
@@ -199,7 +199,7 @@ for i in xrange(N_e):
     expt_times_for_plotting, expt_trace_for_plotting = 1000.*np.loadtxt(plot_trace_path, delimiter=',').T
     axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='red')
     print "Trace", plot_trace_number
-    print "APD90 =", ps.compute_apd90(expt_times_for_plotting, expt_trace_for_plotting, data_clamp_on)
+    expt_apd90s_moxi[i] = ps.compute_apd90(expt_times_for_plotting, expt_trace_for_plotting, data_clamp_on)
 
 axs[0].plot([], [], color='blue', label='Control')
 axs[0].plot([], [], color='red', label="K$^+$, Moxi.")
@@ -245,8 +245,10 @@ print fig_png
 apd90_fig = plt.figure(figsize=(4,3))
 apd90_ax = apd90_fig.add_subplot(111)
 apd90_ax.grid()
-apd90_ax.hist(control_apd90s, bins=40, normed=True, color='blue', alpha=0.5, lw=0)
-#apd90_ax.hist(moxi_apd90s, bins=30, normed=True, color='red', alpha=0.5, lw=0)
+apd90_ax.hist(control_apd90s, bins=30, normed=True, color='blue', alpha=0.5, lw=0)
+apd90_ax.hist(expt_apd90s_control, bins=30, normed=True, color='blue', alpha=0.5, lw=2, edgecolor='black')
+apd90_ax.hist(moxi_apd90s, bins=30, normed=True, color='red', alpha=0.5, lw=0)
+apd90_ax.hist(expt_apd90s_moxi, bins=30, normed=True, color='red', alpha=0.5, lw=2, edgecolor='black')
 apd90_ax.set_xlabel("APD90 (ms)")
 apd90_ax.set_ylabel("Normalised frequency")
 apd90_fig.tight_layout()
