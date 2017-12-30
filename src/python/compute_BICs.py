@@ -58,7 +58,6 @@ all_BICs = []
 print "\n"
 for t in trace_numbers:
     BICs = {}
-    model_names = []
     for m in models:
         trace_path = "projects/PyAP/python/input/roche_{}_correct_units/traces/Trace_2_2_{}_1.csv".format(m, t)
         split_trace_path = trace_path.split('/')
@@ -131,7 +130,6 @@ for t in trace_numbers:
             
         original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
         
-        model_names.append(model_name)
         
         num_gs = len(original_gs)
         num_params = num_gs + 1
@@ -153,7 +151,7 @@ for t in trace_numbers:
 # now to print a \LaTeX table...
 print "\n\n"
 print r"\begin{tabular}{*{" + str(num_models+1) + "}{c|}}"
-line = " & " + " & ".join(model_names) + r" \\"
+line = " & " + " & ".join(models) + r" \\"
 print line
 print r"\midrule"
 #print models
