@@ -86,7 +86,7 @@ for t in trace_numbers:
             best_ll = cmaes_output[best_idx, -1]
         except:  # only compute BICs for ones that have been log-likelihood CMA-ESed
             print "Can't find a CMA-ES output for {} Trace {}".format(m, t)
-            continue
+            best_ll = 0
             
         best_sigmas.append(best_params[-1])
         best_lls.append(best_ll)
@@ -142,7 +142,10 @@ for t in trace_numbers:
         #best_AP = solve_for_voltage_trace(nplog(best_params[:-1]), ap_model, expt_trace)
         #best_APs.append(np.copy(best_AP))
         
-        BIC = compute_bic(num_params, best_ll)
+        if best_ll != 0:
+            BIC = compute_bic(num_params, best_ll)
+        elif best_ll==0:
+            BIC = 80000
         BICs[m] = BIC
     
     if len(BICs)>0:
