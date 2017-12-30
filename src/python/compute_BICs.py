@@ -60,7 +60,7 @@ for t in trace_numbers:
     BICs = {}
     model_names = []
     for m in models:
-        trace_path = "projects/PyAP/python/input/roche_{}/traces/Trace_2_2_{}_1.csv".format(m, t)
+        trace_path = "projects/PyAP/python/input/roche_{}_correct_units/traces/Trace_2_2_{}_1.csv".format(m, t)
         split_trace_path = trace_path.split('/')
         expt_name = split_trace_path[4]
         trace_name = split_trace_path[-1][:-4]
@@ -85,6 +85,7 @@ for t in trace_numbers:
             best_params = cmaes_output[best_idx, :-1]
             best_ll = cmaes_output[best_idx, -1]
         except:  # only compute BICs for ones that have been log-likelihood CMA-ESed
+            print "Can't find a CMA-ES output for {} Trace {}".format(m, t)
             continue
             
         best_sigmas.append(best_params[-1])
@@ -162,8 +163,10 @@ print r"\midrule"
 for i, x in enumerate(all_BICs):
     temp_BICs = [int(x[m]) for m in models]
     min_idx = np.argmin(temp_BICs)
+    max_idx = np.argmax(temp_BICs)
     stuff = [str(i+100)] + [str(int(x[m])) for m in models]  # just to ensure they're printed in the same order
     stuff[min_idx+1] = r"\cellcolor{green!25}" + stuff[min_idx+1]
+    stuff[max_idx+1] = r"\cellcolor{red!25}" + stuff[min_idx+1]
     line = " & ".join(stuff) + r" \\"
     print line
 print r"\bottomrule"
