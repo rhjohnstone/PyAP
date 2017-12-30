@@ -79,6 +79,7 @@ for t in trace_numbers:
                 
         cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_log_likelihood_lnG(pyap_options["model_number"], expt_name, trace_name)
 
+        print "\n", cmaes_best_fits_file
         try:
             cmaes_output = np.loadtxt(cmaes_best_fits_file)
             best_idx = np.argmax(cmaes_output[:, -1])
@@ -95,7 +96,7 @@ for t in trace_numbers:
             
         num_pts = len(expt_trace)
         
-        expt_traces.append(np.copy(expt_trace))
+        """expt_traces.append(np.copy(expt_trace))
                 
         data_clamp_on = pyap_options["data_clamp_on"]
         data_clamp_off = pyap_options["data_clamp_off"]
@@ -123,29 +124,25 @@ for t in trace_numbers:
         if data_clamp_on < data_clamp_off:
             solve_for_voltage_trace = solve_for_voltage_trace_with_initial_V
         else:
-            solve_for_voltage_trace = solve_for_voltage_trace_without_initial_V
+            solve_for_voltage_trace = solve_for_voltage_trace_without_initial_V"""
 
 
         all_time_start = time.time()
-
-        protocol = 1
-        solve_start, solve_end, solve_timestep, stimulus_magnitude, stimulus_duration, stimulus_period, stimulus_start_time = ps.get_protocol_details(protocol)
-        if pyap_options["model_number"] == 1:
-            solve_end = 100  # just for HH
+            
         original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
         
         model_names.append(model_name)
         
         num_gs = len(original_gs)
         num_params = num_gs + 1
-        log_gs = nplog(original_gs)
+        #log_gs = nplog(original_gs)
 
 
 
 
 
-        best_AP = solve_for_voltage_trace(nplog(best_params[:-1]), ap_model, expt_trace)
-        best_APs.append(np.copy(best_AP))
+        #best_AP = solve_for_voltage_trace(nplog(best_params[:-1]), ap_model, expt_trace)
+        #best_APs.append(np.copy(best_AP))
         
         BIC = compute_bic(num_params, best_ll)
         BICs[m] = BIC
@@ -166,7 +163,7 @@ for i, x in enumerate(all_BICs):
     max_idx = np.argmax(temp_BICs)
     stuff = [str(i+100)] + [str(int(x[m])) for m in models]  # just to ensure they're printed in the same order
     stuff[min_idx+1] = r"\cellcolor{green!25}" + stuff[min_idx+1]
-    stuff[max_idx+1] = r"\cellcolor{red!25}" + stuff[min_idx+1]
+    stuff[max_idx+1] = r"\cellcolor{red!25}" + stuff[max_idx+1]
     line = " & ".join(stuff) + r" \\"
     print line
 print r"\bottomrule"
