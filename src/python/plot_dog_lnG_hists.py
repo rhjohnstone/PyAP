@@ -134,7 +134,7 @@ for n in xrange(N_e):
     
     colour = plt.cm.winter(color_idx[n])
     c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=3./N_e)
-    for i in xrange(num_gs+1):
+    for i in xrange(num_gs):
         axs[i].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40)
 
 num_ticks = 5
