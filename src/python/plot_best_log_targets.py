@@ -80,7 +80,7 @@ elif pyap_options["model_number"]==7:  # Pa
     stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-12
 
 split_trace_name = trace_name.split("_")
-if pyap_options["model_number"]==6:
+if pyap_options["model_number"]==7:
     first_trace_number = int(split_trace_name[-1])
 elif pyap_options["model_number"]==4:
     first_trace_number = int(split_trace_name[-2])
@@ -128,7 +128,7 @@ for n in xrange(N_e):
     sl_chain = np.loadtxt(sl_mcmc_file)
     saved_its = sl_chain.shape[0]
     if pyap_options["model_number"]==4:
-        sl_chain = sl_chain[saved_its/4:, :]
+        sl_chain = sl_chain[(3*saved_its)/5:, :]  # some chains take ages to converge
     plt.plot(sl_chain[:,-1])
     plt.show()
     plt.close()
@@ -139,6 +139,9 @@ for n in xrange(N_e):
     if pyap_options["model_number"]==4:
         plot_trace_number = 100 + n
         plot_trace_path = "projects/PyAP/python/input/roche_ten_tusscher_correct_units/traces/Trace_2_2_{}_1.csv".format(plot_trace_number)
+    elif pyap_options["model_number"]==7:
+        plot_trace_number = 100 + n
+        plot_trace_path = "projects/PyAP/python/input/roche_paci_correct_units/traces/Trace_2_2_{}_1.csv".format(plot_trace_number)
     #elif pyap_options["model_number"]==6:
     #    plot_trace_number = 150 + n
     #    plot_trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(plot_trace_number)
