@@ -101,8 +101,8 @@ for i in xrange(num_gs):
     if expt_name=="roche_ten_tusscher_correct_units":
         if i==0 or i==1 or i==3:
             xs[i, :] = np.linspace(mins[i]-0.2, maxs[i]+0.2, num_pts)
-    else:
-        xs[i, :] = np.linspace(mins[i]-1.5, maxs[i]+1.5, num_pts)
+        else:
+            xs[i, :] = np.linspace(mins[i]-1.5, maxs[i]+1.5, num_pts)
     #    xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
     """if i==0:
             xs[i, :] = np.linspace(mins[i]+1, maxs[i]+0.5, num_pts)
