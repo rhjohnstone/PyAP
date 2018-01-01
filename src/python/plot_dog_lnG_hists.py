@@ -100,8 +100,10 @@ figsize = (ax_x, 1.2*ax_x)
 
 if expt_name=="dog_teun_davies":
     fig, axs = plt.subplots(5, 3, figsize=figsize)
-elif expt_name=="roche_ten_tusscher":
-    fig, axs = plt.subplots(5, 3, figsize=figsize)
+elif expt_name=="roche_ten_tusscher_correct_units":
+    fig, axs = plt.subplots(4, 3, figsize=figsize)
+elif expt_name=="roche_paci_correct_units":
+    fig, axs = plt.subplots(4, 3, figsize=figsize)
 
 axs = axs.flatten()
 for i in xrange(num_gs+1):
@@ -113,7 +115,6 @@ for i in xrange(num_gs+1):
     if i%3==0:
         axs[i].set_ylabel('Norm. freq.')
 
-sl_means = np.zeros((N_e, num_gs))
 for n in xrange(N_e):
     temp_trace_number = first_trace_number + n
     if expt_name=="dog_teun_davies":
@@ -122,12 +123,14 @@ for n in xrange(N_e):
         temp_trace_name = "_".join(split_trace_name[:-2])+"_{}_1".format(temp_trace_number)
     print temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
-    sl_chain = np.loadtxt(sl_mcmc_file)
-    if expt_name=="roche_ten_tusscher":
-        saved_its = sl_chain.shape[0]
-        sl_chain = sl_chain[saved_its/4:, :]
-    
-    sl_means[n, :] = np.mean(sl_chain[:,:-2], axis=0)
+    try:
+        sl_chain = np.loadtxt(sl_mcmc_file)
+        if expt_name=="roche_ten_tusscher_correct_units" or expt_name=="roche_paci_correct_units":
+            saved_its = sl_chain.shape[0]
+            sl_chain = sl_chain[saved_its/2:, :]
+    except:
+        print "Can't load", sl_mcmc_file
+
     
     colour = plt.cm.winter(color_idx[n])
     c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=3./N_e)
@@ -158,8 +161,8 @@ for i in xrange(num_gs+1):
 fig.tight_layout()#h_pad=1.)
 fig_file = sl_png_dir+"{}_{}_traces_superimposed_marginal_hists.png".format(expt_name, N_e)
 print fig_file
-fig.savefig(fig_file)
-#plt.show()
+#fig.savefig(fig_file)
+plt.show()
 sys.exit()
 
 for i in xrange(num_gs):
