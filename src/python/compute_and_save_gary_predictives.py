@@ -76,9 +76,9 @@ for n in xrange(N_e):
     except:
         print "Can't load", temp_chain
         continue
+    saved_its = temp_chain.shape[0]
     if expt_name=="roche_ten_tusscher_correct_units" or expt_name=="roche_paci_correct_units":
         temp_chain = temp_chain[(3*saved_its)/5:, :]
-    saved_its = temp_chain.shape[0]
     sl_chains.append(temp_chain)
     temp_mins = np.min(temp_chain, axis=0)
     temp_maxs = np.max(temp_chain, axis=0)
@@ -89,6 +89,7 @@ for n in xrange(N_e):
     chain_lengths.append(temp_chain.shape[0])
     
 length = chain_lengths[0]
+print chain_lengths
 assert(np.all(chain_lengths==length))
 
 N_e = len(chain_lengths)
