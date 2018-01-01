@@ -82,8 +82,8 @@ mcmc_file, log_file, png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_opti
 try:
     chain = np.loadtxt(mcmc_file)
     if expt_name=="roche_ten_tusscher_correct_units" or expt_name=="roche_paci_correct_units":
-        saved_its = sl_chain.shape[0]
-        sl_chain = sl_chain[saved_its/2:, :]
+        saved_its = chain.shape[0]
+        chain = chain[saved_its/2:, :]
 except:
     sys.exit("\nCan't find (or load) {}\n".format(mcmc_file))
     
