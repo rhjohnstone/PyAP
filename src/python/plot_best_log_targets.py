@@ -65,6 +65,20 @@ with open(options_file, 'r') as infile:
 data_clamp_on = pyap_options["data_clamp_on"]
 data_clamp_off = pyap_options["data_clamp_off"]
 
+# convert Cm and Istim to correct units, model-specific
+if pyap_options["model_number"]==3:  # LR
+    Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
+    stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] * 1e-6
+elif pyap_options["model_number"]==4:  # TT
+    Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
+    stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-6
+elif pyap_options["model_number"]==5:  # OH
+    Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
+    stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-6
+elif pyap_options["model_number"]==7:  # Pa
+    Cm = pyap_options["membrane_capacitance_pF"] * 1e-12
+    stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-12
+
 split_trace_name = trace_name.split("_")
 if pyap_options["model_number"]==6:
     first_trace_number = int(split_trace_name[-1])
@@ -124,28 +138,26 @@ for n in xrange(N_e):
     
     if pyap_options["model_number"]==4:
         plot_trace_number = 100 + n
-        plot_trace_path = "projects/PyAP/python/input/roche_ten_tusscher/traces/Trace_2_2_{}_1.csv".format(plot_trace_number)
-    elif pyap_options["model_number"]==6:
-        plot_trace_number = 150 + n
-        plot_trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(plot_trace_number)
+        plot_trace_path = "projects/PyAP/python/input/roche_ten_tusscher_correct_units/traces/Trace_2_2_{}_1.csv".format(plot_trace_number)
+    #elif pyap_options["model_number"]==6:
+    #    plot_trace_number = 150 + n
+    #    plot_trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(plot_trace_number)
     expt_times, expt_trace = np.loadtxt(plot_trace_path, delimiter=',').T
     expt_traces.append(expt_trace)
 
 ap_model = ap_simulator.APSimulator()
+ap_model.DefineStimulus(stimulus_magnitude, pyap_options["stimulus_duration_ms"], pyap_options["stimulus_period_ms"], pyap_options["stimulus_start_ms"])
+ap_model.DefineModel(pyap_options["model_number"])
 if (data_clamp_on < data_clamp_off):
-    ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
-    ap_model.DefineModel(pyap_options["model_number"])
     ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
-    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
-else:
-    ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
-    ap_model.DefineModel(pyap_options["model_number"])
+    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)        
 ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
 ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
 ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
 ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
 ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
 ap_model.SetNumberOfSolves(pyap_options["num_solves"])
+ap_model.SetMembraneCapacitance(Cm)
 
 for i in xrange(N_e):
     fig, ax = plt.subplots(1, 1)
