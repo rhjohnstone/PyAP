@@ -17,8 +17,8 @@ def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace
     ap_model.SetVoltage(expt_trace[0])
     temp_Gs = npexp(temp_lnG_params)
     solved = ap_model.SolveForVoltageTraceWithParams(temp_Gs)
-    if solved[-1] > -70:
-        print temp_Gs
+    #if solved[-1] > -70:
+    #    print temp_Gs
     return solved
 
 
@@ -78,6 +78,20 @@ with open(options_file, 'r') as infile:
 data_clamp_on = pyap_options["data_clamp_on"]
 data_clamp_off = pyap_options["data_clamp_off"]
 
+# convert Cm and Istim to correct units, model-specific
+if pyap_options["model_number"]==3:  # LR
+    Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
+    stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] * 1e-6
+elif pyap_options["model_number"]==4:  # TT
+    Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
+    stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-6
+elif pyap_options["model_number"]==5:  # OH
+    Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
+    stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-6
+elif pyap_options["model_number"]==7:  # Pa
+    Cm = pyap_options["membrane_capacitance_pF"] * 1e-12
+    stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-12
+
 
 
 try:
@@ -88,10 +102,6 @@ except:
 
 split_trace_name = trace_name.split("_")
 
-g_parameters = ['G_{Na}', 'G_{CaL}', 'G_{K1}', 'G_{pK}',
-                        'G_{Ks}', 'G_{Kr}', 'G_{pCa}', 'G_{bCa}',
-                        'k_{NaCa}', 'P_{NaK}', 'G_{to1}', 'G_{to2}',
-                        'G_{bCl}', 'G_{NaL}']
 
 if pyap_options["model_number"]==6:
     trace_number = int(split_trace_name[-1])
@@ -138,20 +148,18 @@ plt.show()"""
 
 
 ap_model = ap_simulator.APSimulator()
+ap_model.DefineStimulus(stimulus_magnitude, pyap_options["stimulus_duration_ms"], pyap_options["stimulus_period_ms"], pyap_options["stimulus_start_ms"])
+ap_model.DefineModel(pyap_options["model_number"])
 if (data_clamp_on < data_clamp_off):
-    ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
-    ap_model.DefineModel(pyap_options["model_number"])
     ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
-    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
-else:
-    ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
-    ap_model.DefineModel(pyap_options["model_number"])
+    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)        
 ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
 ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
 ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
 ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
 ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
 ap_model.SetNumberOfSolves(pyap_options["num_solves"])
+ap_model.SetMembraneCapacitance(Cm)
 
 
 T = args.num_samples
@@ -184,7 +192,10 @@ print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_tak
 
 for i in xrange(N_e):
     plot_trace_number = 100 + i
-    plot_trace_path = "projects/PyAP/python/input/roche_ten_tusscher/traces/Trace_2_2_{}_1.csv".format(plot_trace_number)
+    if expt_name=="roche_ten_tusscher_correct_units":
+        plot_trace_path = "projects/PyAP/python/input/roche_ten_tusscher/traces/Trace_2_2_{}_1.csv".format(plot_trace_number)
+    elif expt_name=="roche_paci_correct_units":
+        plot_trace_path = "projects/PyAP/python/input/roche_paci/traces/Trace_2_2_{}_1.csv".format(plot_trace_number)
 
     expt_times_for_plotting, expt_trace_for_plotting = np.loadtxt(plot_trace_path, delimiter=',').T
     axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='blue')
@@ -238,5 +249,5 @@ axs[1].legend(loc=1)"""
 fig.tight_layout()
 fig_png = "{}_trace_{}_{}_samples.png".format(expt_name, trace_number, T)
 print fig_png
-fig.savefig(fig_png)
+#fig.savefig(fig_png)
 plt.show()
