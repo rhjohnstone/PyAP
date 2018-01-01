@@ -128,9 +128,9 @@ for n in xrange(N_e):
         saved_its = sl_chain.shape[0]
         if pyap_options["model_number"]==4:
             sl_chain = sl_chain[(3*saved_its)/5:, :]  # some chains take ages to converge
-        plt.plot(sl_chain[:,-1])
-        plt.show()
-        plt.close()
+        #plt.plot(sl_chain[:,-1])
+        #plt.show()
+        #plt.close()
         max_target_idx = np.argmax(sl_chain[:,-1])
         MPDs[n, :] = sl_chain[max_target_idx, :-2]
     except:
@@ -166,6 +166,7 @@ ap_model.SetMembraneCapacitance(Cm)
 for i in xrange(N_e):
     fig, ax = plt.subplots(1, 1)
     ax.grid()
+    ax.set_title("Trace {}".format(100+i))
     ax.plot(expt_times, expt_traces[i], color='blue')
     ax.plot(expt_times, solve_for_voltage_trace_with_initial_V(MPDs[i, :], ap_model, expt_traces[0]), color='red')
     plt.show()
