@@ -63,18 +63,18 @@ mins = 1e9*np.ones(num_gs)
 maxs = -1e9*np.ones(num_gs)
 chain_lengths = []
 for n in xrange(N_e):
-    if (pyap_options["model_number"]==2) or (pyap_options["model_number"]==5):  # synth BR/OH
-        temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
-    elif (pyap_options["model_number"]==2) or (pyap_options["model_number"]==6):  # Davies
-        temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(150+n)
-    elif pyap_options["model_number"]==4:  # TT
+    #if (pyap_options["model_number"]==2) or (pyap_options["model_number"]==5):  # synth BR/OH
+    #    temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
+    #elif (pyap_options["model_number"]==2) or (pyap_options["model_number"]==6):  # Davies
+    #    temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(150+n)
+    if expt_name=="roche_ten_tusscher_correct_units" or expt_name=="roche_paci_correct_units":
         temp_trace_name = "_".join(split_trace_name[:-2]) + "_{}_".format(100+n) + split_trace_name[-1]
     print "Trace:", temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
     try:
         temp_chain = np.loadtxt(sl_mcmc_file, usecols=range(num_gs))
     except:
-        print "Can't load", temp_chain
+        print "Can't load", sl_mcmc_file
         continue
     saved_its = temp_chain.shape[0]
     if expt_name=="roche_ten_tusscher_correct_units" or expt_name=="roche_paci_correct_units":
