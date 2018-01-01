@@ -28,7 +28,7 @@ trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 
 try:
-    times, trace = np.loadtxt(trace_path, delimiter=',').T
+    expt_times, expt_trace = np.loadtxt(trace_path, delimiter=',').T
 except:
     sys.exit("Can't load expt trace: "+trace_path)
 
@@ -108,8 +108,8 @@ ap_model.SetMembraneCapacitance(Cm)
 fig, ax = plt.subplots(1, 1, figsize=(6,4))
 for d in diff:
     temp_params = theta_0 + d*diff_vector
-    temp_trace = solve_for_voltage_trace_with_initial_V(temp_params, ap_model, trace)
-    ax.plot(times, temp_trace, alpha=0.1)
+    temp_trace = solve_for_voltage_trace_with_initial_V(temp_params, ap_model, expt_trace)
+    ax.plot(expt_times, temp_trace, alpha=0.1)
 fig.tight_layout()
 plt.show(block=True)
 
