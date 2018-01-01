@@ -45,6 +45,8 @@ with open(options_file, 'r') as infile:
 data_clamp_on = pyap_options["data_clamp_on"]
 data_clamp_off = pyap_options["data_clamp_off"]
 
+original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
+
 if pyap_options["model_number"]==3:  # LR
     Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
     stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] * 1e-6
@@ -73,6 +75,9 @@ try:
 except:
     sys.exit("Can't load CMA-ES")
     
+original_lnGs = np.log(original_gs)
+print "original_lnGs:\n", original_lnGs
+    
 cmaes_lnGs = np.log(initial_gs)
 print "cmaes_lnGs:\n", cmaes_lnGs
 
@@ -86,7 +91,9 @@ except:
     
 print "MPD lnG params:\n", mpd_params
 
-diff_vector = mpd_params - cmaes_lnGs
+
+
+"""diff_vector = mpd_params - cmaes_lnGs
 
 num_x_pts = 121
 diff = np.linspace(-0.1, 1.1, num_x_pts)
@@ -115,5 +122,5 @@ for i, d in enumerate(diff):
 ax.plot(expt_times, solve_for_voltage_trace_with_initial_V(cmaes_lnGs, ap_model, expt_trace), color='blue')
 ax.plot(expt_times, solve_for_voltage_trace_with_initial_V(mpd_params, ap_model, expt_trace), color='red')
 fig.tight_layout()
-plt.show(block=True)
+plt.show(block=True)"""
 
