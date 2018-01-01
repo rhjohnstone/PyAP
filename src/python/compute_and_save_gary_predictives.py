@@ -76,9 +76,9 @@ for n in xrange(N_e):
     except:
         print "Can't load", temp_chain
         continue
-    saved_its = temp_chain.shape[0]
     if expt_name=="roche_ten_tusscher_correct_units" or expt_name=="roche_paci_correct_units":
         temp_chain = temp_chain[(3*saved_its)/5:, :]
+    saved_its = temp_chain.shape[0]
     sl_chains.append(temp_chain)
     temp_mins = np.min(temp_chain, axis=0)
     temp_maxs = np.max(temp_chain, axis=0)
@@ -98,8 +98,8 @@ xs = np.zeros((num_gs, num_pts))
 for i in xrange(num_gs):
     xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
     #if pyap_options["model_number"]==4:
-        xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
-        """if i==0:
+    #    xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
+    """if i==0:
             xs[i, :] = np.linspace(mins[i]+1, maxs[i]+0.5, num_pts)
         elif i==1:
             xs[i, :] = np.linspace(mins[i]-1, maxs[i]+0.5, num_pts)
