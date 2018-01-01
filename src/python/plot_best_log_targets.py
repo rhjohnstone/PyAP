@@ -80,9 +80,7 @@ elif pyap_options["model_number"]==7:  # Pa
     stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-12
 
 split_trace_name = trace_name.split("_")
-if pyap_options["model_number"]==7:
-    first_trace_number = int(split_trace_name[-1])
-elif pyap_options["model_number"]==4:
+if pyap_options["model_number"]==4 or pyap_options["model_number"]==7:
     first_trace_number = int(split_trace_name[-2])
 print "first_trace_number:", first_trace_number
         
