@@ -103,33 +103,8 @@ for i in xrange(num_gs):
             xs[i, :] = np.linspace(mins[i]-0.2, maxs[i]+0.2, num_pts)
         else:
             xs[i, :] = np.linspace(mins[i]-1.5, maxs[i]+1.5, num_pts)
-    #    xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
-    """if i==0:
-            xs[i, :] = np.linspace(mins[i]+1, maxs[i]+0.5, num_pts)
-        elif i==1:
-            xs[i, :] = np.linspace(mins[i]-1, maxs[i]+0.5, num_pts)
-        elif i==2:
-            xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
-        elif i==3:
-            xs[i, :] = np.linspace(mins[i]-3, maxs[i]+6, num_pts)
-        elif i==4:
-            xs[i, :] = np.linspace(mins[i], maxs[i]+1, num_pts)
-        elif i==5:
-            xs[i, :] = np.linspace(mins[i]-5, maxs[i]+10, num_pts)
-        elif i==6:
-            xs[i, :] = np.linspace(mins[i]-1, maxs[i]+0.5, num_pts)
-        elif i==7:
-            xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
-        elif i==8:
-            xs[i, :] = np.linspace(mins[i]-5, maxs[i]+7, num_pts)
-        elif i==9:
-            xs[i, :] = np.linspace(mins[i]-5, maxs[i]+6, num_pts)
-        elif i==10:
-            xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
-        elif i==11:
-            xs[i, :] = np.linspace(mins[i]-0.5, maxs[i]+0.5, num_pts)
-        else:
-            xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)"""
+    elif expt_name=="roche_paci_correct_units":
+        xs[i, :] = np.linspace(mins[i]-0.2, maxs[i]+0.2, num_pts)
 
 
 T = args.num_samples
