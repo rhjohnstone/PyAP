@@ -98,8 +98,10 @@ N_e = len(chain_lengths)
 num_pts = args.num_pts
 xs = np.zeros((num_gs, num_pts))
 for i in xrange(num_gs):
-    xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
-    #if pyap_options["model_number"]==4:
+    if expt_name=="roche_ten_tusscher_correct_units" and i==0:
+        xs[i, :] = np.linspace(mins[i]-0.2, maxs[i]+0.2, num_pts)
+    else:
+        xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
     #    xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
     """if i==0:
             xs[i, :] = np.linspace(mins[i]+1, maxs[i]+0.5, num_pts)
