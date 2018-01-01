@@ -54,10 +54,19 @@ try:
         best_gs_sigma = cmaes_results[best_index,:-1]
     initial_gs = best_gs_sigma[:-1]
     initial_sigma = best_gs_sigma[-1]
-    print "initial_gs from cmaes:\n", initial_gs
 except:
     sys.exit("Can't load CMA-ES")
     
 theta_0 = np.concatenate((np.log(initial_gs), [initial_sigma]))
-print theta_0
+print "theta_0:", theta_0
+
+mcmc_file, log_file, png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name)
+try:
+    sl_chain = np.loadtxt(mcmc_file)
+    mpd_idx = np.argmax(sl_chain[:, -1])
+    mpd_params = sl_chain[mpd_idx, :-1]
+except:
+    sys.exit("Can't load MCMC")
+    
+print "MPD params:", mpd_params
 
