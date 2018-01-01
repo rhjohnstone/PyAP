@@ -104,10 +104,10 @@ for i in xrange(num_gs):
         else:
             xs[i, :] = np.linspace(mins[i]-1.5, maxs[i]+1.5, num_pts)
     elif expt_name=="roche_paci_correct_units":
-        if i==0 or i==3:
+        if i==0 or i==2 or i==3:
             xs[i, :] = np.linspace(mins[i]-1., maxs[i]+1., num_pts)
         else:
-            xs[i, :] = np.linspace(mins[i]-2., maxs[i]+3., num_pts)
+            xs[i, :] = np.linspace(mins[i]-2., maxs[i]+5., num_pts)
 
 
 T = args.num_samples
