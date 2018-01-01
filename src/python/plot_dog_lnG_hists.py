@@ -138,7 +138,7 @@ for n in xrange(N_e):
         axs[i].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40)
 
 num_ticks = 5
-for i in xrange(num_gs+1):
+for i in xrange(num_gs):
     xlim = axs[i].get_xlim()
     xdiff = xlim[1]-xlim[0]
     lower_x = xlim[0] + 0.2*xdiff
