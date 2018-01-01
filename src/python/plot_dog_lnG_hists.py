@@ -43,7 +43,7 @@ split_trace_name = trace_name.split("_")
 
 if expt_name=="dog_teun_davies":
     first_trace_number = 150
-elif expt_name=="roche_ten_tusscher":
+elif expt_name=="roche_ten_tusscher_correct_units" or expt_name=="roche_paci_correct_units":
     first_trace_number = 100
 
 pyap_options = {}
@@ -106,7 +106,7 @@ elif expt_name=="roche_paci_correct_units":
     fig, axs = plt.subplots(4, 3, figsize=figsize)
 
 axs = axs.flatten()
-for i in xrange(num_gs+1):
+for i in xrange(num_gs):
     axs[i].grid()
     if i < num_gs:
         axs[i].set_xlabel('log({})'.format(g_labels[i]), fontsize=15)
@@ -119,7 +119,7 @@ for n in xrange(N_e):
     temp_trace_number = first_trace_number + n
     if expt_name=="dog_teun_davies":
         temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(temp_trace_number)
-    elif expt_name=="roche_ten_tusscher":
+    elif expt_name=="roche_ten_tusscher_correct_units" or expt_name=="roche_paci_correct_units":
         temp_trace_name = "_".join(split_trace_name[:-2])+"_{}_1".format(temp_trace_number)
     print temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
