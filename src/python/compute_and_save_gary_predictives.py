@@ -89,8 +89,9 @@ for n in xrange(N_e):
     chain_lengths.append(temp_chain.shape[0])
     
 length = chain_lengths[0]
+print length
 print chain_lengths
-assert(np.all(chain_lengths==length))
+assert(np.all(np.array(chain_lengths)==length))
 
 N_e = len(chain_lengths)
 
