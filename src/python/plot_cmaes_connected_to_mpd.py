@@ -109,12 +109,9 @@ fig, ax = plt.subplots(1, 1, figsize=(6,4))
 for i, d in enumerate(diff):
     temp_params = initial_lnGs + d*diff_vector
     temp_trace = solve_for_voltage_trace_with_initial_V(temp_params, ap_model, expt_trace)
-    if i==0:
-        ax.plot(expt_times, temp_trace, color='blue')
-    elif i==num_x_pts-1:
-        ax.plot(expt_times, temp_trace, color='red')
-    else:
-        ax.plot(expt_times, temp_trace, color='black', alpha=0.1)
+    ax.plot(expt_times, temp_trace, color='black', alpha=0.1)
+ax.plot(expt_times, solve_for_voltage_trace_with_initial_V(initial_lnGs, ap_model, expt_trace), color='blue')
+ax.plot(expt_times, solve_for_voltage_trace_with_initial_V(mpd_params, ap_model, expt_trace), color='red')
 fig.tight_layout()
 plt.show(block=True)
 
