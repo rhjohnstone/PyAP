@@ -50,7 +50,7 @@ trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
 expt_params_file = '/'.join( split_trace_path[:5] ) + "/expt_params.txt"
 
-
+print expt_name
 
 pyap_options = {}
 with open(options_file, 'r') as infile:
@@ -123,7 +123,11 @@ for n in xrange(N_e):
         temp_trace_name = "_".join(split_trace_name[:-2])+"_{}_1".format(temp_trace_number)
     print temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
-    sl_chain = np.loadtxt(sl_mcmc_file)
+    try:
+        sl_chain = np.loadtxt(sl_mcmc_file)
+    except:
+        print "Can't load", sl_mcmc_file
+        continue
     saved_its = sl_chain.shape[0]
     if pyap_options["model_number"]==4:
         sl_chain = sl_chain[(3*saved_its)/5:, :]  # some chains take ages to converge
