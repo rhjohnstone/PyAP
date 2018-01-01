@@ -61,7 +61,7 @@ xs = []
 sl_chains = []
 mins = 1e9*np.ones(num_gs)
 maxs = -1e9*np.ones(num_gs)
-chain_lengths = np.zeros(N_e)
+chain_lengths = []
 for n in xrange(N_e):
     if (pyap_options["model_number"]==2) or (pyap_options["model_number"]==5):  # synth BR/OH
         temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
@@ -71,10 +71,14 @@ for n in xrange(N_e):
         temp_trace_name = "_".join(split_trace_name[:-2]) + "_{}_".format(100+n) + split_trace_name[-1]
     print "Trace:", temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
-    temp_chain = np.loadtxt(sl_mcmc_file, usecols=range(num_gs))
+    try:
+        temp_chain = np.loadtxt(sl_mcmc_file, usecols=range(num_gs))
+    except:
+        print "Can't load", temp_chain
+        continue
     saved_its = temp_chain.shape[0]
-    if pyap_options["model_number"]==4:
-        temp_chain = temp_chain[saved_its/4:, :]
+    if expt_name=="roche_ten_tusscher_correct_units" or expt_name=="roche_paci_correct_units":
+        temp_chain = temp_chain[(3*saved_its)/5:, :]
     sl_chains.append(temp_chain)
     temp_mins = np.min(temp_chain, axis=0)
     temp_maxs = np.max(temp_chain, axis=0)
@@ -82,17 +86,20 @@ for n in xrange(N_e):
     where_new_max = np.where(temp_maxs > maxs)
     mins[where_new_min] = temp_mins[where_new_min]
     maxs[where_new_max] = temp_maxs[where_new_max]
-    chain_lengths[n] = temp_chain.shape[0]
+    chain_lengths.append(temp_chain.shape[0])
     
 length = chain_lengths[0]
 assert(np.all(chain_lengths==length))
 
+N_e = len(chain_lengths)
+
 num_pts = args.num_pts
 xs = np.zeros((num_gs, num_pts))
 for i in xrange(num_gs):
-    if pyap_options["model_number"]==4:
-        #xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
-        if i==0:
+    xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
+    #if pyap_options["model_number"]==4:
+        xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
+        """if i==0:
             xs[i, :] = np.linspace(mins[i]+1, maxs[i]+0.5, num_pts)
         elif i==1:
             xs[i, :] = np.linspace(mins[i]-1, maxs[i]+0.5, num_pts)
@@ -117,7 +124,7 @@ for i in xrange(num_gs):
         elif i==11:
             xs[i, :] = np.linspace(mins[i]-0.5, maxs[i]+0.5, num_pts)
         else:
-            xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)
+            xs[i, :] = np.linspace(mins[i]-1, maxs[i]+1, num_pts)"""
 
 
 T = args.num_samples
@@ -135,7 +142,7 @@ gary_predictives /= T
 
 
 for i in xrange(num_gs):
-    garyfile, garypng = ps.gary_predictive_file(expt_name, N_e, i)
+    garyfile, garypng = ps.gary_predictive_file(expt_name, args.num_expts, i)
     np.savetxt(garyfile, np.vstack((xs[i, :], gary_predictives[i, :])).T)
     fig, ax = plt.subplots(1,1, figsize=(4,3))
     ax.grid()
@@ -144,13 +151,15 @@ for i in xrange(num_gs):
     ax.set_ylabel("Cumulative dist.")
     ax.set_xlim(xs[i, 0], xs[i, -1])
     fig.tight_layout()
-    fullpng = garypng+"{}_{}_traces_predictive_cdf_{}.png".format(expt_name, N_e, g_parameters[i])
+    fullpng = garypng+"{}_{}_traces_predictive_cdf_{}.png".format(expt_name, args.num_expts, g_parameters[i])
     print fullpng
     plt.savefig(fullpng)
     plt.close()
 
 
 sys.exit()
+
+
 for i in xrange(num_gs):
     xs.append(np.linspace(m_true[i]-2*np.sqrt(sigma2_true), m_true[i]+2*np.sqrt(sigma2_true), num_pts))
     x = xs[i]
