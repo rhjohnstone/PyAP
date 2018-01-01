@@ -121,7 +121,7 @@ for n in xrange(N_e):
     temp_trace_number = first_trace_number + n
     if pyap_options["model_number"]==6:
         temp_trace_name = "_".join(split_trace_name[:-1])+"_"+str(temp_trace_number)
-    elif pyap_options["model_number"]==4:
+    elif pyap_options["model_number"]==4 or pyap_options["model_number"]==7:
         temp_trace_name = "_".join(split_trace_name[:-2])+"_{}_1".format(temp_trace_number)
     print temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
