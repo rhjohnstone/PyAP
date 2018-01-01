@@ -199,6 +199,7 @@ for t in xrange(T):
     lnG_samples = np.zeros((num_chains, num_gs))
     for n in xrange(num_chains):
         lnG_samples[n, :] = sl_chains[n][rand_idx[t, n]]
+    print temp_lnGs
     temp_lnGs = lnG_samples.mean(axis=0)
     axs[1].plot(expt_times, solve_for_voltage_trace_with_initial_V(temp_lnGs, ap_model, expt_trace), alpha=0.01, color='blue')
 time_taken = time()-start
@@ -270,5 +271,5 @@ axs[1].legend(loc=1)"""
 fig.tight_layout()
 fig_png = "{}_trace_{}_{}_sample_from_sl_and_then_mean.png".format(expt_name, trace_number, T)
 print fig_png
-#fig.savefig(fig_png)
+fig.savefig(fig_png)
 plt.show()
