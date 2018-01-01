@@ -107,7 +107,7 @@ if pyap_options["model_number"]==6:
     trace_number = int(split_trace_name[-1])
     block_indices = [0, 1, 4, 5]
     ic50s = [206.7, 158., 158., 29.]
-elif pyap_options["model_number"]==4:
+elif pyap_options["model_number"]==4 or pyap_options["model_number"]==7:
     trace_number = int(split_trace_name[-2])
         
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
