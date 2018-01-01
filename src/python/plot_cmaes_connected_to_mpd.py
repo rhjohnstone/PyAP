@@ -73,8 +73,8 @@ try:
 except:
     sys.exit("Can't load CMA-ES")
     
-initial_lnGs = np.log(initial_gs)
-print "theinitial_lnGsta_0:", initial_lnGs
+cmaes_lnGs = np.log(initial_gs)
+print "cmaes_lnGs:\n", cmaes_lnGs
 
 mcmc_file, log_file, png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name)
 try:
@@ -84,9 +84,9 @@ try:
 except:
     sys.exit("Can't load MCMC")
     
-print "MPD lnG params:", mpd_params
+print "MPD lnG params:\n", mpd_params
 
-diff_vector = mpd_params - initial_lnGs
+diff_vector = mpd_params - cmaes_lnGs
 
 num_x_pts = 121
 diff = np.linspace(-0.1, 1.1, num_x_pts)
@@ -109,10 +109,10 @@ fig, ax = plt.subplots(1, 1, figsize=(6,4))
 ax.grid()
 ax.plot(expt_times, expt_trace, color='green')
 for i, d in enumerate(diff):
-    temp_params = initial_lnGs + d*diff_vector
+    temp_params = cmaes_lnGs + d*diff_vector
     temp_trace = solve_for_voltage_trace_with_initial_V(temp_params, ap_model, expt_trace)
     ax.plot(expt_times, temp_trace, color='black', alpha=0.1)
-ax.plot(expt_times, solve_for_voltage_trace_with_initial_V(initial_lnGs, ap_model, expt_trace), color='blue')
+ax.plot(expt_times, solve_for_voltage_trace_with_initial_V(cmaes_lnGs, ap_model, expt_trace), color='blue')
 ax.plot(expt_times, solve_for_voltage_trace_with_initial_V(mpd_params, ap_model, expt_trace), color='red')
 fig.tight_layout()
 plt.show(block=True)
