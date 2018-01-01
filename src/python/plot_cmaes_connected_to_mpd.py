@@ -5,6 +5,17 @@ import ap_simulator
 import argparse
 import sys
 
+
+def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace):
+    ap_model.SetToModelInitialConditions()
+    ap_model.SetVoltage(expt_trace[0])
+    temp_Gs = npexp(temp_lnG_params)
+    solved = ap_model.SolveForVoltageTraceWithParams(temp_Gs)
+    #if solved[-1] > -70:
+    #    print temp_Gs
+    return solved
+    
+
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
@@ -15,6 +26,11 @@ split_trace_path = trace_path.split('/')
 expt_name = split_trace_path[4]
 trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
+
+try:
+    times, trace = np.loadtxt(trace_path, delimiter=',').T
+except:
+    sys.exit("Can't load expt trace: "+trace_path)
 
 pyap_options = {}
 with open(options_file, 'r') as infile:
@@ -69,4 +85,31 @@ except:
     sys.exit("Can't load MCMC")
     
 print "MPD params:", mpd_params
+
+diff_vector = mpd_params - theta_0
+
+num_x_pts = 121
+diff = np.linspace(-0.1, 1.1, num_x_pts)
+
+ap_model = ap_simulator.APSimulator()
+ap_model.DefineStimulus(stimulus_magnitude, pyap_options["stimulus_duration_ms"], pyap_options["stimulus_period_ms"], pyap_options["stimulus_start_ms"])
+ap_model.DefineModel(pyap_options["model_number"])
+if (data_clamp_on < data_clamp_off):
+    ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
+    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)        
+ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
+ap_model.SetExtracellularPotassiumConc(pyap_options["extra_K_conc"])
+ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
+ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
+ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
+ap_model.SetNumberOfSolves(pyap_options["num_solves"])
+ap_model.SetMembraneCapacitance(Cm)
+
+fig, ax = plt.subplots(1, 1, figsize=(6,4))
+for d in diff:
+    temp_params = theta_0 + d*diff_vector
+    temp_trace = solve_for_voltage_trace_with_initial_V(temp_params, ap_model, trace)
+    ax.plot(times, temp_trace, alpha=0.1)
+fig.tight_layout()
+plt.show(block=True)
 
