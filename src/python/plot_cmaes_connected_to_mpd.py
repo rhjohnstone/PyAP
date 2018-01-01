@@ -9,7 +9,7 @@ import sys
 def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace):
     ap_model.SetToModelInitialConditions()
     ap_model.SetVoltage(expt_trace[0])
-    temp_Gs = npexp(temp_lnG_params)
+    temp_Gs = np.exp(temp_lnG_params)
     solved = ap_model.SolveForVoltageTraceWithParams(temp_Gs)
     #if solved[-1] > -70:
     #    print temp_Gs
@@ -73,20 +73,20 @@ try:
 except:
     sys.exit("Can't load CMA-ES")
     
-theta_0 = np.concatenate((np.log(initial_gs), [initial_sigma]))
-print "theta_0:", theta_0
+initial_lnGs = np.log(initial_gs)
+print "theinitial_lnGsta_0:", initial_lnGs
 
 mcmc_file, log_file, png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name)
 try:
     sl_chain = np.loadtxt(mcmc_file)
     mpd_idx = np.argmax(sl_chain[:, -1])
-    mpd_params = sl_chain[mpd_idx, :-1]
+    mpd_params = sl_chain[mpd_idx, :-2]
 except:
     sys.exit("Can't load MCMC")
     
-print "MPD params:", mpd_params
+print "MPD lnG params:", mpd_params
 
-diff_vector = mpd_params - theta_0
+diff_vector = mpd_params - initial_lnGs
 
 num_x_pts = 121
 diff = np.linspace(-0.1, 1.1, num_x_pts)
@@ -107,7 +107,7 @@ ap_model.SetMembraneCapacitance(Cm)
 
 fig, ax = plt.subplots(1, 1, figsize=(6,4))
 for d in diff:
-    temp_params = theta_0 + d*diff_vector
+    temp_params = initial_lnGs + d*diff_vector
     temp_trace = solve_for_voltage_trace_with_initial_V(temp_params, ap_model, expt_trace)
     ax.plot(expt_times, temp_trace, alpha=0.1)
 fig.tight_layout()
