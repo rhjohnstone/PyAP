@@ -106,6 +106,8 @@ ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 ap_model.SetMembraneCapacitance(Cm)
 
 fig, ax = plt.subplots(1, 1, figsize=(6,4))
+ax.grid()
+ax.plot(expt_times, expt_trace, color='green')
 for i, d in enumerate(diff):
     temp_params = initial_lnGs + d*diff_vector
     temp_trace = solve_for_voltage_trace_with_initial_V(temp_params, ap_model, expt_trace)
