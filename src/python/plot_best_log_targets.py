@@ -125,18 +125,17 @@ for n in xrange(N_e):
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
     try:
         sl_chain = np.loadtxt(sl_mcmc_file)
+        saved_its = sl_chain.shape[0]
+        if pyap_options["model_number"]==4:
+            sl_chain = sl_chain[(3*saved_its)/5:, :]  # some chains take ages to converge
+        plt.plot(sl_chain[:,-1])
+        plt.show()
+        plt.close()
+        max_target_idx = np.argmax(sl_chain[:,-1])
+        MPDs[n, :] = sl_chain[max_target_idx, :-2]
     except:
         print "Can't load", sl_mcmc_file
-        continue
-    saved_its = sl_chain.shape[0]
-    if pyap_options["model_number"]==4:
-        sl_chain = sl_chain[(3*saved_its)/5:, :]  # some chains take ages to converge
-    plt.plot(sl_chain[:,-1])
-    plt.show()
-    plt.close()
-    max_target_idx = np.argmax(sl_chain[:,-1])
-    MPDs[n, :] = sl_chain[max_target_idx, :-2]
-    
+        print "So lnG = 0 in later plotting"    
     
     if pyap_options["model_number"]==4:
         plot_trace_number = 100 + n
