@@ -71,7 +71,7 @@ original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["mod
 num_gs = len(original_gs)
 
 
-labels = g_parameters+[r"\sigma"]
+labels = g_parameters[indices_to_keep]+[r"\sigma"]
 
 mcmc_file, log_file, png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name)
 try:
@@ -216,12 +216,12 @@ while count < 2:
                 hidden_labels.append(axes[ij].get_yticklabels())
             if i==num_params-1:
                 if j==num_params-1:
-                    axes[str(i)+str(j)].set_xlabel("$"+labels[indices_to_keep[j]]+"$")
+                    axes[str(i)+str(j)].set_xlabel("$"+labels[j]+"$")
                 else:
                     axes[str(i)+str(j)].set_xlabel("log($"+labels[indices_to_keep[j]]+"$)")
             if j==0 and i>0:
                 if i==num_params_to_fit-1:
-                    axes[str(i)+str(j)].set_ylabel("$"+labels[indices_to_keep[i]]+"$")
+                    axes[str(i)+str(j)].set_ylabel("$"+labels[i]+"$")
                 else:
                     axes[str(i)+str(j)].set_ylabel("log($"+labels[indices_to_keep[i]]+"$)")
                 
