@@ -207,11 +207,11 @@ expts = ["Control"]*N_e + ["K$^+$, Moxi."]*N_e
 colours = ["blue"]*N_e + ["red"]*N_e
 expts_apds = np.concatenate((expt_apd90s_control, expt_apd90s_moxi))
 
-d = {"expt": expts, "colours": colours, "apds": expts_apds}
+d = {"Experiment": expts, "colours": colours, "$APD_{90}s$": expts_apds}
 
 expt_df = pd.DataFrame(data=d)
 
-ax = sns.swarmplot(x="expt", y="apds", data=expt_df)
+ax = sns.swarmplot(x="Experiment", y="apds", data=expt_df, hue="colours")
 plt.show()
 
 #axs[0].plot([], [], color='blue', label='Control')
