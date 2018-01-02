@@ -64,9 +64,9 @@ for model_number in xrange(6,7):
         #scaled_gs[1] *= m
         trace = solve_with_params(scaled_gs)
         if i==0:
-            label = r"$\times ({}/{})$".format(b,a)
+            label = r"$\times 1.3$".format(b,a)
         elif i==1:
-            label = r"$\times ({}/{})$".format(a,b)
+            label = r"$\div 1.3$".format(a,b)
         ax2.plot(times, trace, label=label)
         
     scaled_gs = np.copy(original_gs) * (2-k)
