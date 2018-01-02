@@ -76,7 +76,7 @@ elif pyap_options["model_number"]==7:  # Pa
 num_params_to_fit = len(indices_to_keep)
 
 
-temp_Gs = np.zeros(num_gs)
+temp_Gs = np.copy(original_gs)
 def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace):
     ap_model.SetToModelInitialConditions()
     ap_model.SetVoltage(expt_trace[0])
