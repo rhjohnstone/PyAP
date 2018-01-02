@@ -203,6 +203,17 @@ for i in xrange(N_e):
     print "Trace", plot_trace_number
     expt_apd90s_moxi[i] = ps.compute_apd90(expt_times_for_plotting, expt_trace_for_plotting, data_clamp_on)
 
+expts = ["Control"]*N_e + ["K$^+$, Moxi."]*N_e
+colours = ["blue"]*N_e + ["red"]*N_e
+expts_apds = np.concatenate((expt_apd90s_control, expt_apd90s_moxi))
+
+d = {"expt": expts, "colours": colours, "apds": expts_apds}
+
+expt_df = pd.DataFrame(data=d)
+
+ax = sns.swarmplot(x="expt", y="apds", data=expt_df)
+plt.show()
+
 #axs[0].plot([], [], color='blue', label='Control')
 #axs[0].plot([], [], color='red', label="K$^+$, Moxi.")
 
