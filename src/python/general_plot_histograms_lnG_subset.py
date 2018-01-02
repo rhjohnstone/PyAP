@@ -23,7 +23,6 @@ from scipy.stats import norm
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="csv file from which to read in data", required=True)
-parser.add_argument("--real", action="store_true", help="plotting real data, so don't look for experimental parameter file", default=False)
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
     parser.print_help()
@@ -34,11 +33,8 @@ split_trace_path = trace_path.split('/')
 expt_name = split_trace_path[4]
 trace_name = split_trace_path[-1][:-4]
 options_file = '/'.join( split_trace_path[:5] ) + "/PyAP_options.txt"
-params_file = '/'.join( split_trace_path[:5] ) + "/expt_params.txt"
 
-trace_number = int(trace_name.split("_")[-1])
-if not args.real:
-    expt_params = np.loadtxt(params_file)[trace_number, :]
+trace_number = int(trace_name.split("_")[-2])  # just for Roche
 
 pyap_options = {}
 with open(options_file, 'r') as infile:
