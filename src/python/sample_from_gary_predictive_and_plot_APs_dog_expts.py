@@ -280,8 +280,8 @@ pred_df = pd.DataFrame(data=d2)
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(6,3), sharey=True)
 #ax = fig.add_subplot(111)
-ax1.swarmplot(x="Experiment", y="$APD_{90}$", data=expt_df)#, hue="colours")
-ax2.violinplot(x="Predictions", y="$APD_{90}$", data=pred_df)#, hue="colours")
+sns.swarmplot(x="Experiment", y="$APD_{90}$", data=expt_df, ax=ax1)#, hue="colours")
+sns.violinplot(x="Predictions", y="$APD_{90}$", data=pred_df, ax=ax2)#, hue="colours")
 fig.tight_layout()
 
 plt.show(block=True)
