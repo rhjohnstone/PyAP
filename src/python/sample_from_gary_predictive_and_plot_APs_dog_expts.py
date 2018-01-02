@@ -211,7 +211,7 @@ d = {"Experiment": expts, "colours": colours, "$APD_{90}s$": expts_apds}
 
 expt_df = pd.DataFrame(data=d)
 
-ax = sns.swarmplot(x="Experiment", y="apds", data=expt_df, hue="colours")
+ax = sns.swarmplot(x="Experiment", y="$APD_{90}s$", data=expt_df, hue="colours")
 plt.show()
 
 #axs[0].plot([], [], color='blue', label='Control')
