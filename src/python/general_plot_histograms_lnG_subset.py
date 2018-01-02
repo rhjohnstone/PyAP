@@ -71,7 +71,7 @@ original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["mod
 num_gs = len(original_gs)
 
 
-labels = g_parameters[indices_to_keep]+[r"\sigma"]
+labels = [g_parameters[x] for x in indices_to_keep]+[r"\sigma"]
 
 mcmc_file, log_file, png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, trace_name)
 try:
