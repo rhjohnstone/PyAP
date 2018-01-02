@@ -176,12 +176,12 @@ while count < 2:
     for i in range(num_params_to_fit):
         for j in range(i+1):
             ij = str(i)+str(j)
-            subplot_position = num_params*i+j+1
+            subplot_position = num_params_to_fit*i+j+1
             if i==j:
-                axes[ij] = matrix_fig.add_subplot(num_params,num_params,subplot_position)
+                axes[ij] = matrix_fig.add_subplot(num_params_to_fit, num_params_to_fit, subplot_position)
                 axes[ij].hist(chain[:,i],bins=50,normed=True,color='blue', edgecolor='blue')
             elif j==0: # this column shares x-axis with top-left
-                axes[ij] = matrix_fig.add_subplot(num_params,num_params,subplot_position,sharex=axes["00"])
+                axes[ij] = matrix_fig.add_subplot(num_params_to_fit, num_params_to_fit, subplot_position,sharex=axes["00"])
                 counts, xedges, yedges, Image = axes[ij].hist2d(chain[:,j],chain[:,i],cmap='hot_r',bins=50,norm=norm)
                 maxcounts = np.amax(counts)
                 if maxcounts > colormax:
@@ -190,7 +190,7 @@ while count < 2:
                 if mincounts < colormin:
                     colormin = mincounts
             else:
-                axes[ij] = matrix_fig.add_subplot(num_params,num_params,subplot_position,sharex=axes[str(j)+str(j)],sharey=axes[str(i)+"0"])
+                axes[ij] = matrix_fig.add_subplot(num_params_to_fit, num_params_to_fit, subplot_position,sharex=axes[str(j)+str(j)],sharey=axes[str(i)+"0"])
                 counts, xedges, yedges, Image = axes[ij].hist2d(chain[:,j],chain[:,i],cmap='hot_r',bins=50,norm=norm)
                 maxcounts = np.amax(counts)
                 if maxcounts > colormax:
@@ -208,14 +208,14 @@ while count < 2:
             axes[ij].yaxis.set_ticks(np.linspace(start, end, num_ticks+2)[1:-1])
             if (i!=j):
                 axes[ij].yaxis.grid()
-            if i!=num_params-1:
+            if i!=num_params_to_fit-1:
                 hidden_labels.append(axes[ij].get_xticklabels())
             if j!=0:
                 hidden_labels.append(axes[ij].get_yticklabels())
             if i==j==0:
                 hidden_labels.append(axes[ij].get_yticklabels())
-            if i==num_params-1:
-                if j==num_params-1:
+            if i==num_params_to_fit-1:
+                if j==num_params_to_fit-1:
                     axes[str(i)+str(j)].set_xlabel("$"+labels[j]+"$")
                 else:
                     axes[str(i)+str(j)].set_xlabel("log($"+labels[j]+"$)")
