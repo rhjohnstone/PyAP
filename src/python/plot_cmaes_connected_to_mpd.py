@@ -93,7 +93,7 @@ print "MPD lnG params:\n", mpd_params
 
 
 
-"""diff_vector = mpd_params - cmaes_lnGs
+diff_vector = mpd_params - cmaes_lnGs
 
 num_x_pts = 121
 diff = np.linspace(-0.1, 1.1, num_x_pts)
@@ -122,5 +122,5 @@ for i, d in enumerate(diff):
 ax.plot(expt_times, solve_for_voltage_trace_with_initial_V(cmaes_lnGs, ap_model, expt_trace), color='blue')
 ax.plot(expt_times, solve_for_voltage_trace_with_initial_V(mpd_params, ap_model, expt_trace), color='red')
 fig.tight_layout()
-plt.show(block=True)"""
+plt.show(block=True)
 
