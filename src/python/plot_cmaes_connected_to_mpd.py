@@ -95,8 +95,8 @@ print "MPD lnG params:\n", mpd_params
 
 diff_vector = mpd_params - cmaes_lnGs
 
-num_x_pts = 121
-diff = np.linspace(-0.1, 1.1, num_x_pts)
+num_x_pts = 100
+diff = np.linspace(0, 1, num_x_pts)
 
 ap_model = ap_simulator.APSimulator()
 ap_model.DefineStimulus(stimulus_magnitude, pyap_options["stimulus_duration_ms"], pyap_options["stimulus_period_ms"], pyap_options["stimulus_start_ms"])
@@ -115,6 +115,7 @@ ap_model.SetMembraneCapacitance(Cm)
 fig, ax = plt.subplots(1, 1, figsize=(6,4))
 ax.grid()
 ax.plot(expt_times, expt_trace, color='green')
+ax.set_title(trace_name)
 for i, d in enumerate(diff):
     temp_params = cmaes_lnGs + d*diff_vector
     temp_trace = solve_for_voltage_trace_with_initial_V(temp_params, ap_model, expt_trace)
