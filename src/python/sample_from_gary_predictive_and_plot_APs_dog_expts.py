@@ -211,6 +211,8 @@ d = {"Experiment": expts, "colours": colours, "$APD_{90}$": expts_apds}
 
 expt_df = pd.DataFrame(data=d)
 
+fig = plt.figure(figsize=(3,3))
+#ax = fig.add_subplot(111)
 ax = sns.swarmplot(x="Experiment", y="$APD_{90}$", data=expt_df)#, hue="colours")
 plt.show()
 
