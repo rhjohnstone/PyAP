@@ -139,7 +139,7 @@ def run_cmaes(cma_index):
     #npr.seed(cma_index)
     #opts['seed'] = cma_index
     #options = {'seed':cma_index}
-    x0 = nplog(original_gs[indices_to_keep])  + 0.1*npr.randn(num_params_to_fit)
+    x0 = nplog(original_gs[indices_to_keep])  + 0.5*npr.randn(num_params_to_fit)
     if pyap_options["model_number"]==3:
         x0 += nplog(15)-6*nplog(10)  # have to rescale because of Cm, this line is NOT general currently
     sigma0 = 0.1
