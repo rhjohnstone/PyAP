@@ -161,7 +161,7 @@ for i in xrange(num_gs):
 fig.tight_layout()#h_pad=1.)
 fig_file = sl_png_dir+"{}_{}_traces_superimposed_marginal_hists.png".format(expt_name, N_e)
 print fig_file
-#fig.savefig(fig_file)
+fig.savefig(fig_file)
 plt.show()
 sys.exit()
 
