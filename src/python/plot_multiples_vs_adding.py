@@ -46,7 +46,7 @@ for model_number in xrange(6,7):
     ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
     ap.DefineModel(model_number)
 
-    fig, (ax1, ax2) = plt.subplots(1,2,figsize=(8,4),sharey=True)
+    fig, (ax1, ax2) = plt.subplots(1,2,figsize=(8.2,4.1),sharey=True)
     
     original_trace = solve_with_params(original_gs)
     for ax in [ax1, ax2]:
