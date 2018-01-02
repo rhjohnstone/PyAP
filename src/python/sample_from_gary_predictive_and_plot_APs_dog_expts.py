@@ -211,10 +211,8 @@ d = {"Experiment": expts, "colours": colours, "$APD_{90}$": expts_apds}
 
 expt_df = pd.DataFrame(data=d)
 
-fig = plt.figure(figsize=(3,3))
-#ax = fig.add_subplot(111)
-ax = sns.swarmplot(x="Experiment", y="$APD_{90}$", data=expt_df)#, hue="colours")
-plt.show()
+
+
 
 #axs[0].plot([], [], color='blue', label='Control')
 #axs[0].plot([], [], color='red', label="K$^+$, Moxi.")
@@ -271,6 +269,20 @@ apd90_fig.tight_layout()
 apd90_fig_png = "{}_trace_{}_{}_samples_control_and_moxi_apd90_predictions.png".format(expt_name, trace_number, T)
 print apd90_fig_png
 #apd90_fig.savefig(apd90_fig_png)
+
+expts = ["Control"]*T + ["K$^+$, Moxi."]*T
+#colours = ["blue"]*N_e + ["red"]*N_e
+pred_apds = np.concatenate((control_apd90s, moxi_apd90s))
+
+d2 = {"Predictions": expts, "colours": colours, "$APD_{90}$": expts_apds}
+
+pred_df = pd.DataFrame(data=d2)
+
+fig, (ax1, ax2) = plt.figure(1, 2, figsize=(6,3))
+#ax = fig.add_subplot(111)
+ax1.swarmplot(x="Experiment", y="$APD_{90}$", data=expt_df)#, hue="colours")
+ax2.violinplot(x="Experiment", y="$APD_{90}$", data=pred_df)#, hue="colours")
+fig.tight_layout()
 
 plt.show(block=True)
 
