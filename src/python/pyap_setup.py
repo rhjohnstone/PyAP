@@ -205,7 +205,7 @@ def get_original_params(model):
                    29.8667, 0.4125, 4900, 0.69264,
                    1.841424, 29.9038, 0.9, 30.10312]
         g_parameters = ['G_{Na}', 'G_{CaL}', 'G_{K1}', 'G_{Ks}',
-                        'G_{Kr}', 'G_{pCa}', 'K_{NaCa}', 'G_{bCa}',
+                        'G_{Kr}', 'G_{pCa}', 'k_{NaCa}', 'G_{bCa}',
                         'P_{NaK}', 'G_{to}', 'G_{bNa}', 'G_f']
     elif (model==8): # Gokhale 2017 ex293
         model_name = "Gokhale 2017 ex293"
