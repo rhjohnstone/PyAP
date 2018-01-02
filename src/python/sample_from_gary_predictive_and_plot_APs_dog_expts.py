@@ -207,7 +207,7 @@ expts = ["Control"]*N_e + ["K$^+$, Moxi."]*N_e
 colours = ["blue"]*N_e + ["red"]*N_e
 expts_apds = np.concatenate((expt_apd90s_control, expt_apd90s_moxi))
 
-d = {"Experiment": expts, "colours": colours, "$APD_{90}$": expts_apds}
+d = {"Experiment": expts, "APD90 (ms)": expts_apds}
 
 expt_df = pd.DataFrame(data=d)
 
@@ -255,36 +255,42 @@ print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_tak
 #print fig_png
 #fig.savefig(fig_png)
 
-apd90_fig = plt.figure(figsize=(4,3))
-apd90_ax = apd90_fig.add_subplot(111)
-apd90_ax.grid()
-apd90_ax.hist(control_apd90s, bins=30, normed=True, color='blue', alpha=0.5, lw=0)
-apd90_ax.hist(moxi_apd90s, bins=30, normed=True, color='red', alpha=0.5, lw=0)
-for n in xrange(N_e):
-    apd90_ax.axvline(expt_apd90s_control[n], color='orange')
-    apd90_ax.axvline(expt_apd90s_moxi[n], color='green')
-apd90_ax.set_xlabel("APD90 (ms)")
-apd90_ax.set_ylabel("Normalised frequency")
-apd90_fig.tight_layout()
-apd90_fig_png = "{}_trace_{}_{}_samples_control_and_moxi_apd90_predictions.png".format(expt_name, trace_number, T)
-print apd90_fig_png
+#apd90_fig = plt.figure(figsize=(4,3))
+#apd90_ax = apd90_fig.add_subplot(111)
+#apd90_ax.grid()
+#apd90_ax.hist(control_apd90s, bins=30, normed=True, color='blue', alpha=0.5, lw=0)
+#apd90_ax.hist(moxi_apd90s, bins=30, normed=True, color='red', alpha=0.5, lw=0)
+#for n in xrange(N_e):
+#    apd90_ax.axvline(expt_apd90s_control[n], color='orange')
+#    apd90_ax.axvline(expt_apd90s_moxi[n], color='green')
+#apd90_ax.set_xlabel("APD90 (ms)")
+#apd90_ax.set_ylabel("Normalised frequency")
+#apd90_fig.tight_layout()
+#apd90_fig_png = "{}_trace_{}_{}_samples_control_and_moxi_apd90_predictions.png".format(expt_name, trace_number, T)
+#print apd90_fig_png
 #apd90_fig.savefig(apd90_fig_png)
 
 expts = ["Control"]*T + ["K$^+$, Moxi."]*T
 #colours = ["blue"]*N_e + ["red"]*N_e
 pred_apds = np.concatenate((control_apd90s, moxi_apd90s))
 
-d2 = {"Predictions": expts, "$APD_{90}$": pred_apds}
+d2 = {"Predictions": expts, "APD90 (ms)": pred_apds}
 
 pred_df = pd.DataFrame(data=d2)
 
 sns.set(font_scale=1.5)
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8,4), sharey=True)
 #ax = fig.add_subplot(111)
-sns.swarmplot(x="Experiment", y="$APD_{90}$", data=expt_df, ax=ax1)#, hue="colours")
-sns.violinplot(x="Predictions", y="$APD_{90}$", data=pred_df, ax=ax2)#, hue="colours")
+sns.swarmplot(x="Experiment", y="APD90 (ms)", data=expt_df, ax=ax1)#, hue="colours")
+sns.violinplot(x="Predictions", y="APD90 (ms)", data=pred_df, ax=ax2)#, hue="colours")
 ax2.set_ylabel("")
 fig.tight_layout()
+fig_png = "{}_trace_{}_{}_samples_control_and_moxi_apd90_predictions_swarm_violin.png".format(expt_name, trace_number, T)
+fig_pdf = "{}_trace_{}_{}_samples_control_and_moxi_apd90_predictions_swarm_violin.pdf".format(expt_name, trace_number, T)
+print fig_png
+print fig_pdf
+fig.savefig(fig_png)
+fig.savefig(fig_pdf)
 
 plt.show(block=True)
 
