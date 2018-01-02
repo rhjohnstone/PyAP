@@ -46,7 +46,7 @@ for model_number in xrange(6,7):
     ap.DefineSolveTimes(solve_start,solve_end,solve_timestep)
     ap.DefineModel(model_number)
 
-    fig, (ax1, ax2) = plt.subplots(1,2,figsize=(10,5),sharey=True)
+    fig, (ax1, ax2) = plt.subplots(1,2,figsize=(8,4),sharey=True)
     
     original_trace = solve_with_params(original_gs)
     for ax in [ax1, ax2]:
@@ -86,7 +86,7 @@ for model_number in xrange(6,7):
     #ax1.set_title(model_name)
     ax1.legend()
     ax2.legend()
-    plt.suptitle('{}'.format(model_name))
+    #plt.suptitle('{}'.format(model_name))
     fig.tight_layout()
     fig.savefig("compare_scales_and_adding.png")
     fig.savefig("compare_scales_and_adding.pdf")
