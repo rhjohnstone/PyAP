@@ -9,6 +9,8 @@ import argparse
 import numpy.random as npr
 from time import time
 import sys
+import pandas as pd
+import seaborn as sns
 
 npexp = np.exp
 
@@ -155,14 +157,14 @@ T = args.num_samples
 rand_samples = npr.rand(T)
 
 
-fig, axs = plt.subplots(1, 2, figsize=(10,4), sharex=True, sharey=True)
-for j in xrange(2):
-    axs[j].set_xlabel("Time (ms)")
-    axs[j].grid()
-axs[0].set_ylabel("Membrane voltage (mV)")
+#fig, axs = plt.subplots(1, 2, figsize=(10,4), sharex=True, sharey=True)
+#for j in xrange(2):
+#    axs[j].set_xlabel("Time (ms)")
+#    axs[j].grid()
+#axs[0].set_ylabel("Membrane voltage (mV)")
 
-axs[0].set_title("Experimental")
-axs[1].set_title("Predicted")
+#axs[0].set_title("Experimental")
+#axs[1].set_title("Predicted")
 
 control_apd90s = np.zeros(T)
 unif_samples = npr.rand(T, num_gs)
@@ -170,11 +172,11 @@ start = time()
 for t in xrange(T):
     temp_lnGs = [np.interp(unif_samples[t,p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
     test_trace = solve_for_voltage_trace_with_initial_V(temp_lnGs, ap_model, expt_trace)
-    axs[1].plot(expt_times, test_trace, alpha=0.01, color='blue')
+    #axs[1].plot(expt_times, test_trace, alpha=0.01, color='blue')
     control_apd90s[t] = ps.compute_apd90(expt_times, test_trace, data_clamp_on)
 time_taken = time()-start
 print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
-axs[1].plot([], [], label="Control", color='blue')
+#axs[1].plot([], [], label="Control", color='blue')
 #fig.tight_layout()
 #fig_png = "{}_trace_{}_{}_samples.png".format(expt_name, trace_number, T)
 #print fig_png
@@ -187,7 +189,7 @@ for i in xrange(N_e):
     plot_trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(plot_trace_number)
 
     expt_times_for_plotting, expt_trace_for_plotting = np.loadtxt(plot_trace_path, delimiter=',').T
-    axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='blue')
+    #axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='blue')
     print "Trace", plot_trace_number
     expt_apd90s_control[i] = ps.compute_apd90(expt_times_for_plotting, expt_trace_for_plotting, data_clamp_on)
 
@@ -197,14 +199,14 @@ for i in xrange(N_e):
     plot_trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(plot_trace_number)
 
     expt_times_for_plotting, expt_trace_for_plotting = 1000.*np.loadtxt(plot_trace_path, delimiter=',').T
-    axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='red')
+    #axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='red')
     print "Trace", plot_trace_number
     expt_apd90s_moxi[i] = ps.compute_apd90(expt_times_for_plotting, expt_trace_for_plotting, data_clamp_on)
 
-axs[0].plot([], [], color='blue', label='Control')
-axs[0].plot([], [], color='red', label="K$^+$, Moxi.")
+#axs[0].plot([], [], color='blue', label='Control')
+#axs[0].plot([], [], color='red', label="K$^+$, Moxi.")
 
-axs[0].legend(loc=1)
+#axs[0].legend(loc=1)
 
 moxi_conc = 10
 new_extra_K_conc = 4
@@ -231,15 +233,15 @@ start = time()
 for t in xrange(T):
     temp_lnGs = [np.interp(unif_samples[t,p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
     test_trace = solve_for_voltage_trace_with_block(temp_lnGs, ap_model, expt_trace, moxi_conc)
-    axs[1].plot(expt_times, test_trace, alpha=0.01, color='red')
+    #axs[1].plot(expt_times, test_trace, alpha=0.01, color='red')
     moxi_apd90s[t] = ps.compute_apd90(expt_times, test_trace, data_clamp_on)
 time_taken = time()-start
 print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
-axs[1].plot([], [], label="K$^+$, Moxi.", color='red')
-axs[1].legend(loc=1)
-fig.tight_layout()
-fig_png = "{}_trace_{}_{}_samples_control_and_moxi_predictions.png".format(expt_name, trace_number, T)
-print fig_png
+#axs[1].plot([], [], label="K$^+$, Moxi.", color='red')
+#axs[1].legend(loc=1)
+#fig.tight_layout()
+#fig_png = "{}_trace_{}_{}_samples_control_and_moxi_predictions.png".format(expt_name, trace_number, T)
+#print fig_png
 #fig.savefig(fig_png)
 
 apd90_fig = plt.figure(figsize=(4,3))
@@ -248,8 +250,8 @@ apd90_ax.grid()
 apd90_ax.hist(control_apd90s, bins=30, normed=True, color='blue', alpha=0.5, lw=0)
 apd90_ax.hist(moxi_apd90s, bins=30, normed=True, color='red', alpha=0.5, lw=0)
 for n in xrange(N_e):
-    apd90_ax.axvline(expt_apd90s_control[n], color='blue')
-    apd90_ax.axvline(expt_apd90s_moxi[n], color='red')
+    apd90_ax.axvline(expt_apd90s_control[n], color='orange')
+    apd90_ax.axvline(expt_apd90s_moxi[n], color='green')
 apd90_ax.set_xlabel("APD90 (ms)")
 apd90_ax.set_ylabel("Normalised frequency")
 apd90_fig.tight_layout()
