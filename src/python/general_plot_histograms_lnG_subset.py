@@ -220,7 +220,7 @@ while count < 2:
                 else:
                     axes[str(i)+str(j)].set_xlabel("log($"+labels[indices_to_keep[j]]+"$)")
             if j==0 and i>0:
-                if i==num_params-1:
+                if i==num_params_to_fit-1:
                     axes[str(i)+str(j)].set_ylabel("$"+labels[indices_to_keep[i]]+"$")
                 else:
                     axes[str(i)+str(j)].set_ylabel("log($"+labels[indices_to_keep[i]]+"$)")
