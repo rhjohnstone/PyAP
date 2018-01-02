@@ -274,14 +274,14 @@ expts = ["Control"]*T + ["K$^+$, Moxi."]*T
 #colours = ["blue"]*N_e + ["red"]*N_e
 pred_apds = np.concatenate((control_apd90s, moxi_apd90s))
 
-d2 = {"Predictions": expts, "colours": colours, "$APD_{90}$": expts_apds}
+d2 = {"Predictions": expts, "$APD_{90}$": pred_apds}
 
 pred_df = pd.DataFrame(data=d2)
 
-fig, (ax1, ax2) = plt.figure(1, 2, figsize=(6,3))
+fig, (ax1, ax2) = plt.figure(1, 2, figsize=(6,3), sharey=True)
 #ax = fig.add_subplot(111)
 ax1.swarmplot(x="Experiment", y="$APD_{90}$", data=expt_df)#, hue="colours")
-ax2.violinplot(x="Experiment", y="$APD_{90}$", data=pred_df)#, hue="colours")
+ax2.violinplot(x="Predictions", y="$APD_{90}$", data=pred_df)#, hue="colours")
 fig.tight_layout()
 
 plt.show(block=True)
