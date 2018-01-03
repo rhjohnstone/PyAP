@@ -248,6 +248,7 @@ for i in xrange(num_gs+1):
 gary_predictives /= T
 
 pred_colour = "#e7298a"
+print axpriors
 for k in [0, -1]:
     axpriors[i].plot(xs[k], gary_predictives[k], color=pred_colour)
 
