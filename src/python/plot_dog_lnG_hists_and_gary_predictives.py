@@ -140,6 +140,7 @@ for n in xrange(N_e):
         axs[i].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40)
 
 num_ticks = 5
+axpriors = []
 for i in xrange(num_gs+1):
     xlim = axs[i].get_xlim()
     xdiff = xlim[1]-xlim[0]
@@ -159,6 +160,7 @@ for i in xrange(num_gs+1):
     else:
         axprior.set_ylim(0, 2*sigma_const)
         axprior.axhline(sigma_const, linestyle="--", lw=2, color=cs[1], alpha=0.5)
+    axpriors.append(axprior)
 
 fig.tight_layout()#h_pad=1.)
 fig_file = sl_png_dir+"{}_{}_traces_superimposed_marginal_hists.png".format(expt_name, N_e)
@@ -245,10 +247,9 @@ for i in xrange(num_gs+1):
         gary_predictives[i, :] += norm.pdf(xs[i, :], loc=loc, scale=scale)
 gary_predictives /= T
 
-
+pred_colour = "#e7298a"
 for k in [0, -1]:
-    fig, ax = plt.subplots(1, 1)
-    ax.plot(xs[k], gary_predictives[k])
+    axpriors[i].plot(xs[k], gary_predictives[k], color=pred_colour)
 
 plt.show(block=True)
 
