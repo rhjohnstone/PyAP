@@ -254,7 +254,7 @@ for k in xrange(num_gs+1):
 fig.tight_layout()#h_pad=1.)
 fig_file = sl_png_dir+"{}_{}_traces_superimposed_marginal_hists_and_prior_and_gary_predictive.png".format(expt_name, N_e)
 print fig_file
-
+fig.savefig(fig_file)
 plt.show(block=True)
 
 
