@@ -136,7 +136,7 @@ for n in xrange(N_e):
     
     colour = plt.cm.winter(color_idx[n])
     c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=3./N_e)
-    for i in xrange(num_gs):
+    for i in xrange(num_gs+1):
         axs[i].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40)
 
 num_ticks = 5
@@ -245,14 +245,10 @@ for i in xrange(num_gs+1):
 gary_predictives /= T
 
 
-fig, ax = plt.subplots(1, 1)
-k = 0
-ax.plot(xs[k], gary_predictives[k])
-plt.show(block=True)
+for k in [0, -1]:
+    fig, ax = plt.subplots(1, 1)
+    ax.plot(xs[k], gary_predictives[k])
 
-fig, ax = plt.subplots(1, 1)
-k = -1
-ax.plot(xs[k], gary_predictives[k])
 plt.show(block=True)
 
 
