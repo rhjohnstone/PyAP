@@ -108,7 +108,7 @@ elif expt_name=="roche_paci_correct_units":
     fig, axs = plt.subplots(4, 3, figsize=figsize)
 
 axs = axs.flatten()
-for i in xrange(num_gs):
+for i in xrange(num_gs+1):
     axs[i].grid()
     if i < num_gs:
         axs[i].set_xlabel('log({})'.format(g_labels[i]), fontsize=15)
@@ -140,7 +140,7 @@ for n in xrange(N_e):
         axs[i].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40)
 
 num_ticks = 5
-for i in xrange(num_gs):
+for i in xrange(num_gs+1):
     xlim = axs[i].get_xlim()
     xdiff = xlim[1]-xlim[0]
     lower_x = xlim[0] + 0.2*xdiff
@@ -175,8 +175,8 @@ N_e = args.num_traces
 
 xs = []
 sl_chains = []
-mins = 1e9*np.ones(num_gs)
-maxs = -1e9*np.ones(num_gs)
+mins = 1e9*np.ones(num_gs+1)
+maxs = -1e9*np.ones(num_gs+1)
 chain_lengths = []
 for n in xrange(N_e):
     #if (pyap_options["model_number"]==2) or (pyap_options["model_number"]==5):  # synth BR/OH
@@ -190,7 +190,7 @@ for n in xrange(N_e):
     print "Trace:", temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
     try:
-        temp_chain = np.loadtxt(sl_mcmc_file, usecols=range(num_gs))
+        temp_chain = np.loadtxt(sl_mcmc_file, usecols=range(num_gs+1))
     except:
         print "Can't load", sl_mcmc_file
         continue
@@ -216,8 +216,8 @@ assert(np.all(np.array(chain_lengths)==length))
 N_e = len(chain_lengths)
 
 num_pts = args.num_pts
-xs = np.zeros((num_gs, num_pts))
-for i in xrange(num_gs):
+xs = np.zeros((num_gs+1, num_pts))
+for i in xrange(num_gs+1):
     if expt_name=="roche_ten_tusscher_correct_units":
         if i==0 or i==1 or i==3:
             xs[i, :] = np.linspace(mins[i]-0.2, maxs[i]+0.2, num_pts)
@@ -233,9 +233,9 @@ for i in xrange(num_gs):
 
 
 T = args.num_samples
-gary_predictives = np.zeros((num_gs, num_pts))
+gary_predictives = np.zeros((num_gs+1, num_pts))
 rand_idx = npr.randint(0, length, size=(N_e, T))  # don't know if this will cause memory/speed issues
-for i in xrange(num_gs):
+for i in xrange(num_gs+1):
     for t in xrange(T):
         samples = np.zeros(N_e)
         for n in xrange(N_e):
@@ -246,7 +246,13 @@ gary_predictives /= T
 
 
 fig, ax = plt.subplots(1, 1)
-ax.plot(gary_predictives[0])
+k = 0
+ax.plot(xs[k], gary_predictives[k])
+plt.show(block=True)
+
+fig, ax = plt.subplots(1, 1)
+k = -1
+ax.plot(xs[k], gary_predictives[k])
 plt.show(block=True)
 
 
