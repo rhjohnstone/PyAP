@@ -163,9 +163,7 @@ for i in xrange(num_gs+1):
         axprior.axhline(sigma_const, linestyle="--", lw=2, color=cs[1], alpha=0.5)
     
 
-fig.tight_layout()#h_pad=1.)
-fig_file = sl_png_dir+"{}_{}_traces_superimposed_marginal_hists.png".format(expt_name, N_e)
-print fig_file
+
 #fig.savefig(fig_file)
 #plt.show()
 
@@ -251,6 +249,11 @@ gary_predictives /= T
 pred_colour = "#e7298a"
 for k in xrange(num_gs+1):
     axs[k].plot(xs[k], gary_predictives[k], color=pred_colour)
+    
+    
+fig.tight_layout()#h_pad=1.)
+fig_file = sl_png_dir+"{}_{}_traces_superimposed_marginal_hists_and_prior_and_gary_predictive.png".format(expt_name, N_e)
+print fig_file
 
 plt.show(block=True)
 
