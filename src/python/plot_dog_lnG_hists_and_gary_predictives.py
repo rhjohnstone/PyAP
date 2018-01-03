@@ -27,6 +27,7 @@ requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
 requiredNamed.add_argument("-n", "--num-traces", type=int, help="which hMCMC to use", required=True)
 requiredNamed.add_argument("-x", "--num-pts", type=int, help="how many x points to plot Gary-predictive for", required=True)
+parser.add_argument("-T", "--num-samples", type=int, help="number of samples to plot prior predictive from", default=0)
 
 args, unknown = parser.parse_known_args()
 if len(sys.argv)==1:
@@ -170,7 +171,7 @@ print fig_file
 normpdf = norm.pdf
 normrvs = norm.rvs
 
-N_e = args.num_expts
+N_e = args.num_traces
 
 xs = []
 sl_chains = []
