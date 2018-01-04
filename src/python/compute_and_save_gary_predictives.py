@@ -166,7 +166,7 @@ for i in xrange(num_params_to_fit-1):
     fig, ax = plt.subplots(1,1, figsize=(4,3))
     ax.grid()
     ax.plot(xs[i, :], gary_predictives[i, :], lw=2)
-    ax.set_xlabel(r"$\log({})$".format(g_parameters[i]), fontsize=16)
+    ax.set_xlabel(r"$\log({})$".format(g_parameters[indices_to_keep[i]]), fontsize=16)
     ax.set_ylabel("Cumulative dist.")
     ax.set_xlim(xs[i, 0], xs[i, -1])
     fig.tight_layout()
