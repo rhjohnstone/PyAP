@@ -200,8 +200,8 @@ N_e = args.num_traces
 
 xs = []
 sl_chains = []
-mins = 1e9*np.ones(num_gs+1)
-maxs = -1e9*np.ones(num_gs+1)
+mins = 1e9*np.ones(num_params_to_fit)
+maxs = -1e9*np.ones(num_params_to_fit)
 chain_lengths = []
 for n in xrange(N_e):
     #if (pyap_options["model_number"]==2) or (pyap_options["model_number"]==5):  # synth BR/OH
@@ -273,7 +273,7 @@ for i in xrange(num_params_to_fit):
 gary_predictives /= T
 
 pred_colour = "#e7298a"
-for k in xrange(num_gs+1):
+for k in xrange(num_params_to_fit):
     axs[k].plot(xs[k], gary_predictives[k], color=pred_colour, lw=2)
     
     
