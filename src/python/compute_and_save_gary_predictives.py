@@ -37,14 +37,31 @@ with open(options_file, 'r') as infile:
 data_clamp_on = pyap_options["data_clamp_on"]
 data_clamp_off = pyap_options["data_clamp_off"]
 
+if pyap_options["model_number"]==3:  # LR
+    Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
+    stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] * 1e-6
+elif pyap_options["model_number"]==4:  # TT
+    Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
+    stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-6
+    indices_to_keep = [0, 1, 2, 3, 4, 6]  # which currents we are fitting
+elif pyap_options["model_number"]==5:  # OH
+    Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
+    stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-6
+elif pyap_options["model_number"]==7:  # Pa
+    Cm = pyap_options["membrane_capacitance_pF"] * 1e-12
+    stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-12
+    indices_to_keep = [0, 1, 2, 3, 4, 9, 11]  # which currents we are fitting
+num_params_to_fit = len(indices_to_keep) + 1  # +1 for sigma
 
-split_trace_name = trace_name.split("_")
-
-        
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
+log_gs = np.log(original_gs[indices_to_keep])
+        
 
-g_labels = ["${}$".format(g) for g in g_parameters]
+g_labels = ["${}$".format(g_parameters[x]) for x in indices_to_keep]
+
+
+split_trace_name = trace_name.split("_")
 
 m_true = np.log(original_gs)
 sigma2_true = 0.01
@@ -59,8 +76,8 @@ N_e = args.num_expts
 
 xs = []
 sl_chains = []
-mins = 1e9*np.ones(num_gs)
-maxs = -1e9*np.ones(num_gs)
+mins = 1e9*np.ones(num_params_to_fit-1)
+maxs = -1e9*np.ones(num_params_to_fit-1)
 chain_lengths = []
 for n in xrange(N_e):
     #if (pyap_options["model_number"]==2) or (pyap_options["model_number"]==5):  # synth BR/OH
@@ -69,16 +86,20 @@ for n in xrange(N_e):
     #    temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(150+n)
     if expt_name=="roche_ten_tusscher_correct_units" or expt_name=="roche_paci_correct_units":
         temp_trace_name = "_".join(split_trace_name[:-2]) + "_{}_".format(100+n) + split_trace_name[-1]
+    elif expt_name=="roche_ten_tusscher_correct_units_subset" or expt_name=="roche_paci_correct_units_subset":
+        temp_trace_name = "_".join(split_trace_name[:-2]) + "_{}_".format(100+n) + split_trace_name[-1]
     print "Trace:", temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
     try:
-        temp_chain = np.loadtxt(sl_mcmc_file, usecols=range(num_gs))
+        temp_chain = np.loadtxt(sl_mcmc_file, usecols=range(num_params_to_fit-1))
     except:
         print "Can't load", sl_mcmc_file
         continue
     saved_its = temp_chain.shape[0]
     if expt_name=="roche_ten_tusscher_correct_units" or expt_name=="roche_paci_correct_units":
         temp_chain = temp_chain[(3*saved_its)/5:, :]
+    elif expt_name=="roche_ten_tusscher_correct_units_subset" or expt_name=="roche_paci_correct_units_subset":
+        temp_chain = temp_chain[saved_its/4:, :]
     sl_chains.append(temp_chain)
     temp_mins = np.min(temp_chain, axis=0)
     temp_maxs = np.max(temp_chain, axis=0)
@@ -96,8 +117,8 @@ assert(np.all(np.array(chain_lengths)==length))
 N_e = len(chain_lengths)
 
 num_pts = args.num_pts
-xs = np.zeros((num_gs, num_pts))
-for i in xrange(num_gs):
+xs = np.zeros((num_params_to_fit-1, num_pts))
+for i in xrange(num_params_to_fit-1):
     if expt_name=="roche_ten_tusscher_correct_units":
         if i==0 or i==1 or i==3:
             xs[i, :] = np.linspace(mins[i]-0.2, maxs[i]+0.2, num_pts)
@@ -111,9 +132,9 @@ for i in xrange(num_gs):
 
 
 T = args.num_samples
-gary_predictives = np.zeros((num_gs, num_pts))
+gary_predictives = np.zeros((num_params_to_fit-1, num_pts))
 rand_idx = npr.randint(0, length, size=(N_e, T))  # don't know if this will cause memory/speed issues
-for i in xrange(num_gs):
+for i in xrange(num_params_to_fit-1):
     for t in xrange(T):
         samples = np.zeros(N_e)
         for n in xrange(N_e):
@@ -124,7 +145,7 @@ gary_predictives /= T
 
 
 
-for i in xrange(num_gs):
+for i in xrange(num_params_to_fit-1):
     garyfile, garypng = ps.gary_predictive_file(expt_name, args.num_expts, i)
     np.savetxt(garyfile, np.vstack((xs[i, :], gary_predictives[i, :])).T)
     fig, ax = plt.subplots(1,1, figsize=(4,3))
