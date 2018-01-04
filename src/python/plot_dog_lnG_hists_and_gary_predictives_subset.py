@@ -45,7 +45,7 @@ split_trace_name = trace_name.split("_")
 
 if expt_name=="dog_teun_davies":
     first_trace_number = 150
-elif expt_name=="roche_ten_tusscher_correct_units" or expt_name=="roche_paci_correct_units":
+elif expt_name=="roche_ten_tusscher_correct_units_subset" or expt_name=="roche_paci_correct_units_subset":
     first_trace_number = int(split_trace_name[-2])
 
 pyap_options = {}
