@@ -130,7 +130,7 @@ for i in xrange(num_params_to_fit-1):
         else:
             xs[i, :] = np.linspace(mins[i]-4., maxs[i]+6., num_pts)
     else:
-        xs[i, :] = np.linspace(mins[i]-1., maxs[i]+1., num_pts)
+        xs[i, :] = np.linspace(mins[i]-0.5, maxs[i]+0.5, num_pts)
 
 
 T = args.num_samples
