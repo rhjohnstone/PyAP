@@ -83,8 +83,8 @@ elif pyap_options["model_number"]==7:  # Pa
 num_params_to_fit = len(indices_to_keep) + 1  # +1 for sigma
 
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
-num_gs = len(original_gs)
-log_gs = nplog(original_gs[indices_to_keep])
+num_gs = len(indices_to_keep)
+log_gs = np.log(original_gs[indices_to_keep])
 
 
 
@@ -148,8 +148,7 @@ for n in xrange(N_e):
     try:
         sl_chain = np.loadtxt(sl_mcmc_file)
         saved_its = sl_chain.shape[0]
-        if pyap_options["model_number"]==4:
-            sl_chain = sl_chain[(3*saved_its)/5:, :]  # some chains take ages to converge
+        sl_chain = sl_chain[saved_its/4:, :]  # some chains take ages to converge
         #plt.plot(sl_chain[:,-1])
         #plt.show()
         #plt.close()
