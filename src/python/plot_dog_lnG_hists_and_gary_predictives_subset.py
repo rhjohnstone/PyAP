@@ -79,7 +79,7 @@ num_params_to_fit = len(indices_to_keep) + 1  # +1 for sigma
 
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
 num_gs = len(original_gs)
-log_gs = nplog(original_gs[indices_to_keep])
+log_gs = np.log(original_gs[indices_to_keep])
         
 
 g_labels = ["${}$".format(g_parameters[x]) for x in indices_to_keep] + [r"$\sigma$"]
@@ -208,7 +208,7 @@ for n in xrange(N_e):
     #    temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(n)
     #elif (pyap_options["model_number"]==2) or (pyap_options["model_number"]==6):  # Davies
     #    temp_trace_name = "_".join(split_trace_name[:-1]) + "_" + str(150+n)
-    if expt_name=="roche_ten_tusscher_correct_units" or expt_name=="roche_paci_correct_units":
+    if expt_name=="roche_ten_tusscher_correct_units_subset" or expt_name=="roche_paci_correct_units_subset":
         temp_trace_name = "_".join(split_trace_name[:-2]) + "_{}_".format(100+n) + split_trace_name[-1]
     elif expt_name=="dog_teun_davies":
         temp_trace_name = "_".join(split_trace_name[:-1]) + "_{}".format(150+n)
