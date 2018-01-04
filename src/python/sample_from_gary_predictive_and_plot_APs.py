@@ -171,7 +171,7 @@ ap_model.SetMembraneCapacitance(Cm)
 
 T = args.num_samples
 
-rand_samples = npr.rand(T)
+unif_samples = npr.rand(T, num_gs)
 
 
 fig, axs = plt.subplots(1, 2, figsize=(10,4), sharex=True, sharey=True)
@@ -185,8 +185,8 @@ axs[1].set_title("Predicted")
 
 start = time()
 for t in xrange(T):
-    temp_lnGs = [np.interp(rand_samples[t], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
-    axs[1].plot(expt_times, solve_for_voltage_trace_with_initial_V(temp_lnGs, ap_model, expt_trace), alpha=0.01, color='blue')
+    temp_lnGs = [np.interp(unif_samples[t,p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
+    axs[1].plot(expt_times, solve_for_voltage_trace_with_initial_V(temp_lnGs, ap_model, expt_trace), alpha=0.002, color='black')
 time_taken = time()-start
 print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
 #axs[1].plot([], [], label="Control", color='blue')
