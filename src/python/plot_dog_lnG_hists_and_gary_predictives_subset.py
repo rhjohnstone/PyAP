@@ -129,8 +129,10 @@ elif expt_name=="roche_ten_tusscher_correct_units_subset":
 elif expt_name=="roche_paci_correct_units_subset":
     fig, axs = plt.subplots(3, 3, figsize=figsize)
 
+how_many_extra_axes = 9 - num_params_to_fit
+
 axs = axs.flatten()
-for i, p in enumerate(indices_to_keep):
+for i in xrange(num_params_to_fit):
     axs[i].grid()
     if i < num_params_to_fit-1:
         axs[i].set_xlabel('log({})'.format(g_labels[i]), fontsize=15)
@@ -275,7 +277,9 @@ gary_predictives /= T
 pred_colour = "#e7298a"
 for k in xrange(num_params_to_fit):
     axs[k].plot(xs[k], gary_predictives[k], color=pred_colour, lw=2)
-    
+
+for i in xrange(how_many_extra_axes):
+    axs[8-i].axis("off")
     
 fig.tight_layout()#h_pad=1.)
 fig_file = sl_png_dir+"{}_{}_traces_superimposed_marginal_hists_and_prior_and_gary_predictive.png".format(expt_name, N_e)
