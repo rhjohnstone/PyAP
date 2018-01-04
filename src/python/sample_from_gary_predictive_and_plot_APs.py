@@ -79,7 +79,7 @@ elif pyap_options["model_number"]==7:  # Pa
 num_params_to_fit = len(indices_to_keep) + 1  # +1 for sigma
 
 original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
-num_gs = len(original_gs)
+num_gs = len(indices_to_keep)
 log_gs = np.log(original_gs[indices_to_keep])
 
 
