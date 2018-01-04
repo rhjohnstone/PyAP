@@ -170,7 +170,7 @@ for i in xrange(num_params_to_fit-1):
     ax.set_ylabel("Cumulative dist.")
     ax.set_xlim(xs[i, 0], xs[i, -1])
     fig.tight_layout()
-    fullpng = garypng+"{}_{}_traces_predictive_cdf_{}.png".format(expt_name, args.num_expts, g_parameters[i])
+    fullpng = garypng+"{}_{}_traces_predictive_cdf_{}.png".format(expt_name, args.num_expts, g_parameters[indices_to_keep[i]])
     print fullpng
     plt.savefig(fullpng)
     plt.close()
