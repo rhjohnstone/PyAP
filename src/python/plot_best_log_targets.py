@@ -13,14 +13,14 @@ from scipy.stats import invgamma
 
 npexp = np.exp
 
-def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace):
+"""def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace):
     ap_model.SetToModelInitialConditions()
     ap_model.SetVoltage(expt_trace[0])
     temp_Gs = npexp(temp_lnG_params)
     solved = ap_model.SolveForVoltageTraceWithParams(temp_Gs)
     #if solved[-1] > -70:
     #    print temp_Gs
-    return solved
+    return solved"""
 
 
 #python_seed = 1
@@ -72,22 +72,44 @@ if pyap_options["model_number"]==3:  # LR
 elif pyap_options["model_number"]==4:  # TT
     Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
     stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-6
+    indices_to_keep = [0, 1, 2, 3, 4, 6]  # which currents we are fitting
 elif pyap_options["model_number"]==5:  # OH
     Cm = pyap_options["membrane_capacitance_pF"] * 1e-6
     stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-6
 elif pyap_options["model_number"]==7:  # Pa
     Cm = pyap_options["membrane_capacitance_pF"] * 1e-12
     stimulus_magnitude = -pyap_options["stimulus_magnitude_pA"] / Cm * 1e-12
+    indices_to_keep = [0, 1, 2, 3, 4, 9, 11]  # which currents we are fitting
+num_params_to_fit = len(indices_to_keep) + 1  # +1 for sigma
+
+original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
+num_gs = len(original_gs)
+log_gs = nplog(original_gs[indices_to_keep])
+
+
+
+temp_Gs = np.copy(original_gs)
+def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace):
+    ap_model.SetToModelInitialConditions()
+    ap_model.SetVoltage(expt_trace[0])
+    
+    temp_Gs[indices_to_keep] = npexp(temp_lnG_params)
+    try:
+        return ap_model.SolveForVoltageTraceWithParams(temp_Gs)
+    except:
+        print "\n\nFAIL\n\n"
+        return np.zeros(num_pts)
+
 
 split_trace_name = trace_name.split("_")
 if pyap_options["model_number"]==4 or pyap_options["model_number"]==7:
     first_trace_number = int(split_trace_name[-2])
 print "first_trace_number:", first_trace_number
         
-original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
-num_gs = len(original_gs)
+#original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["model_number"])
+#num_gs = len(original_gs)
 
-g_labels = ["${}$".format(g) for g in g_parameters]
+#g_labels = ["${}$".format(g) for g in g_parameters]
 
     
 N_e = args.num_traces
