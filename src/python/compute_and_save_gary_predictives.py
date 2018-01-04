@@ -59,6 +59,7 @@ log_gs = np.log(original_gs[indices_to_keep])
         
 
 g_labels = ["${}$".format(g_parameters[x]) for x in indices_to_keep]
+print "\ng_labels:", g_labels, "\n"
 
 
 split_trace_name = trace_name.split("_")
@@ -139,7 +140,10 @@ for i in xrange(num_params_to_fit-1):
         else:
             xs[i, :] = np.linspace(mins[i]-0.5, maxs[i]+0.8, num_pts)
     elif expt_name=="roche_paci_correct_units_subset":
-        xs[i, :] = np.linspace(mins[i]-1., maxs[i]+1., num_pts)
+        if i==0:
+            xs[i, :] = np.linspace(mins[i]-0.4, maxs[i]+0.4, num_pts)
+        else:
+            xs[i, :] = np.linspace(mins[i]-1., maxs[i]+1., num_pts)
 
 
 T = args.num_samples
