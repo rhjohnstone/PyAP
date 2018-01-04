@@ -215,7 +215,7 @@ for n in xrange(N_e):
     print "Trace:", temp_trace_name
     sl_mcmc_file, sl_log_file, sl_png_dir = ps.mcmc_lnG_file_log_file_and_figs_dirs(pyap_options["model_number"], expt_name, temp_trace_name)
     try:
-        temp_chain = np.loadtxt(sl_mcmc_file, usecols=range(num_gs+1))
+        temp_chain = np.loadtxt(sl_mcmc_file, usecols=range(num_params_to_fit))
     except:
         print "Can't load", sl_mcmc_file
         continue
