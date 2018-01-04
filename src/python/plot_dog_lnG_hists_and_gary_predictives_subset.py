@@ -160,7 +160,7 @@ for n in xrange(N_e):
     
     colour = plt.cm.winter(color_idx[n])
     c = matplotlib.colors.colorConverter.to_rgba(colour, alpha=3./N_e)
-    for i in xrange(num_gs+1):
+    for i in xrange(num_params_to_fit):
         axs[i].hist(sl_chain[:, i], normed=True, color=c, lw=0, bins=40)
 
 num_ticks = 5
@@ -179,7 +179,7 @@ for i in xrange(num_params_to_fit):
     axpriors.append(axs[i].twinx())
     axprior = axpriors[i]
     axprior.axes.get_yaxis().set_visible(False)
-    if i<num_gs:
+    if i<num_params_to_fit-1:
         axprior.set_ylim(0, 0.35)
         axprior.plot(x, norm.pdf(x, loc=prior_means[i], scale=prior_sd), "--", lw=2, color=cs[1], alpha=0.5)
     else:
@@ -243,8 +243,8 @@ assert(np.all(np.array(chain_lengths)==length))
 N_e = len(chain_lengths)
 
 num_pts = args.num_pts
-xs = np.zeros((num_gs+1, num_pts))
-for i in xrange(num_gs+1):
+xs = np.zeros((num_params_to_fit, num_pts))
+for i in xrange(num_params_to_fit):
     hist_xlim = axs[i].get_xlim()
     if expt_name=="roche_ten_tusscher_correct_units":
         if i==0 or i==1 or i==3:
@@ -261,9 +261,9 @@ for i in xrange(num_gs+1):
 
 
 T = args.num_samples
-gary_predictives = np.zeros((num_gs+1, num_pts))
+gary_predictives = np.zeros((num_params_to_fit, num_pts))
 rand_idx = npr.randint(0, length, size=(N_e, T))  # don't know if this will cause memory/speed issues
-for i in xrange(num_gs+1):
+for i in xrange(num_params_to_fit):
     for t in xrange(T):
         samples = np.zeros(N_e)
         for n in xrange(N_e):
