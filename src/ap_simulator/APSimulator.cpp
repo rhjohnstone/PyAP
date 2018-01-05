@@ -398,7 +398,7 @@ std::vector<double> APSimulator::GetStateVariables()
     return mpModel->GetStdVecStateVariables();
 }
 
-void APSimulator::SetStateVariables( const std::vector<double>& state_vars );
+void APSimulator::SetStateVariables( const std::vector<double>& state_vars )
 {
     mpModel->SetStateVariables(state_vars);
 }
