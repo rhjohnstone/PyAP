@@ -393,6 +393,16 @@ void APSimulator::SetMembraneCapacitance(double Cm)
     mpModel->SetParameter("membrane_capacitance", Cm);
 }
 
+std::vector<double> APSimulator::GetStateVariables()
+{
+    return mpModel->GetStdVecStateVariables();
+}
+
+void APSimulator::SetStateVariables( const std::vector<double>& state_vars );
+{
+    mpModel->SetStateVariables(state_vars);
+}
+
 /*void APSimulator::ArchiveStateVariables()
 {
     boost::filesystem::path arch_dir;

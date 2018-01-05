@@ -82,6 +82,8 @@ BOOST_PYTHON_MODULE(_chaste_project_PyAP_ap_simulator)
         .def("SetExperimentalTraceAndTimesForDataClamp", &APSimulator::SetExperimentalTraceAndTimesForDataClamp)
         .def("SetVoltage", &APSimulator::SetVoltage)
         .def("SetMembraneCapacitance", &APSimulator::SetMembraneCapacitance)
+        .def("GetStateVariables", &APSimulator::GetStateVariables)
+        .def("SetStateVariables", &APSimulator::SetStateVariables)
         //.enable_pickling()
     ;
 

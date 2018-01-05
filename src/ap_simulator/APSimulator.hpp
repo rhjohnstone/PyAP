@@ -50,6 +50,8 @@ public:
     void SetExperimentalTraceAndTimesForDataClamp(const std::vector<double>& expt_times, const std::vector<double>& expt_trace);
     void SetVoltage(double v);
     void SetMembraneCapacitance(double Cm);
+    std::vector<double> GetStateVariables();
+    void SetStateVariables( const std::vector<double>& state_vars );
 };
 
 
