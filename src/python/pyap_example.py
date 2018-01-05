@@ -42,8 +42,11 @@ for model_number in xrange(3,4):
     ap.DefineModel(model_number)
     
     ap.SetToModelInitialConditions()
+    
+    print "ICs:\n", ap.GetStateVariables()
+    
     expt_trace = ap.SolveForVoltageTraceWithParams(original_gs)
-    print "expt_trace original_gs done"
+    print "State vars after one pace:\n", ap.GetStateVariables()
     
     fig = plt.figure()
     ax = fig.add_subplot(111)
