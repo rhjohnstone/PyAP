@@ -43,10 +43,20 @@ for model_number in xrange(3,4):
     
     ap.SetToModelInitialConditions()
     
-    print "ICs:\n", ap.GetStateVariables()
+    ICs = ap.GetStateVariables()
+    num_vars = len(ICs)
+    T = 20
+    all_state_vars = np.zeros((T+1, num_vars))
+    all_state_vars[0, :] = ICs
+    for t in xrange(T):
+        expt_trace = ap.SolveForVoltageTraceWithParams(original_gs)
+        all_state_vars[t+1, :] = ap.GetStateVariables()
     
-    expt_trace = ap.SolveForVoltageTraceWithParams(original_gs)
-    print "State vars after one pace:\n", ap.GetStateVariables()
+    for j in xrange(num_vars):
+        fig, ax = plt.subplots(1, 1)
+        ax.plot(all_state_vars[:, j])
+    plt.show()
+    sys.exit()
     
     fig = plt.figure()
     ax = fig.add_subplot(111)
