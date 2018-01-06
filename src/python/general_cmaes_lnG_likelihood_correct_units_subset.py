@@ -195,7 +195,7 @@ how_many_cmaes_runs = args.num_runs
 cmaes_indices = range(how_many_cmaes_runs)
 
 trace_start_time = time.time()
-cmaes_best_fits_file, best_fit_png, best_fit_svg = ps.cmaes_log_likelihood_lnG(pyap_options["model_number"], expt_name, trace_name)
+cmaes_best_fits_file, best_fit_png, best_fit_pdf = ps.cmaes_log_likelihood_lnG(pyap_options["model_number"], expt_name, trace_name)
 cmaes_log_file = cmaes_best_fits_file[:-3]+"log"
 with open(cmaes_log_file, "w") as outfile:
     pass
@@ -249,8 +249,8 @@ ax.plot(expt_times[max_V_idx], expt_trace[max_V_idx], 'x', color="green", ms=9, 
 ax.legend(loc=1, fontsize=10)
 fig.tight_layout()
 fig.savefig(best_fit_png)
-fig.savefig(best_fit_svg)
-print best_fit_svg
+fig.savefig(best_fit_pdf)
+print best_fit_pdf
 print best_fit_png
 plt.close()
 
