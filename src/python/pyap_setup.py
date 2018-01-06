@@ -249,3 +249,16 @@ def gary_predictive_file(expt_name, num_traces, param_idx):
     return garydir + "{}_{}_traces_gary_predictive_parameter_{}.txt".format(expt_name, num_traces, param_idx), garydir_png
     
 
+def cmaes_final_state_vars_file(model_number, expt_name, trace_name):
+    if arcus_b or arcus:
+        first_bit = os.path.expandvars("$DATA/PyAP_output/")
+    else:
+        first_bit = os.path.expanduser("~/PyAP_output/")
+    cmaes_dir = first_bit+"{}/cmaes/model_{}/".format(expt_name, model_number)
+    final_state_vars_file = cmaes_dir + "{}_model_{}_{}_final_state_vars.txt".format(expt_name, model_number, trace_name)
+    return final_state_vars_file
+
+
+
+
+
