@@ -67,6 +67,12 @@ original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["mod
 num_gs = len(original_gs)
 log_gs = nplog(original_gs[indices_to_keep])
 
+cmaes_final_state_vars_file = ps.cmaes_final_state_vars_file(pyap_options["model_number"], expt_name+"_2_paces", trace_name)
+print "cmaes_final_state_vars_file:\n", cmaes_final_state_vars_file
+cmaes_final_state_vars = np.loadtxt(cmaes_final_state_vars_file)
+print "cmaes_final_state_vars:\n", cmaes_final_state_vars
+sys.exit()
+
 
 sigma_uniform_lower = 1e-3
 sigma_uniform_upper = 25.
