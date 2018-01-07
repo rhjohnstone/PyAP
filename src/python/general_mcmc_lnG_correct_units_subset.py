@@ -71,7 +71,7 @@ cmaes_final_state_vars_file = ps.cmaes_final_state_vars_file(pyap_options["model
 print "cmaes_final_state_vars_file:\n", cmaes_final_state_vars_file
 cmaes_final_state_vars = np.loadtxt(cmaes_final_state_vars_file)
 print "cmaes_final_state_vars:\n", cmaes_final_state_vars
-sys.exit()
+#sys.exit()
 
 
 sigma_uniform_lower = 1e-3
@@ -81,9 +81,9 @@ two_omega_sq = 2.*omega**2
 
 
 temp_Gs = np.copy(original_gs)
-def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace):
-    ap_model.SetToModelInitialConditions()
-    ap_model.SetVoltage(expt_trace[0])
+def solve_for_voltage_trace_with_ICs(temp_lnG_params, ap_model, expt_trace):
+    ap_model.SetStateVariables(cmaes_final_state_vars)
+    #ap_model.SetVoltage(expt_trace[0])
     
     temp_Gs[indices_to_keep] = npexp(temp_lnG_params)
     try:
@@ -95,8 +95,8 @@ def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace
 
 
 if data_clamp_on < data_clamp_off:
-    solve_for_voltage_trace = solve_for_voltage_trace_with_initial_V
-    print "Solving after setting V(0) = data(0)"
+    solve_for_voltage_trace = solve_for_voltage_trace_with_ICs
+    print "Solving after setting ICs to final CMA-ES state vars"
 else:
     sys.exit("This is just for Roche, so there should be some data-clamp.")
 
