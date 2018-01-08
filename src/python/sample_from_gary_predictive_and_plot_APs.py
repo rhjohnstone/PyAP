@@ -82,11 +82,16 @@ original_gs, g_parameters, model_name = ps.get_original_params(pyap_options["mod
 num_gs = len(indices_to_keep)
 log_gs = np.log(original_gs[indices_to_keep])
 
+cmaes_final_state_vars_file = ps.cmaes_final_state_vars_file(pyap_options["model_number"], expt_name+"_2_paces", trace_name)
+print "cmaes_final_state_vars_file:\n", cmaes_final_state_vars_file
+cmaes_final_state_vars = np.loadtxt(cmaes_final_state_vars_file)
+print "cmaes_final_state_vars:\n", cmaes_final_state_vars
+
 
 temp_Gs = np.copy(original_gs)
-def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace):
-    ap_model.SetToModelInitialConditions()
-    ap_model.SetVoltage(expt_trace[0])
+def solve_for_voltage_trace_with_ICs(temp_lnG_params, ap_model, expt_trace):
+    ap_model.SetStateVariables(cmaes_final_state_vars)
+    #ap_model.SetVoltage(expt_trace[0])
     
     temp_Gs[indices_to_keep] = npexp(temp_lnG_params)
     try:
@@ -98,8 +103,8 @@ def solve_for_voltage_trace_with_initial_V(temp_lnG_params, ap_model, expt_trace
 
 
 if data_clamp_on < data_clamp_off:
-    solve_for_voltage_trace = solve_for_voltage_trace_with_initial_V
-    print "Solving after setting V(0) = data(0)"
+    solve_for_voltage_trace = solve_for_voltage_trace_with_ICs
+    print "Solving after setting ICs to the cmaes ones"
 else:
     sys.exit("This is just for Roche, so there should be some data-clamp.")
 
@@ -186,7 +191,7 @@ axs[1].set_title("Predicted")
 start = time()
 for t in xrange(T):
     temp_lnGs = [np.interp(unif_samples[t,p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
-    axs[1].plot(expt_times, solve_for_voltage_trace_with_initial_V(temp_lnGs, ap_model, expt_trace), alpha=0.002, color='black')
+    axs[1].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_lnGs, ap_model, expt_trace), alpha=0.002, color='black')
 time_taken = time()-start
 print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
 #axs[1].plot([], [], label="Control", color='blue')
