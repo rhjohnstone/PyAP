@@ -144,12 +144,14 @@ for i in xrange(num_params_to_fit-1):
     elif expt_name=="roche_paci_correct_units_subset":
         if i==0:
             xs[i, :] = np.linspace(mins[i]-0.5, maxs[i]+0.2, num_pts)
-        elif i==5 or i==1 or i==2:
+        elif i==1 or i==2:
             xs[i, :] = np.linspace(mins[i]-0.1, maxs[i]+0.1, num_pts)
         #elif i==1:
         #    xs[i, :] = np.linspace(mins[i]-0.2, maxs[i]+0.2, num_pts)
+        elif i==5:
+            xs[i, :] = np.linspace(mins[i]-0.2, maxs[i]+0.2, num_pts)
         elif i==6:
-            xs[i, :] = np.linspace(mins[i]+0.1, maxs[i]-0.1, num_pts)
+            xs[i, :] = np.linspace(mins[i]-0.2, maxs[i]+0.2, num_pts)
         else:
             xs[i, :] = np.linspace(mins[i]-0.5, maxs[i]+0.5, num_pts)
 
