@@ -20,15 +20,15 @@ models = [1, 2]
 for model in models:
     print "model", model
     block_chains = []
-        for channel in channels:
-    chain_file = "/data/coml-cardiac/hert3352/Dofetilide/{channel}/model_{model}/temperature_1/chain/Dofetilide_{channel}_model_{model}_temp_1_chain_nonhierarchical.txt".format(channel=channel, model=model)
+    for channel in channels:
+        chain_file = "/data/coml-cardiac/hert3352/Dofetilide/{channel}/model_{model}/temperature_1/chain/Dofetilide_{channel}_model_{model}_temp_1_chain_nonhierarchical.txt".format(channel=channel, model=model)
         block_chain = np.loadtxt(chain_file, usecols=range(2))
         saved_its = block_chain.shape[0]
         block_chain = block_chain[saved_its/4:, :]
         if model==1:
             block_chain[:, 1] = 1.
         block_chains.append(block_chain)
-        print block_chain
+    print block_chain
         
 sys.exit()
 
