@@ -40,8 +40,7 @@ def apply_moxi_blocks(temp_G_params, dose):
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
-parser.add_argument("-T", "--num-samples", type=int, help="number of AP samples", default=0)
-parser.add_argument("-S", "--num-drug-samples", type=int, help="number of drug block samples", default=0)
+parser.add_argument("-T", "--num-samples", type=int, help="number of AP and block (together) samples", default=0)
 parser.add_argument("-n", "--num-expts", type=int, help="number of traces to construct Gary-predictive from", required=True)
 #parser.add_argument("-x", "--num-pts", type=int, help="number of x points to plot Gary-predictive for", required=True)
 args, unknown = parser.parse_known_args()
@@ -186,7 +185,6 @@ ap_model.SetMembraneCapacitance(Cm)
 
 
 T = args.num_samples
-S = args.num_drug_samples
 
 drug = "Dofetilide"
 channels = ["Nav1.5-peak", "Cav1.2",  "Kir2.1", "hERG", "KvLQT1_mink",  "Kv4.3"]#,   "Nav1.5-late"]
@@ -210,7 +208,7 @@ block_length = block_chains[0].shape[0]
 
 dose = 0.001    
 
-unif_samples = npr.rand(T, num_gs)
+#unif_samples = npr.rand(T, num_gs)
 
 
 fig, axs = plt.subplots(1, 2, figsize=(10,4), sharex=True, sharey=True)
@@ -224,13 +222,17 @@ axs[1].set_title("Predicted")
 
 
 start = time()
+
+
 for t in xrange(T):
-    temp_lnGs = [np.interp(unif_samples[t,p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
-    block_idx = npr.randint(0, block_length, size=(num_channels, S))
+    unif_samples = npr.rand(num_gs)
+    temp_lnGs = [np.interp(unif_samples[p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
+    block_idx = npr.randint(0, block_length, num_channels)
+    blocks = np.zeros(num_channels)
     for c in xrange(num_channels):
-        pic50s, hills = block_chains[c][block_idx[c, :]].T
-        blocks = fraction_block(dose, hills, pic50_to_ic50(pic50s))
-        print blocks
+        pic50, hill = block_chains[c][block_idx[c], :]
+        blocks[c] = fraction_block(dose, hill, pic50_to_ic50(pic50))
+    print blocks
         
     axs[1].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_lnGs, ap_model, expt_trace), alpha=0.002, color='black')
 time_taken = time()-start
