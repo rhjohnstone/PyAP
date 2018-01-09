@@ -246,7 +246,7 @@ print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_tak
 #fig_png = "{}_trace_{}_{}_samples.png".format(expt_name, trace_number, T)
 #print fig_png
 #fig.savefig(fig_png)
-plt.show(block=True)
+#plt.show(block=True)
 
 
 for i in xrange(N_e):
@@ -258,10 +258,6 @@ for i in xrange(N_e):
 
     expt_times_for_plotting, expt_trace_for_plotting = np.loadtxt(plot_trace_path, delimiter=',').T
     axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='blue')
-
-
-
-
 
 
 fig.tight_layout()
