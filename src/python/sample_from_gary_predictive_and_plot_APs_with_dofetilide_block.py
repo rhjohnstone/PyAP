@@ -96,14 +96,14 @@ cmaes_final_state_vars = np.loadtxt(cmaes_final_state_vars_file)
 print "cmaes_final_state_vars:\n", cmaes_final_state_vars
 
 
-temp_Gs = np.copy(original_gs)
+
 def solve_for_voltage_trace_with_ICs(temp_G_params, ap_model, expt_trace):
     ap_model.SetStateVariables(cmaes_final_state_vars)
     #ap_model.SetVoltage(expt_trace[0])
     
-    temp_Gs[indices_to_keep] = temp_lnG_params
+    #temp_Gs[indices_to_keep] = temp_G_params
     try:
-        return ap_model.SolveForVoltageTraceWithParams(temp_Gs)
+        return ap_model.SolveForVoltageTraceWithParams(temp_G_params)
     except:
         print "\n\nFAIL\n\n"
         return np.zeros(num_pts)
@@ -223,11 +223,13 @@ axs[1].set_title("Predicted")
 
 start = time()
 
+temp_Gs = np.copy(original_gs)
 
 for t in xrange(T):
     unif_samples = npr.rand(num_gs)
-    temp_lnGs = [np.interp(unif_samples[p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
-    temp_Gs = npexp(temp_lnGs)
+    temp_lnG_samples = [np.interp(unif_samples[p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
+    temp_G_samples = npexp(temp_lnGs)
+    temp_Gs[indices_to_keep] = temp_G_samples
     block_idx = npr.randint(0, block_length, num_channels)
     blocks = np.zeros(num_channels)
     for c in xrange(num_channels):
