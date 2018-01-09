@@ -203,13 +203,15 @@ dose = args.dose
 
 
 fig, axs = plt.subplots(1, 2, figsize=(10,4), sharex=True, sharey=True)
-ax[0].set_ylabel("Membrane voltage (mV)")
+axs[0].set_ylabel("Membrane voltage (mV)")
 
 for i in xrange(2):
     axs[i].set_xlabel("Time (ms)")
     axs[i].grid()
-
     model = models[i]
+    axs[i].set_title("Model {}".format(model))
+
+    
     print "model", model
     block_chains = []
     for channel in channels:
