@@ -202,7 +202,7 @@ dose = args.dose
 #unif_samples = npr.rand(T, num_gs)
 
 
-fig, ax = plt.subplots(1, 2, figsize=(10,4), sharex=True, sharey=True)
+fig, axs = plt.subplots(1, 2, figsize=(10,4), sharex=True, sharey=True)
 ax[0].set_ylabel("Membrane voltage (mV)")
 
 for i in xrange(2):
@@ -248,7 +248,6 @@ for i in xrange(2):
         for c in xrange(num_channels):
             pic50, hill = block_chains[c][block_idx[c], :]
             blocks[c] = fraction_block(dose, hill, pic50_to_ic50(pic50))
-        print blocks
         temp_Gs[indices_to_block] *= (1.-blocks)
         #print temp_Gs
         axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.2, color='red')
