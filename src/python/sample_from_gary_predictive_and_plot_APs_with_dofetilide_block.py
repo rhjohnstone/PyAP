@@ -2,7 +2,7 @@ import pyap_setup as ps
 import ap_simulator
 import numpy as np
 import matplotlib
-#matplotlib.use('Agg')
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 import argparse
@@ -206,7 +206,6 @@ for channel in channels:
     if model==1:
         block_chain[:, 1] = 1.
     block_chains.append(block_chain)
-print block_chains
 block_length = block_chains[0].shape[0]
 
 dose = 0.001    
