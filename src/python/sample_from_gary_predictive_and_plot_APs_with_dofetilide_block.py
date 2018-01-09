@@ -237,7 +237,7 @@ for t in xrange(T):
     for c in xrange(num_channels):
         pic50, hill = block_chains[c][block_idx[c], :]
         blocks[c] = fraction_block(dose, hill, pic50_to_ic50(pic50))
-    #print blocks
+    print blocks
     temp_Gs[indices_to_block] *= (1.-blocks)
     #print temp_Gs
     axs[1].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.2, color='black')
