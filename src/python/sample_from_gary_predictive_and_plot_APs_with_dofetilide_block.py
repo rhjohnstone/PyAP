@@ -206,7 +206,7 @@ for channel in channels:
     block_chains.append(block_chain)
 block_length = block_chains[0].shape[0]
 
-dose = 0.001    
+dose = 1e-3    
 
 #unif_samples = npr.rand(T, num_gs)
 
@@ -261,7 +261,7 @@ for i in xrange(N_e):
 
 
 fig.tight_layout()
-fig_png = "{}_trace_{}_{}_samples_with_dofetilide_block.png".format(expt_name, trace_number, T)
+fig_png = "{}_trace_{}_{}_samples_with_{}_uM_dofetilide_block_model_{}.png".format(expt_name, trace_number, T, dose, model)
 print fig_png
 fig.savefig(fig_png)
 plt.show()
