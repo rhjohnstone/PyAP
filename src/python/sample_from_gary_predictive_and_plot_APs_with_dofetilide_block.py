@@ -218,7 +218,7 @@ for j in xrange(2):
 axs[0].set_ylabel("Membrane voltage (mV)")
 
 axs[0].set_title("Experimental")
-axs[1].set_title("Predicted")
+axs[1].set_title(r"Predicted ${}\,\mu M$ {}".format(dose, drug))
 
 
 start = time()
