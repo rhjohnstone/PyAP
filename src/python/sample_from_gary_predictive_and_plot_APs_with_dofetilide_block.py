@@ -13,17 +13,25 @@ import sys
 npexp = np.exp
 
 drug = "Dofetilide"
-channels = ["Nav1.5-peak", "Cav1.2",  "Kir2.1", "hERG", "KvLQT1_mink",  "Kv4.3",   "Nav1.5-late",]
+channels = ["Nav1.5-peak", "Cav1.2",  "Kir2.1", "hERG", "KvLQT1_mink",  "Kv4.3",   "Nav1.5-late"]
 #            G_Na             G_CaL,   G_K1,      G_Kr,     G_Ks,          G_to,         G_NaL
 models = [1, 2]
 
-channel = channels[0]
-model = models[0]
-chain_file = "/data/coml-cardiac/hert3352/Dofetilide/{channel}/model_{model}/temperature_1/chain/Dofetilide_{channel}_model_{model}_temp_1_chain_nonhierarchical.txt".format(channel=channel, model=model)
-print chain_file
-block_chain = np.loadtxt(chain_file)
-print block_chain
+for model in models:
+    print "model", model
+    block_chains = []
+        for channel in channels:
+    chain_file = "/data/coml-cardiac/hert3352/Dofetilide/{channel}/model_{model}/temperature_1/chain/Dofetilide_{channel}_model_{model}_temp_1_chain_nonhierarchical.txt".format(channel=channel, model=model)
+        block_chain = np.loadtxt(chain_file, usecols=range(2))
+        saved_its = block_chain.shape[0]
+        block_chain = block_chain[saved_its/4:, :]
+        if model==1:
+            block_chain[:, 1] = 1.
+        block_chains.append(block_chain)
+        print block_chain
+        
 sys.exit()
+
 
 def fraction_block(dose,hill,IC50):
     return 1. - 1./(1.+(1.*dose/IC50)**hill)
@@ -49,7 +57,8 @@ def apply_moxi_blocks(temp_G_params, dose):
 parser = argparse.ArgumentParser()
 requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
-parser.add_argument("-T", "--num-samples", type=int, help="number of AP samples to plot", default=0)
+parser.add_argument("-T", "--num-samples", type=int, help="number of AP samples", default=0)
+parser.add_argument("-S", "--num-drug-samples", type=int, help="number of drug block samples", default=0)
 parser.add_argument("-n", "--num-expts", type=int, help="number of traces to construct Gary-predictive from", required=True)
 #parser.add_argument("-x", "--num-pts", type=int, help="number of x points to plot Gary-predictive for", required=True)
 args, unknown = parser.parse_known_args()
@@ -191,7 +200,10 @@ ap_model.SetNumberOfSolves(pyap_options["num_solves"])
 ap_model.SetMembraneCapacitance(Cm)
 
 
+
+
 T = args.num_samples
+S = args.num_drug_samples
 
 unif_samples = npr.rand(T, num_gs)
 
@@ -230,53 +242,12 @@ for i in xrange(N_e):
     axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='blue')
 
 
-"""for i in xrange(N_e):
-    plot_trace_number = 400 + i
-    plot_trace_path = "projects/PyAP/python/input/dog_teun_davies/traces/dog_AP_trace_{}.csv".format(plot_trace_number)
 
-    expt_times_for_plotting, expt_trace_for_plotting = 1000.*np.loadtxt(plot_trace_path, delimiter=',').T
-    axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='red')"""
-
-#axs[0].plot([], [], color='blue', label='Control')
-#axs[0].plot([], [], color='red', label="K$^+$, Moxi.")
-
-#axs[0].legend(loc=1)
-
-"""
-moxi_conc = 10
-new_extra_K_conc = 4
-ap_model = ap_simulator.APSimulator()
-if (data_clamp_on < data_clamp_off):
-    ap_model.DefineStimulus(0, 1, 1000, 0)  # no injected stimulus current
-    ap_model.DefineModel(pyap_options["model_number"])
-    ap_model.UseDataClamp(data_clamp_on, data_clamp_off)
-    ap_model.SetExperimentalTraceAndTimesForDataClamp(expt_times, expt_trace)
-else:
-    ap_model.DefineStimulus(stimulus_magnitude, stimulus_duration, pyap_options["stimulus_period"], stimulus_start_time)
-    ap_model.DefineModel(pyap_options["model_number"])
-ap_model.DefineSolveTimes(expt_times[0], expt_times[-1], expt_times[1]-expt_times[0])
-ap_model.SetExtracellularPotassiumConc(new_extra_K_conc)
-ap_model.SetIntracellularPotassiumConc(pyap_options["intra_K_conc"])
-ap_model.SetExtracellularSodiumConc(pyap_options["extra_Na_conc"])
-ap_model.SetIntracellularSodiumConc(pyap_options["intra_Na_conc"])
-ap_model.SetNumberOfSolves(pyap_options["num_solves"])
-
-rand_samples = npr.rand(T)
-
-
-start = time()
-for t in xrange(T):
-    temp_lnGs = [np.interp(rand_samples[t], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
-    axs[1].plot(expt_times, solve_for_voltage_trace_with_block(temp_lnGs, ap_model, expt_trace, moxi_conc), alpha=0.01, color='red')
-time_taken = time()-start
-print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
-axs[1].plot([], [], label="K$^+$, Moxi.", color='red')
-axs[1].legend(loc=1)"""
 
 
 
 fig.tight_layout()
-fig_png = "{}_trace_{}_{}_samples.png".format(expt_name, trace_number, T)
+fig_png = "{}_trace_{}_{}_samples_with_dofetilide_block.png".format(expt_name, trace_number, T)
 print fig_png
 #fig.savefig(fig_png)
 plt.show()
