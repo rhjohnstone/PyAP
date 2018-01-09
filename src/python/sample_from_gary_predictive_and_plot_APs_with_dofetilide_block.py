@@ -42,6 +42,7 @@ requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
 parser.add_argument("-T", "--num-samples", type=int, help="number of AP and block (together) samples", default=0)
 parser.add_argument("-n", "--num-expts", type=int, help="number of traces to construct Gary-predictive from", required=True)
+parser.add_argument("-m", "--model", type=int, help="dose-response model number", required=True)
 #parser.add_argument("-x", "--num-pts", type=int, help="number of x points to plot Gary-predictive for", required=True)
 args, unknown = parser.parse_known_args()
 
@@ -193,7 +194,7 @@ models = [1, 2]
 
 num_channels = len(channels)
 
-model = models[0]
+model = args.model
 print "model", model
 block_chains = []
 for channel in channels:
@@ -218,7 +219,7 @@ for j in xrange(2):
 axs[0].set_ylabel("Membrane voltage (mV)")
 
 axs[0].set_title("Experimental")
-axs[1].set_title(r"Predicted {}\,$\mu$M {}, Model {}".format(dose, drug, model))
+axs[1].set_title(r"Predicted {} $\mu$M {}, Model {}".format(dose, drug, model))
 
 
 start = time()
