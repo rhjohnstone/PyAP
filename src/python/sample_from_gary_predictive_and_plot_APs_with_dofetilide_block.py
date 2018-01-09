@@ -12,25 +12,8 @@ import sys
 
 npexp = np.exp
 
-drug = "Dofetilide"
-channels = ["Nav1.5-peak", "Cav1.2",  "Kir2.1", "hERG", "KvLQT1_mink",  "Kv4.3",   "Nav1.5-late"]
-#            G_Na             G_CaL,   G_K1,      G_Kr,     G_Ks,          G_to,         G_NaL
-models = [1, 2]
 
-for model in models:
-    print "model", model
-    block_chains = []
-    for channel in channels:
-        chain_file = "/data/coml-cardiac/hert3352/Dofetilide/{channel}/model_{model}/temperature_1/chain/Dofetilide_{channel}_model_{model}_temp_1_chain_nonhierarchical.txt".format(channel=channel, model=model)
-        block_chain = np.loadtxt(chain_file, usecols=range(2))
-        saved_its = block_chain.shape[0]
-        block_chain = block_chain[saved_its/4:, :]
-        if model==1:
-            block_chain[:, 1] = 1.
-        block_chains.append(block_chain)
-    print block_chain
         
-sys.exit()
 
 
 def fraction_block(dose,hill,IC50):
@@ -205,6 +188,29 @@ ap_model.SetMembraneCapacitance(Cm)
 T = args.num_samples
 S = args.num_drug_samples
 
+drug = "Dofetilide"
+channels = ["Nav1.5-peak", "Cav1.2",  "Kir2.1", "hERG", "KvLQT1_mink",  "Kv4.3"]#,   "Nav1.5-late"]
+#            G_Na             G_CaL,   G_K1,      G_Kr,     G_Ks,          G_to,         G_NaL
+models = [1, 2]
+
+num_channels = len(channels)
+
+model = models[0]
+print "model", model
+block_chains = []
+for channel in channels:
+    chain_file = "/data/coml-cardiac/hert3352/Dofetilide/{channel}/model_{model}/temperature_1/chain/Dofetilide_{channel}_model_{model}_temp_1_chain_nonhierarchical.txt".format(channel=channel, model=model)
+    block_chain = np.loadtxt(chain_file, usecols=range(2))
+    saved_its = block_chain.shape[0]
+    block_chain = block_chain[saved_its/4:, :]
+    if model==1:
+        block_chain[:, 1] = 1.
+    block_chains.append(block_chain)
+print block_chains
+block_length = block_chains[0].shape[0]
+
+dose = 0.001    
+
 unif_samples = npr.rand(T, num_gs)
 
 
@@ -217,9 +223,16 @@ axs[0].set_ylabel("Membrane voltage (mV)")
 axs[0].set_title("Experimental")
 axs[1].set_title("Predicted")
 
+
 start = time()
 for t in xrange(T):
     temp_lnGs = [np.interp(unif_samples[t,p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
+    block_idx = npr.randint(0, block_length, size=(num_channels, S))
+    for c in xrange(num_channels):
+        pic50s, hills = block_chains[c][block_idx[c, :]].T
+        blocks = fraction_block(dose, hills, pic50_to_ic50(pic50s))
+        print blocks
+        
     axs[1].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_lnGs, ap_model, expt_trace), alpha=0.002, color='black')
 time_taken = time()-start
 print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
