@@ -218,7 +218,7 @@ for j in xrange(2):
 axs[0].set_ylabel("Membrane voltage (mV)")
 
 axs[0].set_title("Experimental")
-axs[1].set_title(r"Predicted ${}\,\mu M$ {}".format(dose, drug))
+axs[1].set_title(r"Predicted {}\,$\mu$M {}, Model {}".format(dose, drug, model))
 
 
 start = time()
@@ -235,9 +235,9 @@ for t in xrange(T):
     for c in xrange(num_channels):
         pic50, hill = block_chains[c][block_idx[c], :]
         blocks[c] = fraction_block(dose, hill, pic50_to_ic50(pic50))
-    print blocks
+    #print blocks
     temp_Gs[indices_to_block] *= (1.-blocks)
-    print temp_Gs
+    #print temp_Gs
     axs[1].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.2, color='black')
 time_taken = time()-start
 print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
@@ -263,5 +263,5 @@ for i in xrange(N_e):
 fig.tight_layout()
 fig_png = "{}_trace_{}_{}_samples_with_dofetilide_block.png".format(expt_name, trace_number, T)
 print fig_png
-#fig.savefig(fig_png)
+fig.savefig(fig_png)
 plt.show()
