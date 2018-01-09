@@ -43,6 +43,7 @@ requiredNamed.add_argument("--data-file", type=str, help="first csv file from wh
 parser.add_argument("-T", "--num-samples", type=int, help="number of AP and block (together) samples", default=0)
 parser.add_argument("-n", "--num-expts", type=int, help="number of traces to construct Gary-predictive from", required=True)
 parser.add_argument("-m", "--model", type=int, help="dose-response model number", required=True)
+parser.add_argument("-d", "--dose", type=float, help="Dofetilide concentration", required=True)
 #parser.add_argument("-x", "--num-pts", type=int, help="number of x points to plot Gary-predictive for", required=True)
 args, unknown = parser.parse_known_args()
 
@@ -207,7 +208,7 @@ for channel in channels:
     block_chains.append(block_chain)
 block_length = block_chains[0].shape[0]
 
-dose = 1e-3    
+dose = args.dose
 
 #unif_samples = npr.rand(T, num_gs)
 
