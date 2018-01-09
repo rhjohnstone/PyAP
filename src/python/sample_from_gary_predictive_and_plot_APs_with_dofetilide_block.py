@@ -213,17 +213,24 @@ dose = args.dose
 #unif_samples = npr.rand(T, num_gs)
 
 
-fig, axs = plt.subplots(1, 2, figsize=(10,4), sharex=True, sharey=True)
-for j in xrange(2):
-    axs[j].set_xlabel("Time (ms)")
-    axs[j].grid()
-axs[0].set_ylabel("Membrane voltage (mV)")
+fig, ax = plt.subplots(1, 1, figsize=(5,4))
 
-axs[0].set_title("Experimental")
-axs[1].set_title(r"Predicted {} $\mu$M {}, Model {}".format(dose, drug, model))
+ax.set_xlabel("Time (ms)")
+ax.grid()
+ax.set_ylabel("Membrane voltage (mV)")
+
+#ax.set_title(r"Predicted {} $\mu$M {}, Model {}".format(dose, drug, model))
 
 
 start = time()
+
+for t in xrange(T):
+    temp_Gs = np.copy(original_gs)
+    unif_samples = npr.rand(num_gs)
+    temp_lnG_samples = [np.interp(unif_samples[p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
+    temp_G_samples = npexp(temp_lnG_samples)
+    temp_Gs[indices_to_keep] = temp_G_samples
+    ax.plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.2, color='blue')
 
 
 
@@ -241,7 +248,7 @@ for t in xrange(T):
     print blocks
     temp_Gs[indices_to_block] *= (1.-blocks)
     #print temp_Gs
-    axs[1].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.2, color='black')
+    ax.plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.2, color='red')
 time_taken = time()-start
 print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
 #axs[1].plot([], [], label="Control", color='blue')
@@ -252,7 +259,7 @@ print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_tak
 #plt.show(block=True)
 
 
-for i in xrange(N_e):
+"""for i in xrange(N_e):
     plot_trace_number = 100 + i
     if expt_name=="roche_ten_tusscher_correct_units_subset":
         plot_trace_path = "projects/PyAP/python/input/roche_ten_tusscher_correct_units_subset/traces/Trace_2_2_{}_1.csv".format(plot_trace_number)
@@ -260,7 +267,7 @@ for i in xrange(N_e):
         plot_trace_path = "projects/PyAP/python/input/roche_paci_correct_units_subset/traces/Trace_2_2_{}_1.csv".format(plot_trace_number)
 
     expt_times_for_plotting, expt_trace_for_plotting = np.loadtxt(plot_trace_path, delimiter=',').T
-    axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='blue')
+    axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='blue')"""
 
 
 fig.tight_layout()
