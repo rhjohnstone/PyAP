@@ -195,60 +195,63 @@ models = [1, 2]
 
 num_channels = len(channels)
 
-model = args.model
-print "model", model
-block_chains = []
-for channel in channels:
-    chain_file = "/data/coml-cardiac/hert3352/Dofetilide/{channel}/model_{model}/temperature_1/chain/Dofetilide_{channel}_model_{model}_temp_1_chain_nonhierarchical.txt".format(channel=channel, model=model)
-    block_chain = np.loadtxt(chain_file, usecols=range(2))
-    saved_its = block_chain.shape[0]
-    block_chain = block_chain[saved_its/4:, :]
-    if model==1:
-        block_chain[:, 1] = 1.
-    block_chains.append(block_chain)
-block_length = block_chains[0].shape[0]
+
 
 dose = args.dose
 
 #unif_samples = npr.rand(T, num_gs)
 
 
-fig, ax = plt.subplots(1, 1, figsize=(5,4))
+fig, ax = plt.subplots(1, 2, figsize=(10,4), sharex=True, sharey=True)
+ax[0].set_ylabel("Membrane voltage (mV)")
 
-ax.set_xlabel("Time (ms)")
-ax.grid()
-ax.set_ylabel("Membrane voltage (mV)")
+for i in xrange(2):
+    axs[i].set_xlabel("Time (ms)")
+    axs[i].grid()
+
+    model = models[i]
+    print "model", model
+    block_chains = []
+    for channel in channels:
+        chain_file = "/data/coml-cardiac/hert3352/Dofetilide/{channel}/model_{model}/temperature_1/chain/Dofetilide_{channel}_model_{model}_temp_1_chain_nonhierarchical.txt".format(channel=channel, model=model)
+        block_chain = np.loadtxt(chain_file, usecols=range(2))
+        saved_its = block_chain.shape[0]
+        block_chain = block_chain[saved_its/4:, :]
+        if model==1:
+            block_chain[:, 1] = 1.
+        block_chains.append(block_chain)
+    block_length = block_chains[0].shape[0]
 
 #ax.set_title(r"Predicted {} $\mu$M {}, Model {}".format(dose, drug, model))
 
 
-start = time()
+    start = time()
 
-for t in xrange(T):
-    temp_Gs = np.copy(original_gs)
-    unif_samples = npr.rand(num_gs)
-    temp_lnG_samples = [np.interp(unif_samples[p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
-    temp_G_samples = npexp(temp_lnG_samples)
-    temp_Gs[indices_to_keep] = temp_G_samples
-    ax.plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.2, color='blue')
+    for t in xrange(T):
+        temp_Gs = np.copy(original_gs)
+        unif_samples = npr.rand(num_gs)
+        temp_lnG_samples = [np.interp(unif_samples[p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
+        temp_G_samples = npexp(temp_lnG_samples)
+        temp_Gs[indices_to_keep] = temp_G_samples
+        axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.2, color='blue')
 
 
 
-for t in xrange(T):
-    temp_Gs = np.copy(original_gs)
-    unif_samples = npr.rand(num_gs)
-    temp_lnG_samples = [np.interp(unif_samples[p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
-    temp_G_samples = npexp(temp_lnG_samples)
-    temp_Gs[indices_to_keep] = temp_G_samples
-    block_idx = npr.randint(0, block_length, num_channels)
-    blocks = np.zeros(num_channels)
-    for c in xrange(num_channels):
-        pic50, hill = block_chains[c][block_idx[c], :]
-        blocks[c] = fraction_block(dose, hill, pic50_to_ic50(pic50))
-    print blocks
-    temp_Gs[indices_to_block] *= (1.-blocks)
-    #print temp_Gs
-    ax.plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.2, color='red')
+    for t in xrange(T):
+        temp_Gs = np.copy(original_gs)
+        unif_samples = npr.rand(num_gs)
+        temp_lnG_samples = [np.interp(unif_samples[p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
+        temp_G_samples = npexp(temp_lnG_samples)
+        temp_Gs[indices_to_keep] = temp_G_samples
+        block_idx = npr.randint(0, block_length, num_channels)
+        blocks = np.zeros(num_channels)
+        for c in xrange(num_channels):
+            pic50, hill = block_chains[c][block_idx[c], :]
+            blocks[c] = fraction_block(dose, hill, pic50_to_ic50(pic50))
+        print blocks
+        temp_Gs[indices_to_block] *= (1.-blocks)
+        #print temp_Gs
+        axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.2, color='red')
 time_taken = time()-start
 print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
 #axs[1].plot([], [], label="Control", color='blue')
