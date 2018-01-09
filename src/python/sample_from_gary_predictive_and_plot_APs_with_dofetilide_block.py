@@ -225,9 +225,10 @@ axs[1].set_title(r"Predicted {} $\mu$M {}, Model {}".format(dose, drug, model))
 
 start = time()
 
-temp_Gs = np.copy(original_gs)
+
 
 for t in xrange(T):
+    temp_Gs = np.copy(original_gs)
     unif_samples = npr.rand(num_gs)
     temp_lnG_samples = [np.interp(unif_samples[p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
     temp_G_samples = npexp(temp_lnG_samples)
