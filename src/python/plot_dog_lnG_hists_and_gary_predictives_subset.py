@@ -124,7 +124,7 @@ elif expt_name=="roche_ten_tusscher_correct_units":
     fig, axs = plt.subplots(4, 3, figsize=figsize)
 elif expt_name=="roche_paci_correct_units":
     fig, axs = plt.subplots(4, 3, figsize=figsize)
-elif expt_name=="roche_ten_tusscher_correct_units_subset":
+elif expt_name=="roche_ten_tusscher_correct_units_subset" or expt_name=="roche_paci_correct_units_subset":
     fig, axs = plt.subplots(3, 3, figsize=figsize)
 elif expt_name=="roche_paci_correct_units_subset":
     fig, axs = plt.subplots(3, 3, figsize=figsize)
@@ -282,7 +282,7 @@ for i in xrange(how_many_extra_axes):
     axs[8-i].axis("off")
     
 fig.tight_layout()#h_pad=1.)
-fig_file = sl_png_dir+"{}_{}_traces_superimposed_marginal_hists_and_prior_and_gary_predictive.png".format(expt_name, N_e)
+fig_file = sl_png_dir+"{}_{}_traces_superimposed_marginal_hists_and_prior_and_gary_predictive_subset.png".format(expt_name, N_e)
 print fig_file
 fig.savefig(fig_file)
 plt.show(block=True)
