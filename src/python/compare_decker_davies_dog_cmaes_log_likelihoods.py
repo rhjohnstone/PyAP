@@ -164,6 +164,10 @@ for i in xrange(2):
 fig.tight_layout()
 print best_fit_png
 fig.savefig(best_fit_png)
+best_fit_pdf = best_fit_png.split(".")[0] + ".pdf"
+print best_fit_pdf
+fig.savefig(best_fit_pdf)
+
 plt.show()
 
 
