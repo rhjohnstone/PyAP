@@ -202,14 +202,16 @@ dose = args.dose
 #unif_samples = npr.rand(T, num_gs)
 
 
-fig, axs = plt.subplots(1, 2, figsize=(10,4), sharex=True, sharey=True)
+fig, axs = plt.subplots(1, 2, figsize=(9,0.9*4), sharex=True, sharey=True)
 axs[0].set_ylabel("Membrane voltage (mV)")
+
+titles = ["$Hill$ fixed to 1", "$Hill$ varying"]
 
 for i in xrange(2):
     axs[i].set_xlabel("Time (ms)")
     axs[i].grid()
     model = models[i]
-    axs[i].set_title("Model {}".format(model))
+    axs[i].set_title(titles[i])
 
     
     print "model", model
@@ -235,7 +237,10 @@ for i in xrange(2):
         temp_lnG_samples = [np.interp(unif_samples[p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
         temp_G_samples = npexp(temp_lnG_samples)
         temp_Gs[indices_to_keep] = temp_G_samples
-        axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.02, color='blue')
+        if t==0:
+            axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.02, color='blue', label="Control")
+        else:
+            axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.02, color='blue')
 
 
 
@@ -252,7 +257,10 @@ for i in xrange(2):
             blocks[c] = fraction_block(dose, hill, pic50_to_ic50(pic50))
         temp_Gs[indices_to_block] *= (1.-blocks)
         #print temp_Gs
-        axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.02, color='red')
+        if t==0:
+            axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.02, color='red', label=r"{}\,$\mu$M {}".format(dose, drug))
+        else:
+            axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.02, color='red')
 time_taken = time()-start
 print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
 #axs[1].plot([], [], label="Control", color='blue')
@@ -273,9 +281,13 @@ print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_tak
     expt_times_for_plotting, expt_trace_for_plotting = np.loadtxt(plot_trace_path, delimiter=',').T
     axs[0].plot(expt_times_for_plotting, expt_trace_for_plotting, color='blue')"""
 
-
+for i in xrange(2):
+    axs[i].legend(loc=1, fontsize=10)
 fig.tight_layout()
 fig_png = "{}_trace_{}_{}_samples_with_{}_uM_dofetilide_block_model_{}.png".format(expt_name, trace_number, T, dose, model)
 print fig_png
 fig.savefig(fig_png)
+fig_pdf = "{}_trace_{}_{}_samples_with_{}_uM_dofetilide_block_model_{}.pdf".format(expt_name, trace_number, T, dose, model)
+print fig_pdf
+fig.savefig(fig_pdf)
 plt.show()
