@@ -42,7 +42,6 @@ requiredNamed = parser.add_argument_group('required arguments')
 requiredNamed.add_argument("--data-file", type=str, help="first csv file from which to read in data", required=True)
 parser.add_argument("-T", "--num-samples", type=int, help="number of AP and block (together) samples", default=0)
 parser.add_argument("-n", "--num-expts", type=int, help="number of traces to construct Gary-predictive from", required=True)
-parser.add_argument("-m", "--model", type=int, help="dose-response model number", required=True)
 parser.add_argument("-d", "--dose", type=float, help="Dofetilide concentration", required=True)
 #parser.add_argument("-x", "--num-pts", type=int, help="number of x points to plot Gary-predictive for", required=True)
 args, unknown = parser.parse_known_args()
@@ -258,7 +257,7 @@ for i in xrange(2):
         temp_Gs[indices_to_block] *= (1.-blocks)
         #print temp_Gs
         if t==0:
-            axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.02, color='red', label=r"{}\,$\mu$M {}".format(dose, drug))
+            axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.02, color='red', label=r"${}\,\mu$M {}".format(dose, drug))
         else:
             axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.02, color='red')
 time_taken = time()-start
