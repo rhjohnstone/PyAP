@@ -237,10 +237,8 @@ for i in xrange(2):
         temp_lnG_samples = [np.interp(unif_samples[p], gary_predictives[p][:,1], gary_predictives[p][:,0]) for p in xrange(num_gs)]
         temp_G_samples = npexp(temp_lnG_samples)
         temp_Gs[indices_to_keep] = temp_G_samples
-        if t==0:
-            axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.02, color='blue', label="Control")
-        else:
-            axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.02, color='blue')
+        axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.02, color='blue')
+    axs[i].plot([], [], color='blue', label="Control")
 
 
 
@@ -257,10 +255,8 @@ for i in xrange(2):
             blocks[c] = fraction_block(dose, hill, pic50_to_ic50(pic50))
         temp_Gs[indices_to_block] *= (1.-blocks)
         #print temp_Gs
-        if t==0:
-            axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.02, color='red', label=r"{} $\mu$M {}".format(dose, drug))
-        else:
-            axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.02, color='red')
+        axs[i].plot(expt_times, solve_for_voltage_trace_with_ICs(temp_Gs, ap_model, expt_trace), alpha=0.02, color='red')
+    axs[i].plot([], [], color='red', label=r"{} $\mu$M {}".format(dose, drug))
 time_taken = time()-start
 print "Time taken for {} solves and plots: {} s = {} min".format(T, int(time_taken), round(time_taken/60., 1))
 #axs[1].plot([], [], label="Control", color='blue')
