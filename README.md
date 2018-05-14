@@ -1,8 +1,12 @@
+This was the primary [Chaste](https://github.com/Chaste/Chaste)-based project that I developed and used for my [DPhil](https://rhjohnstone.github.io/dphil/) for simulation of [cardiac action potentials](https://en.wikipedia.org/wiki/Cardiac_action_potential).
+
+I tried to keep it tidy and reusable while I was using it regularly, but in the last few months of writing up, I probably let things slide for last-minute hacks for specific graphs and things. Sorry about that!
+
 # PyAP
 
 This is a Chaste project, originally based on James Grogran's [PyChaste](https://github.com/jmsgrogan/PyChaste) project. The idea is to wrap solving of action potential models (done by Chaste) in Python to make MCMC easier by passing vectors of parameter values all over the place.
 
-Going to give instructions for using this on arcus-b.
+Going to give instructions for using this on [arcus-b](http://www.arc.ox.ac.uk/content/arcus-phase-b) (Oxford University supercomputer).
 
 Copy the included `.bash_profile` to `~/.bash_profile`. I've had weird things happen when I do
 
