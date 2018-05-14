@@ -66,7 +66,7 @@ python projects/PyAP/python/pyap_example.py
 
 ## MCMC-like stuff
 
-Currently it's just set up to use the data clamp method to stimulate an AP.
+You have to be careful with setting cell membrane capacitances. Some of the CellML models scale all currents by the capacitance, others only scale the stimulus current (or all _except_ the stimulus, I don't remember), and then you have to specify these things in the config file.
 
 There is an optional, but recommended, CMA-ES minimisation script. If you run this before the MCMC, the MCMC will start from the best point found by the CMA-ES. If you don't run the CMA-ES, the MCMC will just start from the original model parameters, and so will either take a while to find the mode and converge, or might get stuck in a local optimum that is much less good than the "real" one.
 
